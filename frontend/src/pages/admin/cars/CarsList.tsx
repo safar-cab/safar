@@ -236,8 +236,12 @@ export function CarsList() {
                       {car.assignedDriver
                         ? typeof car.assignedDriver === 'string'
                           ? car.assignedDriver
-                          : (car.assignedDriver as unknown as Record<string, Record<string, string>>).userId
-                              ?.name || 'Assigned'
+                          : (
+                              car.assignedDriver as unknown as Record<
+                                string,
+                                Record<string, string>
+                              >
+                            ).userId?.name || 'Assigned'
                         : '-'}
                     </td>
                     <td className="px-4 py-3">
