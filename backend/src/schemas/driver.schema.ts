@@ -10,25 +10,123 @@ export class Driver {
   @Prop({ type: Types.ObjectId, ref: 'User', required: true, unique: true })
   userId: Types.ObjectId;
 
+  // Personal
+  @Prop()
+  dateOfBirth: Date;
+
+  @Prop()
+  gender: string;
+
+  @Prop()
+  fatherName: string;
+
+  @Prop()
+  photo: string;
+
+  @Prop({
+    type: { street: String, city: String, state: String, pincode: String },
+  })
+  currentAddress: {
+    street: string;
+    city: string;
+    state: string;
+    pincode: string;
+  };
+
+  @Prop({
+    type: { street: String, city: String, state: String, pincode: String },
+  })
+  permanentAddress: {
+    street: string;
+    city: string;
+    state: string;
+    pincode: string;
+  };
+
+  @Prop({ type: { name: String, phone: String, relation: String } })
+  emergencyContact: {
+    name: string;
+    phone: string;
+    relation: string;
+  };
+
+  // Documents
   @ApiProperty()
   @Prop({ unique: true })
   licenseNumber: string;
 
   @Prop()
-  licensePhoto: string;
+  licenseType: string; // LMV, HMV, BOTH
 
   @Prop()
   licenseExpiry: Date;
 
+  @Prop({ type: [String], default: [] })
+  licensePhotos: string[]; // front + back
+
   @Prop()
   aadhaarNumber: string;
 
-  @Prop()
-  aadhaarPhoto: string;
+  @Prop({ type: [String], default: [] })
+  aadhaarPhotos: string[]; // front + back
 
   @Prop()
-  photo: string;
+  panNumber: string;
 
+  @Prop()
+  panPhoto: string;
+
+  @Prop()
+  policeVerificationPhoto: string;
+
+  // Banking
+  @Prop({
+    type: {
+      accountNumber: String,
+      ifscCode: String,
+      bankName: String,
+      accountHolderName: String,
+      upiId: String,
+    },
+  })
+  bankDetails: {
+    accountNumber: string;
+    ifscCode: string;
+    bankName: string;
+    accountHolderName: string;
+    upiId: string;
+  };
+
+  // Experience
+  @Prop()
+  yearsOfExperience: number;
+
+  @Prop({ type: [String], default: [] })
+  vehicleTypesComfortable: string[]; // sedan, suv, tempo, etc.
+
+  @Prop({ type: [String], default: [] })
+  languagesSpoken: string[];
+
+  @Prop()
+  knowsLocalRoutes: boolean;
+
+  // Employment
+  @Prop()
+  previousEmployer: string;
+
+  @Prop({ type: { name: String, phone: String } })
+  reference: { name: string; phone: string };
+
+  @Prop()
+  expectedSalary: number;
+
+  @Prop()
+  availableShift: string; // morning, evening, night, flexible
+
+  @Prop()
+  joinDate: Date;
+
+  // System fields
   @ApiProperty()
   @Prop({ default: false })
   isVerified: boolean;
@@ -59,6 +157,5 @@ export class Driver {
 }
 
 export const DriverSchema = SchemaFactory.createForClass(Driver);
-DriverSchema.index({ userId: 1 });
 DriverSchema.index({ isAvailable: 1 });
 DriverSchema.index({ currentLocation: '2dsphere' });
