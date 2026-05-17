@@ -44,12 +44,12 @@ export function AdminLayout() {
         sidebarOpen ? 'translate-x-0' : '-translate-x-full',
       )}>
         {/* Logo */}
-        <div className="h-16 flex items-center justify-between px-5 border-b border-neutral-200">
+        <div className="h-16 flex items-center justify-between px-5 border-b border-neutral-200 bg-gradient-to-r from-primary-600 to-primary-700">
           <div className="flex items-center gap-2.5">
             <img src="/logo.svg" alt="Safar" className="w-8 h-8 rounded-lg" />
-            <span className="font-semibold text-neutral-900">Safar Admin</span>
+            <span className="font-semibold text-white">Safar Admin</span>
           </div>
-          <button onClick={() => setSidebarOpen(false)} className="lg:hidden p-1 text-neutral-400 hover:text-neutral-600">
+          <button onClick={() => setSidebarOpen(false)} className="lg:hidden p-1 text-white/60 hover:text-white">
             <X className="w-5 h-5" />
           </button>
         </div>

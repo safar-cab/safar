@@ -7,11 +7,13 @@ import { PageHeader } from '@/components/ui/PageHeader';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
+import { ImageUpload } from '@/components/ui/ImageUpload';
 
 interface DriverFormData {
   userId: string;
   licenseNumber: string;
   licenseExpiry: string;
+  photo: string;
 }
 
 interface SelectOption {
@@ -27,6 +29,7 @@ export function DriverForm() {
     userId: '',
     licenseNumber: '',
     licenseExpiry: '',
+    photo: '',
   });
   const [loading, setLoading] = useState(false);
   const [userOptions, setUserOptions] = useState<SelectOption[]>([]);
@@ -67,6 +70,7 @@ export function DriverForm() {
         userId: form.userId,
         licenseNumber: form.licenseNumber,
         licenseExpiry: form.licenseExpiry || undefined,
+        photo: form.photo || undefined,
       });
       toast.success('Driver profile created successfully');
       navigate('/admin/drivers');
@@ -107,6 +111,13 @@ export function DriverForm() {
             type="date"
             value={form.licenseExpiry}
             onChange={handleChange}
+          />
+          <ImageUpload
+            label="Driver Photo"
+            value={form.photo ? [form.photo] : []}
+            onChange={(urls) => setForm((prev) => ({ ...prev, photo: urls[0] || '' }))}
+            maxFiles={1}
+            folder="drivers"
           />
         </div>
 

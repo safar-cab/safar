@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Select } from '@/components/ui/Select';
+import { ImageUpload } from '@/components/ui/ImageUpload';
 
 interface CarFormData {
   registrationNumber: string;
@@ -17,6 +18,7 @@ interface CarFormData {
   color: string;
   category: string;
   seats: string;
+  photos: string[];
   assignedDriver: string;
 }
 
@@ -34,6 +36,7 @@ const initialData: CarFormData = {
   color: '',
   category: 'sedan',
   seats: '4',
+  photos: [],
   assignedDriver: '',
 };
 
@@ -103,6 +106,7 @@ export function CarForm() {
             color: (data.color as string) || '',
             category: (data.category as string) || 'sedan',
             seats: data.seats?.toString() || '4',
+            photos: Array.isArray(data.photos) ? (data.photos as string[]) : [],
             assignedDriver: driverId,
           });
         })
@@ -139,6 +143,7 @@ export function CarForm() {
         color: form.color || undefined,
         category: form.category,
         seats: Number(form.seats),
+        photos: form.photos,
       };
       if (form.assignedDriver) payload.assignedDriver = form.assignedDriver;
 
@@ -237,6 +242,16 @@ export function CarForm() {
             onSearch={fetchDrivers}
             loading={driversLoading}
             clearable
+          />
+        </div>
+
+        <div className="mt-4">
+          <ImageUpload
+            label="Car Photos"
+            value={form.photos}
+            onChange={(urls) => setForm({ ...form, photos: urls })}
+            maxFiles={6}
+            folder="cars"
           />
         </div>
 
