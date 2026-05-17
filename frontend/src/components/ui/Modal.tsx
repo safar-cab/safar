@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 
@@ -13,13 +14,24 @@ interface ModalProps {
 const sizes = { sm: 'max-w-sm', md: 'max-w-md', lg: 'max-w-lg' };
 
 export function Modal({ open, onClose, title, children, size = 'md' }: ModalProps) {
-  useEffect(() => {
-    if (open) document.body.style.overflow = 'hidden';
-    else document.body.style.overflow = '';
-    return () => { document.body.style.overflow = ''; };
-  }, [open]);
+  const handleEsc = useCallback((e: KeyboardEvent) => {
+    if (e.key === 'Escape') onClose();
+  }, [onClose]);
 
-  return (
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden';
+      document.addEventListener('keydown', handleEsc);
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.removeEventListener('keydown', handleEsc);
+    };
+  }, [open, handleEsc]);
+
+  return createPortal(
     <AnimatePresence>
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -49,6 +61,7 @@ export function Modal({ open, onClose, title, children, size = 'md' }: ModalProp
           </motion.div>
         </div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   );
 }
