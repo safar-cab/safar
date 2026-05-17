@@ -42,9 +42,11 @@ export class UsersService {
     limit?: number;
     role?: string;
     search?: string;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
   }) {
-    const { page = 1, limit = 20, role, search } = query;
-    const filter: any = {};
+    const { page = 1, limit = 20, role, search, sortBy = 'createdAt', sortOrder = 'desc' } = query;
+    const filter: Record<string, unknown> = {};
     if (role) filter.role = role;
     if (search) {
       filter.$or = [
@@ -54,11 +56,13 @@ export class UsersService {
       ];
     }
 
+    const sort: Record<string, 1 | -1> = { [sortBy]: sortOrder === 'asc' ? 1 : -1 };
+
     const [users, total] = await Promise.all([
       this.userModel
         .find(filter)
         .select('-passwordHash')
-        .sort({ createdAt: -1 })
+        .sort(sort)
         .skip((page - 1) * limit)
         .limit(limit)
         .lean(),

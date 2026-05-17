@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Save } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -6,11 +6,18 @@ import api from '@/lib/api';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { Select } from '@/components/ui/Select';
 
 interface DriverFormData {
   userId: string;
   licenseNumber: string;
   licenseExpiry: string;
+}
+
+interface SelectOption {
+  value: string;
+  label: string;
+  sublabel?: string;
 }
 
 export function DriverForm() {
@@ -22,12 +29,32 @@ export function DriverForm() {
     licenseExpiry: '',
   });
   const [loading, setLoading] = useState(false);
+  const [userOptions, setUserOptions] = useState<SelectOption[]>([]);
+  const [usersLoading, setUsersLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const fetchDriverUsers = useCallback(async (query: string) => {
+    try {
+      setUsersLoading(true);
+      const params: Record<string, string> = {};
+      if (query) params.search = query;
+      const res = await api.get('/lookup/driver-users', { params }) as SelectOption[];
+      setUserOptions(res);
+    } catch {
+      setUserOptions([]);
+    } finally {
+      setUsersLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchDriverUsers('');
+  }, [fetchDriverUsers]);
+
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
+  }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.userId || !form.licenseNumber) {
       toast.error('Please fill in all required fields');
@@ -43,12 +70,13 @@ export function DriverForm() {
       });
       toast.success('Driver profile created successfully');
       navigate('/admin/drivers');
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to create driver');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to create driver';
+      toast.error(message);
     } finally {
       setLoading(false);
     }
-  };
+  }, [form, navigate]);
 
   return (
     <div>
@@ -56,12 +84,15 @@ export function DriverForm() {
 
       <form onSubmit={handleSubmit} className="max-w-2xl bg-white rounded-xl shadow-sm border border-neutral-100 p-6">
         <div className="space-y-4">
-          <Input
-            label="User ID (role=driver) *"
-            name="userId"
+          <Select
+            label="User (role=driver) *"
+            placeholder="Search and select a user..."
+            options={userOptions}
             value={form.userId}
-            onChange={handleChange}
-            placeholder="Enter user ID of a user with driver role"
+            onChange={(val) => setForm((prev) => ({ ...prev, userId: val }))}
+            searchable
+            onSearch={fetchDriverUsers}
+            loading={usersLoading}
           />
           <Input
             label="License Number *"

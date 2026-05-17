@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { UserPlus, RefreshCw, XCircle, Clock, MapPin, IndianRupee, Car, User as UserIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -9,7 +9,15 @@ import { Badge } from '@/components/ui/Badge';
 import { Input } from '@/components/ui/Input';
 import { Modal } from '@/components/ui/Modal';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { Select } from '@/components/ui/Select';
+import { formatCurrency, formatDate, formatPhone } from '@/utils/format';
 import type { Booking, User, Car as CarType, Driver } from '@/types';
+
+interface SelectOption {
+  value: string;
+  label: string;
+  sublabel?: string;
+}
 
 const STATUS_TIMELINE = [
   'pending',
@@ -21,6 +29,11 @@ const STATUS_TIMELINE = [
   'completed',
 ];
 
+const STATUS_OPTIONS: SelectOption[] = STATUS_TIMELINE.map((s) => ({
+  value: s,
+  label: s.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()),
+}));
+
 export function BookingDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -31,6 +44,8 @@ export function BookingDetail() {
   const [assignModal, setAssignModal] = useState(false);
   const [driverId, setDriverId] = useState('');
   const [assigning, setAssigning] = useState(false);
+  const [driverOptions, setDriverOptions] = useState<SelectOption[]>([]);
+  const [driversLoading, setDriversLoading] = useState(false);
 
   // Cancel modal
   const [cancelModal, setCancelModal] = useState(false);
@@ -41,27 +56,40 @@ export function BookingDetail() {
   const [newStatus, setNewStatus] = useState('');
   const [updatingStatus, setUpdatingStatus] = useState(false);
 
-  const fetchBooking = async () => {
+  const fetchBooking = useCallback(async () => {
     try {
       setLoading(true);
-      const res: any = await api.get(`/admin/bookings/${id}`);
+      const res = await api.get(`/admin/bookings/${id}`) as Booking;
       setBooking(res);
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to fetch booking');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to fetch booking';
+      toast.error(message);
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
+
+  const fetchDriverOptions = useCallback(async (query: string) => {
+    try {
+      setDriversLoading(true);
+      const params: Record<string, string> = {};
+      if (query) params.search = query;
+      const res = await api.get('/lookup/drivers', { params }) as SelectOption[];
+      setDriverOptions(res);
+    } catch {
+      setDriverOptions([]);
+    } finally {
+      setDriversLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     fetchBooking();
-  }, [id]);
+  }, [fetchBooking]);
 
-  const formatAmount = (amount: number) => `\u20B9${(amount / 100).toLocaleString('en-IN')}`;
-
-  const handleAssignDriver = async () => {
+  const handleAssignDriver = useCallback(async () => {
     if (!driverId.trim()) {
-      toast.error('Please enter a driver ID');
+      toast.error('Please select a driver');
       return;
     }
     setAssigning(true);
@@ -71,14 +99,15 @@ export function BookingDetail() {
       setAssignModal(false);
       setDriverId('');
       fetchBooking();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to assign driver');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to assign driver';
+      toast.error(message);
     } finally {
       setAssigning(false);
     }
-  };
+  }, [driverId, id, fetchBooking]);
 
-  const handleUpdateStatus = async () => {
+  const handleUpdateStatus = useCallback(async () => {
     if (!newStatus) {
       toast.error('Please select a status');
       return;
@@ -89,26 +118,33 @@ export function BookingDetail() {
       toast.success('Status updated successfully');
       setNewStatus('');
       fetchBooking();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to update status');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to update status';
+      toast.error(message);
     } finally {
       setUpdatingStatus(false);
     }
-  };
+  }, [newStatus, id, fetchBooking]);
 
-  const handleCancel = async () => {
+  const handleCancel = useCallback(async () => {
     setCancelling(true);
     try {
       await api.put(`/admin/bookings/${id}/cancel`, { reason: cancelReason });
       toast.success('Booking cancelled successfully');
       setCancelModal(false);
       fetchBooking();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to cancel booking');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to cancel booking';
+      toast.error(message);
     } finally {
       setCancelling(false);
     }
-  };
+  }, [cancelReason, id, fetchBooking]);
+
+  const openAssignModal = useCallback(() => {
+    setAssignModal(true);
+    fetchDriverOptions('');
+  }, [fetchDriverOptions]);
 
   if (loading) {
     return (
@@ -150,7 +186,7 @@ export function BookingDetail() {
         showBack
         actions={
           <div className="flex items-center gap-2">
-            <Button variant="outline" onClick={() => setAssignModal(true)}>
+            <Button variant="outline" onClick={openAssignModal}>
               <UserPlus className="w-4 h-4" />
               Assign Driver
             </Button>
@@ -209,18 +245,14 @@ export function BookingDetail() {
 
           {/* Update Status */}
           <div className="flex items-center gap-3 mt-4 pt-4 border-t border-neutral-100">
-            <select
-              value={newStatus}
-              onChange={(e) => setNewStatus(e.target.value)}
-              className="h-10 px-3 bg-neutral-50 border border-neutral-200 rounded-lg text-sm text-neutral-700 outline-none focus:border-primary-500"
-            >
-              <option value="">Change status...</option>
-              {STATUS_TIMELINE.map((s) => (
-                <option key={s} value={s}>
-                  {s.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
-                </option>
-              ))}
-            </select>
+            <div className="w-56">
+              <Select
+                placeholder="Change status..."
+                options={STATUS_OPTIONS}
+                value={newStatus}
+                onChange={setNewStatus}
+              />
+            </div>
             <Button size="sm" onClick={handleUpdateStatus} loading={updatingStatus} disabled={!newStatus}>
               <RefreshCw className="w-3.5 h-3.5" />
               Update
@@ -283,27 +315,27 @@ export function BookingDetail() {
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-neutral-500">Base Fare</span>
-                <span className="text-neutral-900">{formatAmount(booking.pricing?.baseFare || 0)}</span>
+                <span className="text-neutral-900">{formatCurrency(booking.pricing?.baseFare || 0, true)}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-neutral-500">Price/km</span>
-                <span className="text-neutral-900">{formatAmount(booking.pricing?.pricePerKm || 0)}</span>
+                <span className="text-neutral-900">{formatCurrency(booking.pricing?.pricePerKm || 0, true)}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-neutral-500">Distance Charge</span>
-                <span className="text-neutral-900">{formatAmount(booking.pricing?.distanceCharge || 0)}</span>
+                <span className="text-neutral-900">{formatCurrency(booking.pricing?.distanceCharge || 0, true)}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-neutral-500">Toll Estimate</span>
-                <span className="text-neutral-900">{formatAmount(booking.pricing?.tollEstimate || 0)}</span>
+                <span className="text-neutral-900">{formatCurrency(booking.pricing?.tollEstimate || 0, true)}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-neutral-500">GST</span>
-                <span className="text-neutral-900">{formatAmount(booking.pricing?.gstAmount || 0)}</span>
+                <span className="text-neutral-900">{formatCurrency(booking.pricing?.gstAmount || 0, true)}</span>
               </div>
               <div className="flex justify-between text-sm font-semibold pt-2 border-t border-neutral-100">
                 <span className="text-neutral-900">Total</span>
-                <span className="text-primary-600">{formatAmount(booking.pricing?.totalAmount || 0)}</span>
+                <span className="text-primary-600">{formatCurrency(booking.pricing?.totalAmount || 0, true)}</span>
               </div>
             </div>
           </div>
@@ -324,7 +356,7 @@ export function BookingDetail() {
               </div>
               <div>
                 <p className="text-xs text-neutral-500">Phone</p>
-                <p className="text-sm font-medium text-neutral-900">{customer.phone || '-'}</p>
+                <p className="text-sm font-medium text-neutral-900">{customer.phone ? formatPhone(customer.phone) : '-'}</p>
               </div>
               <div>
                 <p className="text-xs text-neutral-500">Email</p>
@@ -347,7 +379,7 @@ export function BookingDetail() {
                 </div>
                 <div>
                   <p className="text-xs text-neutral-500">Phone</p>
-                  <p className="text-sm font-medium text-neutral-900">{driverUser.phone || '-'}</p>
+                  <p className="text-sm font-medium text-neutral-900">{driverUser.phone ? formatPhone(driverUser.phone) : '-'}</p>
                 </div>
                 <div>
                   <p className="text-xs text-neutral-500">License</p>
@@ -393,7 +425,7 @@ export function BookingDetail() {
               <p className="text-xs text-neutral-500 uppercase tracking-wider">Start Date</p>
               <p className="text-sm font-medium text-neutral-900 mt-1">
                 {booking.schedule?.startDate
-                  ? new Date(booking.schedule.startDate).toLocaleDateString('en-IN')
+                  ? formatDate(booking.schedule.startDate)
                   : '-'}
               </p>
             </div>
@@ -405,7 +437,7 @@ export function BookingDetail() {
               <p className="text-xs text-neutral-500 uppercase tracking-wider">End Date</p>
               <p className="text-sm font-medium text-neutral-900 mt-1">
                 {booking.schedule?.endDate
-                  ? new Date(booking.schedule.endDate).toLocaleDateString('en-IN')
+                  ? formatDate(booking.schedule.endDate)
                   : '-'}
               </p>
             </div>
@@ -420,11 +452,15 @@ export function BookingDetail() {
       {/* Assign Driver Modal */}
       <Modal open={assignModal} onClose={() => setAssignModal(false)} title="Assign Driver">
         <div className="space-y-4">
-          <Input
-            label="Driver ID"
+          <Select
+            label="Select Driver"
+            placeholder="Search for a driver..."
+            options={driverOptions}
             value={driverId}
-            onChange={(e) => setDriverId(e.target.value)}
-            placeholder="Enter driver ID..."
+            onChange={setDriverId}
+            searchable
+            onSearch={fetchDriverOptions}
+            loading={driversLoading}
           />
           <div className="flex justify-end gap-3">
             <Button variant="outline" onClick={() => setAssignModal(false)}>Cancel</Button>

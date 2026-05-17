@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Eye, CalendarCheck, Search } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -9,7 +9,17 @@ import { Badge } from '@/components/ui/Badge';
 import { Input } from '@/components/ui/Input';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { Select } from '@/components/ui/Select';
+import { Pagination } from '@/components/ui/Pagination';
+import { Tooltip } from '@/components/ui/Tooltip';
+import { useDebounce } from '@/hooks/useDebounce';
+import { formatCurrency, formatDate } from '@/utils/format';
 import type { Booking, User, Car } from '@/types';
+
+interface SelectOption {
+  value: string;
+  label: string;
+}
 
 export function BookingsList() {
   const navigate = useNavigate();
@@ -20,49 +30,97 @@ export function BookingsList() {
   const [totalPages, setTotalPages] = useState(1);
   const [statusFilter, setStatusFilter] = useState('');
   const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 400);
+  const [sortBy, setSortBy] = useState('createdAt');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [statusOptions, setStatusOptions] = useState<SelectOption[]>([]);
 
-  const fetchBookings = async () => {
+  const fetchStatuses = useCallback(async () => {
+    try {
+      const res = await api.get('/lookup/booking-statuses') as SelectOption[];
+      setStatusOptions(res);
+    } catch {
+      setStatusOptions([
+        { value: 'pending', label: 'Pending' },
+        { value: 'confirmed', label: 'Confirmed' },
+        { value: 'driver_assigned', label: 'Driver Assigned' },
+        { value: 'driver_en_route', label: 'En Route' },
+        { value: 'picked_up', label: 'Picked Up' },
+        { value: 'in_progress', label: 'In Progress' },
+        { value: 'completed', label: 'Completed' },
+        { value: 'cancelled', label: 'Cancelled' },
+        { value: 'refunded', label: 'Refunded' },
+      ]);
+    }
+  }, []);
+
+  const fetchBookings = useCallback(async () => {
     try {
       setLoading(true);
-      const params: Record<string, string | number> = { page, limit: 10 };
+      const params: Record<string, string | number> = {
+        page,
+        limit: 10,
+        sortBy,
+        sortOrder,
+      };
       if (statusFilter) params.status = statusFilter;
-      if (search) params.search = search;
-      const res: any = await api.get('/admin/bookings', { params });
-      setBookings(res.bookings || res.data || res || []);
+      if (debouncedSearch) params.search = debouncedSearch;
+      const res = await api.get('/admin/bookings', { params }) as {
+        bookings?: Booking[];
+        data?: Booking[];
+        total?: number;
+        totalPages?: number;
+      };
+      setBookings((res.bookings || res.data || []) as Booking[]);
       setTotal(res.total ?? 0);
       setTotalPages(res.totalPages ?? 1);
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to fetch bookings');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to fetch bookings';
+      toast.error(message);
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, statusFilter, debouncedSearch, sortBy, sortOrder]);
+
+  useEffect(() => {
+    fetchStatuses();
+  }, [fetchStatuses]);
 
   useEffect(() => {
     fetchBookings();
-  }, [page, statusFilter]);
+  }, [fetchBookings]);
 
-  const handleSearch = () => {
+  useEffect(() => {
     setPage(1);
-    fetchBookings();
-  };
+  }, [debouncedSearch, statusFilter]);
 
-  const formatAmount = (amount: number) => `\u20B9${(amount / 100).toLocaleString('en-IN')}`;
+  const handleSort = useCallback((field: string) => {
+    setSortOrder(sortBy === field && sortOrder === 'asc' ? 'desc' : 'asc');
+    setSortBy(field);
+  }, [sortBy, sortOrder]);
 
-  const getCustomerName = (booking: Booking): string => {
+  const getCustomerName = useCallback((booking: Booking): string => {
     if (typeof booking.user === 'object' && booking.user !== null) {
       return (booking.user as User).name || '-';
     }
     return '-';
-  };
+  }, []);
 
-  const getCarInfo = (booking: Booking): string => {
+  const getCarInfo = useCallback((booking: Booking): string => {
     if (typeof booking.car === 'object' && booking.car !== null) {
       const car = booking.car as Car;
       return `${car.make} ${car.model}`;
     }
     return '-';
-  };
+  }, []);
+
+  const statusFilterOptions = useMemo(() => [
+    { value: '', label: 'All Statuses' },
+    ...statusOptions,
+  ], [statusOptions]);
+
+  const thClass = 'text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3 cursor-pointer select-none';
+  const thStatic = 'text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3';
 
   return (
     <div>
@@ -75,27 +133,18 @@ export function BookingsList() {
             placeholder="Search by booking ID..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
             icon={<Search className="w-4 h-4" />}
           />
         </div>
-        <select
-          value={statusFilter}
-          onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-          className="h-12 px-4 bg-neutral-50 border border-neutral-200 rounded-lg text-sm text-neutral-700 outline-none focus:border-primary-500"
-        >
-          <option value="">All Statuses</option>
-          <option value="pending">Pending</option>
-          <option value="confirmed">Confirmed</option>
-          <option value="driver_assigned">Driver Assigned</option>
-          <option value="driver_en_route">En Route</option>
-          <option value="picked_up">Picked Up</option>
-          <option value="in_progress">In Progress</option>
-          <option value="completed">Completed</option>
-          <option value="cancelled">Cancelled</option>
-          <option value="refunded">Refunded</option>
-        </select>
-        <Button variant="outline" onClick={handleSearch}>Search</Button>
+        <div className="w-48">
+          <Select
+            placeholder="All Statuses"
+            options={statusFilterOptions}
+            value={statusFilter}
+            onChange={setStatusFilter}
+            clearable
+          />
+        </div>
       </div>
 
       {/* Table */}
@@ -117,14 +166,20 @@ export function BookingsList() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-neutral-200 bg-neutral-50">
-                  <th className="text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3">Booking ID</th>
-                  <th className="text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3">Customer</th>
-                  <th className="text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3">Car</th>
-                  <th className="text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3">Route</th>
-                  <th className="text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3">Date</th>
-                  <th className="text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3">Status</th>
-                  <th className="text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3">Amount</th>
-                  <th className="text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3">Actions</th>
+                  <th className={thClass} onClick={() => handleSort('bookingId')}>
+                    Booking ID {sortBy === 'bookingId' && (sortOrder === 'asc' ? '↑' : '↓')}
+                  </th>
+                  <th className={thStatic}>Customer</th>
+                  <th className={thStatic}>Car</th>
+                  <th className={thStatic}>Route</th>
+                  <th className={thClass} onClick={() => handleSort('createdAt')}>
+                    Date {sortBy === 'createdAt' && (sortOrder === 'asc' ? '↑' : '↓')}
+                  </th>
+                  <th className={thClass} onClick={() => handleSort('status')}>
+                    Status {sortBy === 'status' && (sortOrder === 'asc' ? '↑' : '↓')}
+                  </th>
+                  <th className={thStatic}>Amount</th>
+                  <th className={thStatic}>Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-neutral-100">
@@ -140,24 +195,25 @@ export function BookingsList() {
                     </td>
                     <td className="px-4 py-3 text-sm text-neutral-700">
                       {booking.schedule?.startDate
-                        ? new Date(booking.schedule.startDate).toLocaleDateString('en-IN')
+                        ? formatDate(booking.schedule.startDate)
                         : '-'}
                     </td>
                     <td className="px-4 py-3">
                       <Badge status={booking.status} />
                     </td>
                     <td className="px-4 py-3 text-sm font-medium text-neutral-900">
-                      {formatAmount(booking.pricing?.totalAmount || 0)}
+                      {formatCurrency(booking.pricing?.totalAmount || 0, true)}
                     </td>
                     <td className="px-4 py-3">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => navigate(`/admin/bookings/${booking._id}`)}
-                      >
-                        <Eye className="w-3.5 h-3.5" />
-                        View
-                      </Button>
+                      <Tooltip content="View booking">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => navigate(`/admin/bookings/${booking._id}`)}
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                        </Button>
+                      </Tooltip>
                     </td>
                   </tr>
                 ))}
@@ -165,14 +221,7 @@ export function BookingsList() {
             </table>
           </div>
 
-          {/* Pagination */}
-          <div className="flex items-center justify-between mt-4">
-            <p className="text-sm text-neutral-500">Showing {bookings.length} of {total}</p>
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>Previous</Button>
-              <Button variant="outline" size="sm" disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)}>Next</Button>
-            </div>
-          </div>
+          <Pagination page={page} totalPages={totalPages} total={total} onPageChange={setPage} />
         </>
       )}
     </div>

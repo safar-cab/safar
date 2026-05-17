@@ -81,17 +81,26 @@ export class AdminDriversController {
   @ApiQuery({ name: 'limit', required: false })
   @ApiQuery({ name: 'isVerified', required: false })
   @ApiQuery({ name: 'isAvailable', required: false })
+  @ApiQuery({ name: 'search', required: false })
+  @ApiQuery({ name: 'sortBy', required: false, example: 'createdAt' })
+  @ApiQuery({ name: 'sortOrder', required: false, enum: ['asc', 'desc'] })
   findAll(
     @Query('page') page?: number,
     @Query('limit') limit?: number,
     @Query('isVerified') isVerified?: boolean,
     @Query('isAvailable') isAvailable?: boolean,
+    @Query('search') search?: string,
+    @Query('sortBy') sortBy?: string,
+    @Query('sortOrder') sortOrder?: 'asc' | 'desc',
   ) {
     return this.driversService.findAll({
       page,
       limit,
       isVerified,
       isAvailable,
+      search,
+      sortBy,
+      sortOrder,
     });
   }
 

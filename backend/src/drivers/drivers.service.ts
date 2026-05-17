@@ -34,22 +34,53 @@ export class DriversService {
     limit?: number;
     isVerified?: boolean;
     isAvailable?: boolean;
+    search?: string;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
   }) {
-    const { page = 1, limit = 20, isVerified, isAvailable } = query;
-    const filter: any = {};
+    const { page = 1, limit = 20, isVerified, isAvailable, search, sortBy = 'createdAt', sortOrder = 'desc' } = query;
+    const filter: Record<string, unknown> = {};
     if (isVerified !== undefined) filter.isVerified = isVerified;
     if (isAvailable !== undefined) filter.isAvailable = isAvailable;
 
-    const [drivers, total] = await Promise.all([
-      this.driverModel
+    const sort: Record<string, 1 | -1> = { [sortBy]: sortOrder === 'asc' ? 1 : -1 };
+
+    let drivers;
+    let total: number;
+
+    if (search) {
+      // Search by driver name/phone via populate match
+      const allDrivers = await this.driverModel
         .find(filter)
-        .populate('userId', 'name phone email')
-        .sort({ createdAt: -1 })
-        .skip((page - 1) * limit)
-        .limit(limit)
-        .lean(),
-      this.driverModel.countDocuments(filter),
-    ]);
+        .populate({
+          path: 'userId',
+          select: 'name phone email',
+          match: {
+            $or: [
+              { name: { $regex: search, $options: 'i' } },
+              { phone: { $regex: search, $options: 'i' } },
+            ],
+          },
+        })
+        .sort(sort)
+        .lean();
+
+      // Filter out drivers where populate match returned null
+      const filtered = allDrivers.filter((d) => d.userId !== null);
+      total = filtered.length;
+      drivers = filtered.slice((page - 1) * limit, page * limit);
+    } else {
+      [drivers, total] = await Promise.all([
+        this.driverModel
+          .find(filter)
+          .populate('userId', 'name phone email')
+          .sort(sort)
+          .skip((page - 1) * limit)
+          .limit(limit)
+          .lean(),
+        this.driverModel.countDocuments(filter),
+      ]);
+    }
 
     return { drivers, total, page, totalPages: Math.ceil(total / limit) };
   }

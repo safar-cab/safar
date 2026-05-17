@@ -182,23 +182,57 @@ export class PaymentsService {
     return { payments, total, page, totalPages: Math.ceil(total / limit) };
   }
 
-  async findAll(query: { page?: number; limit?: number; status?: string }) {
-    const { page = 1, limit = 20, status } = query;
-    const filter: any = {};
+  async findAll(query: {
+    page?: number;
+    limit?: number;
+    status?: string;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
+  }) {
+    const { page = 1, limit = 20, status, sortBy = 'createdAt', sortOrder = 'desc' } = query;
+    const filter: Record<string, unknown> = {};
     if (status) filter.status = status;
+
+    const sort: Record<string, 1 | -1> = { [sortBy]: sortOrder === 'asc' ? 1 : -1 };
 
     const [payments, total] = await Promise.all([
       this.paymentModel
         .find(filter)
         .populate('booking', 'bookingId')
         .populate('user', 'name phone')
-        .sort({ createdAt: -1 })
+        .sort(sort)
         .skip((page - 1) * limit)
         .limit(limit)
         .lean(),
       this.paymentModel.countDocuments(filter),
     ]);
     return { payments, total, page, totalPages: Math.ceil(total / limit) };
+  }
+
+  async findById(id: string) {
+    const payment = await this.paymentModel.findById(id)
+      .populate('booking')
+      .populate('user', 'name phone email')
+      .lean();
+    if (!payment) throw new NotFoundException('Payment not found');
+    return payment;
+  }
+
+  async generatePaymentLink(paymentId: string): Promise<{ link: string; expiresAt: Date }> {
+    const payment = await this.paymentModel.findById(paymentId);
+    if (!payment) throw new NotFoundException('Payment not found');
+
+    const token = crypto.randomBytes(32).toString('hex');
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
+    await this.paymentModel.findByIdAndUpdate(paymentId, {
+      $set: { paymentLinkToken: token, paymentLinkExpiry: expiresAt },
+    });
+
+    const baseUrl = this.configService.get('FRONTEND_URL', 'http://localhost:5173');
+    const link = `${baseUrl}/pay/${token}`;
+
+    return { link, expiresAt };
   }
 
   async handleWebhook(body: any, signature: string) {

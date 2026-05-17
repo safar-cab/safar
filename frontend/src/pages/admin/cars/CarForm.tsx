@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Save } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -7,6 +7,7 @@ import { PageHeader } from '@/components/ui/PageHeader';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { Select } from '@/components/ui/Select';
 
 interface CarFormData {
   registrationNumber: string;
@@ -16,6 +17,13 @@ interface CarFormData {
   color: string;
   category: string;
   seats: string;
+  assignedDriver: string;
+}
+
+interface SelectOption {
+  value: string;
+  label: string;
+  sublabel?: string;
 }
 
 const initialData: CarFormData = {
@@ -26,6 +34,7 @@ const initialData: CarFormData = {
   color: '',
   category: 'sedan',
   seats: '4',
+  assignedDriver: '',
 };
 
 export function CarForm() {
@@ -36,33 +45,84 @@ export function CarForm() {
   const [form, setForm] = useState<CarFormData>(initialData);
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(isEdit);
+  const [categoryOptions, setCategoryOptions] = useState<SelectOption[]>([]);
+  const [driverOptions, setDriverOptions] = useState<SelectOption[]>([]);
+  const [driversLoading, setDriversLoading] = useState(false);
+
+  const fetchCategories = useCallback(async () => {
+    try {
+      const res = await api.get('/lookup/car-categories') as SelectOption[];
+      setCategoryOptions(res);
+    } catch {
+      setCategoryOptions([
+        { value: 'sedan', label: 'Sedan' },
+        { value: 'suv', label: 'SUV' },
+        { value: 'hatchback', label: 'Hatchback' },
+        { value: 'tempo_traveller', label: 'Tempo Traveller' },
+        { value: 'luxury', label: 'Luxury' },
+      ]);
+    }
+  }, []);
+
+  const fetchDrivers = useCallback(async (query: string) => {
+    try {
+      setDriversLoading(true);
+      const params: Record<string, string> = {};
+      if (query) params.search = query;
+      const res = await api.get('/lookup/drivers', { params }) as SelectOption[];
+      setDriverOptions(res);
+    } catch {
+      setDriverOptions([]);
+    } finally {
+      setDriversLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchCategories();
+    fetchDrivers('');
+  }, [fetchCategories, fetchDrivers]);
 
   useEffect(() => {
     if (isEdit && id) {
       setFetching(true);
       api
         .get(`/admin/cars/${id}`)
-        .then((res: any) => {
+        .then((res: unknown) => {
+          const data = res as Record<string, unknown>;
+          const driverId = data.assignedDriver
+            ? typeof data.assignedDriver === 'string'
+              ? data.assignedDriver
+              : (data.assignedDriver as Record<string, string>)._id || ''
+            : '';
           setForm({
-            registrationNumber: res.registrationNumber || '',
-            make: res.make || '',
-            model: res.model || '',
-            year: res.year?.toString() || '',
-            color: res.color || '',
-            category: res.category || 'sedan',
-            seats: res.seats?.toString() || '4',
+            registrationNumber: (data.registrationNumber as string) || '',
+            make: (data.make as string) || '',
+            model: (data.model as string) || '',
+            year: data.year?.toString() || '',
+            color: (data.color as string) || '',
+            category: (data.category as string) || 'sedan',
+            seats: data.seats?.toString() || '4',
+            assignedDriver: driverId,
           });
         })
-        .catch((err: any) => toast.error(err.message || 'Failed to load car'))
+        .catch((err: unknown) => {
+          const message = err instanceof Error ? err.message : 'Failed to load car';
+          toast.error(message);
+        })
         .finally(() => setFetching(false));
     }
   }, [id, isEdit]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
+  }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSelectChange = useCallback((name: string, value: string) => {
+    setForm((prev) => ({ ...prev, [name]: value }));
+  }, []);
+
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.registrationNumber || !form.make || !form.model) {
       toast.error('Please fill in all required fields');
@@ -71,7 +131,7 @@ export function CarForm() {
 
     setLoading(true);
     try {
-      const payload = {
+      const payload: Record<string, unknown> = {
         registrationNumber: form.registrationNumber,
         make: form.make,
         model: form.model,
@@ -80,6 +140,7 @@ export function CarForm() {
         category: form.category,
         seats: Number(form.seats),
       };
+      if (form.assignedDriver) payload.assignedDriver = form.assignedDriver;
 
       if (isEdit) {
         await api.put(`/admin/cars/${id}`, payload);
@@ -89,12 +150,13 @@ export function CarForm() {
         toast.success('Car created successfully');
       }
       navigate('/admin/cars');
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to save car');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to save car';
+      toast.error(message);
     } finally {
       setLoading(false);
     }
-  };
+  }, [form, isEdit, id, navigate]);
 
   if (fetching) {
     return (
@@ -151,21 +213,12 @@ export function CarForm() {
             onChange={handleChange}
             placeholder="White"
           />
-          <div className="w-full">
-            <label className="block text-sm font-medium text-neutral-700 mb-1.5">Category *</label>
-            <select
-              name="category"
-              value={form.category}
-              onChange={handleChange}
-              className="w-full h-12 px-4 bg-neutral-50 border border-neutral-200 rounded-lg text-sm text-neutral-900 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
-            >
-              <option value="sedan">Sedan</option>
-              <option value="suv">SUV</option>
-              <option value="hatchback">Hatchback</option>
-              <option value="tempo_traveller">Tempo Traveller</option>
-              <option value="luxury">Luxury</option>
-            </select>
-          </div>
+          <Select
+            label="Category *"
+            options={categoryOptions}
+            value={form.category}
+            onChange={(val) => handleSelectChange('category', val)}
+          />
           <Input
             label="Seats *"
             name="seats"
@@ -173,6 +226,17 @@ export function CarForm() {
             value={form.seats}
             onChange={handleChange}
             placeholder="4"
+          />
+          <Select
+            label="Assign Driver"
+            placeholder="Select driver..."
+            options={driverOptions}
+            value={form.assignedDriver}
+            onChange={(val) => handleSelectChange('assignedDriver', val)}
+            searchable
+            onSearch={fetchDrivers}
+            loading={driversLoading}
+            clearable
           />
         </div>
 

@@ -29,7 +29,7 @@ export class CompanySettings {
   defaultPricePerKm: number;
 
   @Prop({ type: Object })
-  defaultRefundPolicy: Record<string, any>;
+  defaultRefundPolicy: Record<string, unknown>;
 
   @Prop()
   razorpayKeyId: string;
@@ -39,6 +39,21 @@ export class CompanySettings {
 
   @Prop({ type: Object })
   socialLinks: Record<string, string>;
+
+  @Prop({ type: Object })
+  paymentSettings: {
+    razorpayKeyId: string;
+    razorpayKeySecret: string;
+    webhookSecret: string;
+  };
+
+  @Prop({ type: Object })
+  emailSettings: {
+    smtpHost: string;
+    smtpPort: number;
+    smtpUser: string;
+    smtpFrom: string;
+  };
 }
 
 export const CompanySettingsSchema =
