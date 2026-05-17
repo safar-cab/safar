@@ -61,11 +61,16 @@ export const ImageUpload = memo(function ImageUpload({
           contentType: file.type,
         }) as unknown as UploadResult;
 
-        await fetch(result.uploadUrl, {
+        const uploadRes = await fetch(result.uploadUrl, {
           method: 'PUT',
           body: file,
           headers: { 'Content-Type': file.type },
         });
+
+        if (!uploadRes.ok) {
+          toast.error(`Failed to upload ${file.name} to storage`);
+          continue;
+        }
 
         newUrls.push(result.fileUrl);
       }
