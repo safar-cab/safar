@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Save, User, FileText, Banknote, Briefcase } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -7,7 +7,7 @@ import { PageHeader } from '@/components/ui/PageHeader';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
-import { ImageUpload } from '@/components/ui/ImageUpload';
+import { ImageUpload, type ImageUploadRef } from '@/components/ui/ImageUpload';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { cn } from '@/lib/cn';
 
@@ -68,6 +68,13 @@ export function DriverForm() {
   const [tab, setTab] = useState('personal');
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(isEdit);
+
+  // Image upload refs
+  const photoRef = useRef<ImageUploadRef>(null);
+  const licenseRef = useRef<ImageUploadRef>(null);
+  const aadhaarRef = useRef<ImageUploadRef>(null);
+  const panRef = useRef<ImageUploadRef>(null);
+  const policeRef = useRef<ImageUploadRef>(null);
 
   // User select
   const [userOptions, setUserOptions] = useState<SelectOption[]>([]);
@@ -219,8 +226,22 @@ export function DriverForm() {
       }
       setLoading(true);
       try {
+        // Upload pending images to S3 first
+        const [photoUrls, licenseUrls, aadhaarUrls, panUrls, policeUrls] = await Promise.all([
+          photoRef.current?.uploadPending() ?? Promise.resolve(form.photo ? [form.photo] : []),
+          licenseRef.current?.uploadPending() ?? Promise.resolve(form.licensePhotos),
+          aadhaarRef.current?.uploadPending() ?? Promise.resolve(form.aadhaarPhotos),
+          panRef.current?.uploadPending() ?? Promise.resolve(form.panPhoto ? [form.panPhoto] : []),
+          policeRef.current?.uploadPending() ?? Promise.resolve(form.policeVerificationPhoto ? [form.policeVerificationPhoto] : []),
+        ]);
+
         const payload = {
           ...form,
+          photo: photoUrls[0] || '',
+          licensePhotos: licenseUrls,
+          aadhaarPhotos: aadhaarUrls,
+          panPhoto: panUrls[0] || '',
+          policeVerificationPhoto: policeUrls[0] || '',
           yearsOfExperience: Number(form.yearsOfExperience) || undefined,
           expectedSalary: Number(form.expectedSalary) || undefined,
           permanentAddress: form.sameAddress ? form.currentAddress : form.permanentAddress,
@@ -321,6 +342,7 @@ export function DriverForm() {
               placeholder="Father's name"
             />
             <ImageUpload
+              ref={photoRef}
               label="Profile Photo"
               value={form.photo ? [form.photo] : []}
               onChange={(urls) => updateField('photo', urls[0] || '')}
@@ -451,6 +473,7 @@ export function DriverForm() {
               />
             </div>
             <ImageUpload
+              ref={licenseRef}
               label="License Photos (Front & Back)"
               value={form.licensePhotos}
               onChange={(urls) => updateField('licensePhotos', urls)}
@@ -468,6 +491,7 @@ export function DriverForm() {
               placeholder="1234 5678 9012"
             />
             <ImageUpload
+              ref={aadhaarRef}
               label="Aadhaar Photos (Front & Back)"
               value={form.aadhaarPhotos}
               onChange={(urls) => updateField('aadhaarPhotos', urls)}
@@ -485,6 +509,7 @@ export function DriverForm() {
               placeholder="ABCDE1234F"
             />
             <ImageUpload
+              ref={panRef}
               label="PAN Photo"
               value={form.panPhoto ? [form.panPhoto] : []}
               onChange={(urls) => updateField('panPhoto', urls[0] || '')}
@@ -496,6 +521,7 @@ export function DriverForm() {
               Police Verification
             </p>
             <ImageUpload
+              ref={policeRef}
               label="Police Verification Certificate"
               value={form.policeVerificationPhoto ? [form.policeVerificationPhoto] : []}
               onChange={(urls) => updateField('policeVerificationPhoto', urls[0] || '')}
