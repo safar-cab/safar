@@ -96,6 +96,11 @@ export function BookingDetail() {
     fetchBooking();
   }, [fetchBooking]);
 
+  // Load drivers when assign modal opens
+  useEffect(() => {
+    if (assignModal) fetchDriverOptions('');
+  }, [assignModal, fetchDriverOptions]);
+
   const handleAssignDriver = useCallback(async () => {
     if (!driverId.trim()) {
       toast.error('Please select a driver');
