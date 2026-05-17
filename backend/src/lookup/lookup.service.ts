@@ -18,13 +18,22 @@ export class LookupService {
   async getActiveDrivers(search?: string) {
     const filter: Record<string, unknown> = { isVerified: true };
     if (search) {
-      // Search in populated user name/phone
+      const matchingUsers = await this.userModel
+        .find({
+          role: 'driver' as UserRole,
+          $or: [
+            { name: { $regex: search, $options: 'i' } },
+            { phone: { $regex: search, $options: 'i' } },
+          ],
+        })
+        .select('_id')
+        .lean();
+      filter.userId = { $in: matchingUsers.map((u) => u._id) };
     }
     return this.driverModel
       .find(filter)
       .populate('userId', 'name phone')
       .select('_id userId licenseNumber avgRating isAvailable')
-      .sort({ 'userId.name': 1 })
       .lean();
   }
 
