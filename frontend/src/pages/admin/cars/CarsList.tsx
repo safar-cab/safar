@@ -36,8 +36,11 @@ export function CarsList() {
 
   const fetchCategories = useCallback(async () => {
     try {
-      const res = await api.get('/lookup/car-categories') as CategoryOption[];
-      setCategories(res);
+      const res = await api.get('/lookup/car-categories') as string[];
+      setCategories(res.map((c) => ({
+        value: c,
+        label: c.charAt(0).toUpperCase() + c.slice(1).replace(/_/g, ' '),
+      })));
     } catch {
       // fallback categories
       setCategories([

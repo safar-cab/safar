@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Save } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -23,6 +23,35 @@ const initialData: RouteFormData = {
   baseFare: '',
   tollEstimate: '',
 };
+
+interface PricingPreviewProps {
+  distanceKm: number;
+  pricePerKm: number;
+  baseFare: number;
+  tollEstimate: number;
+}
+
+function PricingPreview({ distanceKm, pricePerKm, baseFare, tollEstimate }: PricingPreviewProps) {
+  const distanceCharge = useMemo(() => distanceKm * pricePerKm, [distanceKm, pricePerKm]);
+  const subtotal = useMemo(() => baseFare + distanceCharge + tollEstimate, [baseFare, distanceCharge, tollEstimate]);
+  const gst = useMemo(() => Math.round(subtotal * 0.05), [subtotal]);
+  const total = useMemo(() => subtotal + gst, [subtotal, gst]);
+
+  if (distanceKm <= 0 || pricePerKm <= 0) return null;
+
+  return (
+    <div className="bg-primary-50 rounded-lg p-4 space-y-2 text-sm mt-4">
+      <h4 className="font-semibold text-primary-800">Estimated Pricing</h4>
+      <div className="flex justify-between"><span>Distance Charge</span><span>{'\u20B9'}{distanceCharge.toLocaleString()}</span></div>
+      <div className="flex justify-between"><span>Base Fare</span><span>{'\u20B9'}{baseFare.toLocaleString()}</span></div>
+      <div className="flex justify-between"><span>Tolls</span><span>{'\u20B9'}{tollEstimate.toLocaleString()}</span></div>
+      <div className="flex justify-between"><span>GST (5%)</span><span>{'\u20B9'}{gst.toLocaleString()}</span></div>
+      <div className="flex justify-between font-bold text-primary-900 pt-2 border-t border-primary-200">
+        <span>Total</span><span>{'\u20B9'}{total.toLocaleString()}</span>
+      </div>
+    </div>
+  );
+}
 
 export function RouteForm() {
   const { id } = useParams();
@@ -129,7 +158,7 @@ export function RouteForm() {
               placeholder="150"
             />
             <Input
-              label="Price per km (paise) *"
+              label="Price per km (₹) *"
               name="pricePerKm"
               type="number"
               value={form.pricePerKm}
@@ -137,7 +166,7 @@ export function RouteForm() {
               placeholder="1200"
             />
             <Input
-              label="Base Fare (paise) *"
+              label="Base Fare (₹) *"
               name="baseFare"
               type="number"
               value={form.baseFare}
@@ -145,7 +174,7 @@ export function RouteForm() {
               placeholder="50000"
             />
             <Input
-              label="Toll Estimate (paise)"
+              label="Toll Estimate (₹)"
               name="tollEstimate"
               type="number"
               value={form.tollEstimate}
@@ -154,6 +183,13 @@ export function RouteForm() {
             />
           </div>
         </div>
+
+        <PricingPreview
+          distanceKm={Number(form.distanceKm) || 0}
+          pricePerKm={Number(form.pricePerKm) || 0}
+          baseFare={Number(form.baseFare) || 0}
+          tollEstimate={Number(form.tollEstimate) || 0}
+        />
 
         <div className="flex justify-end gap-3 mt-6 pt-6 border-t border-neutral-100">
           <Button variant="outline" type="button" onClick={() => navigate('/admin/routes')}>

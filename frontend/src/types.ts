@@ -103,8 +103,10 @@ export interface Booking {
     baseFare: number;
     distanceCharge: number;
     tollEstimate: number;
-    totalAmount: number;
+    cgst: number;
+    sgst: number;
     gstAmount: number;
+    totalAmount: number;
   };
   status: string;
   cancellation?: {

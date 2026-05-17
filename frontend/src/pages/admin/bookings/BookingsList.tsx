@@ -37,8 +37,11 @@ export function BookingsList() {
 
   const fetchStatuses = useCallback(async () => {
     try {
-      const res = await api.get('/lookup/booking-statuses') as SelectOption[];
-      setStatusOptions(res);
+      const res = await api.get('/lookup/booking-statuses') as string[];
+      setStatusOptions(res.map((s) => ({
+        value: s,
+        label: s.charAt(0).toUpperCase() + s.slice(1).replace(/_/g, ' '),
+      })));
     } catch {
       setStatusOptions([
         { value: 'pending', label: 'Pending' },
