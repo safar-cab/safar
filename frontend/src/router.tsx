@@ -23,6 +23,7 @@ import { PaymentsList } from '@/pages/admin/payments/PaymentsList';
 import { RoutesList } from '@/pages/admin/routes/RoutesList';
 import { RouteForm } from '@/pages/admin/routes/RouteForm';
 import { Settings } from '@/pages/admin/settings/Settings';
+import { PaymentDetail } from '@/pages/admin/payments/PaymentDetail';
 
 // Driver pages
 import { DriverDashboard } from '@/pages/driver/Dashboard';
@@ -79,6 +80,7 @@ export const router = createBrowserRouter([
       { path: 'users', element: <UsersList /> },
       { path: 'users/:id', element: <UserDetail /> },
       { path: 'payments', element: <PaymentsList /> },
+      { path: 'payments/:id', element: <PaymentDetail /> },
       { path: 'routes', element: <RoutesList /> },
       { path: 'routes/new', element: <RouteForm /> },
       { path: 'routes/:id/edit', element: <RouteForm /> },

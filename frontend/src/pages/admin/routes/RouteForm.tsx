@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Save } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -38,25 +38,29 @@ export function RouteForm() {
       setFetching(true);
       api
         .get(`/admin/routes/${id}`)
-        .then((res: any) => {
+        .then((res: unknown) => {
+          const data = res as Record<string, unknown>;
           setForm({
-            name: res.name || '',
-            distanceKm: res.distanceKm?.toString() || '',
-            pricePerKm: res.pricePerKm?.toString() || '',
-            baseFare: res.baseFare?.toString() || '',
-            tollEstimate: res.tollEstimate?.toString() || '',
+            name: (data.name as string) || '',
+            distanceKm: data.distanceKm?.toString() || '',
+            pricePerKm: data.pricePerKm?.toString() || '',
+            baseFare: data.baseFare?.toString() || '',
+            tollEstimate: data.tollEstimate?.toString() || '',
           });
         })
-        .catch((err: any) => toast.error(err.message || 'Failed to load route'))
+        .catch((err: unknown) => {
+          const message = err instanceof Error ? err.message : 'Failed to load route';
+          toast.error(message);
+        })
         .finally(() => setFetching(false));
     }
   }, [id, isEdit]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
+  }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.name || !form.distanceKm || !form.pricePerKm || !form.baseFare) {
       toast.error('Please fill in all required fields');
@@ -81,12 +85,13 @@ export function RouteForm() {
         toast.success('Route created successfully');
       }
       navigate('/admin/routes');
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to save route');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to save route';
+      toast.error(message);
     } finally {
       setLoading(false);
     }
-  };
+  }, [form, isEdit, id, navigate]);
 
   if (fetching) {
     return (

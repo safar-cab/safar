@@ -75,18 +75,34 @@ export class AdminPaymentsController {
   @ApiQuery({ name: 'page', required: false })
   @ApiQuery({ name: 'limit', required: false })
   @ApiQuery({ name: 'status', required: false })
+  @ApiQuery({ name: 'sortBy', required: false, example: 'createdAt' })
+  @ApiQuery({ name: 'sortOrder', required: false, enum: ['asc', 'desc'] })
   findAll(
     @Query('page') page?: number,
     @Query('limit') limit?: number,
     @Query('status') status?: string,
+    @Query('sortBy') sortBy?: string,
+    @Query('sortOrder') sortOrder?: 'asc' | 'desc',
   ) {
-    return this.paymentsService.findAll({ page, limit, status });
+    return this.paymentsService.findAll({ page, limit, status, sortBy, sortOrder });
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get payment detail (admin)' })
+  findById(@Param('id') id: string) {
+    return this.paymentsService.findById(id);
   }
 
   @Post(':id/refund')
   @ApiOperation({ summary: 'Initiate refund (admin)' })
   initiateRefund(@Param('id') id: string, @Body('amount') amount?: number) {
     return this.paymentsService.initiateRefund(id, amount);
+  }
+
+  @Post(':id/generate-link')
+  @ApiOperation({ summary: 'Generate payment link (10min expiry)' })
+  generateLink(@Param('id') id: string) {
+    return this.paymentsService.generatePaymentLink(id);
   }
 }
 

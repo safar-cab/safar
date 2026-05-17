@@ -72,6 +72,12 @@ export class Payment {
 
   @Prop()
   paidAt: Date;
+
+  @Prop()
+  paymentLinkToken: string;
+
+  @Prop()
+  paymentLinkExpiry: Date;
 }
 
 export const PaymentSchema = SchemaFactory.createForClass(Payment);

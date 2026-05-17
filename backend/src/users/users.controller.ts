@@ -81,13 +81,17 @@ export class AdminUsersController {
   @ApiQuery({ name: 'limit', required: false })
   @ApiQuery({ name: 'role', required: false, enum: UserRole })
   @ApiQuery({ name: 'search', required: false })
+  @ApiQuery({ name: 'sortBy', required: false, example: 'createdAt' })
+  @ApiQuery({ name: 'sortOrder', required: false, enum: ['asc', 'desc'] })
   findAll(
     @Query('page') page?: number,
     @Query('limit') limit?: number,
     @Query('role') role?: string,
     @Query('search') search?: string,
+    @Query('sortBy') sortBy?: string,
+    @Query('sortOrder') sortOrder?: 'asc' | 'desc',
   ) {
-    return this.usersService.findAll({ page, limit, role, search });
+    return this.usersService.findAll({ page, limit, role, search, sortBy, sortOrder });
   }
 
   @Get(':id')

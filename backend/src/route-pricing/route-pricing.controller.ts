@@ -53,6 +53,12 @@ export class AdminRoutesController {
     return this.routePricingService.findAll();
   }
 
+  @Get(':id')
+  @ApiOperation({ summary: 'Get route by ID (admin)' })
+  findById(@Param('id') id: string) {
+    return this.routePricingService.findById(id);
+  }
+
   @Put(':id')
   @ApiOperation({ summary: 'Update route pricing (admin)' })
   update(@Param('id') id: string, @Body() dto: Partial<CreateRoutePricingDto>) {

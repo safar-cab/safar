@@ -66,12 +66,16 @@ export class AdminCarsController {
   @ApiQuery({ name: 'page', required: false })
   @ApiQuery({ name: 'limit', required: false })
   @ApiQuery({ name: 'category', required: false })
+  @ApiQuery({ name: 'sortBy', required: false, example: 'createdAt' })
+  @ApiQuery({ name: 'sortOrder', required: false, enum: ['asc', 'desc'] })
   findAll(
     @Query('page') page?: number,
     @Query('limit') limit?: number,
     @Query('category') category?: string,
+    @Query('sortBy') sortBy?: string,
+    @Query('sortOrder') sortOrder?: 'asc' | 'desc',
   ) {
-    return this.carsService.findAll({ page, limit, category });
+    return this.carsService.findAll({ page, limit, category, sortBy, sortOrder });
   }
 
   @Get(':id')

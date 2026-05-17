@@ -15,6 +15,7 @@ import { RoutePricingModule } from './route-pricing/route-pricing.module';
 import { AdminModule } from './admin/admin.module';
 import { UploadModule } from './upload/upload.module';
 import { EmailModule } from './email/email.module';
+import { LookupModule } from './lookup/lookup.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { EmailModule } from './email/email.module';
     AdminModule,
     UploadModule,
     EmailModule,
+    LookupModule,
   ],
   controllers: [AppController],
   providers: [AppService],

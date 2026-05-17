@@ -173,11 +173,23 @@ export class BookingsService {
     limit?: number;
     status?: string;
     search?: string;
+    dateFrom?: string;
+    dateTo?: string;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
   }) {
-    const { page = 1, limit = 20, status, search } = query;
-    const filter: any = {};
+    const { page = 1, limit = 20, status, search, dateFrom, dateTo, sortBy = 'createdAt', sortOrder = 'desc' } = query;
+    const filter: Record<string, unknown> = {};
     if (status) filter.status = status;
     if (search) filter.bookingId = { $regex: search, $options: 'i' };
+    if (dateFrom || dateTo) {
+      const createdAtFilter: Record<string, Date> = {};
+      if (dateFrom) createdAtFilter.$gte = new Date(dateFrom);
+      if (dateTo) createdAtFilter.$lte = new Date(dateTo);
+      filter.createdAt = createdAtFilter;
+    }
+
+    const sort: Record<string, 1 | -1> = { [sortBy]: sortOrder === 'asc' ? 1 : -1 };
 
     const [bookings, total] = await Promise.all([
       this.bookingModel
@@ -185,7 +197,7 @@ export class BookingsService {
         .populate('car')
         .populate('driver')
         .populate('user', 'name phone email')
-        .sort({ createdAt: -1 })
+        .sort(sort)
         .skip((page - 1) * limit)
         .limit(limit)
         .lean(),
