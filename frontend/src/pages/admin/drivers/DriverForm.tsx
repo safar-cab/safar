@@ -307,7 +307,7 @@ export function DriverForm() {
         className="max-w-3xl bg-white rounded-xl shadow-sm border border-neutral-100 p-6"
       >
         {/* PERSONAL TAB */}
-        {tab === 'personal' && (
+        <div className={tab !== 'personal' ? 'hidden' : ''}>
           <div className="space-y-4">
             <Select
               label="Select Driver User *"
@@ -444,10 +444,10 @@ export function DriverForm() {
               />
             </div>
           </div>
-        )}
+        </div>
 
         {/* DOCUMENTS TAB */}
-        {tab === 'documents' && (
+        <div className={tab !== 'documents' ? 'hidden' : ''}>
           <div className="space-y-4">
             <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">
               Driving License
@@ -529,10 +529,10 @@ export function DriverForm() {
               folder="drivers/police"
             />
           </div>
-        )}
+        </div>
 
         {/* BANKING TAB */}
-        {tab === 'banking' && (
+        <div className={tab !== 'banking' ? 'hidden' : ''}>
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <Input
@@ -569,10 +569,10 @@ export function DriverForm() {
               placeholder="driver@upi"
             />
           </div>
-        )}
+        </div>
 
         {/* EMPLOYMENT TAB */}
-        {tab === 'employment' && (
+        <div className={tab !== 'employment' ? 'hidden' : ''}>
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <Input
@@ -687,7 +687,7 @@ export function DriverForm() {
               />
             </div>
           </div>
-        )}
+        </div>
 
         <div className="flex justify-between mt-6 pt-6 border-t border-neutral-100">
           <div className="flex gap-2">
