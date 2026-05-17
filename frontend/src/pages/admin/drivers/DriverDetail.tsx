@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { ShieldCheck, Star, MapPin, Calendar, UserCircle } from 'lucide-react';
+import { useParams } from 'react-router-dom';
+import { ShieldCheck, Star, UserCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '@/lib/api';
 import { PageHeader } from '@/components/ui/PageHeader';
@@ -12,7 +12,6 @@ import type { Driver, User } from '@/types';
 
 export function DriverDetail() {
   const { id } = useParams();
-  const navigate = useNavigate();
   const [driver, setDriver] = useState<Driver | null>(null);
   const [loading, setLoading] = useState(true);
 

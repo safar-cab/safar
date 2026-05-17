@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-import { IndianRupee, User, Car, Calendar, CreditCard, Hash, Clock, Copy, CheckCircle } from 'lucide-react';
+import { IndianRupee, Calendar, CreditCard, Hash, Clock, Copy, CheckCircle } from 'lucide-react';
 import api from '@/lib/api';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Badge } from '@/components/ui/Badge';

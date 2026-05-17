@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { motion } from 'framer-motion';
-import { Car, Users, Star } from 'lucide-react';
+import { Car, Users } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import type { Car as CarType } from '@/types';
 import { cn } from '@/lib/cn';

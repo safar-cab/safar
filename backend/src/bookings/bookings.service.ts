@@ -183,7 +183,16 @@ export class BookingsService {
     sortBy?: string;
     sortOrder?: 'asc' | 'desc';
   }) {
-    const { page = 1, limit = 20, status, search, dateFrom, dateTo, sortBy = 'createdAt', sortOrder = 'desc' } = query;
+    const {
+      page = 1,
+      limit = 20,
+      status,
+      search,
+      dateFrom,
+      dateTo,
+      sortBy = 'createdAt',
+      sortOrder = 'desc',
+    } = query;
     const filter: Record<string, unknown> = {};
     if (status) filter.status = status;
     if (search) filter.bookingId = { $regex: search, $options: 'i' };
@@ -194,7 +203,9 @@ export class BookingsService {
       filter.createdAt = createdAtFilter;
     }
 
-    const sort: Record<string, 1 | -1> = { [sortBy]: sortOrder === 'asc' ? 1 : -1 };
+    const sort: Record<string, 1 | -1> = {
+      [sortBy]: sortOrder === 'asc' ? 1 : -1,
+    };
 
     const [bookings, total] = await Promise.all([
       this.bookingModel

@@ -5,7 +5,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { Driver, DriverDocument } from '../schemas/driver.schema';
 import { CreateDriverDto } from './dto/create-driver.dto';
 import { UpdateDriverDto } from './dto/update-driver.dto';
@@ -38,12 +38,22 @@ export class DriversService {
     sortBy?: string;
     sortOrder?: 'asc' | 'desc';
   }) {
-    const { page = 1, limit = 20, isVerified, isAvailable, search, sortBy = 'createdAt', sortOrder = 'desc' } = query;
+    const {
+      page = 1,
+      limit = 20,
+      isVerified,
+      isAvailable,
+      search,
+      sortBy = 'createdAt',
+      sortOrder = 'desc',
+    } = query;
     const filter: Record<string, unknown> = {};
     if (isVerified !== undefined) filter.isVerified = isVerified;
     if (isAvailable !== undefined) filter.isAvailable = isAvailable;
 
-    const sort: Record<string, 1 | -1> = { [sortBy]: sortOrder === 'asc' ? 1 : -1 };
+    const sort: Record<string, 1 | -1> = {
+      [sortBy]: sortOrder === 'asc' ? 1 : -1,
+    };
 
     let drivers;
     let total: number;

@@ -36,12 +36,21 @@ export class CarsService {
     sortBy?: string;
     sortOrder?: 'asc' | 'desc';
   }) {
-    const { page = 1, limit = 20, category, isActive, sortBy = 'createdAt', sortOrder = 'desc' } = query;
+    const {
+      page = 1,
+      limit = 20,
+      category,
+      isActive,
+      sortBy = 'createdAt',
+      sortOrder = 'desc',
+    } = query;
     const filter: Record<string, unknown> = {};
     if (category) filter.category = category;
     if (isActive !== undefined) filter.isActive = isActive;
 
-    const sort: Record<string, 1 | -1> = { [sortBy]: sortOrder === 'asc' ? 1 : -1 };
+    const sort: Record<string, 1 | -1> = {
+      [sortBy]: sortOrder === 'asc' ? 1 : -1,
+    };
 
     const [cars, total] = await Promise.all([
       this.carModel

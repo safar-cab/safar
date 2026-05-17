@@ -84,7 +84,13 @@ export class AdminPaymentsController {
     @Query('sortBy') sortBy?: string,
     @Query('sortOrder') sortOrder?: 'asc' | 'desc',
   ) {
-    return this.paymentsService.findAll({ page, limit, status, sortBy, sortOrder });
+    return this.paymentsService.findAll({
+      page,
+      limit,
+      status,
+      sortBy,
+      sortOrder,
+    });
   }
 
   @Get(':id')

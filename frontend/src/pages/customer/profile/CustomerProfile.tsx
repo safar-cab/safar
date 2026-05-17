@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
-  User,
   CreditCard,
   Star,
   HelpCircle,
@@ -64,7 +63,7 @@ export function CustomerProfile() {
         transition={{ delay: 0.05 }}
         className="bg-white rounded-xl border border-neutral-100 shadow-sm overflow-hidden mb-4"
       >
-        {MENU_ITEMS.map((item, i) => (
+        {MENU_ITEMS.map((item, _i) => (
           <button
             key={item.label}
             onClick={() => item.path !== '#' && navigate(item.path)}

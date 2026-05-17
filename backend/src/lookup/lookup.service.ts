@@ -4,7 +4,10 @@ import { Model } from 'mongoose';
 import { User, UserDocument, UserRole } from '../schemas/user.schema';
 import { Car, CarDocument } from '../schemas/car.schema';
 import { Driver, DriverDocument } from '../schemas/driver.schema';
-import { RoutePricing, RoutePricingDocument } from '../schemas/route-pricing.schema';
+import {
+  RoutePricing,
+  RoutePricingDocument,
+} from '../schemas/route-pricing.schema';
 
 @Injectable()
 export class LookupService {
@@ -12,7 +15,8 @@ export class LookupService {
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     @InjectModel(Car.name) private carModel: Model<CarDocument>,
     @InjectModel(Driver.name) private driverModel: Model<DriverDocument>,
-    @InjectModel(RoutePricing.name) private routeModel: Model<RoutePricingDocument>,
+    @InjectModel(RoutePricing.name)
+    private routeModel: Model<RoutePricingDocument>,
   ) {}
 
   async getActiveDrivers(search?: string) {
@@ -107,14 +111,21 @@ export class LookupService {
     return this.carModel.distinct('category', { isActive: true });
   }
 
-  async getBookingStatuses() {
+  getBookingStatuses() {
     return [
-      'pending', 'confirmed', 'driver_assigned', 'driver_en_route',
-      'picked_up', 'in_progress', 'completed', 'cancelled', 'refunded',
+      'pending',
+      'confirmed',
+      'driver_assigned',
+      'driver_en_route',
+      'picked_up',
+      'in_progress',
+      'completed',
+      'cancelled',
+      'refunded',
     ];
   }
 
-  async getUserRoles() {
+  getUserRoles() {
     return ['customer', 'driver', 'admin'];
   }
 }

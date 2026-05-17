@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Car, Clock, ChevronRight, Filter } from 'lucide-react';
+import { Car, Clock, ChevronRight } from 'lucide-react';
 import api from '@/lib/api';
 import { Badge } from '@/components/ui/Badge';
 import { Skeleton } from '@/components/ui/Skeleton';

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { ShieldBan, ShieldCheck, Mail, Phone, MapPin, Calendar } from 'lucide-react';
+import { useParams } from 'react-router-dom';
+import { ShieldBan, ShieldCheck } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '@/lib/api';
 import { PageHeader } from '@/components/ui/PageHeader';
@@ -13,7 +13,6 @@ import type { User } from '@/types';
 
 export function UserDetail() {
   const { id } = useParams();
-  const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 

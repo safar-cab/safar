@@ -75,7 +75,13 @@ export class AdminCarsController {
     @Query('sortBy') sortBy?: string,
     @Query('sortOrder') sortOrder?: 'asc' | 'desc',
   ) {
-    return this.carsService.findAll({ page, limit, category, sortBy, sortOrder });
+    return this.carsService.findAll({
+      page,
+      limit,
+      category,
+      sortBy,
+      sortOrder,
+    });
   }
 
   @Get(':id')

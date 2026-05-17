@@ -125,7 +125,16 @@ export class AdminBookingsController {
     @Query('sortBy') sortBy?: string,
     @Query('sortOrder') sortOrder?: 'asc' | 'desc',
   ) {
-    return this.bookingsService.findAll({ page, limit, status, search, dateFrom, dateTo, sortBy, sortOrder });
+    return this.bookingsService.findAll({
+      page,
+      limit,
+      status,
+      search,
+      dateFrom,
+      dateTo,
+      sortBy,
+      sortOrder,
+    });
   }
 
   @Get(':id')

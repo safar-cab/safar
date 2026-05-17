@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { User, UserDocument } from '../schemas/user.schema';
 
 @Injectable()
@@ -45,7 +45,14 @@ export class UsersService {
     sortBy?: string;
     sortOrder?: 'asc' | 'desc';
   }) {
-    const { page = 1, limit = 20, role, search, sortBy = 'createdAt', sortOrder = 'desc' } = query;
+    const {
+      page = 1,
+      limit = 20,
+      role,
+      search,
+      sortBy = 'createdAt',
+      sortOrder = 'desc',
+    } = query;
     const filter: Record<string, unknown> = {};
     if (role) filter.role = role;
     if (search) {
@@ -56,7 +63,9 @@ export class UsersService {
       ];
     }
 
-    const sort: Record<string, 1 | -1> = { [sortBy]: sortOrder === 'asc' ? 1 : -1 };
+    const sort: Record<string, 1 | -1> = {
+      [sortBy]: sortOrder === 'asc' ? 1 : -1,
+    };
 
     const [users, total] = await Promise.all([
       this.userModel

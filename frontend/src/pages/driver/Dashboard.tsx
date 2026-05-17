@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Car, Star, MapPin, Phone, Clock, ChevronRight } from 'lucide-react';
+import { Car, Star, Clock, ChevronRight } from 'lucide-react';
 import api from '@/lib/api';
 import { useAuth } from '@/hooks/useAuth';
 import { Badge } from '@/components/ui/Badge';
@@ -11,7 +11,7 @@ import type { Driver, Booking } from '@/types';
 import toast from 'react-hot-toast';
 
 export function DriverDashboard() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [driver, setDriver] = useState<Driver | null>(null);
   const [rides, setRides] = useState<Booking[]>([]);

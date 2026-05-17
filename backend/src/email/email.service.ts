@@ -22,10 +22,7 @@ export class EmailService {
   async sendMail(to: string, subject: string, html: string): Promise<void> {
     try {
       await this.transporter.sendMail({
-        from: this.configService.get(
-          'SMTP_FROM',
-          '"Safar" <noreply@books.in>',
-        ),
+        from: this.configService.get('SMTP_FROM', '"Safar" <noreply@books.in>'),
         to,
         subject,
         html,
@@ -38,7 +35,13 @@ export class EmailService {
 
   async sendBookingConfirmation(
     to: string,
-    data: { bookingId: string; pickup: string; drop: string; date: string; amount: number },
+    data: {
+      bookingId: string;
+      pickup: string;
+      drop: string;
+      date: string;
+      amount: number;
+    },
   ) {
     const html = `
       <div style="font-family: 'Inter', sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
@@ -83,7 +86,12 @@ export class EmailService {
 
   async sendPaymentReceipt(
     to: string,
-    data: { bookingId: string; amount: number; paymentId: string; date: string },
+    data: {
+      bookingId: string;
+      amount: number;
+      paymentId: string;
+      date: string;
+    },
   ) {
     const html = `
       <div style="font-family: 'Inter', sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">

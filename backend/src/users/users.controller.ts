@@ -91,7 +91,14 @@ export class AdminUsersController {
     @Query('sortBy') sortBy?: string,
     @Query('sortOrder') sortOrder?: 'asc' | 'desc',
   ) {
-    return this.usersService.findAll({ page, limit, role, search, sortBy, sortOrder });
+    return this.usersService.findAll({
+      page,
+      limit,
+      role,
+      search,
+      sortBy,
+      sortOrder,
+    });
   }
 
   @Get(':id')

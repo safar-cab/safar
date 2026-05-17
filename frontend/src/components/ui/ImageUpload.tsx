@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, memo } from 'react';
-import { Upload, X, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { Upload, X, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import api from '@/lib/api';
 import toast from 'react-hot-toast';

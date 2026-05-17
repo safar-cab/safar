@@ -65,7 +65,7 @@ export class PaymentsService {
       },
     });
 
-    const payment = await this.paymentModel.create({
+    await this.paymentModel.create({
       booking: bookingId,
       user: userId,
       razorpay: { orderId: order.id },
@@ -189,11 +189,19 @@ export class PaymentsService {
     sortBy?: string;
     sortOrder?: 'asc' | 'desc';
   }) {
-    const { page = 1, limit = 20, status, sortBy = 'createdAt', sortOrder = 'desc' } = query;
+    const {
+      page = 1,
+      limit = 20,
+      status,
+      sortBy = 'createdAt',
+      sortOrder = 'desc',
+    } = query;
     const filter: Record<string, unknown> = {};
     if (status) filter.status = status;
 
-    const sort: Record<string, 1 | -1> = { [sortBy]: sortOrder === 'asc' ? 1 : -1 };
+    const sort: Record<string, 1 | -1> = {
+      [sortBy]: sortOrder === 'asc' ? 1 : -1,
+    };
 
     const [payments, total] = await Promise.all([
       this.paymentModel
@@ -210,7 +218,8 @@ export class PaymentsService {
   }
 
   async findById(id: string) {
-    const payment = await this.paymentModel.findById(id)
+    const payment = await this.paymentModel
+      .findById(id)
       .populate('booking')
       .populate('user', 'name phone email')
       .lean();
@@ -218,7 +227,9 @@ export class PaymentsService {
     return payment;
   }
 
-  async generatePaymentLink(paymentId: string): Promise<{ link: string; expiresAt: Date }> {
+  async generatePaymentLink(
+    paymentId: string,
+  ): Promise<{ link: string; expiresAt: Date }> {
     const payment = await this.paymentModel.findById(paymentId);
     if (!payment) throw new NotFoundException('Payment not found');
 
@@ -229,7 +240,10 @@ export class PaymentsService {
       $set: { paymentLinkToken: token, paymentLinkExpiry: expiresAt },
     });
 
-    const baseUrl = this.configService.get('FRONTEND_URL', 'http://localhost:5173');
+    const baseUrl = this.configService.get(
+      'FRONTEND_URL',
+      'http://localhost:5173',
+    );
     const link = `${baseUrl}/pay/${token}`;
 
     return { link, expiresAt };

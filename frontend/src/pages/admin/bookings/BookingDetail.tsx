@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { UserPlus, RefreshCw, XCircle, Clock, MapPin, IndianRupee, Car, User as UserIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '@/lib/api';
@@ -36,7 +36,6 @@ const STATUS_OPTIONS: SelectOption[] = STATUS_TIMELINE.map((s) => ({
 
 export function BookingDetail() {
   const { id } = useParams();
-  const navigate = useNavigate();
   const [booking, setBooking] = useState<Booking | null>(null);
   const [loading, setLoading] = useState(true);
 

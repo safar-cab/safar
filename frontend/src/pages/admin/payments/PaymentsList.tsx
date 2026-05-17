@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CreditCard, RotateCcw, Eye, Link as LinkIcon, Search } from 'lucide-react';
+import { CreditCard, RotateCcw, Eye, Link as LinkIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '@/lib/api';
 import { PageHeader } from '@/components/ui/PageHeader';
