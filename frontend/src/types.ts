@@ -158,8 +158,8 @@ export interface Rating {
 export interface RoutePricing {
   _id: string;
   name: string;
-  fromCity?: { name: string; coordinates: number[] };
-  toCity?: { name: string; coordinates: number[] };
+  fromCity?: { name: string; state: string; coordinates: number[] };
+  toCity?: { name: string; state: string; coordinates: number[] };
   distanceKm: number;
   pricePerKm: number;
   baseFare: number;

@@ -10,11 +10,11 @@ export class RoutePricing {
   @Prop({ required: true })
   name: string;
 
-  @Prop({ type: { name: String, coordinates: [Number] } })
-  fromCity: { name: string; coordinates: number[] };
+  @Prop({ type: { name: String, state: String, coordinates: [Number] } })
+  fromCity: { name: string; state: string; coordinates: number[] };
 
-  @Prop({ type: { name: String, coordinates: [Number] } })
-  toCity: { name: string; coordinates: number[] };
+  @Prop({ type: { name: String, state: String, coordinates: [Number] } })
+  toCity: { name: string; state: string; coordinates: number[] };
 
   @ApiProperty()
   @Prop({ required: true })
