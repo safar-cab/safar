@@ -30,7 +30,9 @@ export const RouteCard = memo(function RouteCard({ route, onClick, index = 0 }: 
         {route.tollEstimate > 0 && <span>Tolls ₹{route.tollEstimate}</span>}
       </div>
       <div className="flex items-center justify-between mt-3 pt-3 border-t border-neutral-100">
-        <span className="text-base font-bold text-primary-700">₹{total.toLocaleString('en-IN')}</span>
+        <span className="text-base font-bold text-primary-700">
+          ₹{total.toLocaleString('en-IN')}
+        </span>
         <ArrowRight className="w-4 h-4 text-neutral-400" />
       </div>
     </motion.div>

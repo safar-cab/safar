@@ -12,8 +12,14 @@ interface PriceBreakdownProps {
 }
 
 export function PriceBreakdown({
-  baseFare, distanceKm, pricePerKm, tollEstimate,
-  cgst, sgst, gstAmount, totalAmount,
+  baseFare,
+  distanceKm,
+  pricePerKm,
+  tollEstimate,
+  cgst,
+  sgst,
+  gstAmount,
+  totalAmount,
 }: PriceBreakdownProps) {
   return (
     <div className="bg-neutral-50 rounded-lg p-4 space-y-2">
@@ -23,7 +29,9 @@ export function PriceBreakdown({
         <span className="text-neutral-800">{formatCurrency(baseFare)}</span>
       </div>
       <div className="flex justify-between text-sm">
-        <span className="text-neutral-600">Distance ({distanceKm} km x {formatCurrency(pricePerKm)}/km)</span>
+        <span className="text-neutral-600">
+          Distance ({distanceKm} km x {formatCurrency(pricePerKm)}/km)
+        </span>
         <span className="text-neutral-800">{formatCurrency(distanceKm * pricePerKm)}</span>
       </div>
       {tollEstimate > 0 && (

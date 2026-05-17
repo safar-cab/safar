@@ -26,7 +26,8 @@ export function RideList() {
   useEffect(() => {
     setLoading(true);
     const params = filter ? `?status=${filter}` : '';
-    api.get(`/driver/bookings${params}`)
+    api
+      .get(`/driver/bookings${params}`)
       .then((data) => setRides(data as unknown as Booking[]))
       .catch(() => {})
       .finally(() => setLoading(false));
@@ -60,7 +61,9 @@ export function RideList() {
       {/* Rides */}
       {loading ? (
         <div className="space-y-3 mt-2">
-          {[1, 2, 3].map((i) => <Skeleton key={i} className="h-28 rounded-xl" />)}
+          {[1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-28 rounded-xl" />
+          ))}
         </div>
       ) : rides.length === 0 ? (
         <EmptyState icon={Car} title="No rides found" description="Try changing the filter" />
@@ -93,7 +96,12 @@ export function RideList() {
                 <div className="flex items-center gap-3 text-xs text-neutral-500">
                   <span className="flex items-center gap-1">
                     <Clock className="w-3.5 h-3.5" />
-                    {ride.schedule?.startDate ? new Date(ride.schedule.startDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : ''}
+                    {ride.schedule?.startDate
+                      ? new Date(ride.schedule.startDate).toLocaleDateString('en-IN', {
+                          day: 'numeric',
+                          month: 'short',
+                        })
+                      : ''}
                   </span>
                   <span>{ride.schedule?.startTime}</span>
                 </div>

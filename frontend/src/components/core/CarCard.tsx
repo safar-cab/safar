@@ -28,7 +28,9 @@ export const CarCard = memo(function CarCard({ car, selected, onSelect, index = 
       transition={{ delay: index * 0.06 }}
       className={cn(
         'bg-white rounded-xl p-4 shadow-sm border transition-all cursor-pointer',
-        selected ? 'border-primary-500 ring-2 ring-primary-100' : 'border-neutral-100 active:scale-[0.98]',
+        selected
+          ? 'border-primary-500 ring-2 ring-primary-100'
+          : 'border-neutral-100 active:scale-[0.98]',
       )}
       onClick={onSelect}
     >
@@ -37,10 +39,17 @@ export const CarCard = memo(function CarCard({ car, selected, onSelect, index = 
         <Car className="w-12 h-12 text-neutral-300" />
       </div>
 
-      <h3 className="text-sm font-semibold text-neutral-900">{car.make} {car.model}</h3>
+      <h3 className="text-sm font-semibold text-neutral-900">
+        {car.make} {car.model}
+      </h3>
 
       <div className="flex items-center gap-2 mt-1.5">
-        <span className={cn('text-xs px-2 py-0.5 rounded-full font-medium capitalize', categoryColors[car.category] || 'bg-neutral-100 text-neutral-600')}>
+        <span
+          className={cn(
+            'text-xs px-2 py-0.5 rounded-full font-medium capitalize',
+            categoryColors[car.category] || 'bg-neutral-100 text-neutral-600',
+          )}
+        >
           {car.category}
         </span>
         <span className="flex items-center gap-1 text-xs text-neutral-500">

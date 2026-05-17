@@ -66,7 +66,11 @@ export const router = createBrowserRouter([
   // Admin
   {
     path: '/admin',
-    element: <ProtectedRoute role="admin"><AdminLayout /></ProtectedRoute>,
+    element: (
+      <ProtectedRoute role="admin">
+        <AdminLayout />
+      </ProtectedRoute>
+    ),
     children: [
       { index: true, element: <Dashboard /> },
       { path: 'bookings', element: <BookingsList /> },
@@ -91,7 +95,11 @@ export const router = createBrowserRouter([
   // Driver
   {
     path: '/driver',
-    element: <ProtectedRoute role="driver"><DriverLayout /></ProtectedRoute>,
+    element: (
+      <ProtectedRoute role="driver">
+        <DriverLayout />
+      </ProtectedRoute>
+    ),
     children: [
       { index: true, element: <DriverDashboard /> },
       { path: 'rides', element: <RideList /> },
@@ -104,7 +112,11 @@ export const router = createBrowserRouter([
   // Customer
   {
     path: '/customer',
-    element: <ProtectedRoute role="customer"><CustomerLayout /></ProtectedRoute>,
+    element: (
+      <ProtectedRoute role="customer">
+        <CustomerLayout />
+      </ProtectedRoute>
+    ),
     children: [
       { index: true, element: <CustomerHome /> },
       { path: 'bookings', element: <MyBookings /> },
@@ -128,7 +140,9 @@ export const router = createBrowserRouter([
         <div className="text-center">
           <h1 className="text-6xl font-bold text-neutral-300">404</h1>
           <p className="text-neutral-500 mt-2">Page not found</p>
-          <a href="/" className="text-primary-600 text-sm mt-4 inline-block hover:underline">Go home</a>
+          <a href="/" className="text-primary-600 text-sm mt-4 inline-block hover:underline">
+            Go home
+          </a>
         </div>
       </div>
     ),

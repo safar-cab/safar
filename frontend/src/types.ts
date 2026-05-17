@@ -54,7 +54,7 @@ export interface Car {
   model: string;
   year?: number;
   color?: string;
-  category: 'sedan' | 'suv' | 'hatchback' | 'tempo_traveller' | 'luxury';
+  category: string;
   seats: number;
   photos: string[];
   documents?: {
@@ -63,7 +63,7 @@ export interface Car {
     puc?: { url: string; expiry: string };
     fitness?: { url: string; expiry: string };
   };
-  assignedDriver?: Driver | string;
+  assignedDriver?: Driver | string | null;
   isActive: boolean;
   createdAt: string;
 }

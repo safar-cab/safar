@@ -33,15 +33,17 @@ export function DriverDashboard() {
     }
   }, []);
 
-  useEffect(() => { fetchData(); }, [fetchData]);
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const toggleAvailability = async () => {
     if (!driver) return;
     setToggling(true);
     try {
-      const updated = await api.put('/driver/availability', {
+      const updated = (await api.put('/driver/availability', {
         isAvailable: !driver.isAvailable,
-      }) as unknown as Driver;
+      })) as unknown as Driver;
       setDriver(updated);
       toast.success(updated.isAvailable ? 'You are now online' : 'You are now offline');
     } catch {
@@ -97,7 +99,9 @@ export function DriverDashboard() {
             />
           </button>
         </div>
-        <p className={`text-xs font-medium mt-2 ${driver?.isAvailable ? 'text-success-600' : 'text-neutral-400'}`}>
+        <p
+          className={`text-xs font-medium mt-2 ${driver?.isAvailable ? 'text-success-600' : 'text-neutral-400'}`}
+        >
           {driver?.isAvailable ? '● Online — Available for rides' : '○ Offline'}
         </p>
       </motion.div>
@@ -105,8 +109,18 @@ export function DriverDashboard() {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3">
         {[
-          { label: 'Rating', value: driver?.avgRating?.toFixed(1) || '0.0', icon: Star, color: 'text-secondary-500' },
-          { label: 'Total Rides', value: driver?.totalRides || 0, icon: Car, color: 'text-primary-600' },
+          {
+            label: 'Rating',
+            value: driver?.avgRating?.toFixed(1) || '0.0',
+            icon: Star,
+            color: 'text-secondary-500',
+          },
+          {
+            label: 'Total Rides',
+            value: driver?.totalRides || 0,
+            icon: Car,
+            color: 'text-primary-600',
+          },
           { label: 'Today', value: activeRides.length, icon: Clock, color: 'text-success-600' },
         ].map((stat, i) => (
           <motion.div

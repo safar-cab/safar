@@ -36,11 +36,13 @@ export function CarsList() {
 
   const fetchCategories = useCallback(async () => {
     try {
-      const res = await api.get('/lookup/car-categories') as string[];
-      setCategories(res.map((c) => ({
-        value: c,
-        label: c.charAt(0).toUpperCase() + c.slice(1).replace(/_/g, ' '),
-      })));
+      const res = (await api.get('/lookup/car-categories')) as string[];
+      setCategories(
+        res.map((c) => ({
+          value: c,
+          label: c.charAt(0).toUpperCase() + c.slice(1).replace(/_/g, ' '),
+        })),
+      );
     } catch {
       // fallback categories
       setCategories([
@@ -64,7 +66,7 @@ export function CarsList() {
       };
       if (category) params.category = category;
       if (debouncedSearch) params.search = debouncedSearch;
-      const res = await api.get('/admin/cars', { params }) as {
+      const res = (await api.get('/admin/cars', { params })) as {
         cars?: CarType[];
         data?: CarType[];
         total?: number;
@@ -93,28 +95,35 @@ export function CarsList() {
     setPage(1);
   }, [debouncedSearch, category]);
 
-  const handleSort = useCallback((field: string) => {
-    setSortOrder(sortBy === field && sortOrder === 'asc' ? 'desc' : 'asc');
-    setSortBy(field);
-  }, [sortBy, sortOrder]);
+  const handleSort = useCallback(
+    (field: string) => {
+      setSortOrder(sortBy === field && sortOrder === 'asc' ? 'desc' : 'asc');
+      setSortBy(field);
+    },
+    [sortBy, sortOrder],
+  );
 
-  const toggleStatus = useCallback(async (car: CarType) => {
-    try {
-      await api.put(`/admin/cars/${car._id}`, { isActive: !car.isActive });
-      toast.success(`Car ${car.isActive ? 'deactivated' : 'activated'} successfully`);
-      fetchCars();
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Failed to update car status';
-      toast.error(message);
-    }
-  }, [fetchCars]);
+  const toggleStatus = useCallback(
+    async (car: CarType) => {
+      try {
+        await api.put(`/admin/cars/${car._id}`, { isActive: !car.isActive });
+        toast.success(`Car ${car.isActive ? 'deactivated' : 'activated'} successfully`);
+        fetchCars();
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'Failed to update car status';
+        toast.error(message);
+      }
+    },
+    [fetchCars],
+  );
 
-  const categoryOptions = useMemo(() => [
-    { value: '', label: 'All Categories' },
-    ...categories,
-  ], [categories]);
+  const categoryOptions = useMemo(
+    () => [{ value: '', label: 'All Categories' }, ...categories],
+    [categories],
+  );
 
-  const thClass = 'text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3 cursor-pointer select-none';
+  const thClass =
+    'text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3 cursor-pointer select-none';
 
   return (
     <div>
@@ -171,7 +180,9 @@ export function CarsList() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-neutral-200 bg-neutral-50">
-                  <th className="text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3">Photo</th>
+                  <th className="text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3">
+                    Photo
+                  </th>
                   <th className={thClass} onClick={() => handleSort('registrationNumber')}>
                     Reg No {sortBy === 'registrationNumber' && (sortOrder === 'asc' ? '↑' : '↓')}
                   </th>
@@ -181,10 +192,18 @@ export function CarsList() {
                   <th className={thClass} onClick={() => handleSort('category')}>
                     Category {sortBy === 'category' && (sortOrder === 'asc' ? '↑' : '↓')}
                   </th>
-                  <th className="text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3">Seats</th>
-                  <th className="text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3">Driver</th>
-                  <th className="text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3">Status</th>
-                  <th className="text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3">Actions</th>
+                  <th className="text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3">
+                    Seats
+                  </th>
+                  <th className="text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3">
+                    Driver
+                  </th>
+                  <th className="text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3">
+                    Status
+                  </th>
+                  <th className="text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-neutral-100">
@@ -192,22 +211,33 @@ export function CarsList() {
                   <tr key={car._id} className="hover:bg-neutral-50 transition-colors">
                     <td className="px-4 py-3">
                       {car.photos?.length > 0 ? (
-                        <img src={car.photos[0]} alt="" className="w-10 h-10 rounded-lg object-cover" />
+                        <img
+                          src={car.photos[0]}
+                          alt=""
+                          className="w-10 h-10 rounded-lg object-cover"
+                        />
                       ) : (
                         <div className="w-10 h-10 rounded-lg bg-neutral-100 flex items-center justify-center">
                           <Car className="w-5 h-5 text-neutral-300" />
                         </div>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-sm font-medium text-neutral-900">{car.registrationNumber}</td>
-                    <td className="px-4 py-3 text-sm text-neutral-700">{car.make} {car.model}</td>
-                    <td className="px-4 py-3 text-sm text-neutral-700 capitalize">{car.category?.replace('_', ' ')}</td>
+                    <td className="px-4 py-3 text-sm font-medium text-neutral-900">
+                      {car.registrationNumber}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-neutral-700">
+                      {car.make} {car.model}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-neutral-700 capitalize">
+                      {car.category?.replace('_', ' ')}
+                    </td>
                     <td className="px-4 py-3 text-sm text-neutral-700">{car.seats}</td>
                     <td className="px-4 py-3 text-sm text-neutral-700">
                       {car.assignedDriver
                         ? typeof car.assignedDriver === 'string'
                           ? car.assignedDriver
-                          : ((car.assignedDriver as Record<string, Record<string, string>>).userId?.name || 'Assigned')
+                          : (car.assignedDriver as unknown as Record<string, Record<string, string>>).userId
+                              ?.name || 'Assigned'
                         : '-'}
                     </td>
                     <td className="px-4 py-3">

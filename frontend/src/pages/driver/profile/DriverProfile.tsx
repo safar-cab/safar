@@ -16,13 +16,12 @@ export function DriverProfile() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Promise.all([
-      api.get('/driver/me').catch(() => null),
-      api.get('/driver/profile'),
-    ]).then(([d, p]) => {
-      if (d) setDriver(d as unknown as Driver);
-      setProfile(p as unknown as UserType);
-    }).finally(() => setLoading(false));
+    Promise.all([api.get('/driver/me').catch(() => null), api.get('/driver/profile')])
+      .then(([d, p]) => {
+        if (d) setDriver(d as unknown as Driver);
+        setProfile(p as unknown as UserType);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   const handleLogout = () => {
@@ -63,14 +62,21 @@ export function DriverProfile() {
       </motion.div>
 
       {/* Info Cards */}
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
         className="bg-white rounded-xl shadow-sm border border-neutral-100 divide-y divide-neutral-100"
       >
         {[
           { icon: Phone, label: 'Phone', value: profile?.phone },
           { icon: Mail, label: 'Email', value: profile?.email || '—' },
           { icon: FileText, label: 'License', value: driver?.licenseNumber || '—' },
-          { icon: Star, label: 'Rating', value: driver ? `${driver.avgRating?.toFixed(1)} / 5` : '—' },
+          {
+            icon: Star,
+            label: 'Rating',
+            value: driver ? `${driver.avgRating?.toFixed(1)} / 5` : '—',
+          },
           { icon: Car, label: 'Total Rides', value: driver?.totalRides?.toString() || '0' },
         ].map((item) => (
           <div key={item.label} className="flex items-center gap-3 px-4 py-3.5">
@@ -85,7 +91,12 @@ export function DriverProfile() {
 
       {/* Logout */}
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
-        <Button variant="outline" size="lg" className="w-full text-error-600 border-error-200 hover:bg-error-50" onClick={handleLogout}>
+        <Button
+          variant="outline"
+          size="lg"
+          className="w-full text-error-600 border-error-200 hover:bg-error-50"
+          onClick={handleLogout}
+        >
           <LogOut className="w-5 h-5" />
           Logout
         </Button>

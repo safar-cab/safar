@@ -1,8 +1,17 @@
 import { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import {
-  LayoutDashboard, CalendarCheck, Car, UserCheck, Users,
-  IndianRupee, Map, Settings, LogOut, Menu, X,
+  LayoutDashboard,
+  CalendarCheck,
+  Car,
+  UserCheck,
+  Users,
+  IndianRupee,
+  Map,
+  Settings,
+  LogOut,
+  Menu,
+  X,
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/cn';
@@ -39,17 +48,22 @@ export function AdminLayout() {
       )}
 
       {/* Sidebar */}
-      <aside className={cn(
-        'fixed lg:static inset-y-0 left-0 z-50 w-60 bg-white border-r border-neutral-200 flex flex-col transition-transform duration-250 lg:translate-x-0',
-        sidebarOpen ? 'translate-x-0' : '-translate-x-full',
-      )}>
+      <aside
+        className={cn(
+          'fixed lg:static inset-y-0 left-0 z-50 w-60 bg-white border-r border-neutral-200 flex flex-col transition-transform duration-250 lg:translate-x-0',
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full',
+        )}
+      >
         {/* Logo */}
         <div className="h-16 flex items-center justify-between px-5 border-b border-neutral-200 bg-gradient-to-r from-primary-600 to-primary-700">
           <div className="flex items-center gap-2.5">
             <img src="/logo.svg" alt="Safar" className="w-8 h-8 rounded-lg" />
             <span className="font-semibold text-white">Safar Admin</span>
           </div>
-          <button onClick={() => setSidebarOpen(false)} className="lg:hidden p-1 text-white/60 hover:text-white">
+          <button
+            onClick={() => setSidebarOpen(false)}
+            className="lg:hidden p-1 text-white/60 hover:text-white"
+          >
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -62,12 +76,14 @@ export function AdminLayout() {
               to={to}
               end={end}
               onClick={() => setSidebarOpen(false)}
-              className={({ isActive }) => cn(
-                'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
-                isActive
-                  ? 'bg-primary-50 text-primary-700'
-                  : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900',
-              )}
+              className={({ isActive }) =>
+                cn(
+                  'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+                  isActive
+                    ? 'bg-primary-50 text-primary-700'
+                    : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900',
+                )
+              }
             >
               <Icon className="w-5 h-5 shrink-0" />
               {label}

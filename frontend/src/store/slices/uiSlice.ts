@@ -24,7 +24,10 @@ const uiSlice = createSlice({
     setBookingStep: (state, action: PayloadAction<number>) => {
       state.bookingStep = action.payload;
     },
-    showToast: (state, action: PayloadAction<{ message: string; type: 'success' | 'error' | 'info' }>) => {
+    showToast: (
+      state,
+      action: PayloadAction<{ message: string; type: 'success' | 'error' | 'info' }>,
+    ) => {
       state.toastMessage = action.payload.message;
       state.toastType = action.payload.type;
     },

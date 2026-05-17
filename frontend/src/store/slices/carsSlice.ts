@@ -41,5 +41,11 @@ const carsSlice = createSlice({
   },
 });
 
-export const { fetchAvailableCars, fetchAvailableCarsSuccess, fetchCarDetail, fetchCarDetailSuccess, carsError } = carsSlice.actions;
+export const {
+  fetchAvailableCars,
+  fetchAvailableCarsSuccess,
+  fetchCarDetail,
+  fetchCarDetailSuccess,
+  carsError,
+} = carsSlice.actions;
 export default carsSlice.reducer;

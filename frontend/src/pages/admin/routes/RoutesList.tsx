@@ -32,12 +32,14 @@ export function RoutesList() {
         sortBy,
         sortOrder,
       };
-      const res = await api.get('/admin/routes', { params }) as {
-        routes?: RoutePricing[];
-        data?: RoutePricing[];
-        total?: number;
-        totalPages?: number;
-      } | RoutePricing[];
+      const res = (await api.get('/admin/routes', { params })) as
+        | {
+            routes?: RoutePricing[];
+            data?: RoutePricing[];
+            total?: number;
+            totalPages?: number;
+          }
+        | RoutePricing[];
       if (Array.isArray(res)) {
         setRoutes(res);
         setTotal(res.length);
@@ -59,24 +61,32 @@ export function RoutesList() {
     fetchRoutes();
   }, [fetchRoutes]);
 
-  const handleSort = useCallback((field: string) => {
-    setSortOrder(sortBy === field && sortOrder === 'asc' ? 'desc' : 'asc');
-    setSortBy(field);
-  }, [sortBy, sortOrder]);
+  const handleSort = useCallback(
+    (field: string) => {
+      setSortOrder(sortBy === field && sortOrder === 'asc' ? 'desc' : 'asc');
+      setSortBy(field);
+    },
+    [sortBy, sortOrder],
+  );
 
-  const toggleStatus = useCallback(async (route: RoutePricing) => {
-    try {
-      await api.put(`/admin/routes/${route._id}`, { isActive: !route.isActive });
-      toast.success(`Route ${route.isActive ? 'deactivated' : 'activated'} successfully`);
-      fetchRoutes();
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Failed to update route status';
-      toast.error(message);
-    }
-  }, [fetchRoutes]);
+  const toggleStatus = useCallback(
+    async (route: RoutePricing) => {
+      try {
+        await api.put(`/admin/routes/${route._id}`, { isActive: !route.isActive });
+        toast.success(`Route ${route.isActive ? 'deactivated' : 'activated'} successfully`);
+        fetchRoutes();
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'Failed to update route status';
+        toast.error(message);
+      }
+    },
+    [fetchRoutes],
+  );
 
-  const thClass = 'text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3 cursor-pointer select-none';
-  const thStatic = 'text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3';
+  const thClass =
+    'text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3 cursor-pointer select-none';
+  const thStatic =
+    'text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3';
 
   return (
     <div>
@@ -134,9 +144,15 @@ export function RoutesList() {
                   <tr key={route._id} className="hover:bg-neutral-50 transition-colors">
                     <td className="px-4 py-3 text-sm font-medium text-neutral-900">{route.name}</td>
                     <td className="px-4 py-3 text-sm text-neutral-700">{route.distanceKm}</td>
-                    <td className="px-4 py-3 text-sm text-neutral-700">{formatCurrency(route.pricePerKm, true)}</td>
-                    <td className="px-4 py-3 text-sm text-neutral-700">{formatCurrency(route.baseFare, true)}</td>
-                    <td className="px-4 py-3 text-sm text-neutral-700">{formatCurrency(route.tollEstimate, true)}</td>
+                    <td className="px-4 py-3 text-sm text-neutral-700">
+                      {formatCurrency(route.pricePerKm, true)}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-neutral-700">
+                      {formatCurrency(route.baseFare, true)}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-neutral-700">
+                      {formatCurrency(route.tollEstimate, true)}
+                    </td>
                     <td className="px-4 py-3">
                       <Badge status={route.isActive ? 'confirmed' : 'cancelled'} />
                     </td>

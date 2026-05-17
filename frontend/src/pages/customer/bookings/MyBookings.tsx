@@ -26,7 +26,10 @@ const TAB_STATUS_MAP: Record<TabKey, string> = {
 };
 
 const EMPTY_STATE: Record<TabKey, { title: string; description: string }> = {
-  upcoming: { title: 'No upcoming bookings', description: 'Your upcoming rides will appear here once you book.' },
+  upcoming: {
+    title: 'No upcoming bookings',
+    description: 'Your upcoming rides will appear here once you book.',
+  },
   past: { title: 'No past rides', description: 'Completed rides will show up here.' },
   cancelled: { title: 'No cancelled bookings', description: 'Cancelled rides will appear here.' },
 };

@@ -1,13 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import {
-  CreditCard,
-  Star,
-  HelpCircle,
-  LogOut,
-  ChevronRight,
-  Pencil,
-} from 'lucide-react';
+import { CreditCard, Star, HelpCircle, LogOut, ChevronRight, Pencil } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { logout } from '@/store/slices/authSlice';
 import { PageHeader } from '@/components/ui/PageHeader';
@@ -24,12 +17,13 @@ export function CustomerProfile() {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((s) => s.auth);
 
-  const initials = user?.name
-    ?.split(' ')
-    .map((w) => w[0])
-    .join('')
-    .slice(0, 2)
-    .toUpperCase() || 'U';
+  const initials =
+    user?.name
+      ?.split(' ')
+      .map((w) => w[0])
+      .join('')
+      .slice(0, 2)
+      .toUpperCase() || 'U';
 
   const handleLogout = () => {
     dispatch(logout());
@@ -51,9 +45,7 @@ export function CustomerProfile() {
         </div>
         <h2 className="text-lg font-semibold text-neutral-900">{user?.name || 'Customer'}</h2>
         <p className="text-sm text-neutral-500">{user?.phone || ''}</p>
-        {user?.email && (
-          <p className="text-xs text-neutral-400 mt-0.5">{user.email}</p>
-        )}
+        {user?.email && <p className="text-xs text-neutral-400 mt-0.5">{user.email}</p>}
       </motion.div>
 
       {/* Menu */}

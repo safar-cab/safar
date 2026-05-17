@@ -107,7 +107,10 @@ export function Login() {
       {portal !== 'admin' && (
         <p className="text-center text-sm text-neutral-500 mt-6">
           Don&apos;t have an account?{' '}
-          <Link to={`/auth/signup?portal=${portal}`} className="text-primary-600 font-medium hover:underline">
+          <Link
+            to={`/auth/signup?portal=${portal}`}
+            className="text-primary-600 font-medium hover:underline"
+          >
             Sign up
           </Link>
         </p>

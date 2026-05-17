@@ -68,7 +68,9 @@ export function Signup() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-1.5">Email (optional)</label>
+          <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+            Email (optional)
+          </label>
           <div className="relative">
             <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-neutral-400" />
             <input
@@ -119,7 +121,10 @@ export function Signup() {
 
       <p className="text-center text-sm text-neutral-500 mt-6">
         Already have an account?{' '}
-        <Link to={`/auth/login?portal=${portal}`} className="text-primary-600 font-medium hover:underline">
+        <Link
+          to={`/auth/login?portal=${portal}`}
+          className="text-primary-600 font-medium hover:underline"
+        >
           Sign in
         </Link>
       </p>

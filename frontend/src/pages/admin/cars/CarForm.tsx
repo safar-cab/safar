@@ -54,11 +54,13 @@ export function CarForm() {
 
   const fetchCategories = useCallback(async () => {
     try {
-      const res = await api.get('/lookup/car-categories') as string[];
-      setCategoryOptions(res.map((c) => ({
-        value: c,
-        label: c.charAt(0).toUpperCase() + c.slice(1).replace(/_/g, ' '),
-      })));
+      const res = (await api.get('/lookup/car-categories')) as string[];
+      setCategoryOptions(
+        res.map((c) => ({
+          value: c,
+          label: c.charAt(0).toUpperCase() + c.slice(1).replace(/_/g, ' '),
+        })),
+      );
     } catch {
       setCategoryOptions([
         { value: 'sedan', label: 'Sedan' },
@@ -75,17 +77,19 @@ export function CarForm() {
       setDriversLoading(true);
       const params: Record<string, string> = {};
       if (query) params.search = query;
-      const res = await api.get('/lookup/drivers', { params }) as {
+      const res = (await api.get('/lookup/drivers', { params })) as {
         _id: string;
         userId: { name: string; phone: string } | string;
         licenseNumber: string;
         avgRating?: number;
       }[];
-      setDriverOptions(res.map((d) => ({
-        value: d._id,
-        label: typeof d.userId === 'object' ? d.userId.name : d._id,
-        sublabel: typeof d.userId === 'object' ? d.userId.phone : undefined,
-      })));
+      setDriverOptions(
+        res.map((d) => ({
+          value: d._id,
+          label: typeof d.userId === 'object' ? d.userId.name : d._id,
+          sublabel: typeof d.userId === 'object' ? d.userId.phone : undefined,
+        })),
+      );
     } catch {
       setDriverOptions([]);
     } finally {
@@ -138,42 +142,45 @@ export function CarForm() {
     setForm((prev) => ({ ...prev, [name]: value }));
   }, []);
 
-  const handleSubmit = useCallback(async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!form.registrationNumber || !form.make || !form.model) {
-      toast.error('Please fill in all required fields');
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const payload: Record<string, unknown> = {
-        registrationNumber: form.registrationNumber,
-        make: form.make,
-        model: form.model,
-        year: form.year ? Number(form.year) : undefined,
-        color: form.color || undefined,
-        category: form.category,
-        seats: Number(form.seats),
-        photos: form.photos,
-      };
-      if (form.assignedDriver) payload.assignedDriver = form.assignedDriver;
-
-      if (isEdit) {
-        await api.put(`/admin/cars/${id}`, payload);
-        toast.success('Car updated successfully');
-      } else {
-        await api.post('/admin/cars', payload);
-        toast.success('Car created successfully');
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!form.registrationNumber || !form.make || !form.model) {
+        toast.error('Please fill in all required fields');
+        return;
       }
-      navigate('/admin/cars');
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Failed to save car';
-      toast.error(message);
-    } finally {
-      setLoading(false);
-    }
-  }, [form, isEdit, id, navigate]);
+
+      setLoading(true);
+      try {
+        const payload: Record<string, unknown> = {
+          registrationNumber: form.registrationNumber,
+          make: form.make,
+          model: form.model,
+          year: form.year ? Number(form.year) : undefined,
+          color: form.color || undefined,
+          category: form.category,
+          seats: Number(form.seats),
+          photos: form.photos,
+        };
+        if (form.assignedDriver) payload.assignedDriver = form.assignedDriver;
+
+        if (isEdit) {
+          await api.put(`/admin/cars/${id}`, payload);
+          toast.success('Car updated successfully');
+        } else {
+          await api.post('/admin/cars', payload);
+          toast.success('Car created successfully');
+        }
+        navigate('/admin/cars');
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'Failed to save car';
+        toast.error(message);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [form, isEdit, id, navigate],
+  );
 
   if (fetching) {
     return (
@@ -192,7 +199,10 @@ export function CarForm() {
     <div>
       <PageHeader title={isEdit ? 'Edit Car' : 'Add New Car'} showBack />
 
-      <form onSubmit={handleSubmit} className="max-w-2xl bg-white rounded-xl shadow-sm border border-neutral-100 p-6">
+      <form
+        onSubmit={handleSubmit}
+        className="max-w-2xl bg-white rounded-xl shadow-sm border border-neutral-100 p-6"
+      >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input
             label="Registration Number *"

@@ -1,6 +1,12 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 import api from '@/lib/api';
-import { fetchAvailableCars, fetchAvailableCarsSuccess, fetchCarDetail, fetchCarDetailSuccess, carsError } from '../slices/carsSlice';
+import {
+  fetchAvailableCars,
+  fetchAvailableCarsSuccess,
+  fetchCarDetail,
+  fetchCarDetailSuccess,
+  carsError,
+} from '../slices/carsSlice';
 import type { Car } from '@/types';
 
 function* handleFetchAvailableCars(action: ReturnType<typeof fetchAvailableCars>) {

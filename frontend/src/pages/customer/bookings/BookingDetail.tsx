@@ -185,10 +185,7 @@ export function BookingDetail() {
                     />
                     {!isLast && (
                       <div
-                        className={cn(
-                          'w-0.5 h-6',
-                          isDone ? 'bg-success-500' : 'bg-neutral-200',
-                        )}
+                        className={cn('w-0.5 h-6', isDone ? 'bg-success-500' : 'bg-neutral-200')}
                       />
                     )}
                   </div>
@@ -262,7 +259,9 @@ export function BookingDetail() {
             Cancel Booking
           </Button>
         )}
-        {['driver_assigned', 'driver_en_route', 'picked_up', 'in_progress'].includes(booking.status) && (
+        {['driver_assigned', 'driver_en_route', 'picked_up', 'in_progress'].includes(
+          booking.status,
+        ) && (
           <Button
             variant="primary"
             size="lg"
@@ -286,7 +285,12 @@ export function BookingDetail() {
       </div>
 
       {/* Cancel Modal */}
-      <Modal open={cancelModal} onClose={() => setCancelModal(false)} title="Cancel Booking" size="sm">
+      <Modal
+        open={cancelModal}
+        onClose={() => setCancelModal(false)}
+        title="Cancel Booking"
+        size="sm"
+      >
         <p className="text-sm text-neutral-600 mb-4">
           Please tell us why you want to cancel this booking.
         </p>
@@ -298,10 +302,21 @@ export function BookingDetail() {
           className="w-full border border-neutral-200 rounded-lg px-4 py-3 text-sm text-neutral-800 placeholder:text-neutral-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100 resize-none"
         />
         <div className="flex gap-3 mt-4">
-          <Button variant="outline" size="lg" className="flex-1" onClick={() => setCancelModal(false)}>
+          <Button
+            variant="outline"
+            size="lg"
+            className="flex-1"
+            onClick={() => setCancelModal(false)}
+          >
             Keep Booking
           </Button>
-          <Button variant="danger" size="lg" className="flex-1" loading={cancelling} onClick={handleCancel}>
+          <Button
+            variant="danger"
+            size="lg"
+            className="flex-1"
+            loading={cancelling}
+            onClick={handleCancel}
+          >
             Confirm Cancel
           </Button>
         </div>

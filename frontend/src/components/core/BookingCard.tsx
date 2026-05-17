@@ -10,7 +10,11 @@ interface BookingCardProps {
   index?: number;
 }
 
-export const BookingCard = memo(function BookingCard({ booking, onClick, index = 0 }: BookingCardProps) {
+export const BookingCard = memo(function BookingCard({
+  booking,
+  onClick,
+  index = 0,
+}: BookingCardProps) {
   const car = typeof booking.car === 'object' ? booking.car : null;
 
   return (
@@ -39,11 +43,18 @@ export const BookingCard = memo(function BookingCard({ booking, onClick, index =
 
       <div className="flex items-center justify-between mt-3 pt-3 border-t border-neutral-100">
         <div className="flex items-center gap-3 text-xs text-neutral-500">
-          {car && <span>{car.make} {car.model}</span>}
+          {car && (
+            <span>
+              {car.make} {car.model}
+            </span>
+          )}
           <span className="flex items-center gap-1">
             <Clock className="w-3.5 h-3.5" />
             {booking.schedule?.startDate
-              ? new Date(booking.schedule.startDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })
+              ? new Date(booking.schedule.startDate).toLocaleDateString('en-IN', {
+                  day: 'numeric',
+                  month: 'short',
+                })
               : ''}
           </span>
         </div>

@@ -11,15 +11,17 @@ export function MyRatings() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get('/driver/ratings/my')
+    api
+      .get('/driver/ratings/my')
       .then((data) => setRatings(data as unknown as Rating[]))
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 
-  const avgRating = ratings.length > 0
-    ? (ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length).toFixed(1)
-    : '0.0';
+  const avgRating =
+    ratings.length > 0
+      ? (ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length).toFixed(1)
+      : '0.0';
 
   return (
     <div className="p-4">
@@ -33,7 +35,11 @@ export function MyRatings() {
           <Skeleton className="h-20 rounded-xl" />
         </div>
       ) : ratings.length === 0 ? (
-        <EmptyState icon={Star} title="No ratings yet" description="Complete rides to get ratings from customers" />
+        <EmptyState
+          icon={Star}
+          title="No ratings yet"
+          description="Complete rides to get ratings from customers"
+        />
       ) : (
         <>
           {/* Average */}
@@ -51,7 +57,9 @@ export function MyRatings() {
                 />
               ))}
             </div>
-            <p className="text-sm text-neutral-500">{ratings.length} rating{ratings.length !== 1 ? 's' : ''}</p>
+            <p className="text-sm text-neutral-500">
+              {ratings.length} rating{ratings.length !== 1 ? 's' : ''}
+            </p>
           </motion.div>
 
           {/* List */}
@@ -74,7 +82,10 @@ export function MyRatings() {
                     ))}
                   </div>
                   <span className="text-xs text-neutral-400">
-                    {new Date(rating.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
+                    {new Date(rating.createdAt).toLocaleDateString('en-IN', {
+                      day: 'numeric',
+                      month: 'short',
+                    })}
                   </span>
                 </div>
                 {rating.review && (

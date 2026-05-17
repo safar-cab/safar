@@ -29,10 +29,21 @@ const bookingsSlice = createSlice({
   name: 'bookings',
   initialState,
   reducers: {
-    fetchBookings: (state, _action: PayloadAction<{ page?: number; status?: string; limit?: number }>) => {
+    fetchBookings: (
+      state,
+      _action: PayloadAction<{ page?: number; status?: string; limit?: number }>,
+    ) => {
       state.loading = true;
     },
-    fetchBookingsSuccess: (state, action: PayloadAction<{ bookings: Booking[]; total: number; page: number; totalPages: number }>) => {
+    fetchBookingsSuccess: (
+      state,
+      action: PayloadAction<{
+        bookings: Booking[];
+        total: number;
+        page: number;
+        totalPages: number;
+      }>,
+    ) => {
       state.list = action.payload.bookings;
       state.total = action.payload.total;
       state.page = action.payload.page;
@@ -62,7 +73,10 @@ const bookingsSlice = createSlice({
       state.cancelling = false;
       state.current = action.payload;
     },
-    rateBooking: (state, _action: PayloadAction<{ bookingId: string; rating: number; review?: string }>) => {
+    rateBooking: (
+      state,
+      _action: PayloadAction<{ bookingId: string; rating: number; review?: string }>,
+    ) => {
       state.loading = true;
     },
     rateBookingSuccess: (state) => {
@@ -81,11 +95,17 @@ const bookingsSlice = createSlice({
 });
 
 export const {
-  fetchBookings, fetchBookingsSuccess,
-  fetchBookingDetail, fetchBookingDetailSuccess,
-  createBooking, createBookingSuccess,
-  cancelBooking, cancelBookingSuccess,
-  rateBooking, rateBookingSuccess,
-  bookingsError, clearBookingError,
+  fetchBookings,
+  fetchBookingsSuccess,
+  fetchBookingDetail,
+  fetchBookingDetailSuccess,
+  createBooking,
+  createBookingSuccess,
+  cancelBooking,
+  cancelBookingSuccess,
+  rateBooking,
+  rateBookingSuccess,
+  bookingsError,
+  clearBookingError,
 } = bookingsSlice.actions;
 export default bookingsSlice.reducer;

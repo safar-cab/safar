@@ -7,7 +7,11 @@ interface BadgeProps {
 }
 
 export function Badge({ status, className }: BadgeProps) {
-  const config = STATUS_CONFIG[status] || { label: status, bg: 'bg-neutral-100', text: 'text-neutral-600' };
+  const config = STATUS_CONFIG[status] || {
+    label: status,
+    bg: 'bg-neutral-100',
+    text: 'text-neutral-600',
+  };
 
   return (
     <span

@@ -37,11 +37,13 @@ export function BookingsList() {
 
   const fetchStatuses = useCallback(async () => {
     try {
-      const res = await api.get('/lookup/booking-statuses') as string[];
-      setStatusOptions(res.map((s) => ({
-        value: s,
-        label: s.charAt(0).toUpperCase() + s.slice(1).replace(/_/g, ' '),
-      })));
+      const res = (await api.get('/lookup/booking-statuses')) as string[];
+      setStatusOptions(
+        res.map((s) => ({
+          value: s,
+          label: s.charAt(0).toUpperCase() + s.slice(1).replace(/_/g, ' '),
+        })),
+      );
     } catch {
       setStatusOptions([
         { value: 'pending', label: 'Pending' },
@@ -68,7 +70,7 @@ export function BookingsList() {
       };
       if (statusFilter) params.status = statusFilter;
       if (debouncedSearch) params.search = debouncedSearch;
-      const res = await api.get('/admin/bookings', { params }) as {
+      const res = (await api.get('/admin/bookings', { params })) as {
         bookings?: Booking[];
         data?: Booking[];
         total?: number;
@@ -97,10 +99,13 @@ export function BookingsList() {
     setPage(1);
   }, [debouncedSearch, statusFilter]);
 
-  const handleSort = useCallback((field: string) => {
-    setSortOrder(sortBy === field && sortOrder === 'asc' ? 'desc' : 'asc');
-    setSortBy(field);
-  }, [sortBy, sortOrder]);
+  const handleSort = useCallback(
+    (field: string) => {
+      setSortOrder(sortBy === field && sortOrder === 'asc' ? 'desc' : 'asc');
+      setSortBy(field);
+    },
+    [sortBy, sortOrder],
+  );
 
   const getCustomerName = useCallback((booking: Booking): string => {
     if (typeof booking.user === 'object' && booking.user !== null) {
@@ -117,13 +122,15 @@ export function BookingsList() {
     return '-';
   }, []);
 
-  const statusFilterOptions = useMemo(() => [
-    { value: '', label: 'All Statuses' },
-    ...statusOptions,
-  ], [statusOptions]);
+  const statusFilterOptions = useMemo(
+    () => [{ value: '', label: 'All Statuses' }, ...statusOptions],
+    [statusOptions],
+  );
 
-  const thClass = 'text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3 cursor-pointer select-none';
-  const thStatic = 'text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3';
+  const thClass =
+    'text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3 cursor-pointer select-none';
+  const thStatic =
+    'text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3';
 
   return (
     <div>
@@ -188,18 +195,24 @@ export function BookingsList() {
               <tbody className="divide-y divide-neutral-100">
                 {bookings.map((booking) => (
                   <tr key={booking._id} className="hover:bg-neutral-50 transition-colors">
-                    <td className="px-4 py-3 text-sm font-medium text-primary-600">{booking.bookingId}</td>
-                    <td className="px-4 py-3 text-sm text-neutral-700">{getCustomerName(booking)}</td>
+                    <td className="px-4 py-3 text-sm font-medium text-primary-600">
+                      {booking.bookingId}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-neutral-700">
+                      {getCustomerName(booking)}
+                    </td>
                     <td className="px-4 py-3 text-sm text-neutral-700">{getCarInfo(booking)}</td>
                     <td className="px-4 py-3 text-sm text-neutral-700">
-                      <span className="truncate max-w-[150px] inline-block" title={`${booking.pickup.address} → ${booking.drop.address}`}>
-                        {booking.pickup.address?.split(',')[0]} → {booking.drop.address?.split(',')[0]}
+                      <span
+                        className="truncate max-w-[150px] inline-block"
+                        title={`${booking.pickup.address} → ${booking.drop.address}`}
+                      >
+                        {booking.pickup.address?.split(',')[0]} →{' '}
+                        {booking.drop.address?.split(',')[0]}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-sm text-neutral-700">
-                      {booking.schedule?.startDate
-                        ? formatDate(booking.schedule.startDate)
-                        : '-'}
+                      {booking.schedule?.startDate ? formatDate(booking.schedule.startDate) : '-'}
                     </td>
                     <td className="px-4 py-3">
                       <Badge status={booking.status} />

@@ -94,7 +94,13 @@ export function UserDetail() {
               Unblock User
             </Button>
           ) : (
-            <Button variant="danger" onClick={() => { setBlockReason(''); setBlockModal(true); }}>
+            <Button
+              variant="danger"
+              onClick={() => {
+                setBlockReason('');
+                setBlockModal(true);
+              }}
+            >
               <ShieldBan className="w-4 h-4" />
               Block User
             </Button>
@@ -203,8 +209,12 @@ export function UserDetail() {
             placeholder="Enter reason..."
           />
           <div className="flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setBlockModal(false)}>Cancel</Button>
-            <Button variant="danger" loading={blocking} onClick={handleBlock}>Block User</Button>
+            <Button variant="outline" onClick={() => setBlockModal(false)}>
+              Cancel
+            </Button>
+            <Button variant="danger" loading={blocking} onClick={handleBlock}>
+              Block User
+            </Button>
           </div>
         </div>
       </Modal>

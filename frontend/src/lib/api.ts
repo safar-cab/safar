@@ -27,7 +27,9 @@ api.interceptors.response.use(
       }
     }
     const message = error.response?.data?.message;
-    const errorMsg = Array.isArray(message) ? message.join(', ') : message || 'Something went wrong';
+    const errorMsg = Array.isArray(message)
+      ? message.join(', ')
+      : message || 'Something went wrong';
     return Promise.reject(new Error(errorMsg));
   },
 );

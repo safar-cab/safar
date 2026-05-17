@@ -3,7 +3,10 @@ export function formatCurrency(amount: number, fromPaise = false): string {
   return `₹${value.toLocaleString('en-IN')}`;
 }
 
-export function formatDate(date: string | Date, format: 'short' | 'long' | 'datetime' = 'short'): string {
+export function formatDate(
+  date: string | Date,
+  format: 'short' | 'long' | 'datetime' = 'short',
+): string {
   const d = new Date(date);
   switch (format) {
     case 'short':
@@ -12,8 +15,11 @@ export function formatDate(date: string | Date, format: 'short' | 'long' | 'date
       return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
     case 'datetime':
       return d.toLocaleDateString('en-IN', {
-        day: 'numeric', month: 'short', year: 'numeric',
-        hour: '2-digit', minute: '2-digit',
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
       });
   }
 }

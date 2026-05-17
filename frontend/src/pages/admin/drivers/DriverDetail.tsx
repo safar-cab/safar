@@ -18,7 +18,7 @@ export function DriverDetail() {
   const fetchDriver = async () => {
     try {
       setLoading(true);
-      const res = await api.get(`/admin/drivers/${id}`) as Driver;
+      const res = (await api.get(`/admin/drivers/${id}`)) as Driver;
       setDriver(res);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Failed to fetch driver';
@@ -86,7 +86,11 @@ export function DriverDetail() {
         {/* Driver Photo */}
         <div className="bg-white rounded-xl shadow-sm border border-neutral-100 p-6 flex items-center gap-5">
           {driver.photo ? (
-            <img src={driver.photo} alt={user.name || 'Driver'} className="w-20 h-20 rounded-full object-cover ring-2 ring-primary-100" />
+            <img
+              src={driver.photo}
+              alt={user.name || 'Driver'}
+              className="w-20 h-20 rounded-full object-cover ring-2 ring-primary-100"
+            />
           ) : (
             <div className="w-20 h-20 rounded-full bg-neutral-100 flex items-center justify-center">
               <UserCircle className="w-10 h-10 text-neutral-300" />
@@ -119,7 +123,9 @@ export function DriverDetail() {
             </div>
             <div>
               <p className="text-xs text-neutral-500 uppercase tracking-wider">Role</p>
-              <p className="text-sm font-medium text-neutral-900 mt-1 capitalize">{user.role || '-'}</p>
+              <p className="text-sm font-medium text-neutral-900 mt-1 capitalize">
+                {user.role || '-'}
+              </p>
             </div>
           </div>
         </div>
@@ -135,24 +141,32 @@ export function DriverDetail() {
             <div>
               <p className="text-xs text-neutral-500 uppercase tracking-wider">License Expiry</p>
               <p className="text-sm font-medium text-neutral-900 mt-1">
-                {driver.licenseExpiry ? new Date(driver.licenseExpiry).toLocaleDateString('en-IN') : '-'}
+                {driver.licenseExpiry
+                  ? new Date(driver.licenseExpiry).toLocaleDateString('en-IN')
+                  : '-'}
               </p>
             </div>
             <div>
-              <p className="text-xs text-neutral-500 uppercase tracking-wider">Verification Status</p>
+              <p className="text-xs text-neutral-500 uppercase tracking-wider">
+                Verification Status
+              </p>
               <div className="mt-1">
                 <Badge status={driver.isVerified ? 'completed' : 'pending'} />
               </div>
             </div>
             <div>
               <p className="text-xs text-neutral-500 uppercase tracking-wider">Availability</p>
-              <p className="text-sm font-medium text-neutral-900 mt-1">{driver.isAvailable ? 'Available' : 'Unavailable'}</p>
+              <p className="text-sm font-medium text-neutral-900 mt-1">
+                {driver.isAvailable ? 'Available' : 'Unavailable'}
+              </p>
             </div>
             <div>
               <p className="text-xs text-neutral-500 uppercase tracking-wider">Average Rating</p>
               <div className="flex items-center gap-1 mt-1">
                 <Star className="w-4 h-4 text-warning-500 fill-warning-500" />
-                <span className="text-sm font-medium text-neutral-900">{driver.avgRating?.toFixed(1) || '0.0'}</span>
+                <span className="text-sm font-medium text-neutral-900">
+                  {driver.avgRating?.toFixed(1) || '0.0'}
+                </span>
               </div>
             </div>
             <div>
@@ -170,7 +184,9 @@ export function DriverDetail() {
 
         {/* Document Photos */}
         {(() => {
-          const docPhotos = [driver.licensePhoto, driver.aadhaarPhoto].filter((p): p is string => Boolean(p));
+          const docPhotos = [driver.licensePhoto, driver.aadhaarPhoto].filter((p): p is string =>
+            Boolean(p),
+          );
           return docPhotos.length > 0 ? (
             <div className="bg-white rounded-xl shadow-sm border border-neutral-100 p-6">
               <h3 className="text-base font-semibold text-neutral-900 mb-4">Document Photos</h3>

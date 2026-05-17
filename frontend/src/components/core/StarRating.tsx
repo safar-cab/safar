@@ -27,9 +27,7 @@ export function StarRating({ value, onChange, size = 'md', readonly }: StarRatin
           <Star
             className={cn(
               sizes[size],
-              star <= value
-                ? 'text-secondary-400 fill-secondary-400'
-                : 'text-neutral-200',
+              star <= value ? 'text-secondary-400 fill-secondary-400' : 'text-neutral-200',
             )}
           />
         </motion.button>

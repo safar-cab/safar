@@ -82,31 +82,34 @@ export function Settings() {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   }, []);
 
-  const handleSubmit = useCallback(async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSaving(true);
-    try {
-      await api.put('/admin/dashboard/settings', {
-        companyName: form.companyName,
-        phone: form.phone,
-        email: form.email,
-        defaultPricePerKm: Number(form.defaultPricePerKm),
-        razorpayKeyId: form.razorpayKeyId,
-        razorpayKeySecret: form.razorpayKeySecret,
-        webhookSecret: form.webhookSecret,
-        smtpHost: form.smtpHost,
-        smtpPort: form.smtpPort ? Number(form.smtpPort) : undefined,
-        smtpUser: form.smtpUser,
-        smtpFrom: form.smtpFrom,
-      });
-      toast.success('Settings saved successfully');
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Failed to save settings';
-      toast.error(message);
-    } finally {
-      setSaving(false);
-    }
-  }, [form]);
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
+      setSaving(true);
+      try {
+        await api.put('/admin/dashboard/settings', {
+          companyName: form.companyName,
+          phone: form.phone,
+          email: form.email,
+          defaultPricePerKm: Number(form.defaultPricePerKm),
+          razorpayKeyId: form.razorpayKeyId,
+          razorpayKeySecret: form.razorpayKeySecret,
+          webhookSecret: form.webhookSecret,
+          smtpHost: form.smtpHost,
+          smtpPort: form.smtpPort ? Number(form.smtpPort) : undefined,
+          smtpUser: form.smtpUser,
+          smtpFrom: form.smtpFrom,
+        });
+        toast.success('Settings saved successfully');
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'Failed to save settings';
+        toast.error(message);
+      } finally {
+        setSaving(false);
+      }
+    },
+    [form],
+  );
 
   if (loading) {
     return (
@@ -143,7 +146,10 @@ export function Settings() {
         ))}
       </div>
 
-      <form onSubmit={handleSubmit} className="max-w-2xl bg-white rounded-xl shadow-sm border border-neutral-100 p-6">
+      <form
+        onSubmit={handleSubmit}
+        className="max-w-2xl bg-white rounded-xl shadow-sm border border-neutral-100 p-6"
+      >
         {/* General Tab */}
         {activeTab === 'general' && (
           <div className="space-y-4">

@@ -1,7 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, MapPin, Phone, User, Car, Clock, Navigation, CheckCircle, AlertCircle } from 'lucide-react';
+import {
+  ChevronLeft,
+  MapPin,
+  Phone,
+  User,
+  Car,
+  Clock,
+  Navigation,
+  CheckCircle,
+  AlertCircle,
+} from 'lucide-react';
 import api from '@/lib/api';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
@@ -9,11 +19,34 @@ import { Skeleton } from '@/components/ui/Skeleton';
 import type { Booking } from '@/types';
 import toast from 'react-hot-toast';
 
-const STATUS_ACTIONS: Record<string, { label: string; next: string; icon: typeof Navigation; color: string }> = {
-  driver_assigned: { label: 'Start — En Route', next: 'driver_en_route', icon: Navigation, color: 'bg-primary-600 hover:bg-primary-700' },
-  driver_en_route: { label: 'Arrived at Pickup', next: 'picked_up', icon: MapPin, color: 'bg-secondary-500 hover:bg-secondary-600' },
-  picked_up: { label: 'Start Ride', next: 'in_progress', icon: Car, color: 'bg-primary-600 hover:bg-primary-700' },
-  in_progress: { label: 'Complete Ride', next: 'completed', icon: CheckCircle, color: 'bg-success-600 hover:bg-success-700' },
+const STATUS_ACTIONS: Record<
+  string,
+  { label: string; next: string; icon: typeof Navigation; color: string }
+> = {
+  driver_assigned: {
+    label: 'Start — En Route',
+    next: 'driver_en_route',
+    icon: Navigation,
+    color: 'bg-primary-600 hover:bg-primary-700',
+  },
+  driver_en_route: {
+    label: 'Arrived at Pickup',
+    next: 'picked_up',
+    icon: MapPin,
+    color: 'bg-secondary-500 hover:bg-secondary-600',
+  },
+  picked_up: {
+    label: 'Start Ride',
+    next: 'in_progress',
+    icon: Car,
+    color: 'bg-primary-600 hover:bg-primary-700',
+  },
+  in_progress: {
+    label: 'Complete Ride',
+    next: 'completed',
+    icon: CheckCircle,
+    color: 'bg-success-600 hover:bg-success-700',
+  },
 };
 
 export function RideDetail() {
@@ -25,7 +58,8 @@ export function RideDetail() {
   const [confirmStatus, setConfirmStatus] = useState<string | null>(null);
 
   useEffect(() => {
-    api.get(`/driver/bookings/${id}`)
+    api
+      .get(`/driver/bookings/${id}`)
       .then((data) => setRide(data as unknown as Booking))
       .catch(() => toast.error('Failed to load ride'))
       .finally(() => setLoading(false));
@@ -34,7 +68,9 @@ export function RideDetail() {
   const updateStatus = async (status: string) => {
     setUpdating(true);
     try {
-      const updated = await api.put(`/driver/bookings/${id}/status`, { status }) as unknown as Booking;
+      const updated = (await api.put(`/driver/bookings/${id}/status`, {
+        status,
+      })) as unknown as Booking;
       setRide(updated);
       setConfirmStatus(null);
       toast.success(`Status updated to ${status.replace(/_/g, ' ')}`);
@@ -68,12 +104,19 @@ export function RideDetail() {
   return (
     <div className="p-4 pb-28 space-y-4">
       {/* Back */}
-      <button onClick={() => navigate(-1)} className="flex items-center gap-1 text-sm text-neutral-600">
+      <button
+        onClick={() => navigate(-1)}
+        className="flex items-center gap-1 text-sm text-neutral-600"
+      >
         <ChevronLeft className="w-4 h-4" /> Back
       </button>
 
       {/* Status */}
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white rounded-xl p-4 shadow-sm border border-neutral-100">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="bg-white rounded-xl p-4 shadow-sm border border-neutral-100"
+      >
         <div className="flex items-center justify-between mb-3">
           <span className="text-sm font-mono text-neutral-400">{ride.bookingId}</span>
           <Badge status={ride.status} />
@@ -91,12 +134,16 @@ export function RideDetail() {
               <div>
                 <p className="text-xs text-neutral-400 font-medium">PICKUP</p>
                 <p className="text-sm text-neutral-800 font-medium">{ride.pickup?.address}</p>
-                {ride.pickup?.landmark && <p className="text-xs text-neutral-500">{ride.pickup.landmark}</p>}
+                {ride.pickup?.landmark && (
+                  <p className="text-xs text-neutral-500">{ride.pickup.landmark}</p>
+                )}
               </div>
               <div>
                 <p className="text-xs text-neutral-400 font-medium">DROP</p>
                 <p className="text-sm text-neutral-800 font-medium">{ride.drop?.address}</p>
-                {ride.drop?.landmark && <p className="text-xs text-neutral-500">{ride.drop.landmark}</p>}
+                {ride.drop?.landmark && (
+                  <p className="text-xs text-neutral-500">{ride.drop.landmark}</p>
+                )}
               </div>
             </div>
           </div>
@@ -105,7 +152,10 @@ export function RideDetail() {
 
       {/* Customer Info */}
       {customer && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
           className="bg-white rounded-xl p-4 shadow-sm border border-neutral-100"
         >
           <p className="text-xs text-neutral-400 font-medium mb-2">CUSTOMER</p>
@@ -119,7 +169,10 @@ export function RideDetail() {
                 <p className="text-xs text-neutral-500">{customer.phone}</p>
               </div>
             </div>
-            <a href={`tel:${customer.phone}`} className="w-10 h-10 rounded-full bg-success-50 flex items-center justify-center">
+            <a
+              href={`tel:${customer.phone}`}
+              className="w-10 h-10 rounded-full bg-success-50 flex items-center justify-center"
+            >
               <Phone className="w-5 h-5 text-success-600" />
             </a>
           </div>
@@ -127,7 +180,10 @@ export function RideDetail() {
       )}
 
       {/* Car + Schedule */}
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.15 }}
         className="bg-white rounded-xl p-4 shadow-sm border border-neutral-100"
       >
         <div className="grid grid-cols-2 gap-4">
@@ -143,7 +199,12 @@ export function RideDetail() {
             <div className="flex items-center gap-2">
               <Clock className="w-4 h-4 text-neutral-500" />
               <p className="text-sm text-neutral-800">
-                {ride.schedule?.startDate ? new Date(ride.schedule.startDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : ''}{' '}
+                {ride.schedule?.startDate
+                  ? new Date(ride.schedule.startDate).toLocaleDateString('en-IN', {
+                      day: 'numeric',
+                      month: 'short',
+                    })
+                  : ''}{' '}
                 {ride.schedule?.startTime}
               </p>
             </div>
@@ -167,8 +228,20 @@ export function RideDetail() {
                   <p className="text-sm font-medium">Confirm: {action.label}?</p>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" size="lg" className="flex-1" onClick={() => setConfirmStatus(null)}>Cancel</Button>
-                  <Button size="lg" className={`flex-1 ${action.color} text-white`} loading={updating} onClick={() => updateStatus(action.next)}>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="flex-1"
+                    onClick={() => setConfirmStatus(null)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    size="lg"
+                    className={`flex-1 ${action.color} text-white`}
+                    loading={updating}
+                    onClick={() => updateStatus(action.next)}
+                  >
                     Confirm
                   </Button>
                 </div>

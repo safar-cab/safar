@@ -44,11 +44,13 @@ export function UsersList() {
 
   const fetchRoles = useCallback(async () => {
     try {
-      const res = await api.get('/lookup/user-roles') as string[];
-      setRoleOptions(res.map((r) => ({
-        value: r,
-        label: r.charAt(0).toUpperCase() + r.slice(1),
-      })));
+      const res = (await api.get('/lookup/user-roles')) as string[];
+      setRoleOptions(
+        res.map((r) => ({
+          value: r,
+          label: r.charAt(0).toUpperCase() + r.slice(1),
+        })),
+      );
     } catch {
       setRoleOptions([
         { value: 'customer', label: 'Customer' },
@@ -69,7 +71,7 @@ export function UsersList() {
       };
       if (roleFilter) params.role = roleFilter;
       if (debouncedSearch) params.search = debouncedSearch;
-      const res = await api.get('/admin/users', { params }) as {
+      const res = (await api.get('/admin/users', { params })) as {
         users?: User[];
         data?: User[];
         total?: number;
@@ -98,10 +100,13 @@ export function UsersList() {
     setPage(1);
   }, [debouncedSearch, roleFilter]);
 
-  const handleSort = useCallback((field: string) => {
-    setSortOrder(sortBy === field && sortOrder === 'asc' ? 'desc' : 'asc');
-    setSortBy(field);
-  }, [sortBy, sortOrder]);
+  const handleSort = useCallback(
+    (field: string) => {
+      setSortOrder(sortBy === field && sortOrder === 'asc' ? 'desc' : 'asc');
+      setSortBy(field);
+    },
+    [sortBy, sortOrder],
+  );
 
   const openBlockModal = useCallback((user: User) => {
     setBlockTarget(user);
@@ -125,33 +130,42 @@ export function UsersList() {
     }
   }, [blockTarget, blockReason, fetchUsers]);
 
-  const handleUnblock = useCallback(async (userId: string) => {
-    try {
-      await api.put(`/admin/users/${userId}/unblock`);
-      toast.success('User unblocked successfully');
-      fetchUsers();
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Failed to unblock user';
-      toast.error(message);
-    }
-  }, [fetchUsers]);
+  const handleUnblock = useCallback(
+    async (userId: string) => {
+      try {
+        await api.put(`/admin/users/${userId}/unblock`);
+        toast.success('User unblocked successfully');
+        fetchUsers();
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'Failed to unblock user';
+        toast.error(message);
+      }
+    },
+    [fetchUsers],
+  );
 
   const getRoleBadgeStatus = useCallback((role: string) => {
     switch (role) {
-      case 'admin': return 'driver_assigned';
-      case 'driver': return 'confirmed';
-      case 'customer': return 'created';
-      default: return 'created';
+      case 'admin':
+        return 'driver_assigned';
+      case 'driver':
+        return 'confirmed';
+      case 'customer':
+        return 'created';
+      default:
+        return 'created';
     }
   }, []);
 
-  const roleFilterOptions = useMemo(() => [
-    { value: '', label: 'All Roles' },
-    ...roleOptions,
-  ], [roleOptions]);
+  const roleFilterOptions = useMemo(
+    () => [{ value: '', label: 'All Roles' }, ...roleOptions],
+    [roleOptions],
+  );
 
-  const thClass = 'text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3 cursor-pointer select-none';
-  const thStatic = 'text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3';
+  const thClass =
+    'text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3 cursor-pointer select-none';
+  const thStatic =
+    'text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3';
 
   return (
     <div>
@@ -218,7 +232,9 @@ export function UsersList() {
                 {users.map((user) => (
                   <tr key={user._id} className="hover:bg-neutral-50 transition-colors">
                     <td className="px-4 py-3 text-sm font-medium text-neutral-900">{user.name}</td>
-                    <td className="px-4 py-3 text-sm text-neutral-700">{formatPhone(user.phone)}</td>
+                    <td className="px-4 py-3 text-sm text-neutral-700">
+                      {formatPhone(user.phone)}
+                    </td>
                     <td className="px-4 py-3 text-sm text-neutral-700">{user.email || '-'}</td>
                     <td className="px-4 py-3">
                       <Badge status={getRoleBadgeStatus(user.role)} />
@@ -242,20 +258,13 @@ export function UsersList() {
                         </Tooltip>
                         {user.isBlocked ? (
                           <Tooltip content="Unblock user">
-                            <Button
-                              size="sm"
-                              onClick={() => handleUnblock(user._id)}
-                            >
+                            <Button size="sm" onClick={() => handleUnblock(user._id)}>
                               <ShieldCheck className="w-3.5 h-3.5" />
                             </Button>
                           </Tooltip>
                         ) : (
                           <Tooltip content="Block user">
-                            <Button
-                              variant="danger"
-                              size="sm"
-                              onClick={() => openBlockModal(user)}
-                            >
+                            <Button variant="danger" size="sm" onClick={() => openBlockModal(user)}>
                               <ShieldBan className="w-3.5 h-3.5" />
                             </Button>
                           </Tooltip>
@@ -276,7 +285,8 @@ export function UsersList() {
       <Modal open={blockModal} onClose={() => setBlockModal(false)} title="Block User">
         <div className="space-y-4">
           <p className="text-sm text-neutral-600">
-            Are you sure you want to block <span className="font-semibold">{blockTarget?.name}</span>?
+            Are you sure you want to block{' '}
+            <span className="font-semibold">{blockTarget?.name}</span>?
           </p>
           <Input
             label="Reason for blocking"
@@ -285,8 +295,12 @@ export function UsersList() {
             placeholder="Enter reason..."
           />
           <div className="flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setBlockModal(false)}>Cancel</Button>
-            <Button variant="danger" loading={blocking} onClick={handleBlock}>Block User</Button>
+            <Button variant="outline" onClick={() => setBlockModal(false)}>
+              Cancel
+            </Button>
+            <Button variant="danger" loading={blocking} onClick={handleBlock}>
+              Block User
+            </Button>
           </div>
         </div>
       </Modal>

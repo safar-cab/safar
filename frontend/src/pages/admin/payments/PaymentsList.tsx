@@ -56,7 +56,7 @@ export function PaymentsList() {
         sortOrder,
       };
       if (statusFilter) params.status = statusFilter;
-      const res = await api.get('/admin/payments', { params }) as {
+      const res = (await api.get('/admin/payments', { params })) as {
         payments?: Payment[];
         data?: Payment[];
         total?: number;
@@ -81,10 +81,13 @@ export function PaymentsList() {
     setPage(1);
   }, [statusFilter]);
 
-  const handleSort = useCallback((field: string) => {
-    setSortOrder(sortBy === field && sortOrder === 'asc' ? 'desc' : 'asc');
-    setSortBy(field);
-  }, [sortBy, sortOrder]);
+  const handleSort = useCallback(
+    (field: string) => {
+      setSortOrder(sortBy === field && sortOrder === 'asc' ? 'desc' : 'asc');
+      setSortBy(field);
+    },
+    [sortBy, sortOrder],
+  );
 
   const getBookingId = useCallback((payment: Payment): string => {
     if (typeof payment.booking === 'object' && payment.booking !== null) {
@@ -129,7 +132,10 @@ export function PaymentsList() {
     setGeneratedLink('');
     setLinkModal(true);
     try {
-      const res = await api.post(`/admin/payments/${paymentId}/generate-link`) as { link?: string; url?: string };
+      const res = (await api.post(`/admin/payments/${paymentId}/generate-link`)) as {
+        link?: string;
+        url?: string;
+      };
       setGeneratedLink(res.link || res.url || '');
       toast.success('Payment link generated');
     } catch (err: unknown) {
@@ -146,8 +152,10 @@ export function PaymentsList() {
     toast.success('Link copied to clipboard');
   }, [generatedLink]);
 
-  const thClass = 'text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3 cursor-pointer select-none';
-  const thStatic = 'text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3';
+  const thClass =
+    'text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3 cursor-pointer select-none';
+  const thStatic =
+    'text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3';
 
   return (
     <div>
@@ -205,10 +213,18 @@ export function PaymentsList() {
               <tbody className="divide-y divide-neutral-100">
                 {payments.map((payment) => (
                   <tr key={payment._id} className="hover:bg-neutral-50 transition-colors">
-                    <td className="px-4 py-3 text-sm font-medium text-primary-600">{getBookingId(payment)}</td>
-                    <td className="px-4 py-3 text-sm text-neutral-700">{getCustomerName(payment)}</td>
-                    <td className="px-4 py-3 text-sm font-medium text-neutral-900">{formatCurrency(payment.amount, true)}</td>
-                    <td className="px-4 py-3 text-sm text-neutral-700 capitalize">{payment.method || '-'}</td>
+                    <td className="px-4 py-3 text-sm font-medium text-primary-600">
+                      {getBookingId(payment)}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-neutral-700">
+                      {getCustomerName(payment)}
+                    </td>
+                    <td className="px-4 py-3 text-sm font-medium text-neutral-900">
+                      {formatCurrency(payment.amount, true)}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-neutral-700 capitalize">
+                      {payment.method || '-'}
+                    </td>
                     <td className="px-4 py-3">
                       <Badge status={payment.status} />
                     </td>
@@ -264,7 +280,10 @@ export function PaymentsList() {
       <Modal open={refundModal} onClose={() => setRefundModal(false)} title="Process Refund">
         <div className="space-y-4">
           <p className="text-sm text-neutral-600">
-            Payment amount: <span className="font-semibold">{refundTarget ? formatCurrency(refundTarget.amount, true) : ''}</span>
+            Payment amount:{' '}
+            <span className="font-semibold">
+              {refundTarget ? formatCurrency(refundTarget.amount, true) : ''}
+            </span>
           </p>
           <Input
             label="Refund Amount (in rupees, optional - leave empty for full refund)"
@@ -274,8 +293,12 @@ export function PaymentsList() {
             placeholder="e.g. 500"
           />
           <div className="flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setRefundModal(false)}>Cancel</Button>
-            <Button loading={refunding} onClick={handleRefund}>Process Refund</Button>
+            <Button variant="outline" onClick={() => setRefundModal(false)}>
+              Cancel
+            </Button>
+            <Button loading={refunding} onClick={handleRefund}>
+              Process Refund
+            </Button>
           </div>
         </div>
       </Modal>
@@ -291,7 +314,9 @@ export function PaymentsList() {
                 <p className="text-sm text-neutral-700 break-all">{generatedLink}</p>
               </div>
               <div className="flex justify-end gap-3">
-                <Button variant="outline" onClick={() => setLinkModal(false)}>Close</Button>
+                <Button variant="outline" onClick={() => setLinkModal(false)}>
+                  Close
+                </Button>
                 <Button onClick={handleCopyLink}>Copy Link</Button>
               </div>
             </>

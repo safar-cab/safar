@@ -27,18 +27,22 @@ export function StepIndicator({ steps, current }: StepIndicatorProps) {
               >
                 {isCompleted ? <Check className="w-4 h-4" /> : stepNum}
               </div>
-              <span className={cn(
-                'text-[10px] mt-1 font-medium text-center w-14',
-                isActive ? 'text-primary-600' : 'text-neutral-400',
-              )}>
+              <span
+                className={cn(
+                  'text-[10px] mt-1 font-medium text-center w-14',
+                  isActive ? 'text-primary-600' : 'text-neutral-400',
+                )}
+              >
                 {label}
               </span>
             </div>
             {i < steps.length - 1 && (
-              <div className={cn(
-                'h-0.5 flex-1 mx-1 mt-[-14px]',
-                isCompleted ? 'bg-success-500' : 'bg-neutral-200',
-              )} />
+              <div
+                className={cn(
+                  'h-0.5 flex-1 mx-1 mt-[-14px]',
+                  isCompleted ? 'bg-success-500' : 'bg-neutral-200',
+                )}
+              />
             )}
           </div>
         );

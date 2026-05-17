@@ -1,6 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-import { UserPlus, RefreshCw, XCircle, Clock, MapPin, IndianRupee, Car, User as UserIcon } from 'lucide-react';
+import {
+  UserPlus,
+  RefreshCw,
+  XCircle,
+  Clock,
+  MapPin,
+  IndianRupee,
+  Car,
+  User as UserIcon,
+} from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '@/lib/api';
 import { PageHeader } from '@/components/ui/PageHeader';
@@ -58,7 +67,7 @@ export function BookingDetail() {
   const fetchBooking = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await api.get(`/admin/bookings/${id}`) as Booking;
+      const res = (await api.get(`/admin/bookings/${id}`)) as Booking;
       setBooking(res);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Failed to fetch booking';
@@ -73,17 +82,19 @@ export function BookingDetail() {
       setDriversLoading(true);
       const params: Record<string, string> = {};
       if (query) params.search = query;
-      const res = await api.get('/lookup/drivers', { params }) as {
+      const res = (await api.get('/lookup/drivers', { params })) as {
         _id: string;
         userId: { name: string; phone: string } | string;
         licenseNumber: string;
         avgRating?: number;
       }[];
-      setDriverOptions(res.map((d) => ({
-        value: d._id,
-        label: typeof d.userId === 'object' ? d.userId.name : d._id,
-        sublabel: typeof d.userId === 'object' ? d.userId.phone : undefined,
-      })));
+      setDriverOptions(
+        res.map((d) => ({
+          value: d._id,
+          label: typeof d.userId === 'object' ? d.userId.name : d._id,
+          sublabel: typeof d.userId === 'object' ? d.userId.phone : undefined,
+        })),
+      );
     } catch {
       setDriverOptions([]);
     } finally {
@@ -181,10 +192,8 @@ export function BookingDetail() {
     );
   }
 
-  const customer: Partial<User> =
-    typeof booking.user === 'object' ? (booking.user as User) : {};
-  const car: Partial<CarType> =
-    typeof booking.car === 'object' ? (booking.car as CarType) : {};
+  const customer: Partial<User> = typeof booking.user === 'object' ? (booking.user as User) : {};
+  const car: Partial<CarType> = typeof booking.car === 'object' ? (booking.car as CarType) : {};
   const driver: Partial<Driver> =
     booking.driver && typeof booking.driver === 'object' ? (booking.driver as Driver) : {};
   const driverUser: Partial<User> =
@@ -204,7 +213,13 @@ export function BookingDetail() {
               Assign Driver
             </Button>
             {booking.status !== 'cancelled' && booking.status !== 'completed' && (
-              <Button variant="danger" onClick={() => { setCancelReason(''); setCancelModal(true); }}>
+              <Button
+                variant="danger"
+                onClick={() => {
+                  setCancelReason('');
+                  setCancelModal(true);
+                }}
+              >
                 <XCircle className="w-4 h-4" />
                 Cancel
               </Button>
@@ -232,9 +247,7 @@ export function BookingDetail() {
                   <div key={status} className="flex items-center">
                     <div
                       className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold ${
-                        isActive
-                          ? 'bg-primary-600 text-white'
-                          : 'bg-neutral-100 text-neutral-400'
+                        isActive ? 'bg-primary-600 text-white' : 'bg-neutral-100 text-neutral-400'
                       }`}
                     >
                       {i + 1}
@@ -266,7 +279,12 @@ export function BookingDetail() {
                 onChange={setNewStatus}
               />
             </div>
-            <Button size="sm" onClick={handleUpdateStatus} loading={updatingStatus} disabled={!newStatus}>
+            <Button
+              size="sm"
+              onClick={handleUpdateStatus}
+              loading={updatingStatus}
+              disabled={!newStatus}
+            >
               <RefreshCw className="w-3.5 h-3.5" />
               Update
             </Button>
@@ -284,16 +302,22 @@ export function BookingDetail() {
             <div className="space-y-3">
               <div>
                 <p className="text-xs text-neutral-500 uppercase tracking-wider">Pickup</p>
-                <p className="text-sm font-medium text-neutral-900 mt-1">{booking.pickup.address}</p>
+                <p className="text-sm font-medium text-neutral-900 mt-1">
+                  {booking.pickup.address}
+                </p>
                 {booking.pickup.landmark && (
-                  <p className="text-xs text-neutral-500 mt-0.5">Landmark: {booking.pickup.landmark}</p>
+                  <p className="text-xs text-neutral-500 mt-0.5">
+                    Landmark: {booking.pickup.landmark}
+                  </p>
                 )}
               </div>
               <div>
                 <p className="text-xs text-neutral-500 uppercase tracking-wider">Drop</p>
                 <p className="text-sm font-medium text-neutral-900 mt-1">{booking.drop.address}</p>
                 {booking.drop.landmark && (
-                  <p className="text-xs text-neutral-500 mt-0.5">Landmark: {booking.drop.landmark}</p>
+                  <p className="text-xs text-neutral-500 mt-0.5">
+                    Landmark: {booking.drop.landmark}
+                  </p>
                 )}
               </div>
               {booking.stops?.length > 0 && (
@@ -308,12 +332,20 @@ export function BookingDetail() {
               )}
               <div className="grid grid-cols-2 gap-3 pt-2">
                 <div>
-                  <p className="text-xs text-neutral-500 uppercase tracking-wider">Estimated Distance</p>
-                  <p className="text-sm font-medium text-neutral-900 mt-1">{booking.distance?.estimated} km</p>
+                  <p className="text-xs text-neutral-500 uppercase tracking-wider">
+                    Estimated Distance
+                  </p>
+                  <p className="text-sm font-medium text-neutral-900 mt-1">
+                    {booking.distance?.estimated} km
+                  </p>
                 </div>
                 <div>
-                  <p className="text-xs text-neutral-500 uppercase tracking-wider">Actual Distance</p>
-                  <p className="text-sm font-medium text-neutral-900 mt-1">{booking.distance?.actual || '-'} km</p>
+                  <p className="text-xs text-neutral-500 uppercase tracking-wider">
+                    Actual Distance
+                  </p>
+                  <p className="text-sm font-medium text-neutral-900 mt-1">
+                    {booking.distance?.actual || '-'} km
+                  </p>
                 </div>
               </div>
             </div>
@@ -328,27 +360,39 @@ export function BookingDetail() {
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-neutral-500">Base Fare</span>
-                <span className="text-neutral-900">{formatCurrency(booking.pricing?.baseFare || 0, true)}</span>
+                <span className="text-neutral-900">
+                  {formatCurrency(booking.pricing?.baseFare || 0, true)}
+                </span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-neutral-500">Price/km</span>
-                <span className="text-neutral-900">{formatCurrency(booking.pricing?.pricePerKm || 0, true)}</span>
+                <span className="text-neutral-900">
+                  {formatCurrency(booking.pricing?.pricePerKm || 0, true)}
+                </span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-neutral-500">Distance Charge</span>
-                <span className="text-neutral-900">{formatCurrency(booking.pricing?.distanceCharge || 0, true)}</span>
+                <span className="text-neutral-900">
+                  {formatCurrency(booking.pricing?.distanceCharge || 0, true)}
+                </span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-neutral-500">Toll Estimate</span>
-                <span className="text-neutral-900">{formatCurrency(booking.pricing?.tollEstimate || 0, true)}</span>
+                <span className="text-neutral-900">
+                  {formatCurrency(booking.pricing?.tollEstimate || 0, true)}
+                </span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-neutral-500">GST</span>
-                <span className="text-neutral-900">{formatCurrency(booking.pricing?.gstAmount || 0, true)}</span>
+                <span className="text-neutral-900">
+                  {formatCurrency(booking.pricing?.gstAmount || 0, true)}
+                </span>
               </div>
               <div className="flex justify-between text-sm font-semibold pt-2 border-t border-neutral-100">
                 <span className="text-neutral-900">Total</span>
-                <span className="text-primary-600">{formatCurrency(booking.pricing?.totalAmount || 0, true)}</span>
+                <span className="text-primary-600">
+                  {formatCurrency(booking.pricing?.totalAmount || 0, true)}
+                </span>
               </div>
             </div>
           </div>
@@ -369,7 +413,9 @@ export function BookingDetail() {
               </div>
               <div>
                 <p className="text-xs text-neutral-500">Phone</p>
-                <p className="text-sm font-medium text-neutral-900">{customer.phone ? formatPhone(customer.phone) : '-'}</p>
+                <p className="text-sm font-medium text-neutral-900">
+                  {customer.phone ? formatPhone(customer.phone) : '-'}
+                </p>
               </div>
               <div>
                 <p className="text-xs text-neutral-500">Email</p>
@@ -392,11 +438,15 @@ export function BookingDetail() {
                 </div>
                 <div>
                   <p className="text-xs text-neutral-500">Phone</p>
-                  <p className="text-sm font-medium text-neutral-900">{driverUser.phone ? formatPhone(driverUser.phone) : '-'}</p>
+                  <p className="text-sm font-medium text-neutral-900">
+                    {driverUser.phone ? formatPhone(driverUser.phone) : '-'}
+                  </p>
                 </div>
                 <div>
                   <p className="text-xs text-neutral-500">License</p>
-                  <p className="text-sm font-medium text-neutral-900">{driver.licenseNumber || '-'}</p>
+                  <p className="text-sm font-medium text-neutral-900">
+                    {driver.licenseNumber || '-'}
+                  </p>
                 </div>
               </div>
             ) : (
@@ -413,15 +463,21 @@ export function BookingDetail() {
             <div className="space-y-2">
               <div>
                 <p className="text-xs text-neutral-500">Vehicle</p>
-                <p className="text-sm font-medium text-neutral-900">{car.make} {car.model}</p>
+                <p className="text-sm font-medium text-neutral-900">
+                  {car.make} {car.model}
+                </p>
               </div>
               <div>
                 <p className="text-xs text-neutral-500">Reg No</p>
-                <p className="text-sm font-medium text-neutral-900">{car.registrationNumber || '-'}</p>
+                <p className="text-sm font-medium text-neutral-900">
+                  {car.registrationNumber || '-'}
+                </p>
               </div>
               <div>
                 <p className="text-xs text-neutral-500">Category</p>
-                <p className="text-sm font-medium text-neutral-900 capitalize">{car.category?.replace('_', ' ') || '-'}</p>
+                <p className="text-sm font-medium text-neutral-900 capitalize">
+                  {car.category?.replace('_', ' ') || '-'}
+                </p>
               </div>
             </div>
           </div>
@@ -437,26 +493,26 @@ export function BookingDetail() {
             <div>
               <p className="text-xs text-neutral-500 uppercase tracking-wider">Start Date</p>
               <p className="text-sm font-medium text-neutral-900 mt-1">
-                {booking.schedule?.startDate
-                  ? formatDate(booking.schedule.startDate)
-                  : '-'}
+                {booking.schedule?.startDate ? formatDate(booking.schedule.startDate) : '-'}
               </p>
             </div>
             <div>
               <p className="text-xs text-neutral-500 uppercase tracking-wider">Start Time</p>
-              <p className="text-sm font-medium text-neutral-900 mt-1">{booking.schedule?.startTime || '-'}</p>
+              <p className="text-sm font-medium text-neutral-900 mt-1">
+                {booking.schedule?.startTime || '-'}
+              </p>
             </div>
             <div>
               <p className="text-xs text-neutral-500 uppercase tracking-wider">End Date</p>
               <p className="text-sm font-medium text-neutral-900 mt-1">
-                {booking.schedule?.endDate
-                  ? formatDate(booking.schedule.endDate)
-                  : '-'}
+                {booking.schedule?.endDate ? formatDate(booking.schedule.endDate) : '-'}
               </p>
             </div>
             <div>
               <p className="text-xs text-neutral-500 uppercase tracking-wider">End Time</p>
-              <p className="text-sm font-medium text-neutral-900 mt-1">{booking.schedule?.endTime || '-'}</p>
+              <p className="text-sm font-medium text-neutral-900 mt-1">
+                {booking.schedule?.endTime || '-'}
+              </p>
             </div>
           </div>
         </div>
@@ -476,8 +532,12 @@ export function BookingDetail() {
             loading={driversLoading}
           />
           <div className="flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setAssignModal(false)}>Cancel</Button>
-            <Button loading={assigning} onClick={handleAssignDriver}>Assign</Button>
+            <Button variant="outline" onClick={() => setAssignModal(false)}>
+              Cancel
+            </Button>
+            <Button loading={assigning} onClick={handleAssignDriver}>
+              Assign
+            </Button>
           </div>
         </div>
       </Modal>
@@ -493,8 +553,12 @@ export function BookingDetail() {
             placeholder="Enter reason..."
           />
           <div className="flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setCancelModal(false)}>Close</Button>
-            <Button variant="danger" loading={cancelling} onClick={handleCancel}>Cancel Booking</Button>
+            <Button variant="outline" onClick={() => setCancelModal(false)}>
+              Close
+            </Button>
+            <Button variant="danger" loading={cancelling} onClick={handleCancel}>
+              Cancel Booking
+            </Button>
           </div>
         </div>
       </Modal>

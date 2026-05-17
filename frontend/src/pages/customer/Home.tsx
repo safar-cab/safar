@@ -16,8 +16,16 @@ export function Home() {
   const navigate = useNavigate();
 
   const { user } = useAppSelector((s) => s.auth);
-  const { list: routes, loading: routesLoading, error: routesError } = useAppSelector((s) => s.routes);
-  const { list: bookings, loading: bookingsLoading, error: bookingsError } = useAppSelector((s) => s.bookings);
+  const {
+    list: routes,
+    loading: routesLoading,
+    error: routesError,
+  } = useAppSelector((s) => s.routes);
+  const {
+    list: bookings,
+    loading: bookingsLoading,
+    error: bookingsError,
+  } = useAppSelector((s) => s.bookings);
 
   useEffect(() => {
     dispatch(fetchRoutes());
@@ -37,11 +45,7 @@ export function Home() {
   return (
     <div className="pb-24">
       {/* Greeting */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-6"
-      >
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
         <p className="text-sm text-neutral-500">Welcome back,</p>
         <h1 className="text-2xl font-bold text-neutral-900">{firstName}</h1>
       </motion.div>
@@ -104,11 +108,7 @@ export function Home() {
           <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-1 px-1">
             {routes.map((route, i) => (
               <div key={route._id} className="min-w-[220px] shrink-0">
-                <RouteCard
-                  route={route}
-                  index={i}
-                  onClick={() => navigate('/customer/book')}
-                />
+                <RouteCard route={route} index={i} onClick={() => navigate('/customer/book')} />
               </div>
             ))}
           </div>

@@ -46,7 +46,7 @@ export function DriversList() {
       };
       if (verifiedFilter) params.isVerified = verifiedFilter;
       if (debouncedSearch) params.search = debouncedSearch;
-      const res = await api.get('/admin/drivers', { params }) as {
+      const res = (await api.get('/admin/drivers', { params })) as {
         drivers?: Driver[];
         data?: Driver[];
         total?: number;
@@ -71,21 +71,27 @@ export function DriversList() {
     setPage(1);
   }, [debouncedSearch, verifiedFilter]);
 
-  const handleSort = useCallback((field: string) => {
-    setSortOrder(sortBy === field && sortOrder === 'asc' ? 'desc' : 'asc');
-    setSortBy(field);
-  }, [sortBy, sortOrder]);
+  const handleSort = useCallback(
+    (field: string) => {
+      setSortOrder(sortBy === field && sortOrder === 'asc' ? 'desc' : 'asc');
+      setSortBy(field);
+    },
+    [sortBy, sortOrder],
+  );
 
-  const handleVerify = useCallback(async (driverId: string) => {
-    try {
-      await api.put(`/admin/drivers/${driverId}/verify`);
-      toast.success('Driver verified successfully');
-      fetchDrivers();
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Failed to verify driver';
-      toast.error(message);
-    }
-  }, [fetchDrivers]);
+  const handleVerify = useCallback(
+    async (driverId: string) => {
+      try {
+        await api.put(`/admin/drivers/${driverId}/verify`);
+        toast.success('Driver verified successfully');
+        fetchDrivers();
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'Failed to verify driver';
+        toast.error(message);
+      }
+    },
+    [fetchDrivers],
+  );
 
   const getDriverUser = useCallback((driver: Driver): Partial<User> => {
     if (typeof driver.userId === 'object' && driver.userId !== null) {
@@ -94,8 +100,10 @@ export function DriversList() {
     return {};
   }, []);
 
-  const thClass = 'text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3 cursor-pointer select-none';
-  const thStatic = 'text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3';
+  const thClass =
+    'text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3 cursor-pointer select-none';
+  const thStatic =
+    'text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3';
 
   return (
     <div>
@@ -174,14 +182,22 @@ export function DriversList() {
                   const user = getDriverUser(driver);
                   return (
                     <tr key={driver._id} className="hover:bg-neutral-50 transition-colors">
-                      <td className="px-4 py-3 text-sm font-medium text-neutral-900">{user.name || '-'}</td>
-                      <td className="px-4 py-3 text-sm text-neutral-700">{user.phone ? formatPhone(user.phone) : '-'}</td>
+                      <td className="px-4 py-3 text-sm font-medium text-neutral-900">
+                        {user.name || '-'}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-neutral-700">
+                        {user.phone ? formatPhone(user.phone) : '-'}
+                      </td>
                       <td className="px-4 py-3 text-sm text-neutral-700">{driver.licenseNumber}</td>
                       <td className="px-4 py-3">
                         <Badge status={driver.isVerified ? 'completed' : 'pending'} />
                       </td>
-                      <td className="px-4 py-3 text-sm text-neutral-700">{driver.isAvailable ? 'Yes' : 'No'}</td>
-                      <td className="px-4 py-3 text-sm text-neutral-700">{driver.avgRating?.toFixed(1) || '-'}</td>
+                      <td className="px-4 py-3 text-sm text-neutral-700">
+                        {driver.isAvailable ? 'Yes' : 'No'}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-neutral-700">
+                        {driver.avgRating?.toFixed(1) || '-'}
+                      </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
                           <Tooltip content="View driver">
@@ -195,10 +211,7 @@ export function DriversList() {
                           </Tooltip>
                           {!driver.isVerified && (
                             <Tooltip content="Verify driver">
-                              <Button
-                                size="sm"
-                                onClick={() => handleVerify(driver._id)}
-                              >
+                              <Button size="sm" onClick={() => handleVerify(driver._id)}>
                                 <ShieldCheck className="w-3.5 h-3.5" />
                               </Button>
                             </Tooltip>

@@ -26,7 +26,8 @@ export function PaymentDetail() {
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    api.get(`/admin/payments/${id}`)
+    api
+      .get(`/admin/payments/${id}`)
       .then((data) => setPayment(data as unknown as PaymentWithRelations))
       .catch(() => toast.error('Failed to load payment'))
       .finally(() => setLoading(false));
@@ -35,7 +36,10 @@ export function PaymentDetail() {
   const handleGenerateLink = useCallback(async () => {
     setGenerating(true);
     try {
-      const result = await api.post(`/admin/payments/${id}/generate-link`) as unknown as { link: string; expiresAt: string };
+      const result = (await api.post(`/admin/payments/${id}/generate-link`)) as unknown as {
+        link: string;
+        expiresAt: string;
+      };
       setGeneratedLink(result.link);
       setLinkModal(true);
     } catch {
@@ -76,7 +80,11 @@ export function PaymentDetail() {
     { icon: IndianRupee, label: 'Amount', value: formatCurrency(payment.amount, true) },
     { icon: CreditCard, label: 'Method', value: payment.method.toUpperCase() },
     { icon: CreditCard, label: 'UPI ID', value: payment.upiId || '—' },
-    { icon: Clock, label: 'Paid At', value: payment.paidAt ? formatDate(payment.paidAt, 'datetime') : 'Not paid' },
+    {
+      icon: Clock,
+      label: 'Paid At',
+      value: payment.paidAt ? formatDate(payment.paidAt, 'datetime') : 'Not paid',
+    },
     { icon: Calendar, label: 'Created', value: formatDate(payment.createdAt, 'datetime') },
   ];
 
@@ -99,18 +107,24 @@ export function PaymentDetail() {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm text-neutral-500">Status</p>
-            <div className="mt-1"><Badge status={payment.status} /></div>
+            <div className="mt-1">
+              <Badge status={payment.status} />
+            </div>
           </div>
           <div className="text-right">
             <p className="text-sm text-neutral-500">Amount</p>
-            <p className="text-2xl font-bold text-neutral-900">{formatCurrency(payment.amount, true)}</p>
+            <p className="text-2xl font-bold text-neutral-900">
+              {formatCurrency(payment.amount, true)}
+            </p>
           </div>
         </div>
       </div>
 
       {/* Payment Info */}
       <div className="bg-white rounded-xl shadow-sm border border-neutral-100 mb-4">
-        <h3 className="text-sm font-semibold text-neutral-800 px-5 pt-4 pb-2">Payment Information</h3>
+        <h3 className="text-sm font-semibold text-neutral-800 px-5 pt-4 pb-2">
+          Payment Information
+        </h3>
         <div className="divide-y divide-neutral-100">
           {infoItems.map((item) => (
             <div key={item.label} className="flex items-center gap-3 px-5 py-3">
@@ -132,7 +146,9 @@ export function PaymentDetail() {
             </div>
             <div>
               <p className="text-sm font-medium text-neutral-900">{user.name}</p>
-              <p className="text-xs text-neutral-500">{user.phone} {user.email && `• ${user.email}`}</p>
+              <p className="text-xs text-neutral-500">
+                {user.phone} {user.email && `• ${user.email}`}
+              </p>
             </div>
           </div>
         </div>
@@ -161,7 +177,9 @@ export function PaymentDetail() {
             </div>
             <div className="flex justify-between">
               <span className="text-neutral-500">Total Amount</span>
-              <span className="text-neutral-800 font-semibold">{formatCurrency(booking.pricing?.totalAmount)}</span>
+              <span className="text-neutral-800 font-semibold">
+                {formatCurrency(booking.pricing?.totalAmount)}
+              </span>
             </div>
           </div>
         </div>
@@ -178,7 +196,9 @@ export function PaymentDetail() {
             </div>
             <div className="flex justify-between">
               <span className="text-neutral-500">Amount</span>
-              <span className="text-neutral-800">{formatCurrency(payment.refund.amount, true)}</span>
+              <span className="text-neutral-800">
+                {formatCurrency(payment.refund.amount, true)}
+              </span>
             </div>
             <div className="flex justify-between">
               <span className="text-neutral-500">Status</span>
@@ -191,7 +211,9 @@ export function PaymentDetail() {
       {/* Payment Link Modal */}
       <Modal open={linkModal} onClose={() => setLinkModal(false)} title="Payment Link Generated">
         <div className="space-y-4">
-          <p className="text-sm text-neutral-600">Share this link with the customer. It expires in 10 minutes.</p>
+          <p className="text-sm text-neutral-600">
+            Share this link with the customer. It expires in 10 minutes.
+          </p>
           <div className="flex items-center gap-2 bg-neutral-50 rounded-lg p-3 border border-neutral-200">
             <input
               readOnly
@@ -199,10 +221,16 @@ export function PaymentDetail() {
               className="flex-1 bg-transparent text-sm text-neutral-800 outline-none font-mono"
             />
             <Button size="sm" variant="outline" onClick={handleCopyLink}>
-              {copied ? <CheckCircle className="w-4 h-4 text-success-600" /> : <Copy className="w-4 h-4" />}
+              {copied ? (
+                <CheckCircle className="w-4 h-4 text-success-600" />
+              ) : (
+                <Copy className="w-4 h-4" />
+              )}
             </Button>
           </div>
-          <Button variant="primary" className="w-full" onClick={() => setLinkModal(false)}>Done</Button>
+          <Button variant="primary" className="w-full" onClick={() => setLinkModal(false)}>
+            Done
+          </Button>
         </div>
       </Modal>
     </div>

@@ -61,81 +61,93 @@ export const ImageGallery = memo(function ImageGallery({ images, className }: Im
       </div>
 
       {/* Lightbox */}
-      {lightboxIndex !== null && createPortal(
-        <AnimatePresence>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[9999] bg-black/90 flex items-center justify-center"
-            onClick={closeLightbox}
-          >
-            {/* Close */}
-            <button
+      {lightboxIndex !== null &&
+        createPortal(
+          <AnimatePresence>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[9999] bg-black/90 flex items-center justify-center"
               onClick={closeLightbox}
-              className="absolute top-4 right-4 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors z-10"
             >
-              <X className="w-5 h-5 text-white" />
-            </button>
-
-            {/* Counter */}
-            <div className="absolute top-4 left-4 px-3 py-1.5 bg-white/10 rounded-full text-sm text-white/80 font-medium">
-              {lightboxIndex + 1} / {images.length}
-            </div>
-
-            {/* Prev */}
-            {images.length > 1 && (
+              {/* Close */}
               <button
-                onClick={(e) => { e.stopPropagation(); goPrev(); }}
-                className="absolute left-4 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors"
+                onClick={closeLightbox}
+                className="absolute top-4 right-4 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors z-10"
               >
-                <ChevronLeft className="w-6 h-6 text-white" />
+                <X className="w-5 h-5 text-white" />
               </button>
-            )}
 
-            {/* Image */}
-            <motion.img
-              key={lightboxIndex}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.2 }}
-              src={images[lightboxIndex]}
-              alt={`Image ${lightboxIndex + 1}`}
-              className="max-w-[90vw] max-h-[85vh] object-contain rounded-lg"
-              onClick={(e) => e.stopPropagation()}
-            />
-
-            {/* Next */}
-            {images.length > 1 && (
-              <button
-                onClick={(e) => { e.stopPropagation(); goNext(); }}
-                className="absolute right-4 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors"
-              >
-                <ChevronRight className="w-6 h-6 text-white" />
-              </button>
-            )}
-
-            {/* Thumbnails */}
-            {images.length > 1 && (
-              <div className="absolute bottom-4 flex gap-2">
-                {images.map((url, i) => (
-                  <button
-                    key={url}
-                    onClick={(e) => { e.stopPropagation(); setLightboxIndex(i); }}
-                    className={`w-12 h-12 rounded-md overflow-hidden border-2 transition-all ${
-                      i === lightboxIndex ? 'border-white scale-110' : 'border-transparent opacity-60 hover:opacity-100'
-                    }`}
-                  >
-                    <img src={url} alt="" className="w-full h-full object-cover" />
-                  </button>
-                ))}
+              {/* Counter */}
+              <div className="absolute top-4 left-4 px-3 py-1.5 bg-white/10 rounded-full text-sm text-white/80 font-medium">
+                {lightboxIndex + 1} / {images.length}
               </div>
-            )}
-          </motion.div>
-        </AnimatePresence>,
-        document.body,
-      )}
+
+              {/* Prev */}
+              {images.length > 1 && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    goPrev();
+                  }}
+                  className="absolute left-4 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors"
+                >
+                  <ChevronLeft className="w-6 h-6 text-white" />
+                </button>
+              )}
+
+              {/* Image */}
+              <motion.img
+                key={lightboxIndex}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.2 }}
+                src={images[lightboxIndex]}
+                alt={`Image ${lightboxIndex + 1}`}
+                className="max-w-[90vw] max-h-[85vh] object-contain rounded-lg"
+                onClick={(e) => e.stopPropagation()}
+              />
+
+              {/* Next */}
+              {images.length > 1 && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    goNext();
+                  }}
+                  className="absolute right-4 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors"
+                >
+                  <ChevronRight className="w-6 h-6 text-white" />
+                </button>
+              )}
+
+              {/* Thumbnails */}
+              {images.length > 1 && (
+                <div className="absolute bottom-4 flex gap-2">
+                  {images.map((url, i) => (
+                    <button
+                      key={url}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setLightboxIndex(i);
+                      }}
+                      className={`w-12 h-12 rounded-md overflow-hidden border-2 transition-all ${
+                        i === lightboxIndex
+                          ? 'border-white scale-110'
+                          : 'border-transparent opacity-60 hover:opacity-100'
+                      }`}
+                    >
+                      <img src={url} alt="" className="w-full h-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </motion.div>
+          </AnimatePresence>,
+          document.body,
+        )}
     </>
   );
 });

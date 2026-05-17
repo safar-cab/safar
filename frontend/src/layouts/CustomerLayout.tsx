@@ -24,10 +24,12 @@ export function CustomerLayout() {
               key={to}
               to={to}
               end={end}
-              className={({ isActive }) => cn(
-                'flex flex-col items-center gap-0.5 py-2 px-4 text-xs font-medium transition-colors relative',
-                isActive ? 'text-primary-600' : 'text-neutral-400',
-              )}
+              className={({ isActive }) =>
+                cn(
+                  'flex flex-col items-center gap-0.5 py-2 px-4 text-xs font-medium transition-colors relative',
+                  isActive ? 'text-primary-600' : 'text-neutral-400',
+                )
+              }
             >
               {({ isActive }) => (
                 <>

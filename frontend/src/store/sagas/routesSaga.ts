@@ -1,6 +1,12 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 import api from '@/lib/api';
-import { fetchRoutes, fetchRoutesSuccess, fetchRouteDetail, fetchRouteDetailSuccess, routesError } from '../slices/routesSlice';
+import {
+  fetchRoutes,
+  fetchRoutesSuccess,
+  fetchRouteDetail,
+  fetchRouteDetailSuccess,
+  routesError,
+} from '../slices/routesSlice';
 import type { RoutePricing } from '@/types';
 
 function* handleFetchRoutes() {

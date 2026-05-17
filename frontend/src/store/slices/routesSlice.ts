@@ -41,5 +41,11 @@ const routesSlice = createSlice({
   },
 });
 
-export const { fetchRoutes, fetchRoutesSuccess, fetchRouteDetail, fetchRouteDetailSuccess, routesError } = routesSlice.actions;
+export const {
+  fetchRoutes,
+  fetchRoutesSuccess,
+  fetchRouteDetail,
+  fetchRouteDetailSuccess,
+  routesError,
+} = routesSlice.actions;
 export default routesSlice.reducer;

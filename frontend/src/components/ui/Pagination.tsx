@@ -56,7 +56,10 @@ export const Pagination = memo(function Pagination({
 
         {pages.map((p, i) =>
           p === 'ellipsis' ? (
-            <span key={`e${i}`} className="w-8 h-8 flex items-center justify-center text-neutral-400 text-sm">
+            <span
+              key={`e${i}`}
+              className="w-8 h-8 flex items-center justify-center text-neutral-400 text-sm"
+            >
               ...
             </span>
           ) : (

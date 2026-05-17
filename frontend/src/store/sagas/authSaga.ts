@@ -7,9 +7,11 @@ function* handleLogin(action: ReturnType<typeof loginRequest>) {
   try {
     const { phone, password, portal } = action.payload;
     const endpoint =
-      portal === 'admin' ? '/admin/auth/login' :
-      portal === 'driver' ? '/driver/auth/login' :
-      '/customer/auth/login';
+      portal === 'admin'
+        ? '/admin/auth/login'
+        : portal === 'driver'
+          ? '/driver/auth/login'
+          : '/customer/auth/login';
 
     const data: AuthResponse = yield call(api.post, endpoint, { phone, password });
     localStorage.setItem('token', data.accessToken);

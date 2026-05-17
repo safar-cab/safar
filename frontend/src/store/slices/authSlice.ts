@@ -17,8 +17,11 @@ interface AuthState {
 
 const initialState: AuthState = {
   user: (() => {
-    try { return JSON.parse(localStorage.getItem('user') || 'null'); }
-    catch { return null; }
+    try {
+      return JSON.parse(localStorage.getItem('user') || 'null');
+    } catch {
+      return null;
+    }
   })(),
   token: localStorage.getItem('token'),
   loading: false,
@@ -29,11 +32,23 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    loginRequest: (state, _action: PayloadAction<{ phone: string; password: string; portal: string }>) => {
+    loginRequest: (
+      state,
+      _action: PayloadAction<{ phone: string; password: string; portal: string }>,
+    ) => {
       state.loading = true;
       state.error = null;
     },
-    registerRequest: (state, _action: PayloadAction<{ name: string; phone: string; email?: string; password: string; portal: string }>) => {
+    registerRequest: (
+      state,
+      _action: PayloadAction<{
+        name: string;
+        phone: string;
+        email?: string;
+        password: string;
+        portal: string;
+      }>,
+    ) => {
       state.loading = true;
       state.error = null;
     },
@@ -59,5 +74,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { loginRequest, registerRequest, authSuccess, authFailure, logout, clearError } = authSlice.actions;
+export const { loginRequest, registerRequest, authSuccess, authFailure, logout, clearError } =
+  authSlice.actions;
 export default authSlice.reducer;

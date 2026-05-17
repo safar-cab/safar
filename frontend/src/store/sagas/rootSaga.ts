@@ -5,10 +5,5 @@ import { carsSaga } from './carsSaga';
 import { routesSaga } from './routesSaga';
 
 export function* rootSaga() {
-  yield all([
-    fork(authSaga),
-    fork(bookingsSaga),
-    fork(carsSaga),
-    fork(routesSaga),
-  ]);
+  yield all([fork(authSaga), fork(bookingsSaga), fork(carsSaga), fork(routesSaga)]);
 }

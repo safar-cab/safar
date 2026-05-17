@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setBookingStep } from '@/store/slices/uiSlice';
 import { fetchAvailableCars } from '@/store/slices/carsSlice';
+import type { Car } from '@/types';
 import { createBooking } from '@/store/slices/bookingsSlice';
 import { StepIndicator } from '@/components/core/StepIndicator';
 import { CarCard } from '@/components/core/CarCard';
@@ -45,7 +46,11 @@ export function BookingForm() {
 
   const { bookingStep } = useAppSelector((s) => s.ui);
   const { available: cars, loading: carsLoading, error: carsError } = useAppSelector((s) => s.cars);
-  const { creating, current: createdBooking, error: bookingError } = useAppSelector((s) => s.bookings);
+  const {
+    creating,
+    current: createdBooking,
+    error: bookingError,
+  } = useAppSelector((s) => s.bookings);
 
   const [form, setForm] = useState<FormData>(INITIAL_FORM);
   const [submitted, setSubmitted] = useState(false);
@@ -53,7 +58,9 @@ export function BookingForm() {
   // Reset step on mount
   useEffect(() => {
     dispatch(setBookingStep(1));
-    return () => { dispatch(setBookingStep(1)); };
+    return () => {
+      dispatch(setBookingStep(1));
+    };
   }, [dispatch]);
 
   // Fetch cars when reaching step 4
@@ -86,12 +93,18 @@ export function BookingForm() {
 
   const canProceed = (): boolean => {
     switch (bookingStep) {
-      case 1: return form.pickupAddress.trim().length > 0;
-      case 2: return form.dropAddress.trim().length > 0;
-      case 3: return form.date.length > 0 && form.time.length > 0;
-      case 4: return form.selectedCarId.length > 0;
-      case 5: return true;
-      default: return false;
+      case 1:
+        return form.pickupAddress.trim().length > 0;
+      case 2:
+        return form.dropAddress.trim().length > 0;
+      case 3:
+        return form.date.length > 0 && form.time.length > 0;
+      case 4:
+        return form.selectedCarId.length > 0;
+      case 5:
+        return true;
+      default:
+        return false;
     }
   };
 
@@ -151,24 +164,9 @@ export function BookingForm() {
           exit={{ opacity: 0, x: -30 }}
           transition={{ duration: 0.2 }}
         >
-          {bookingStep === 1 && (
-            <PickupStep
-              form={form}
-              updateField={updateField}
-            />
-          )}
-          {bookingStep === 2 && (
-            <DropStep
-              form={form}
-              updateField={updateField}
-            />
-          )}
-          {bookingStep === 3 && (
-            <ScheduleStep
-              form={form}
-              updateField={updateField}
-            />
-          )}
+          {bookingStep === 1 && <PickupStep form={form} updateField={updateField} />}
+          {bookingStep === 2 && <DropStep form={form} updateField={updateField} />}
+          {bookingStep === 3 && <ScheduleStep form={form} updateField={updateField} />}
           {bookingStep === 4 && (
             <CarStep
               cars={cars}
@@ -177,9 +175,7 @@ export function BookingForm() {
               onSelect={(id) => updateField('selectedCarId', id)}
             />
           )}
-          {bookingStep === 5 && (
-            <ReviewStep form={form} selectedCar={selectedCar || null} />
-          )}
+          {bookingStep === 5 && <ReviewStep form={form} selectedCar={selectedCar || null} />}
         </motion.div>
       </AnimatePresence>
 
@@ -308,7 +304,7 @@ function CarStep({
   selectedId,
   onSelect,
 }: {
-  cars: { _id: string; make: string; model: string; category: string; seats: number; color?: string; registrationNumber: string; photos: string[]; year?: number; documents?: Record<string, unknown>; assignedDriver?: unknown; isActive: boolean; createdAt: string }[];
+  cars: Car[];
   loading: boolean;
   selectedId: string;
   onSelect: (id: string) => void;
@@ -382,9 +378,7 @@ function ReviewStep({
             </div>
             <div>
               <p className="text-sm font-medium text-neutral-900">{form.dropAddress}</p>
-              {form.dropLandmark && (
-                <p className="text-xs text-neutral-400">{form.dropLandmark}</p>
-              )}
+              {form.dropLandmark && <p className="text-xs text-neutral-400">{form.dropLandmark}</p>}
             </div>
           </div>
         </div>
@@ -397,7 +391,11 @@ function ReviewStep({
             <p className="text-xs text-neutral-400">Date</p>
             <p className="font-medium text-neutral-800">
               {form.date
-                ? new Date(form.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+                ? new Date(form.date).toLocaleDateString('en-IN', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric',
+                  })
                 : '--'}
             </p>
           </div>
