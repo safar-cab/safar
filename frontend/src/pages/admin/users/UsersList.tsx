@@ -44,8 +44,11 @@ export function UsersList() {
 
   const fetchRoles = useCallback(async () => {
     try {
-      const res = await api.get('/lookup/user-roles') as SelectOption[];
-      setRoleOptions(res);
+      const res = await api.get('/lookup/user-roles') as string[];
+      setRoleOptions(res.map((r) => ({
+        value: r,
+        label: r.charAt(0).toUpperCase() + r.slice(1),
+      })));
     } catch {
       setRoleOptions([
         { value: 'customer', label: 'Customer' },

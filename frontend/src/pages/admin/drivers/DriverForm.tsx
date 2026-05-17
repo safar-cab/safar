@@ -40,8 +40,16 @@ export function DriverForm() {
       setUsersLoading(true);
       const params: Record<string, string> = {};
       if (query) params.search = query;
-      const res = await api.get('/lookup/driver-users', { params }) as SelectOption[];
-      setUserOptions(res);
+      const res = await api.get('/lookup/driver-users', { params }) as {
+        _id: string;
+        name: string;
+        phone: string;
+      }[];
+      setUserOptions(res.map((u) => ({
+        value: u._id,
+        label: u.name,
+        sublabel: u.phone,
+      })));
     } catch {
       setUserOptions([]);
     } finally {

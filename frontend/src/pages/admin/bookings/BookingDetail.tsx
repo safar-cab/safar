@@ -74,8 +74,17 @@ export function BookingDetail() {
       setDriversLoading(true);
       const params: Record<string, string> = {};
       if (query) params.search = query;
-      const res = await api.get('/lookup/drivers', { params }) as SelectOption[];
-      setDriverOptions(res);
+      const res = await api.get('/lookup/drivers', { params }) as {
+        _id: string;
+        userId: { name: string; phone: string } | string;
+        licenseNumber: string;
+        avgRating?: number;
+      }[];
+      setDriverOptions(res.map((d) => ({
+        value: d._id,
+        label: typeof d.userId === 'object' ? d.userId.name : d._id,
+        sublabel: typeof d.userId === 'object' ? d.userId.phone : undefined,
+      })));
     } catch {
       setDriverOptions([]);
     } finally {

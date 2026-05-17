@@ -226,15 +226,17 @@ export function PaymentsList() {
                             <Eye className="w-3.5 h-3.5" />
                           </Button>
                         </Tooltip>
-                        <Tooltip content="Generate payment link">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleGenerateLink(payment._id)}
-                          >
-                            <LinkIcon className="w-3.5 h-3.5" />
-                          </Button>
-                        </Tooltip>
+                        {payment.status !== 'captured' && payment.status !== 'refunded' && (
+                          <Tooltip content="Generate payment link">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleGenerateLink(payment._id)}
+                            >
+                              <LinkIcon className="w-3.5 h-3.5" />
+                            </Button>
+                          </Tooltip>
+                        )}
                         {payment.status === 'captured' && (
                           <Tooltip content="Refund payment">
                             <Button

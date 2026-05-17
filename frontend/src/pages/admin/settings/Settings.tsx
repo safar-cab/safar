@@ -170,7 +170,7 @@ export function Settings() {
               placeholder="admin@example.com"
             />
             <Input
-              label="Default Price per km (paise)"
+              label="Default Price per km (₹)"
               name="defaultPricePerKm"
               type="number"
               value={form.defaultPricePerKm}

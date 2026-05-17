@@ -112,8 +112,10 @@ export class Booking {
       baseFare: Number,
       distanceCharge: Number,
       tollEstimate: Number,
-      totalAmount: Number,
+      cgst: Number,
+      sgst: Number,
       gstAmount: Number,
+      totalAmount: Number,
     },
   })
   pricing: {
@@ -121,8 +123,10 @@ export class Booking {
     baseFare: number;
     distanceCharge: number;
     tollEstimate: number;
-    totalAmount: number;
+    cgst: number;
+    sgst: number;
     gstAmount: number;
+    totalAmount: number;
   };
 
   @ApiProperty({ enum: BookingStatus })

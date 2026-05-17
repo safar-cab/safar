@@ -33,14 +33,17 @@ export class BookingsService {
   async create(userId: string, dto: CreateBookingDto) {
     const bookingId = await this.generateBookingId();
 
-    // Calculate pricing (simplified — in production use RoutePricing)
+    // Calculate pricing — GST as per Indian rules (5% on fare, tolls exempt)
     const pricePerKm = 12;
     const baseFare = 500;
     const distanceKm = dto.estimatedDistanceKm || 100;
     const distanceCharge = distanceKm * pricePerKm;
     const tollEstimate = 0;
-    const totalAmount = baseFare + distanceCharge + tollEstimate;
-    const gstAmount = Math.round(totalAmount * 0.05);
+    const taxableAmount = baseFare + distanceCharge; // Tolls exempt from GST
+    const cgst = Math.round(taxableAmount * 0.025); // 2.5% CGST
+    const sgst = Math.round(taxableAmount * 0.025); // 2.5% SGST
+    const gstAmount = cgst + sgst; // 5% total GST
+    const totalAmount = taxableAmount + tollEstimate + gstAmount;
 
     const booking = await this.bookingModel.create({
       bookingId,
@@ -83,8 +86,10 @@ export class BookingsService {
         baseFare,
         distanceCharge,
         tollEstimate,
-        totalAmount,
+        cgst,
+        sgst,
         gstAmount,
+        totalAmount,
       },
       status: BookingStatus.PENDING,
     });
