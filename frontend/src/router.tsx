@@ -24,6 +24,13 @@ import { RoutesList } from '@/pages/admin/routes/RoutesList';
 import { RouteForm } from '@/pages/admin/routes/RouteForm';
 import { Settings } from '@/pages/admin/settings/Settings';
 
+// Driver pages
+import { DriverDashboard } from '@/pages/driver/Dashboard';
+import { RideList } from '@/pages/driver/rides/RideList';
+import { RideDetail } from '@/pages/driver/rides/RideDetail';
+import { MyRatings } from '@/pages/driver/ratings/MyRatings';
+import { DriverProfile } from '@/pages/driver/profile/DriverProfile';
+
 // Placeholder for future phases
 const Placeholder = ({ title }: { title: string }) => (
   <div className="flex items-center justify-center min-h-[50vh]">
@@ -76,11 +83,11 @@ export const router = createBrowserRouter([
     path: '/driver',
     element: <ProtectedRoute role="driver"><DriverLayout /></ProtectedRoute>,
     children: [
-      { index: true, element: <Placeholder title="Driver Dashboard" /> },
-      { path: 'rides', element: <Placeholder title="My Rides" /> },
-      { path: 'rides/:id', element: <Placeholder title="Ride Detail" /> },
-      { path: 'ratings', element: <Placeholder title="My Ratings" /> },
-      { path: 'profile', element: <Placeholder title="Profile" /> },
+      { index: true, element: <DriverDashboard /> },
+      { path: 'rides', element: <RideList /> },
+      { path: 'rides/:id', element: <RideDetail /> },
+      { path: 'ratings', element: <MyRatings /> },
+      { path: 'profile', element: <DriverProfile /> },
     ],
   },
 
