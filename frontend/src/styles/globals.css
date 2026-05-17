@@ -91,8 +91,25 @@
     line-height: 1.5;
   }
 
+  /* Smooth transitions on interactive elements */
+  button, a, input, select, textarea {
+    transition: all 150ms ease;
+  }
+
+  /* Better focus styles */
+  :focus-visible {
+    outline: 2px solid #3B82F6;
+    outline-offset: 2px;
+  }
+
+  /* Smooth page transitions */
   #root {
     min-height: 100dvh;
+  }
+
+  /* Table row hover */
+  tbody tr {
+    transition: background-color 150ms ease;
   }
 }
 
@@ -113,3 +130,12 @@
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+
+/* Card hover lift */
+.card-hover {
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px -5px rgba(15, 23, 42, 0.1);
+}

@@ -168,6 +168,7 @@ export function CarsList() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-neutral-200 bg-neutral-50">
+                  <th className="text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3">Photo</th>
                   <th className={thClass} onClick={() => handleSort('registrationNumber')}>
                     Reg No {sortBy === 'registrationNumber' && (sortOrder === 'asc' ? '↑' : '↓')}
                   </th>
@@ -186,6 +187,15 @@ export function CarsList() {
               <tbody className="divide-y divide-neutral-100">
                 {cars.map((car) => (
                   <tr key={car._id} className="hover:bg-neutral-50 transition-colors">
+                    <td className="px-4 py-3">
+                      {car.photos?.length > 0 ? (
+                        <img src={car.photos[0]} alt="" className="w-10 h-10 rounded-lg object-cover" />
+                      ) : (
+                        <div className="w-10 h-10 rounded-lg bg-neutral-100 flex items-center justify-center">
+                          <Car className="w-5 h-5 text-neutral-300" />
+                        </div>
+                      )}
+                    </td>
                     <td className="px-4 py-3 text-sm font-medium text-neutral-900">{car.registrationNumber}</td>
                     <td className="px-4 py-3 text-sm text-neutral-700">{car.make} {car.model}</td>
                     <td className="px-4 py-3 text-sm text-neutral-700 capitalize">{car.category?.replace('_', ' ')}</td>

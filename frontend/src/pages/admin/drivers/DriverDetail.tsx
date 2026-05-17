@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ShieldCheck, Star, MapPin, Calendar } from 'lucide-react';
+import { ShieldCheck, Star, MapPin, Calendar, UserCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '@/lib/api';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { ImageGallery } from '@/components/ui/ImageGallery';
 import type { Driver, User } from '@/types';
 
 export function DriverDetail() {
@@ -18,10 +19,11 @@ export function DriverDetail() {
   const fetchDriver = async () => {
     try {
       setLoading(true);
-      const res: any = await api.get(`/admin/drivers/${id}`);
+      const res = await api.get(`/admin/drivers/${id}`) as Driver;
       setDriver(res);
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to fetch driver');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to fetch driver';
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -36,8 +38,9 @@ export function DriverDetail() {
       await api.put(`/admin/drivers/${id}/verify`);
       toast.success('Driver verified successfully');
       fetchDriver();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to verify driver');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to verify driver';
+      toast.error(message);
     }
   };
 
@@ -81,6 +84,24 @@ export function DriverDetail() {
       />
 
       <div className="max-w-3xl space-y-6">
+        {/* Driver Photo */}
+        <div className="bg-white rounded-xl shadow-sm border border-neutral-100 p-6 flex items-center gap-5">
+          {driver.photo ? (
+            <img src={driver.photo} alt={user.name || 'Driver'} className="w-20 h-20 rounded-full object-cover ring-2 ring-primary-100" />
+          ) : (
+            <div className="w-20 h-20 rounded-full bg-neutral-100 flex items-center justify-center">
+              <UserCircle className="w-10 h-10 text-neutral-300" />
+            </div>
+          )}
+          <div>
+            <p className="text-lg font-semibold text-neutral-900">{user.name || 'Unknown'}</p>
+            <p className="text-sm text-neutral-500">{user.phone || ''}</p>
+            <div className="mt-1">
+              <Badge status={driver.isVerified ? 'completed' : 'pending'} />
+            </div>
+          </div>
+        </div>
+
         {/* User Info */}
         <div className="bg-white rounded-xl shadow-sm border border-neutral-100 p-6">
           <h3 className="text-base font-semibold text-neutral-900 mb-4">User Information</h3>
@@ -147,6 +168,17 @@ export function DriverDetail() {
             </div>
           </div>
         </div>
+
+        {/* Document Photos */}
+        {(() => {
+          const docPhotos = [driver.licensePhoto, driver.aadhaarPhoto].filter((p): p is string => Boolean(p));
+          return docPhotos.length > 0 ? (
+            <div className="bg-white rounded-xl shadow-sm border border-neutral-100 p-6">
+              <h3 className="text-base font-semibold text-neutral-900 mb-4">Document Photos</h3>
+              <ImageGallery images={docPhotos} />
+            </div>
+          ) : null;
+        })()}
       </div>
     </div>
   );

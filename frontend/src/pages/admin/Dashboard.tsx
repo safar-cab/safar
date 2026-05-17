@@ -55,14 +55,14 @@ export function Dashboard() {
 
       {/* Stat Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <StatCard label="Total Customers" value={stats?.totalUsers ?? 0} icon={Users} iconBg="bg-primary-50" iconColor="text-primary-600" />
-        <StatCard label="Total Drivers" value={stats?.totalDrivers ?? 0} icon={UserCheck} iconBg="bg-success-50" iconColor="text-success-600" />
-        <StatCard label="Active Cars" value={stats?.totalCars ?? 0} icon={Car} iconBg="bg-secondary-50" iconColor="text-secondary-600" />
-        <StatCard label="Total Bookings" value={stats?.totalBookings ?? 0} icon={CalendarCheck} iconBg="bg-primary-50" iconColor="text-primary-600" />
-        <StatCard label="Today's Bookings" value={stats?.todayBookings ?? 0} icon={CalendarDays} iconBg="bg-warning-50" iconColor="text-warning-600" />
-        <StatCard label="Active Rides" value={stats?.activeBookings ?? 0} icon={Activity} iconBg="bg-success-50" iconColor="text-success-600" />
-        <StatCard label="Completed" value={stats?.completedBookings ?? 0} icon={CheckCircle} iconBg="bg-success-50" iconColor="text-success-600" />
-        <StatCard label="Total Revenue" value={formatCurrency(stats?.totalRevenue ?? 0)} icon={IndianRupee} iconBg="bg-secondary-50" iconColor="text-secondary-600" />
+        <StatCard label="Total Customers" value={stats?.totalUsers ?? 0} icon={Users} iconBg="bg-primary-50" iconColor="text-primary-600" gradient="bg-gradient-to-r from-primary-500 to-primary-400" />
+        <StatCard label="Total Drivers" value={stats?.totalDrivers ?? 0} icon={UserCheck} iconBg="bg-success-50" iconColor="text-success-600" gradient="bg-gradient-to-r from-success-500 to-success-600" />
+        <StatCard label="Active Cars" value={stats?.totalCars ?? 0} icon={Car} iconBg="bg-secondary-50" iconColor="text-secondary-600" gradient="bg-gradient-to-r from-secondary-500 to-secondary-400" />
+        <StatCard label="Total Bookings" value={stats?.totalBookings ?? 0} icon={CalendarCheck} iconBg="bg-primary-50" iconColor="text-primary-600" gradient="bg-gradient-to-r from-primary-500 to-primary-400" />
+        <StatCard label="Today's Bookings" value={stats?.todayBookings ?? 0} icon={CalendarDays} iconBg="bg-warning-50" iconColor="text-warning-600" gradient="bg-gradient-to-r from-warning-500 to-warning-600" />
+        <StatCard label="Active Rides" value={stats?.activeBookings ?? 0} icon={Activity} iconBg="bg-success-50" iconColor="text-success-600" gradient="bg-gradient-to-r from-success-500 to-success-600" />
+        <StatCard label="Completed" value={stats?.completedBookings ?? 0} icon={CheckCircle} iconBg="bg-success-50" iconColor="text-success-600" gradient="bg-gradient-to-r from-success-500 to-success-600" />
+        <StatCard label="Total Revenue" value={formatCurrency(stats?.totalRevenue ?? 0)} icon={IndianRupee} iconBg="bg-secondary-50" iconColor="text-secondary-600" gradient="bg-gradient-to-r from-secondary-500 to-secondary-400" />
       </div>
 
       {/* Charts */}

@@ -9,6 +9,7 @@ interface StatCardProps {
   trendUp?: boolean;
   iconBg?: string;
   iconColor?: string;
+  gradient?: string;
 }
 
 export function StatCard({
@@ -19,9 +20,12 @@ export function StatCard({
   trendUp,
   iconBg = 'bg-primary-50',
   iconColor = 'text-primary-600',
+  gradient,
 }: StatCardProps) {
   return (
-    <div className="bg-white rounded-xl p-5 shadow-sm border border-neutral-100">
+    <div className="bg-white rounded-xl shadow-sm border border-neutral-100 card-hover overflow-hidden">
+      {gradient && <div className={cn('h-1', gradient)} />}
+      <div className="p-5">
       <div className="flex items-start justify-between">
         <div>
           <p className="text-sm text-neutral-500 font-medium">{label}</p>
@@ -35,6 +39,7 @@ export function StatCard({
         <div className={cn('w-10 h-10 rounded-lg flex items-center justify-center', iconBg)}>
           <Icon className={cn('w-5 h-5', iconColor)} />
         </div>
+      </div>
       </div>
     </div>
   );
