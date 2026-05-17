@@ -86,9 +86,11 @@ export function PaymentDetail() {
         title="Payment Detail"
         showBack
         actions={
-          <Button size="sm" variant="outline" onClick={handleGenerateLink} loading={generating}>
-            Generate Payment Link
-          </Button>
+          payment.status !== 'captured' && payment.status !== 'refunded' ? (
+            <Button size="sm" variant="outline" onClick={handleGenerateLink} loading={generating}>
+              Generate Payment Link
+            </Button>
+          ) : undefined
         }
       />
 
