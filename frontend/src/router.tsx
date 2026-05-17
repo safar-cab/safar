@@ -31,6 +31,14 @@ import { RideDetail } from '@/pages/driver/rides/RideDetail';
 import { MyRatings } from '@/pages/driver/ratings/MyRatings';
 import { DriverProfile } from '@/pages/driver/profile/DriverProfile';
 
+// Customer pages
+import { Home as CustomerHome } from '@/pages/customer/Home';
+import { MyBookings } from '@/pages/customer/bookings/MyBookings';
+import { BookingDetail as CustomerBookingDetail } from '@/pages/customer/bookings/BookingDetail';
+import { BookingForm } from '@/pages/customer/booking/BookingForm';
+import { RateRide } from '@/pages/customer/rating/RateRide';
+import { CustomerProfile } from '@/pages/customer/profile/CustomerProfile';
+
 // Placeholder for future phases
 const Placeholder = ({ title }: { title: string }) => (
   <div className="flex items-center justify-center min-h-[50vh]">
@@ -96,16 +104,16 @@ export const router = createBrowserRouter([
     path: '/customer',
     element: <ProtectedRoute role="customer"><CustomerLayout /></ProtectedRoute>,
     children: [
-      { index: true, element: <Placeholder title="Home" /> },
-      { path: 'bookings', element: <Placeholder title="My Bookings" /> },
-      { path: 'bookings/:id', element: <Placeholder title="Booking Detail" /> },
+      { index: true, element: <CustomerHome /> },
+      { path: 'bookings', element: <MyBookings /> },
+      { path: 'bookings/:id', element: <CustomerBookingDetail /> },
       { path: 'track', element: <Placeholder title="Track" /> },
       { path: 'track/:bookingId', element: <Placeholder title="Live Tracking" /> },
-      { path: 'book', element: <Placeholder title="Book a Ride" /> },
+      { path: 'book', element: <BookingForm /> },
       { path: 'cars', element: <Placeholder title="Cars" /> },
       { path: 'payment/:bookingId', element: <Placeholder title="Payment" /> },
-      { path: 'rate/:bookingId', element: <Placeholder title="Rate Ride" /> },
-      { path: 'profile', element: <Placeholder title="Profile" /> },
+      { path: 'rate/:bookingId', element: <RateRide /> },
+      { path: 'profile', element: <CustomerProfile /> },
       { path: 'profile/edit', element: <Placeholder title="Edit Profile" /> },
     ],
   },
