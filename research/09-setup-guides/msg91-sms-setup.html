@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MSG91 SMS Setup Guide</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --green: #3fb950;
+            --red: #f85149;
+            --yellow: #d29922;
+            --purple: #bc8cff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        h1 {
+            font-size: 2rem;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-hover);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.3rem;
+        }
+        h3 {
+            font-size: 1.2rem;
+            margin-top: 1.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--purple);
+        }
+        h4 {
+            font-size: 1rem;
+            margin-top: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        p {
+            margin-bottom: 1rem;
+        }
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+            color: var(--accent-hover);
+        }
+        code {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.15rem 0.4rem;
+            font-size: 0.9em;
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            color: var(--accent-hover);
+        }
+        pre {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+        }
+        pre code {
+            background: none;
+            border: none;
+            padding: 0;
+            color: var(--text);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background: #1c2333;
+            color: var(--accent);
+            font-weight: 600;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+        td {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover td {
+            background: rgba(88, 166, 255, 0.05);
+        }
+        blockquote {
+            border-left: 4px solid var(--accent);
+            background: var(--card);
+            padding: 0.8rem 1.2rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-muted);
+        }
+        blockquote strong {
+            color: var(--yellow);
+        }
+        ul, ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        li {
+            margin-bottom: 0.3rem;
+        }
+        li ul, li ol {
+            margin-bottom: 0;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+        strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+        em {
+            color: var(--text-muted);
+        }
+        .mermaid {
+            background: #1a1f2e;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        .nav {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .nav a {
+            font-size: 0.85rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            background: rgba(88, 166, 255, 0.1);
+        }
+        .nav a:hover {
+            background: rgba(88, 166, 255, 0.2);
+            text-decoration: none;
+        }
+        .nav-label {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        input[type="checkbox"] {
+            accent-color: var(--green);
+            transform: scale(1.2);
+            margin-right: 0.3rem;
+        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.5rem; }
+            table { font-size: 0.85rem; }
+            th, td { padding: 0.4rem 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <span class="nav-label">Navigation:</span>
+        <a href="../index.html" style="background:rgba(63,185,80,0.2);color:#3fb950;font-weight:600;">Home</a>
+        <a href="../00-executive-summary.html">Summary</a>
+        <a href="../01-product-identity.html">Identity</a>
+        <a href="../02-competitive-analysis.html">Competitors</a>
+        <a href="../03-target-market.html">Market</a>
+        <a href="../04-user-flow.html">UX Flow</a>
+        <a href="../05-mvp-definition.html">MVP</a>
+        <a href="../06-architecture.html">Architecture</a>
+        <a href="../07-tech-stack.html">Tech Stack</a>
+        <a href="../08-integrations.html">Integrations</a>
+        <a href="../10-database-design.html">Database</a>
+        <a href="../11-sequence-diagrams.html">Sequences</a>
+        <a href="../12-project-flow.html">Project Flow</a>
+        <a href="../13-security.html">Security</a>
+        <a href="../14-legal-compliance.html">Legal</a>
+        <a href="../15-implementation-phases.html">Phases</a>
+        <a href="../16-production-checklist.html">Checklist</a>
+        <a href="../17-devops.html">DevOps</a>
+        <a href="../18-monetization.html">Revenue</a>
+        <a href="../19-cost-management.html">Costs</a>
+        <a href="../20-marketing.html">Marketing</a>
+        <a href="../21-analytics-kpis.html">KPIs</a>
+        <a href="../22-accessibility-i18n.html">A11y</a>
+        <a href="../23-support-docs.html">Support</a>
+        <a href="../24-team-hiring.html">Team</a>
+        <a href="../25-risk-assessment.html">Risks</a>
+        <a href="../26-future-roadmap.html">Roadmap</a>
+    </nav>
+    <h1 id="msg91-sms-setup-guide">MSG91 SMS Setup Guide</h1>
+<h2 id="1-create-account">1. Create Account</h2>
+<ol>
+<li>Go to https://msg91.com</li>
+<li>Sign up with email + phone</li>
+<li>Verify account</li>
+</ol>
+<h2 id="2-dlt-registration-mandatory-in-india">2. DLT Registration (Mandatory in India)</h2>
+<h3 id="what-is-dlt">What is DLT?</h3>
+<p>Distributed Ledger Technology — TRAI mandate for all SMS in India. Must register sender ID and message templates.</p>
+<h3 id="steps">Steps</h3>
+<ol>
+<li>Choose a DLT portal (any one):</li>
+<li>Jio: https://trueconnect.jio.com</li>
+<li>Airtel: https://www.airtel.in/business/commercial-communication</li>
+<li>Vodafone-Idea: https://www.vilpower.in</li>
+<li>Register as <strong>Entity</strong> (business/individual)</li>
+<li>Submit documents: PAN, business registration</li>
+<li>Register <strong>Sender ID</strong> (6 chars, e.g., "CABAPP")</li>
+<li>Register <strong>Message Templates</strong> (exact text with variables)</li>
+<li>Wait for approval (2-5 business days)</li>
+</ol>
+<h3 id="template-examples-to-register">Template Examples to Register</h3>
+<pre class="highlight"><code>Template 1 (OTP):
+&quot;Your OTP for {#var#} is {#var#}. Valid for 10 minutes. Do not share.&quot;
+
+Template 2 (Booking Confirmed):
+&quot;Booking {#var#} confirmed. {#var#} on {#var#}. Driver: {#var#}. Track: {#var#}&quot;
+
+Template 3 (Ride Started):
+&quot;Your ride has started. Driver {#var#} en route. Track live: {#var#}&quot;
+
+Template 4 (Ride Completed):
+&quot;Ride completed. Amount: Rs.{#var#}. Rate your ride: {#var#}&quot;
+
+Template 5 (Cancellation):
+&quot;Booking {#var#} cancelled. Refund Rs.{#var#} in 5-7 days.&quot;
+
+Template 6 (Payment):
+&quot;Payment Rs.{#var#} received for booking {#var#}. Thank you.&quot;
+</code></pre>
+
+<h2 id="3-get-api-key">3. Get API Key</h2>
+<ol>
+<li>MSG91 Dashboard → Settings → API Keys</li>
+<li>Create new API key</li>
+<li>Copy authkey</li>
+</ol>
+<h2 id="4-environment-variables">4. Environment Variables</h2>
+<pre class="highlight"><code class="language-env">MSG91_AUTH_KEY=xxxxxxxxxxxxxxxxxxxxx
+MSG91_SENDER_ID=CABAPP
+MSG91_OTP_TEMPLATE_ID=xxxxxxxxxxxxx
+</code></pre>
+
+<h2 id="5-install-sdk">5. Install SDK</h2>
+<pre class="highlight"><code class="language-bash">npm install msg91-sdk
+# Or use REST API directly (simpler)
+</code></pre>
+
+<h2 id="6-send-otp">6. Send OTP</h2>
+<pre class="highlight"><code class="language-typescript">// lib/sms.ts
+
+const MSG91_BASE = 'https://control.msg91.com/api/v5';
+
+export async function sendOTP(phone: string) {
+  const res = await fetch(`${MSG91_BASE}/otp?template_id=${process.env.MSG91_OTP_TEMPLATE_ID}&amp;mobile=91${phone}`, {
+    method: 'POST',
+    headers: {
+      'authkey': process.env.MSG91_AUTH_KEY!,
+      'Content-Type': 'application/json',
+    },
+  });
+  return res.json();
+}
+
+export async function verifyOTP(phone: string, otp: string) {
+  const res = await fetch(`${MSG91_BASE}/otp/verify?mobile=91${phone}&amp;otp=${otp}`, {
+    method: 'POST',
+    headers: {
+      'authkey': process.env.MSG91_AUTH_KEY!,
+    },
+  });
+  return res.json();
+}
+
+export async function sendSMS(phone: string, templateId: string, variables: Record&lt;string, string&gt;) {
+  const res = await fetch(`${MSG91_BASE}/flow/`, {
+    method: 'POST',
+    headers: {
+      'authkey': process.env.MSG91_AUTH_KEY!,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      template_id: templateId,
+      short_url: '0',
+      recipients: [{
+        mobiles: `91${phone}`,
+        ...variables,
+      }],
+    }),
+  });
+  return res.json();
+}
+</code></pre>
+
+<h2 id="7-otp-widget-free-alternative">7. OTP Widget (Free Alternative)</h2>
+<p>MSG91 offers a pre-built OTP widget (no extra charge):<br />
+1. Dashboard → OTP → Widget<br />
+2. Configure look and feel<br />
+3. Embed in your app<br />
+4. Handles send + verify + retry automatically</p>
+<h2 id="8-pricing">8. Pricing</h2>
+<ul>
+<li>Transactional SMS: ₹0.16-0.30 per SMS</li>
+<li>OTP Widget: No additional charge</li>
+<li>Buy credits in bulk for lower rates</li>
+</ul>
+<h2 id="9-testing">9. Testing</h2>
+<ul>
+<li>Use MSG91 sandbox for testing</li>
+<li>Test numbers available in dashboard</li>
+<li>Check delivery reports in MSG91 dashboard</li>
+</ul>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#1f6feb',
+                primaryTextColor: '#e6edf3',
+                primaryBorderColor: '#58a6ff',
+                lineColor: '#8b949e',
+                secondaryColor: '#161b22',
+                tertiaryColor: '#0d1117',
+                background: '#0d1117',
+                mainBkg: '#161b22',
+                nodeBorder: '#30363d',
+                clusterBkg: '#161b22',
+                titleColor: '#58a6ff',
+                edgeLabelBackground: '#161b22',
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend Implementation Phases</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --green: #3fb950;
+            --red: #f85149;
+            --yellow: #d29922;
+            --purple: #bc8cff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        h1 {
+            font-size: 2rem;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-hover);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.3rem;
+        }
+        h3 {
+            font-size: 1.2rem;
+            margin-top: 1.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--purple);
+        }
+        h4 {
+            font-size: 1rem;
+            margin-top: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        p {
+            margin-bottom: 1rem;
+        }
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+            color: var(--accent-hover);
+        }
+        code {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.15rem 0.4rem;
+            font-size: 0.9em;
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            color: var(--accent-hover);
+        }
+        pre {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+        }
+        pre code {
+            background: none;
+            border: none;
+            padding: 0;
+            color: var(--text);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background: #1c2333;
+            color: var(--accent);
+            font-weight: 600;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+        td {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover td {
+            background: rgba(88, 166, 255, 0.05);
+        }
+        blockquote {
+            border-left: 4px solid var(--accent);
+            background: var(--card);
+            padding: 0.8rem 1.2rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-muted);
+        }
+        blockquote strong {
+            color: var(--yellow);
+        }
+        ul, ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        li {
+            margin-bottom: 0.3rem;
+        }
+        li ul, li ol {
+            margin-bottom: 0;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+        strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+        em {
+            color: var(--text-muted);
+        }
+        .mermaid {
+            background: #1a1f2e;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        .nav {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .nav a {
+            font-size: 0.85rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            background: rgba(88, 166, 255, 0.1);
+        }
+        .nav a:hover {
+            background: rgba(88, 166, 255, 0.2);
+            text-decoration: none;
+        }
+        .nav-label {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        input[type="checkbox"] {
+            accent-color: var(--green);
+            transform: scale(1.2);
+            margin-right: 0.3rem;
+        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.5rem; }
+            table { font-size: 0.85rem; }
+            th, td { padding: 0.4rem 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <span class="nav-label">Navigation:</span>
+        <a href="../index.html" style="background:rgba(63,185,80,0.2);color:#3fb950;font-weight:600;">Home</a>
+        <a href="../00-executive-summary.html">Summary</a>
+        <a href="../01-product-identity.html">Identity</a>
+        <a href="../02-competitive-analysis.html">Competitors</a>
+        <a href="../03-target-market.html">Market</a>
+        <a href="../04-user-flow.html">UX Flow</a>
+        <a href="../05-mvp-definition.html">MVP</a>
+        <a href="../06-architecture.html">Architecture</a>
+        <a href="../07-tech-stack.html">Tech Stack</a>
+        <a href="../08-integrations.html">Integrations</a>
+        <a href="../10-database-design.html">Database</a>
+        <a href="../11-sequence-diagrams.html">Sequences</a>
+        <a href="../12-project-flow.html">Project Flow</a>
+        <a href="../13-security.html">Security</a>
+        <a href="../14-legal-compliance.html">Legal</a>
+        <a href="../15-implementation-phases.html">Phases</a>
+        <a href="../16-production-checklist.html">Checklist</a>
+        <a href="../17-devops.html">DevOps</a>
+        <a href="../18-monetization.html">Revenue</a>
+        <a href="../19-cost-management.html">Costs</a>
+        <a href="../20-marketing.html">Marketing</a>
+        <a href="../21-analytics-kpis.html">KPIs</a>
+        <a href="../22-accessibility-i18n.html">A11y</a>
+        <a href="../23-support-docs.html">Support</a>
+        <a href="../24-team-hiring.html">Team</a>
+        <a href="../25-risk-assessment.html">Risks</a>
+        <a href="../26-future-roadmap.html">Roadmap</a>
+    </nav>
+    <h1 id="frontend-implementation-phases">Frontend Implementation Phases</h1>
+<h2 id="overview">Overview</h2>
+<p>Full frontend build plan: Admin (web) → Driver (PWA) → Customer (PWA).<br />
+Each phase builds on previous. Phase 0 is shared foundation.</p>
+<hr />
+<h2 id="phase-0-foundation-shared-infrastructure">Phase 0: Foundation (Shared Infrastructure)</h2>
+<p>Everything shared across all 3 portals.</p>
+<h3 id="0a-dependencies-tooling">0A. Dependencies &amp; Tooling</h3>
+<ul>
+<li>Tailwind CSS v4 + PostCSS</li>
+<li>React Router v6 (<code>react-router-dom</code>)</li>
+<li>Framer Motion (animations)</li>
+<li>Lucide React (icons)</li>
+<li>Axios (HTTP client)</li>
+<li>React Hot Toast (notifications)</li>
+<li>Recharts (admin charts)</li>
+<li>React Hook Form (forms)</li>
+<li>date-fns (date formatting)</li>
+<li>clsx + tailwind-merge (class utilities)</li>
+</ul>
+<h3 id="0b-design-system-setup">0B. Design System Setup</h3>
+<ul>
+<li><code>tailwind.config.ts</code> — all tokens from <code>01-design-system.md</code></li>
+<li>Colors: primary (blue), secondary (amber), success, error, warning, neutral</li>
+<li>Typography: Inter font, size scale</li>
+<li>Spacing: 4px base</li>
+<li>Border radius: sm/md/lg/xl/full</li>
+<li>Shadows: sm/md/lg/xl</li>
+<li>Breakpoints: 375/768/1024/1280</li>
+<li><code>src/styles/globals.css</code> — CSS custom properties, base styles</li>
+<li><code>src/lib/cn.ts</code> — clsx + tailwind-merge utility</li>
+</ul>
+<h3 id="0c-api-client">0C. API Client</h3>
+<ul>
+<li><code>src/lib/api.ts</code> — Axios instance</li>
+<li>Base URL: <code>http://localhost:3000/api</code></li>
+<li>JWT token from localStorage in Authorization header</li>
+<li>Response interceptor: unwrap <code>data.data</code></li>
+<li>Error interceptor: 401 → redirect to login</li>
+<li>Request/response types</li>
+</ul>
+<h3 id="0d-auth-system">0D. Auth System</h3>
+<ul>
+<li><code>src/contexts/AuthContext.tsx</code> — AuthProvider</li>
+<li>State: user, token, isLoading</li>
+<li>Methods: login, register, logout</li>
+<li>Persist token in localStorage</li>
+<li>Auto-validate on mount (fetch profile)</li>
+<li><code>src/components/ProtectedRoute.tsx</code> — Role-based guard</li>
+<li>No token → redirect <code>/auth/login</code></li>
+<li>Wrong role → redirect to role home</li>
+<li>Loading → full-page skeleton</li>
+<li><code>src/hooks/useAuth.ts</code> — useContext wrapper</li>
+</ul>
+<h3 id="0e-router-setup">0E. Router Setup</h3>
+<ul>
+<li><code>src/router.tsx</code> — createBrowserRouter</li>
+<li><code>/</code> → RootRedirect (role-based)</li>
+<li><code>/auth/*</code> → AuthLayout (login, signup)</li>
+<li><code>/admin/*</code> → ProtectedRoute(admin) → AdminLayout</li>
+<li><code>/driver/*</code> → ProtectedRoute(driver) → DriverLayout</li>
+<li><code>/customer/*</code> → ProtectedRoute(customer) → CustomerLayout</li>
+<li><code>/*</code> → NotFound</li>
+</ul>
+<h3 id="0f-shared-ui-components">0F. Shared UI Components</h3>
+<ul>
+<li><code>Button</code> — primary, secondary, outline, ghost, danger variants + sizes</li>
+<li><code>Input</code> — text, phone, password (with toggle), search</li>
+<li><code>Card</code> — base card with shadow, hover</li>
+<li><code>Badge</code> — status badges (pending, confirmed, completed, cancelled)</li>
+<li><code>Skeleton</code> — shimmer loading placeholders</li>
+<li><code>Avatar</code> — image + initials fallback</li>
+<li><code>EmptyState</code> — icon + message + CTA</li>
+<li><code>PageHeader</code> — title + back button + actions</li>
+<li><code>Modal</code> — overlay + centered content</li>
+<li><code>DataTable</code> — sortable, paginated table (admin)</li>
+<li><code>StatCard</code> — icon + label + value + trend</li>
+</ul>
+<h3 id="0g-layouts">0G. Layouts</h3>
+<ul>
+<li><code>AuthLayout</code> — centered card, logo, minimal</li>
+<li><code>AdminLayout</code> — sidebar (240px) + top bar + content area</li>
+<li><code>CustomerLayout</code> — top bar + content + bottom nav (4 tabs)</li>
+<li><code>DriverLayout</code> — top bar + content + bottom nav (4 tabs)</li>
+</ul>
+<h3 id="files-created">Files Created</h3>
+<pre class="highlight"><code>src/
+├── lib/
+│   ├── api.ts
+│   ├── cn.ts
+│   └── constants.ts
+├── contexts/
+│   └── AuthContext.tsx
+├── hooks/
+│   ├── useAuth.ts
+│   └── useApi.ts
+├── components/
+│   ├── ui/
+│   │   ├── Button.tsx
+│   │   ├── Input.tsx
+│   │   ├── Card.tsx
+│   │   ├── Badge.tsx
+│   │   ├── Skeleton.tsx
+│   │   ├── Avatar.tsx
+│   │   ├── EmptyState.tsx
+│   │   ├── PageHeader.tsx
+│   │   ├── Modal.tsx
+│   │   ├── DataTable.tsx
+│   │   └── StatCard.tsx
+│   ├── ProtectedRoute.tsx
+│   └── RootRedirect.tsx
+├── layouts/
+│   ├── AuthLayout.tsx
+│   ├── AdminLayout.tsx
+│   ├── CustomerLayout.tsx
+│   └── DriverLayout.tsx
+├── styles/
+│   └── globals.css
+├── router.tsx
+├── App.tsx
+└── main.tsx
+</code></pre>
+
+<hr />
+<h2 id="phase-1-admin-app-web-desktop-first">Phase 1: Admin App (Web — Desktop-First)</h2>
+<p>Desktop-first web dashboard. No PWA. Sidebar navigation.</p>
+<h3 id="1a-admin-login">1A. Admin Login</h3>
+<ul>
+<li>Login page with phone + password</li>
+<li>POST <code>/api/admin/auth/login</code></li>
+<li>Redirect to <code>/admin</code> on success</li>
+<li>Error handling: invalid credentials, not admin</li>
+</ul>
+<h3 id="1b-admin-dashboard">1B. Admin Dashboard</h3>
+<ul>
+<li>GET <code>/api/admin/dashboard/stats</code> → stat cards (users, drivers, cars, bookings, revenue)</li>
+<li>GET <code>/api/admin/dashboard/revenue-chart?days=30</code> → line chart (Recharts)</li>
+<li>GET <code>/api/admin/dashboard/booking-stats</code> → pie chart by status</li>
+<li>Animated number counters on stat cards</li>
+<li>Quick action buttons</li>
+</ul>
+<h3 id="1c-cars-management">1C. Cars Management</h3>
+<ul>
+<li><strong>List</strong>: GET <code>/api/admin/cars</code> → DataTable with search, filter by category</li>
+<li><strong>Add</strong>: POST <code>/api/admin/cars</code> → form (reg no, make, model, year, color, category, seats)</li>
+<li><strong>Edit</strong>: PUT <code>/api/admin/cars/:id</code> → pre-filled form</li>
+<li><strong>Assign Driver</strong>: PUT <code>/api/admin/cars/:id/assign-driver/:driverId</code> → driver select</li>
+<li><strong>Activate/Deactivate</strong>: PUT <code>/api/admin/cars/:id/activate|deactivate</code></li>
+</ul>
+<h3 id="1d-drivers-management">1D. Drivers Management</h3>
+<ul>
+<li><strong>List</strong>: GET <code>/api/admin/drivers</code> → DataTable with verify filter</li>
+<li><strong>Add</strong>: POST <code>/api/admin/drivers</code> → form (select user, license, docs)</li>
+<li><strong>Detail</strong>: GET <code>/api/admin/drivers/:id</code> → full profile, docs, stats</li>
+<li><strong>Verify</strong>: PUT <code>/api/admin/drivers/:id/verify</code> → confirm button</li>
+<li><strong>Edit</strong>: PUT <code>/api/admin/drivers/:id</code> → update docs</li>
+</ul>
+<h3 id="1e-users-management">1E. Users Management</h3>
+<ul>
+<li><strong>List</strong>: GET <code>/api/admin/users</code> → DataTable with role filter, search</li>
+<li><strong>Detail</strong>: GET <code>/api/admin/users/:id</code> → profile, booking history</li>
+<li><strong>Block</strong>: PUT <code>/api/admin/users/:id/block</code> → reason input</li>
+<li><strong>Unblock</strong>: PUT <code>/api/admin/users/:id/unblock</code></li>
+</ul>
+<h3 id="1f-bookings-management">1F. Bookings Management</h3>
+<ul>
+<li><strong>List</strong>: GET <code>/api/admin/bookings</code> → DataTable with status filter, search by booking ID</li>
+<li><strong>Detail</strong>: GET <code>/api/admin/bookings/:id</code> → full info, status timeline, pricing</li>
+<li><strong>Assign Driver</strong>: PUT <code>/api/admin/bookings/:id/assign-driver</code> → driver select modal</li>
+<li><strong>Update Status</strong>: PUT <code>/api/admin/bookings/:id/status</code> → status dropdown</li>
+<li><strong>Cancel</strong>: PUT <code>/api/admin/bookings/:id/cancel</code> → reason input, confirm</li>
+</ul>
+<h3 id="1g-payments">1G. Payments</h3>
+<ul>
+<li><strong>List</strong>: GET <code>/api/admin/payments</code> → DataTable with status filter</li>
+<li><strong>Refund</strong>: POST <code>/api/admin/payments/:id/refund</code> → amount input, confirm</li>
+</ul>
+<h3 id="1h-routes-management">1H. Routes Management</h3>
+<ul>
+<li><strong>List</strong>: GET <code>/api/admin/routes</code> → table</li>
+<li><strong>Add</strong>: POST <code>/api/admin/routes</code> → form (name, distance, price/km, base fare, tolls)</li>
+<li><strong>Edit</strong>: PUT <code>/api/admin/routes/:id</code> → pre-filled form</li>
+<li><strong>Deactivate</strong>: PUT <code>/api/admin/routes/:id/deactivate</code></li>
+</ul>
+<h3 id="1i-company-settings">1I. Company Settings</h3>
+<ul>
+<li>GET <code>/api/admin/dashboard/settings</code> → form</li>
+<li>PUT <code>/api/admin/dashboard/settings</code> → save</li>
+<li>Fields: company name, phone, email, default price/km, refund policy</li>
+</ul>
+<h3 id="files-created_1">Files Created</h3>
+<pre class="highlight"><code>src/pages/admin/
+├── AdminLogin.tsx
+├── Dashboard.tsx
+├── cars/
+│   ├── CarsList.tsx
+│   ├── AddCar.tsx
+│   └── EditCar.tsx
+├── drivers/
+│   ├── DriversList.tsx
+│   ├── AddDriver.tsx
+│   └── DriverDetail.tsx
+├── users/
+│   ├── UsersList.tsx
+│   └── UserDetail.tsx
+├── bookings/
+│   ├── BookingsList.tsx
+│   └── BookingDetail.tsx
+├── payments/
+│   └── PaymentsList.tsx
+├── routes/
+│   ├── RoutesList.tsx
+│   ├── AddRoute.tsx
+│   └── EditRoute.tsx
+└── settings/
+    └── Settings.tsx
+</code></pre>
+
+<hr />
+<h2 id="phase-2-driver-app-pwa-mobile-first">Phase 2: Driver App (PWA — Mobile-First)</h2>
+<p>Mobile-first PWA. Bottom navigation. Installable.</p>
+<h3 id="2a-driver-auth">2A. Driver Auth</h3>
+<ul>
+<li>Login page (phone + password)</li>
+<li>Register page (name, phone, password)</li>
+<li>POST <code>/api/driver/auth/login</code> | <code>/api/driver/auth/register</code></li>
+</ul>
+<h3 id="2b-driver-dashboard">2B. Driver Dashboard</h3>
+<ul>
+<li>Availability toggle (PUT <code>/api/driver/availability</code>)</li>
+<li>Today's stats (from driver profile: rating, total rides)</li>
+<li>Today's assigned rides list</li>
+<li>GET <code>/api/driver/bookings?status=driver_assigned</code></li>
+</ul>
+<h3 id="2c-ride-list-detail">2C. Ride List + Detail</h3>
+<ul>
+<li>GET <code>/api/driver/bookings</code> → ride cards</li>
+<li>GET <code>/api/driver/bookings/:id</code> → full detail</li>
+<li>Customer info, route, pickup/drop, schedule</li>
+</ul>
+<h3 id="2d-ride-status-controls">2D. Ride Status Controls</h3>
+<ul>
+<li>Sequential status buttons:</li>
+<li>"Start - En Route" → PUT status=driver_en_route</li>
+<li>"Arrived at Pickup" → PUT status=picked_up</li>
+<li>"Complete Ride" → PUT status=completed</li>
+<li>Confirmation before each status change</li>
+</ul>
+<h3 id="2e-location-updates">2E. Location Updates</h3>
+<ul>
+<li>Background GPS: <code>navigator.geolocation.watchPosition</code></li>
+<li>PUT <code>/api/driver/location</code> every 5 seconds when active ride</li>
+<li>Screen wake lock during ride</li>
+</ul>
+<h3 id="2f-rate-customer">2F. Rate Customer</h3>
+<ul>
+<li>After ride completion → rating prompt</li>
+<li>POST <code>/api/driver/ratings</code> (1-5 stars + review)</li>
+<li>Star animation on tap</li>
+</ul>
+<h3 id="2g-driver-profile">2G. Driver Profile</h3>
+<ul>
+<li>GET <code>/api/driver/me</code> → license, rating, rides</li>
+<li>GET <code>/api/driver/profile</code> → user info</li>
+<li>PUT <code>/api/driver/profile</code> → edit name, email</li>
+<li>GET <code>/api/driver/ratings/my</code> → rating history</li>
+</ul>
+<h3 id="files-created_2">Files Created</h3>
+<pre class="highlight"><code>src/pages/driver/
+├── DriverLogin.tsx
+├── DriverRegister.tsx
+├── Dashboard.tsx
+├── rides/
+│   ├── RideList.tsx
+│   └── RideDetail.tsx
+├── ratings/
+│   └── MyRatings.tsx
+└── profile/
+    └── DriverProfile.tsx
+</code></pre>
+
+<hr />
+<h2 id="phase-3-customer-app-pwa-mobile-first">Phase 3: Customer App (PWA — Mobile-First)</h2>
+<p>Mobile-first PWA. Full booking flow. Live tracking. Installable.</p>
+<h3 id="3a-customer-auth">3A. Customer Auth</h3>
+<ul>
+<li>Login (phone + password)</li>
+<li>Register (name, phone, email, password)</li>
+<li>POST <code>/api/customer/auth/login</code> | <code>/api/customer/auth/register</code></li>
+</ul>
+<h3 id="3b-home-page">3B. Home Page</h3>
+<ul>
+<li>Greeting with user name</li>
+<li>Search bar (pickup location)</li>
+<li>Popular routes → GET <code>/api/customer/routes</code> (horizontal scroll)</li>
+<li>Recent bookings → GET <code>/api/customer/bookings?limit=3</code></li>
+</ul>
+<h3 id="3c-browse-routes-cars">3C. Browse Routes + Cars</h3>
+<ul>
+<li>Route list → GET <code>/api/customer/routes</code></li>
+<li>Route detail → GET <code>/api/customer/routes/:id</code></li>
+<li>Available cars → GET <code>/api/customer/cars/available?category=</code></li>
+<li>Car detail → GET <code>/api/customer/cars/:id</code></li>
+</ul>
+<h3 id="3d-booking-flow-multi-step">3D. Booking Flow (Multi-Step)</h3>
+<ul>
+<li>Step 1: Pickup location (address + landmark)</li>
+<li>Step 2: Drop location (address + landmark)</li>
+<li>Step 3: Intermediate stops (optional, add/remove)</li>
+<li>Step 4: Schedule (date picker + time)</li>
+<li>Step 5: Select car (grid with filters)</li>
+<li>Step 6: Review + price breakdown</li>
+<li>POST <code>/api/customer/bookings</code> → booking created</li>
+</ul>
+<h3 id="3e-payment-razorpay-upi">3E. Payment (Razorpay UPI)</h3>
+<ul>
+<li>POST <code>/api/customer/payments/create-order</code> → get orderId</li>
+<li>Open Razorpay checkout (UPI only)</li>
+<li>POST <code>/api/customer/payments/verify</code> → confirm payment</li>
+<li>Success animation (confetti + checkmark)</li>
+</ul>
+<h3 id="3f-my-bookings">3F. My Bookings</h3>
+<ul>
+<li>Tabs: Upcoming | Past | Cancelled</li>
+<li>GET <code>/api/customer/bookings?status=</code></li>
+<li>Booking cards with status badge</li>
+<li>Tap → booking detail</li>
+</ul>
+<h3 id="3g-booking-detail">3G. Booking Detail</h3>
+<ul>
+<li>Status timeline (animated steps)</li>
+<li>Driver info card (if assigned)</li>
+<li>Route info (pickup → drop)</li>
+<li>Pricing breakdown</li>
+<li>Actions: Track Live | Cancel</li>
+</ul>
+<h3 id="3h-live-tracking">3H. Live Tracking</h3>
+<ul>
+<li>Full screen map</li>
+<li>Driver marker with pulse animation</li>
+<li>Route line</li>
+<li>Driver info bottom sheet (draggable)</li>
+<li>ETA display</li>
+<li>WebSocket connection for real-time updates</li>
+</ul>
+<h3 id="3i-rating">3I. Rating</h3>
+<ul>
+<li>After ride completion</li>
+<li>Star rating (1-5) with pop animation</li>
+<li>Optional text review</li>
+<li>POST <code>/api/customer/ratings</code></li>
+<li>Thank you screen</li>
+</ul>
+<h3 id="3j-profile">3J. Profile</h3>
+<ul>
+<li>Avatar + name + phone</li>
+<li>Menu: Edit Profile, Payment History, Ratings, Help, Logout</li>
+<li>Edit profile → PUT <code>/api/customer/profile</code></li>
+<li>Payment history → GET <code>/api/customer/payments</code></li>
+</ul>
+<h3 id="3k-pwa-setup">3K. PWA Setup</h3>
+<ul>
+<li>manifest.json (icons, shortcuts, screenshots)</li>
+<li>Service worker via vite-plugin-pwa</li>
+<li>Install prompt (after 2nd visit)</li>
+<li>Offline caching strategy</li>
+<li>Push notification registration</li>
+</ul>
+<h3 id="files-created_3">Files Created</h3>
+<pre class="highlight"><code>src/pages/customer/
+├── CustomerLogin.tsx
+├── CustomerRegister.tsx
+├── Home.tsx
+├── search/
+│   └── SearchResults.tsx
+├── cars/
+│   └── CarSelection.tsx
+├── booking/
+│   ├── BookingForm.tsx
+│   ├── StepPickup.tsx
+│   ├── StepDrop.tsx
+│   ├── StepStops.tsx
+│   ├── StepSchedule.tsx
+│   ├── StepCar.tsx
+│   └── StepReview.tsx
+├── payment/
+│   └── Payment.tsx
+├── bookings/
+│   ├── MyBookings.tsx
+│   └── BookingDetail.tsx
+├── tracking/
+│   └── LiveTracking.tsx
+├── rating/
+│   └── RateRide.tsx
+└── profile/
+    ├── Profile.tsx
+    └── EditProfile.tsx
+</code></pre>
+
+<hr />
+<h2 id="api-endpoints-used-per-phase">API Endpoints Used Per Phase</h2>
+<h3 id="phase-0-auth">Phase 0 (Auth)</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Endpoint</th>
+<th>Used By</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td>/customer/auth/register</td>
+<td>Customer</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/customer/auth/login</td>
+<td>Customer</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/driver/auth/register</td>
+<td>Driver</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/driver/auth/login</td>
+<td>Driver</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/admin/auth/login</td>
+<td>Admin</td>
+</tr>
+</tbody>
+</table>
+<h3 id="phase-1-admin">Phase 1 (Admin)</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Endpoint</th>
+<th>Page</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td>/admin/dashboard/stats</td>
+<td>Dashboard</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/admin/dashboard/revenue-chart</td>
+<td>Dashboard</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/admin/dashboard/booking-stats</td>
+<td>Dashboard</td>
+</tr>
+<tr>
+<td>GET/PUT</td>
+<td>/admin/dashboard/settings</td>
+<td>Settings</td>
+</tr>
+<tr>
+<td>GET/POST</td>
+<td>/admin/cars</td>
+<td>Cars</td>
+</tr>
+<tr>
+<td>GET/PUT</td>
+<td>/admin/cars/:id</td>
+<td>Cars</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/admin/cars/:id/activate</td>
+<td>Cars</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/admin/cars/:id/deactivate</td>
+<td>Cars</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/admin/cars/:id/assign-driver/:driverId</td>
+<td>Cars</td>
+</tr>
+<tr>
+<td>GET/POST</td>
+<td>/admin/drivers</td>
+<td>Drivers</td>
+</tr>
+<tr>
+<td>GET/PUT</td>
+<td>/admin/drivers/:id</td>
+<td>Drivers</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/admin/drivers/:id/verify</td>
+<td>Drivers</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/admin/users</td>
+<td>Users</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/admin/users/:id</td>
+<td>Users</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/admin/users/:id/block</td>
+<td>Users</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/admin/users/:id/unblock</td>
+<td>Users</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/admin/bookings</td>
+<td>Bookings</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/admin/bookings/:id</td>
+<td>Bookings</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/admin/bookings/:id/assign-driver</td>
+<td>Bookings</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/admin/bookings/:id/status</td>
+<td>Bookings</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/admin/bookings/:id/cancel</td>
+<td>Bookings</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/admin/payments</td>
+<td>Payments</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/admin/payments/:id/refund</td>
+<td>Payments</td>
+</tr>
+<tr>
+<td>GET/POST</td>
+<td>/admin/routes</td>
+<td>Routes</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/admin/routes/:id</td>
+<td>Routes</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/admin/routes/:id/deactivate</td>
+<td>Routes</td>
+</tr>
+</tbody>
+</table>
+<h3 id="phase-2-driver">Phase 2 (Driver)</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Endpoint</th>
+<th>Page</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td>/driver/me</td>
+<td>Dashboard, Profile</td>
+</tr>
+<tr>
+<td>GET/PUT</td>
+<td>/driver/profile</td>
+<td>Profile</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/driver/availability</td>
+<td>Dashboard</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/driver/location</td>
+<td>Ride (background)</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/driver/bookings</td>
+<td>Rides</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/driver/bookings/:id</td>
+<td>Ride Detail</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/driver/bookings/:id/status</td>
+<td>Ride Detail</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/driver/ratings</td>
+<td>Rating</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/driver/ratings/my</td>
+<td>Profile</td>
+</tr>
+</tbody>
+</table>
+<h3 id="phase-3-customer">Phase 3 (Customer)</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Endpoint</th>
+<th>Page</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET/PUT</td>
+<td>/customer/profile</td>
+<td>Profile</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/customer/routes</td>
+<td>Home, Search</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/customer/routes/:id</td>
+<td>Route Detail</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/customer/cars/available</td>
+<td>Car Selection</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/customer/cars/:id</td>
+<td>Car Detail</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/customer/bookings</td>
+<td>Booking Form</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/customer/bookings</td>
+<td>My Bookings</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/customer/bookings/:id</td>
+<td>Booking Detail</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/customer/bookings/:id/cancel</td>
+<td>Booking Detail</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/customer/payments/create-order</td>
+<td>Payment</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/customer/payments/verify</td>
+<td>Payment</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/customer/payments</td>
+<td>Profile</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/customer/payments/booking/:id</td>
+<td>Booking Detail</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/customer/ratings</td>
+<td>Rating</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/customer/ratings/booking/:id</td>
+<td>Booking Detail</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="estimated-file-count-per-phase">Estimated File Count Per Phase</h2>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>New Files</th>
+<th>Total Pages</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Phase 0</td>
+<td>~25</td>
+<td>0 (infrastructure)</td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td>~15</td>
+<td>12 admin pages</td>
+</tr>
+<tr>
+<td>Phase 2</td>
+<td>~10</td>
+<td>7 driver pages</td>
+</tr>
+<tr>
+<td>Phase 3</td>
+<td>~18</td>
+<td>14 customer pages</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td><strong>~68</strong></td>
+<td><strong>33 pages</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="build-order-dependencies">Build Order Dependencies</h2>
+<pre class="highlight"><code>Phase 0 (Foundation)
+    ↓
+Phase 1 (Admin) ← test all CRUD, verify APIs work
+    ↓
+Phase 2 (Driver) ← needs admin to create driver profile + assign rides
+    ↓
+Phase 3 (Customer) ← needs cars, routes, driver in system
+    ↓
+PWA Setup (manifest, SW, install prompt)
+</code></pre>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#1f6feb',
+                primaryTextColor: '#e6edf3',
+                primaryBorderColor: '#58a6ff',
+                lineColor: '#8b949e',
+                secondaryColor: '#161b22',
+                tertiaryColor: '#0d1117',
+                background: '#0d1117',
+                mainBkg: '#161b22',
+                nodeBorder: '#30363d',
+                clusterBkg: '#161b22',
+                titleColor: '#58a6ff',
+                edgeLabelBackground: '#161b22',
+            }
+        });
+    </script>
+</body>
+</html>

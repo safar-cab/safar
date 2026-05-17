@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Production Readiness Checklist</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --green: #3fb950;
+            --red: #f85149;
+            --yellow: #d29922;
+            --purple: #bc8cff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        h1 {
+            font-size: 2rem;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-hover);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.3rem;
+        }
+        h3 {
+            font-size: 1.2rem;
+            margin-top: 1.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--purple);
+        }
+        h4 {
+            font-size: 1rem;
+            margin-top: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        p {
+            margin-bottom: 1rem;
+        }
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+            color: var(--accent-hover);
+        }
+        code {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.15rem 0.4rem;
+            font-size: 0.9em;
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            color: var(--accent-hover);
+        }
+        pre {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+        }
+        pre code {
+            background: none;
+            border: none;
+            padding: 0;
+            color: var(--text);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background: #1c2333;
+            color: var(--accent);
+            font-weight: 600;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+        td {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover td {
+            background: rgba(88, 166, 255, 0.05);
+        }
+        blockquote {
+            border-left: 4px solid var(--accent);
+            background: var(--card);
+            padding: 0.8rem 1.2rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-muted);
+        }
+        blockquote strong {
+            color: var(--yellow);
+        }
+        ul, ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        li {
+            margin-bottom: 0.3rem;
+        }
+        li ul, li ol {
+            margin-bottom: 0;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+        strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+        em {
+            color: var(--text-muted);
+        }
+        .mermaid {
+            background: #1a1f2e;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        .nav {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .nav a {
+            font-size: 0.85rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            background: rgba(88, 166, 255, 0.1);
+        }
+        .nav a:hover {
+            background: rgba(88, 166, 255, 0.2);
+            text-decoration: none;
+        }
+        .nav-label {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        input[type="checkbox"] {
+            accent-color: var(--green);
+            transform: scale(1.2);
+            margin-right: 0.3rem;
+        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.5rem; }
+            table { font-size: 0.85rem; }
+            th, td { padding: 0.4rem 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <span class="nav-label">Navigation:</span>
+        <a href="index.html" style="background:rgba(63,185,80,0.2);color:#3fb950;font-weight:600;">Home</a>
+        <a href="00-executive-summary.html">Summary</a>
+        <a href="01-product-identity.html">Identity</a>
+        <a href="02-competitive-analysis.html">Competitors</a>
+        <a href="03-target-market.html">Market</a>
+        <a href="04-user-flow.html">UX Flow</a>
+        <a href="05-mvp-definition.html">MVP</a>
+        <a href="06-architecture.html">Architecture</a>
+        <a href="07-tech-stack.html">Tech Stack</a>
+        <a href="08-integrations.html">Integrations</a>
+        <a href="10-database-design.html">Database</a>
+        <a href="11-sequence-diagrams.html">Sequences</a>
+        <a href="12-project-flow.html">Project Flow</a>
+        <a href="13-security.html">Security</a>
+        <a href="14-legal-compliance.html">Legal</a>
+        <a href="15-implementation-phases.html">Phases</a>
+        <a href="16-production-checklist.html">Checklist</a>
+        <a href="17-devops.html">DevOps</a>
+        <a href="18-monetization.html">Revenue</a>
+        <a href="19-cost-management.html">Costs</a>
+        <a href="20-marketing.html">Marketing</a>
+        <a href="21-analytics-kpis.html">KPIs</a>
+        <a href="22-accessibility-i18n.html">A11y</a>
+        <a href="23-support-docs.html">Support</a>
+        <a href="24-team-hiring.html">Team</a>
+        <a href="25-risk-assessment.html">Risks</a>
+        <a href="26-future-roadmap.html">Roadmap</a>
+    </nav>
+    <h1 id="production-readiness-checklist">Production Readiness Checklist</h1>
+<h2 id="infrastructure">Infrastructure</h2>
+<ul>
+<li><input type="checkbox" disabled> AWS EC2 instance (t2.micro or t3.micro) launched</li>
+<li><input type="checkbox" disabled> Elastic IP assigned to EC2</li>
+<li><input type="checkbox" disabled> Security group: ports 80, 443, 22 (your IP only)</li>
+<li><input type="checkbox" disabled> SSH key pair created and stored securely</li>
+<li><input type="checkbox" disabled> Docker + Docker Compose installed on EC2</li>
+<li><input type="checkbox" disabled> Swap file configured (1-2GB for t2.micro)</li>
+</ul>
+<h2 id="domain-ssl">Domain &amp; SSL</h2>
+<ul>
+<li><input type="checkbox" disabled> Domain registered (.in)</li>
+<li><input type="checkbox" disabled> DNS pointed to EC2 Elastic IP (Cloudflare recommended)</li>
+<li><input type="checkbox" disabled> Cloudflare proxy enabled (free DDoS protection + CDN)</li>
+<li><input type="checkbox" disabled> SSL certificate via Cloudflare (Full Strict mode)</li>
+<li><input type="checkbox" disabled> Or: Let's Encrypt via Certbot on Nginx</li>
+<li><input type="checkbox" disabled> HTTPS redirect configured</li>
+<li><input type="checkbox" disabled> www → non-www redirect (or vice versa)</li>
+</ul>
+<h2 id="database">Database</h2>
+<ul>
+<li><input type="checkbox" disabled> MongoDB Atlas cluster (M0 free → Mumbai region)</li>
+<li><input type="checkbox" disabled> Database user created with strong password</li>
+<li><input type="checkbox" disabled> IP whitelist: EC2 Elastic IP only</li>
+<li><input type="checkbox" disabled> Connection string in environment variables</li>
+<li><input type="checkbox" disabled> Indexes created on all collections</li>
+<li><input type="checkbox" disabled> Seed data loaded (admin user, sample routes)</li>
+<li><input type="checkbox" disabled> Backup schedule (Atlas has automatic daily backups on paid plans)</li>
+</ul>
+<h2 id="application">Application</h2>
+<ul>
+<li><input type="checkbox" disabled> Production Docker images built and tested</li>
+<li><input type="checkbox" disabled> docker-compose.prod.yml configured</li>
+<li><input type="checkbox" disabled> All environment variables set in .env.production</li>
+<li><input type="checkbox" disabled> No hardcoded secrets in code</li>
+<li><input type="checkbox" disabled> Debug/development mode OFF</li>
+<li><input type="checkbox" disabled> Console.log statements removed/reduced</li>
+<li><input type="checkbox" disabled> Error pages (404, 500) created</li>
+</ul>
+<h2 id="security">Security</h2>
+<ul>
+<li><input type="checkbox" disabled> Nginx security headers configured</li>
+<li><input type="checkbox" disabled> Rate limiting on auth endpoints</li>
+<li><input type="checkbox" disabled> CORS restricted to your domain</li>
+<li><input type="checkbox" disabled> Razorpay webhook signature verification</li>
+<li><input type="checkbox" disabled> File upload size limits enforced</li>
+<li><input type="checkbox" disabled> No sensitive data in git (check .gitignore)</li>
+<li><input type="checkbox" disabled> Admin default password changed</li>
+<li><input type="checkbox" disabled> MongoDB connection uses TLS</li>
+</ul>
+<h2 id="external-services-live-mode">External Services (Live Mode)</h2>
+<ul>
+<li><input type="checkbox" disabled> Razorpay: KYC completed, live mode activated</li>
+<li><input type="checkbox" disabled> Razorpay: Webhook URL configured (production domain)</li>
+<li><input type="checkbox" disabled> Google Maps: API key restricted (HTTP referrer + API restriction)</li>
+<li><input type="checkbox" disabled> Firebase: Production project, VAPID key configured</li>
+<li><input type="checkbox" disabled> MSG91: DLT registration done, templates approved</li>
+<li><input type="checkbox" disabled> MSG91: Sender ID approved</li>
+<li><input type="checkbox" disabled> AWS S3: Bucket created, CORS configured, IAM user with minimal permissions</li>
+<li><input type="checkbox" disabled> Resend: Domain verified, SPF/DKIM records set</li>
+</ul>
+<h2 id="monitoring">Monitoring</h2>
+<ul>
+<li><input type="checkbox" disabled> Built-in error tracking: GlobalExceptionFilter active, error_logs writing</li>
+<li><input type="checkbox" disabled> Built-in health checks: @Cron running, push + SMS alerts configured</li>
+<li><input type="checkbox" disabled> Built-in analytics: event tracking active, analytics_events writing</li>
+<li><input type="checkbox" disabled> Health check endpoint: GET /api/health (returns DB + Redis + services status)</li>
+</ul>
+<h2 id="performance">Performance</h2>
+<ul>
+<li><input type="checkbox" disabled> React production build (vite build) succeeds</li>
+<li><input type="checkbox" disabled> NestJS production build (nest build) succeeds</li>
+<li><input type="checkbox" disabled> Images optimized (next/image with sharp)</li>
+<li><input type="checkbox" disabled> Static pages pre-rendered where possible</li>
+<li><input type="checkbox" disabled> Gzip/Brotli compression in Nginx</li>
+<li><input type="checkbox" disabled> Bundle size checked (no huge dependencies)</li>
+</ul>
+<h2 id="legal-pages">Legal Pages</h2>
+<ul>
+<li><input type="checkbox" disabled> Privacy Policy page live</li>
+<li><input type="checkbox" disabled> Terms of Service page live</li>
+<li><input type="checkbox" disabled> Refund &amp; Cancellation Policy page live</li>
+<li><input type="checkbox" disabled> Cookie consent banner (if using analytics cookies)</li>
+</ul>
+<h2 id="testing-before-launch">Testing Before Launch</h2>
+<ul>
+<li><input type="checkbox" disabled> Complete booking flow (search → book → pay → track → complete)</li>
+<li><input type="checkbox" disabled> Cancellation with refund</li>
+<li><input type="checkbox" disabled> Driver flow (login → accept → navigate → complete)</li>
+<li><input type="checkbox" disabled> Admin: add car, add driver, manage users</li>
+<li><input type="checkbox" disabled> Notifications: push + SMS received</li>
+<li><input type="checkbox" disabled> Mobile responsiveness (iPhone, Android Chrome)</li>
+<li><input type="checkbox" disabled> PWA install works (Android Chrome, Desktop)</li>
+<li><input type="checkbox" disabled> Payment in Razorpay LIVE mode (small amount test)</li>
+<li><input type="checkbox" disabled> GPS tracking shows on map</li>
+</ul>
+<h2 id="go-live-day">Go-Live Day</h2>
+<ol>
+<li>Switch Razorpay to live mode</li>
+<li>Switch MSG91 to production</li>
+<li>Deploy final Docker build</li>
+<li>Run all smoke tests</li>
+<li>Create first real booking</li>
+<li>Check admin panel error dashboard — no errors</li>
+<li>Verify health check cron running (admin health page)</li>
+<li>Share app URL with first users</li>
+</ol>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#1f6feb',
+                primaryTextColor: '#e6edf3',
+                primaryBorderColor: '#58a6ff',
+                lineColor: '#8b949e',
+                secondaryColor: '#161b22',
+                tertiaryColor: '#0d1117',
+                background: '#0d1117',
+                mainBkg: '#161b22',
+                nodeBorder: '#30363d',
+                clusterBkg: '#161b22',
+                titleColor: '#58a6ff',
+                edgeLabelBackground: '#161b22',
+            }
+        });
+    </script>
+</body>
+</html>

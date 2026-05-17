@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Flow & Architecture Diagrams</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --green: #3fb950;
+            --red: #f85149;
+            --yellow: #d29922;
+            --purple: #bc8cff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        h1 {
+            font-size: 2rem;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-hover);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.3rem;
+        }
+        h3 {
+            font-size: 1.2rem;
+            margin-top: 1.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--purple);
+        }
+        h4 {
+            font-size: 1rem;
+            margin-top: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        p {
+            margin-bottom: 1rem;
+        }
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+            color: var(--accent-hover);
+        }
+        code {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.15rem 0.4rem;
+            font-size: 0.9em;
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            color: var(--accent-hover);
+        }
+        pre {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+        }
+        pre code {
+            background: none;
+            border: none;
+            padding: 0;
+            color: var(--text);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background: #1c2333;
+            color: var(--accent);
+            font-weight: 600;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+        td {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover td {
+            background: rgba(88, 166, 255, 0.05);
+        }
+        blockquote {
+            border-left: 4px solid var(--accent);
+            background: var(--card);
+            padding: 0.8rem 1.2rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-muted);
+        }
+        blockquote strong {
+            color: var(--yellow);
+        }
+        ul, ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        li {
+            margin-bottom: 0.3rem;
+        }
+        li ul, li ol {
+            margin-bottom: 0;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+        strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+        em {
+            color: var(--text-muted);
+        }
+        .mermaid {
+            background: #1a1f2e;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        .nav {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .nav a {
+            font-size: 0.85rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            background: rgba(88, 166, 255, 0.1);
+        }
+        .nav a:hover {
+            background: rgba(88, 166, 255, 0.2);
+            text-decoration: none;
+        }
+        .nav-label {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        input[type="checkbox"] {
+            accent-color: var(--green);
+            transform: scale(1.2);
+            margin-right: 0.3rem;
+        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.5rem; }
+            table { font-size: 0.85rem; }
+            th, td { padding: 0.4rem 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <span class="nav-label">Navigation:</span>
+        <a href="index.html" style="background:rgba(63,185,80,0.2);color:#3fb950;font-weight:600;">Home</a>
+        <a href="00-executive-summary.html">Summary</a>
+        <a href="01-product-identity.html">Identity</a>
+        <a href="02-competitive-analysis.html">Competitors</a>
+        <a href="03-target-market.html">Market</a>
+        <a href="04-user-flow.html">UX Flow</a>
+        <a href="05-mvp-definition.html">MVP</a>
+        <a href="06-architecture.html">Architecture</a>
+        <a href="07-tech-stack.html">Tech Stack</a>
+        <a href="08-integrations.html">Integrations</a>
+        <a href="10-database-design.html">Database</a>
+        <a href="11-sequence-diagrams.html">Sequences</a>
+        <a href="12-project-flow.html">Project Flow</a>
+        <a href="13-security.html">Security</a>
+        <a href="14-legal-compliance.html">Legal</a>
+        <a href="15-implementation-phases.html">Phases</a>
+        <a href="16-production-checklist.html">Checklist</a>
+        <a href="17-devops.html">DevOps</a>
+        <a href="18-monetization.html">Revenue</a>
+        <a href="19-cost-management.html">Costs</a>
+        <a href="20-marketing.html">Marketing</a>
+        <a href="21-analytics-kpis.html">KPIs</a>
+        <a href="22-accessibility-i18n.html">A11y</a>
+        <a href="23-support-docs.html">Support</a>
+        <a href="24-team-hiring.html">Team</a>
+        <a href="25-risk-assessment.html">Risks</a>
+        <a href="26-future-roadmap.html">Roadmap</a>
+    </nav>
+    <h1 id="project-flow-architecture-diagrams">Project Flow &amp; Architecture Diagrams</h1>
+<h2 id="high-level-system-architecture">High-Level System Architecture</h2>
+<div class="mermaid">
+graph TB
+    subgraph "Client Layer"
+        U[User PWA]
+        D[Driver PWA]
+        A[Admin Panel]
+    end
+
+    subgraph "CDN / Edge"
+        CF[Cloudflare DNS + CDN]
+    end
+
+    subgraph "Application Layer"
+        NX[Nginx Reverse Proxy<br/>SSL Termination]
+        REACT[React App<br/>Static Files<br/>Port 4000]
+        NEST[NestJS Server<br/>API + WebSocket + Jobs<br/>Port 3000]
+        TC[Traccar Server<br/>GPS Processing<br/>Port 8082]
+    end
+
+    subgraph "Data Layer"
+        MONGO[(MongoDB Atlas<br/>Primary Database)]
+        REDIS[(Redis<br/>Job Queue + Cache)]
+        S3[(AWS S3<br/>Files + Images)]
+    end
+
+    subgraph "External Services"
+        RZP[Razorpay<br/>Payments]
+        GMAP[Google Maps<br/>Routes + Distance]
+        FCM[Firebase FCM<br/>Push Notifications]
+        MSG[MSG91<br/>SMS]
+        RSN[Resend<br/>Email]
+    end
+
+    subgraph "Built-In Monitoring"
+        ERR[Error Tracking<br/>NestJS ExceptionFilter]
+        HLT[Health Checks<br/>NestJS @Cron]
+        ANL[Analytics<br/>Event Tracking]
+    end
+
+    U --> CF
+    D --> CF
+    A --> CF
+    CF --> NX
+    NX --> REACT
+    NX --> NEST
+    NEST --> MONGO
+    NEST --> REDIS
+    NEST --> S3
+    NEST --> RZP
+    NEST --> GMAP
+    NEST --> FCM
+    NEST --> MSG
+    NEST --> RSN
+    TC --> NEST
+    ERR --> MONGO
+    HLT --> MONGO
+    ANL --> MONGO
+
+</div>
+
+<h2 id="docker-compose-architecture">Docker Compose Architecture</h2>
+<div class="mermaid">
+graph TB
+    subgraph "Docker Host (EC2)"
+        subgraph "docker-compose.yml"
+            N[nginx:alpine<br/>Port 80, 443]
+            FE[react-app<br/>Nginx static<br/>Port 4000]
+            BE[nestjs-api<br/>API + WS + Jobs<br/>Port 3000]
+            RD[redis:alpine<br/>Port 6379]
+            TR[traccar<br/>Port 8082, 5000-5100]
+        end
+        VOL[(Volumes<br/>- nginx-conf<br/>- ssl-certs<br/>- traccar-data<br/>- redis-data)]
+    end
+
+    EXT[(External<br/>MongoDB Atlas<br/>AWS S3)]
+
+    N -->|/| FE
+    N -->|/api, /ws| BE
+    BE --> RD
+    BE --> EXT
+    TR --> BE
+    N --> VOL
+    TR --> VOL
+
+</div>
+
+<h2 id="data-flow-diagram">Data Flow Diagram</h2>
+<div class="mermaid">
+flowchart LR
+    subgraph Input
+        UB[User Booking]
+        DP[Driver Phone GPS]
+        GP[Car GPS Device]
+        UP[UPI Payment]
+    end
+
+    subgraph "NestJS Processing"
+        BK[Booking Engine]
+        PE[Price Calculator]
+        LT[Location Tracker<br/>+ Fusion Service]
+        PG[Payment Gateway]
+        NE[Notification Engine<br/>BullMQ Workers]
+    end
+
+    subgraph Storage
+        DB[(MongoDB)]
+        FS[(S3 Files)]
+        CH[(Redis Cache)]
+    end
+
+    subgraph Output
+        PN[Push Notification]
+        SM[SMS]
+        EM[Email]
+        MP[Map Display]
+        RC[Receipt]
+    end
+
+    UB --> BK
+    BK --> PE
+    PE --> PG
+    PG --> UP
+    UP --> PG
+    PG --> BK
+    BK --> NE
+    BK --> DB
+    NE --> PN
+    NE --> SM
+    NE --> EM
+    DP --> LT
+    GP --> LT
+    LT --> DB
+    LT --> MP
+    LT --> CH
+    PG --> RC
+
+</div>
+
+<h2 id="cicd-pipeline-flow">CI/CD Pipeline Flow</h2>
+<div class="mermaid">
+flowchart LR
+    DEV[Developer<br/>Push to GitHub] --> GH[GitHub Actions]
+    GH --> LINT[Lint + Type Check<br/>React + NestJS]
+    LINT --> TEST[Run Tests<br/>Jest]
+    TEST --> BUILD[Docker Build<br/>react-app + nestjs-api]
+    BUILD --> PUSH[Push to<br/>Docker Hub / ECR]
+    PUSH --> DEPLOY[SSH to EC2<br/>docker-compose pull<br/>docker-compose up -d]
+    DEPLOY --> HEALTH[Health Check<br/>/api/health]
+    HEALTH --> DONE[Done]
+
+    HEALTH -- Fail --> ROLL[Rollback to<br/>previous image]
+
+</div>
+
+<h2 id="network-topology">Network Topology</h2>
+<div class="mermaid">
+graph TB
+    subgraph "Internet"
+        USR[Users]
+        DRV[Drivers]
+        ADM[Admin]
+    end
+
+    subgraph "Cloudflare"
+        DNS[DNS + CDN]
+        WAF[WAF Protection]
+    end
+
+    subgraph "AWS VPC"
+        subgraph "Public Subnet"
+            EC2[EC2 Instance<br/>t2.micro / t3.micro<br/>Elastic IP]
+        end
+    end
+
+    subgraph "Managed Services"
+        MA[MongoDB Atlas<br/>IP Whitelisted]
+        S3[S3 Bucket<br/>Private + Presigned URLs]
+    end
+
+    USR --> DNS
+    DRV --> DNS
+    ADM --> DNS
+    DNS --> WAF
+    WAF --> EC2
+    EC2 --> MA
+    EC2 --> S3
+
+</div>
+
+<h2 id="folder-structure">Folder Structure</h2>
+<pre class="highlight"><code>cab-booking-app/
+├── docker-compose.yml
+├── docker-compose.prod.yml
+├── .github/
+│   └── workflows/
+│       ├── ci.yml
+│       └── deploy.yml
+├── nginx/
+│   ├── nginx.conf
+│   └── ssl/
+│
+├── react-app/                       # React + Vite Frontend
+│   ├── Dockerfile
+│   ├── package.json
+│   ├── vite.config.ts
+│   ├── tailwind.config.ts
+│   ├── public/
+│   │   ├── manifest.json
+│   │   └── icons/
+│   ├── src/
+│   │   ├── main.tsx
+│   │   ├── App.tsx
+│   │   ├── router.tsx               # React Router v7
+│   │   ├── pages/
+│   │   │   ├── public/              # Landing, Login, Register
+│   │   │   ├── user/                # Dashboard, BookRide, Bookings, Tracking
+│   │   │   ├── driver/              # DriverDashboard, RideDetail, Navigation
+│   │   │   └── admin/               # Dashboard, Cars, Drivers, Users, Settings
+│   │   ├── components/
+│   │   │   ├── ui/                  # shadcn/ui components
+│   │   │   ├── booking/
+│   │   │   ├── maps/
+│   │   │   ├── admin/
+│   │   │   └── layout/
+│   │   ├── hooks/
+│   │   ├── services/
+│   │   │   ├── api.ts               # Axios (withCredentials: true)
+│   │   │   ├── socket.ts            # Socket.io client
+│   │   │   └── analytics.ts         # Event tracker
+│   │   ├── store/                   # Redux Toolkit + Saga
+│   │   │   ├── store.ts
+│   │   │   ├── rootSaga.ts
+│   │   │   ├── slices/              # auth, booking, cars, tracking, ui...
+│   │   │   └── sagas/               # auth, booking, payment, tracking...
+│   │   └── types/
+│   └── tsconfig.json
+│
+├── nestjs-api/                      # NestJS Backend (ALL server logic)
+│   ├── Dockerfile
+│   ├── package.json
+│   ├── nest-cli.json
+│   ├── src/
+│   │   ├── main.ts
+│   │   ├── app.module.ts
+│   │   ├── auth/                    # Cookie sessions, OTP, guards
+│   │   ├── users/
+│   │   ├── cars/
+│   │   ├── drivers/
+│   │   ├── bookings/
+│   │   ├── payments/                # Razorpay + webhooks
+│   │   ├── tracking/                # WebSocket gateway + Traccar + fusion
+│   │   ├── notifications/           # FCM, MSG91, Resend + BullMQ workers
+│   │   ├── ratings/
+│   │   ├── upload/                  # S3 presigned URLs
+│   │   ├── admin/                   # Dashboard stats, settings
+│   │   ├── monitoring/              # Error logs, health checks, analytics
+│   │   └── common/                  # Guards, filters, interceptors, pipes
+│   └── tsconfig.json
+│
+└── traccar/                         # GPS Tracker Server
+    └── traccar.xml
+</code></pre>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#1f6feb',
+                primaryTextColor: '#e6edf3',
+                primaryBorderColor: '#58a6ff',
+                lineColor: '#8b949e',
+                secondaryColor: '#161b22',
+                tertiaryColor: '#0d1117',
+                background: '#0d1117',
+                mainBkg: '#161b22',
+                nodeBorder: '#30363d',
+                clusterBkg: '#161b22',
+                titleColor: '#58a6ff',
+                edgeLabelBackground: '#161b22',
+            }
+        });
+    </script>
+</body>
+</html>

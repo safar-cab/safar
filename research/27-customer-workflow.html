@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Workflow</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --green: #3fb950;
+            --red: #f85149;
+            --yellow: #d29922;
+            --purple: #bc8cff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        h1 {
+            font-size: 2rem;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-hover);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.3rem;
+        }
+        h3 {
+            font-size: 1.2rem;
+            margin-top: 1.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--purple);
+        }
+        h4 {
+            font-size: 1rem;
+            margin-top: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        p {
+            margin-bottom: 1rem;
+        }
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+            color: var(--accent-hover);
+        }
+        code {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.15rem 0.4rem;
+            font-size: 0.9em;
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            color: var(--accent-hover);
+        }
+        pre {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+        }
+        pre code {
+            background: none;
+            border: none;
+            padding: 0;
+            color: var(--text);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background: #1c2333;
+            color: var(--accent);
+            font-weight: 600;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+        td {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover td {
+            background: rgba(88, 166, 255, 0.05);
+        }
+        blockquote {
+            border-left: 4px solid var(--accent);
+            background: var(--card);
+            padding: 0.8rem 1.2rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-muted);
+        }
+        blockquote strong {
+            color: var(--yellow);
+        }
+        ul, ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        li {
+            margin-bottom: 0.3rem;
+        }
+        li ul, li ol {
+            margin-bottom: 0;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+        strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+        em {
+            color: var(--text-muted);
+        }
+        .mermaid {
+            background: #1a1f2e;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        .nav {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .nav a {
+            font-size: 0.85rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            background: rgba(88, 166, 255, 0.1);
+        }
+        .nav a:hover {
+            background: rgba(88, 166, 255, 0.2);
+            text-decoration: none;
+        }
+        .nav-label {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        input[type="checkbox"] {
+            accent-color: var(--green);
+            transform: scale(1.2);
+            margin-right: 0.3rem;
+        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.5rem; }
+            table { font-size: 0.85rem; }
+            th, td { padding: 0.4rem 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <span class="nav-label">Navigation:</span>
+        <a href="index.html" style="background:rgba(63,185,80,0.2);color:#3fb950;font-weight:600;">Home</a>
+        <a href="00-executive-summary.html">Summary</a>
+        <a href="01-product-identity.html">Identity</a>
+        <a href="02-competitive-analysis.html">Competitors</a>
+        <a href="03-target-market.html">Market</a>
+        <a href="04-user-flow.html">UX Flow</a>
+        <a href="05-mvp-definition.html">MVP</a>
+        <a href="06-architecture.html">Architecture</a>
+        <a href="07-tech-stack.html">Tech Stack</a>
+        <a href="08-integrations.html">Integrations</a>
+        <a href="10-database-design.html">Database</a>
+        <a href="11-sequence-diagrams.html">Sequences</a>
+        <a href="12-project-flow.html">Project Flow</a>
+        <a href="13-security.html">Security</a>
+        <a href="14-legal-compliance.html">Legal</a>
+        <a href="15-implementation-phases.html">Phases</a>
+        <a href="16-production-checklist.html">Checklist</a>
+        <a href="17-devops.html">DevOps</a>
+        <a href="18-monetization.html">Revenue</a>
+        <a href="19-cost-management.html">Costs</a>
+        <a href="20-marketing.html">Marketing</a>
+        <a href="21-analytics-kpis.html">KPIs</a>
+        <a href="22-accessibility-i18n.html">A11y</a>
+        <a href="23-support-docs.html">Support</a>
+        <a href="24-team-hiring.html">Team</a>
+        <a href="25-risk-assessment.html">Risks</a>
+        <a href="26-future-roadmap.html">Roadmap</a>
+    </nav>
+    <h1 id="customer-workflow">Customer Workflow</h1>
+<h2 id="overview">Overview</h2>
+<p>Complete customer journey from registration to ride completion and rating. All customer APIs use <code>/api/customer/*</code> prefix.</p>
+<hr />
+<h2 id="1-registration-authentication">1. Registration &amp; Authentication</h2>
+<div class="mermaid">
+flowchart TD
+    A[Open App] --> B{Has Account?}
+    B -->|No| C[Register Screen]
+    B -->|Yes| D[Login Screen]
+
+    C --> C1[Enter Name]
+    C1 --> C2[Enter Phone 10-digit]
+    C2 --> C3[Enter Email optional]
+    C3 --> C4[Create Password min 6 chars]
+    C4 --> C5[POST /customer/auth/register]
+    C5 --> C6{Success?}
+    C6 -->|Yes| C7[Store JWT Token]
+    C6 -->|No - Phone exists| C8[Show Error: Already registered]
+    C6 -->|No - Validation| C9[Show Validation Errors]
+    C8 --> D
+    C9 --> C1
+    C7 --> H[Customer Dashboard]
+
+    D --> D1[Enter Phone]
+    D1 --> D2[Enter Password]
+    D2 --> D3[POST /customer/auth/login]
+    D3 --> D4{Success?}
+    D4 -->|Yes| D5[Store JWT Token]
+    D4 -->|No - Invalid| D6[Show: Invalid credentials]
+    D4 -->|No - Blocked| D7[Show: Account blocked]
+    D5 --> H
+    D6 --> D1
+
+</div>
+
+<h3 id="api-endpoints">API Endpoints</h3>
+<ul>
+<li><code>POST /api/customer/auth/register</code> — <code>{ name, phone, email?, password }</code></li>
+<li><code>POST /api/customer/auth/login</code> — <code>{ phone, password }</code></li>
+<li>Response: <code>{ accessToken, user: { _id, name, phone, role } }</code></li>
+</ul>
+<hr />
+<h2 id="2-browse-routes-cars">2. Browse Routes &amp; Cars</h2>
+<div class="mermaid">
+flowchart TD
+    A[Customer Dashboard] --> B[Browse Routes]
+    B --> B1[GET /customer/routes]
+    B1 --> B2[Show Route Cards]
+    B2 --> B3[Select Route]
+    B3 --> B4[GET /customer/routes/:id]
+    B4 --> B5[Show Route Details<br/>Distance, Price/km, Tolls]
+
+    A --> C[Browse Cars]
+    C --> C1[GET /customer/cars/available]
+    C1 --> C2{Filter by category?}
+    C2 -->|Yes| C3[?category=sedan/suv/hatchback]
+    C2 -->|No| C4[Show All Cars]
+    C3 --> C4
+    C4 --> C5[Car Cards Grid<br/>Photo, Make, Model, Seats, Category]
+    C5 --> C6[Select Car]
+    C6 --> C7[GET /customer/cars/:id]
+    C7 --> C8[Show Car Details<br/>Full Photos, Documents, Driver]
+
+</div>
+
+<hr />
+<h2 id="3-booking-flow">3. Booking Flow</h2>
+<div class="mermaid">
+flowchart TD
+    A[Start Booking] --> B[Step 1: Pickup Location]
+    B --> B1[Enter Address]
+    B1 --> B2[Add Landmark optional]
+    B2 --> C[Step 2: Drop Location]
+    C --> C1[Enter Address]
+    C1 --> C2[Add Landmark optional]
+    C2 --> D{Add Stops?}
+    D -->|Yes| D1[Step 3: Add Intermediate Stops]
+    D1 --> D2[Enter Stop Address]
+    D2 --> D3{More Stops?}
+    D3 -->|Yes| D2
+    D3 -->|No| E
+    D -->|No| E[Step 4: Schedule]
+    E --> E1[Select Start Date]
+    E1 --> E2[Select Start Time]
+    E2 --> E3[Select End Date optional]
+    E3 --> F[Step 5: Select Car]
+    F --> F1[Show Available Cars]
+    F1 --> F2[Pick Car]
+    F2 --> G[Step 6: Review & Price]
+    G --> G1[Show Pricing Breakdown]
+
+    G1 --> G2["Base Fare: ₹500<br/>Distance: 195km × ₹12/km = ₹2,340<br/>Tolls: ₹200<br/>GST 5%: ₹152<br/>Total: ₹3,192"]
+
+    G2 --> H[Confirm Booking]
+    H --> H1[POST /customer/bookings]
+    H1 --> H2{Success?}
+    H2 -->|Yes| I[Booking Created<br/>Status: PENDING<br/>BookingID: BK-20260601-001]
+    H2 -->|No| H3[Show Error]
+    I --> J[Proceed to Payment]
+
+</div>
+
+<h3 id="create-booking-api">Create Booking API</h3>
+<pre class="highlight"><code>POST /api/customer/bookings
+{
+  carId: &quot;...&quot;,
+  pickup: { address, coordinates?, landmark? },
+  drop: { address, coordinates?, landmark? },
+  stops: [{ order, address, coordinates? }],
+  schedule: { startDate, startTime, endDate?, endTime? },
+  estimatedDistanceKm: 195
+}
+</code></pre>
+
+<hr />
+<h2 id="4-payment-flow-upi-via-razorpay">4. Payment Flow (UPI via Razorpay)</h2>
+<div class="mermaid">
+sequenceDiagram
+    participant C as Customer App
+    participant API as NestJS Backend
+    participant RP as Razorpay
+    participant UPI as UPI App
+
+    C->>API: POST /customer/payments/create-order<br/>{bookingId}
+    API->>API: Validate booking ownership<br/>Check status = pending
+    API->>RP: razorpay.orders.create()<br/>{amount, currency: INR}
+    RP-->>API: {orderId, amount}
+    API->>API: Save Payment record<br/>status: created
+    API-->>C: {orderId, amount, keyId}
+
+    C->>C: Open Razorpay Checkout<br/>UPI payment method
+    C->>UPI: User selects UPI app<br/>Enters PIN
+    UPI-->>RP: Payment authorized
+    RP-->>C: {razorpayPaymentId,<br/>razorpaySignature}
+
+    C->>API: POST /customer/payments/verify<br/>{orderId, paymentId, signature}
+    API->>API: HMAC SHA256 verify signature
+    API->>API: Update Payment: captured
+    API->>API: Update Booking: confirmed
+    API-->>C: {verified: true}
+
+    Note over RP,API: Webhook Backup
+    RP->>API: POST /webhooks/razorpay<br/>event: payment.captured
+    API->>API: Verify webhook signature<br/>Update if not already captured
+
+</div>
+
+<hr />
+<h2 id="5-booking-lifecycle">5. Booking Lifecycle</h2>
+<div class="mermaid">
+stateDiagram-v2
+    [*] --> Pending: Booking Created
+    Pending --> Confirmed: Payment Captured
+    Pending --> Cancelled: Customer Cancels
+    Confirmed --> DriverAssigned: Admin Assigns Driver
+    DriverAssigned --> DriverEnRoute: Driver Starts
+    DriverEnRoute --> PickedUp: Customer Picked Up
+    PickedUp --> InProgress: Ride Active
+    InProgress --> Completed: Destination Reached
+    Confirmed --> Cancelled: Customer/Admin Cancels
+    DriverAssigned --> Cancelled: Customer/Admin Cancels
+    Cancelled --> Refunded: Refund Processed
+    Completed --> [*]
+    Refunded --> [*]
+
+</div>
+
+<hr />
+<h2 id="6-live-tracking-flow">6. Live Tracking Flow</h2>
+<div class="mermaid">
+flowchart TD
+    A[Booking Status: driver_assigned] --> B[Open Tracking Page]
+    B --> C[GET /customer/bookings/:id]
+    C --> D[Show Map with Route]
+    D --> E[Connect WebSocket]
+    E --> F[Join booking room]
+    F --> G{Driver Status?}
+
+    G -->|driver_en_route| H[Show Driver Moving<br/>to Pickup Point]
+    G -->|picked_up| I[Show Route to<br/>Destination]
+    G -->|in_progress| J[Show Live Position<br/>on Route]
+    G -->|completed| K[Show Ride Complete<br/>Prompt Rating]
+
+    H --> L[Receive Location Updates<br/>via WebSocket]
+    I --> L
+    J --> L
+    L --> M[Update Driver Marker<br/>on Map]
+    M --> L
+
+</div>
+
+<hr />
+<h2 id="7-cancellation-refund-flow">7. Cancellation &amp; Refund Flow</h2>
+<div class="mermaid">
+flowchart TD
+    A[My Bookings] --> B[Select Booking]
+    B --> C[View Booking Detail]
+    C --> D[Tap Cancel]
+    D --> E[Enter Cancellation Reason]
+    E --> F[PUT /customer/bookings/:id/cancel]
+    F --> G{Cancellable?}
+
+    G -->|Yes| H[Show Refund Policy]
+    G -->|No - Already completed| I[Error: Cannot cancel]
+    G -->|No - Already cancelled| I
+
+    H --> H1["Refund Amount: ₹3,192<br/>Policy: Full Refund<br/>Timeline: 3-5 business days"]
+    H1 --> H2[Confirm Cancel]
+    H2 --> H3[Booking Status: cancelled]
+    H3 --> H4[Refund Initiated via Razorpay]
+    H4 --> H5[Customer Notified]
+
+</div>
+
+<hr />
+<h2 id="8-rating-flow">8. Rating Flow</h2>
+<div class="mermaid">
+flowchart TD
+    A[Ride Completed] --> B[Rating Prompt]
+    B --> C[Select Stars 1-5]
+    C --> D[Write Review optional]
+    D --> E[POST /customer/ratings]
+    E --> F{Success?}
+    F -->|Yes| G[Thank You!<br/>Driver avg rating updated]
+    F -->|No - Already rated| H[Error: Already rated]
+    F -->|No - Not completed| I[Error: Ride not finished]
+
+</div>
+
+<h3 id="rating-api">Rating API</h3>
+<pre class="highlight"><code>POST /api/customer/ratings
+{
+  bookingId: &quot;...&quot;,
+  rating: 5,
+  review: &quot;Great ride!&quot;
+}
+</code></pre>
+
+<hr />
+<h2 id="9-profile-management">9. Profile Management</h2>
+<div class="mermaid">
+flowchart TD
+    A[Profile Screen] --> B[GET /customer/profile]
+    B --> C[Show Profile Info]
+    C --> D{Edit?}
+    D -->|Yes| E[Edit Name / Email / Photo / Address]
+    E --> F[PUT /customer/profile]
+    F --> G[Profile Updated]
+
+    C --> H[Payment History]
+    H --> H1[GET /customer/payments]
+    H1 --> H2[List Transactions<br/>Amount, Status, Date]
+
+</div>
+
+<hr />
+<h2 id="complete-customer-journey">Complete Customer Journey</h2>
+<div class="mermaid">
+flowchart LR
+    A[Register/Login] --> B[Browse Routes & Cars]
+    B --> C[Create Booking]
+    C --> D[Pay via UPI]
+    D --> E[Wait for Driver Assignment]
+    E --> F[Track Driver Live]
+    F --> G[Ride in Progress]
+    G --> H[Ride Completed]
+    H --> I[Rate Driver]
+    I --> J[View Receipt]
+
+</div>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#1f6feb',
+                primaryTextColor: '#e6edf3',
+                primaryBorderColor: '#58a6ff',
+                lineColor: '#8b949e',
+                secondaryColor: '#161b22',
+                tertiaryColor: '#0d1117',
+                background: '#0d1117',
+                mainBkg: '#161b22',
+                nodeBorder: '#30363d',
+                clusterBkg: '#161b22',
+                titleColor: '#58a6ff',
+                edgeLabelBackground: '#161b22',
+            }
+        });
+    </script>
+</body>
+</html>

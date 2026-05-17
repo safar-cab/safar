@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Workflow</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --green: #3fb950;
+            --red: #f85149;
+            --yellow: #d29922;
+            --purple: #bc8cff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        h1 {
+            font-size: 2rem;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-hover);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.3rem;
+        }
+        h3 {
+            font-size: 1.2rem;
+            margin-top: 1.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--purple);
+        }
+        h4 {
+            font-size: 1rem;
+            margin-top: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        p {
+            margin-bottom: 1rem;
+        }
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+            color: var(--accent-hover);
+        }
+        code {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.15rem 0.4rem;
+            font-size: 0.9em;
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            color: var(--accent-hover);
+        }
+        pre {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+        }
+        pre code {
+            background: none;
+            border: none;
+            padding: 0;
+            color: var(--text);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background: #1c2333;
+            color: var(--accent);
+            font-weight: 600;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+        td {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover td {
+            background: rgba(88, 166, 255, 0.05);
+        }
+        blockquote {
+            border-left: 4px solid var(--accent);
+            background: var(--card);
+            padding: 0.8rem 1.2rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-muted);
+        }
+        blockquote strong {
+            color: var(--yellow);
+        }
+        ul, ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        li {
+            margin-bottom: 0.3rem;
+        }
+        li ul, li ol {
+            margin-bottom: 0;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+        strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+        em {
+            color: var(--text-muted);
+        }
+        .mermaid {
+            background: #1a1f2e;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        .nav {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .nav a {
+            font-size: 0.85rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            background: rgba(88, 166, 255, 0.1);
+        }
+        .nav a:hover {
+            background: rgba(88, 166, 255, 0.2);
+            text-decoration: none;
+        }
+        .nav-label {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        input[type="checkbox"] {
+            accent-color: var(--green);
+            transform: scale(1.2);
+            margin-right: 0.3rem;
+        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.5rem; }
+            table { font-size: 0.85rem; }
+            th, td { padding: 0.4rem 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <span class="nav-label">Navigation:</span>
+        <a href="index.html" style="background:rgba(63,185,80,0.2);color:#3fb950;font-weight:600;">Home</a>
+        <a href="00-executive-summary.html">Summary</a>
+        <a href="01-product-identity.html">Identity</a>
+        <a href="02-competitive-analysis.html">Competitors</a>
+        <a href="03-target-market.html">Market</a>
+        <a href="04-user-flow.html">UX Flow</a>
+        <a href="05-mvp-definition.html">MVP</a>
+        <a href="06-architecture.html">Architecture</a>
+        <a href="07-tech-stack.html">Tech Stack</a>
+        <a href="08-integrations.html">Integrations</a>
+        <a href="10-database-design.html">Database</a>
+        <a href="11-sequence-diagrams.html">Sequences</a>
+        <a href="12-project-flow.html">Project Flow</a>
+        <a href="13-security.html">Security</a>
+        <a href="14-legal-compliance.html">Legal</a>
+        <a href="15-implementation-phases.html">Phases</a>
+        <a href="16-production-checklist.html">Checklist</a>
+        <a href="17-devops.html">DevOps</a>
+        <a href="18-monetization.html">Revenue</a>
+        <a href="19-cost-management.html">Costs</a>
+        <a href="20-marketing.html">Marketing</a>
+        <a href="21-analytics-kpis.html">KPIs</a>
+        <a href="22-accessibility-i18n.html">A11y</a>
+        <a href="23-support-docs.html">Support</a>
+        <a href="24-team-hiring.html">Team</a>
+        <a href="25-risk-assessment.html">Risks</a>
+        <a href="26-future-roadmap.html">Roadmap</a>
+    </nav>
+    <h1 id="driver-workflow">Driver Workflow</h1>
+<h2 id="overview">Overview</h2>
+<p>Complete driver journey from registration to ride execution. All driver APIs use <code>/api/driver/*</code> prefix. Admin creates driver profiles; drivers manage rides and location.</p>
+<hr />
+<h2 id="1-driver-onboarding">1. Driver Onboarding</h2>
+<div class="mermaid">
+flowchart TD
+    A[Admin Creates User<br/>role: driver] --> B[Admin Creates Driver Profile<br/>POST /admin/drivers]
+    B --> B1["License Number<br/>License Photo<br/>License Expiry<br/>Aadhaar Number<br/>Aadhaar Photo<br/>Photo"]
+    B1 --> C[Driver Profile Created<br/>isVerified: false]
+    C --> D[Admin Reviews Documents]
+    D --> E{Documents Valid?}
+    E -->|Yes| F[PUT /admin/drivers/:id/verify<br/>isVerified: true]
+    E -->|No| G[Contact Driver for<br/>correct documents]
+    G --> B1
+    F --> H[Driver Can Login<br/>& Accept Rides]
+
+</div>
+
+<hr />
+<h2 id="2-driver-authentication">2. Driver Authentication</h2>
+<div class="mermaid">
+flowchart TD
+    A[Driver Opens App] --> B{Has Account?}
+    B -->|No| C[Register<br/>POST /driver/auth/register]
+    B -->|Yes| D[Login<br/>POST /driver/auth/login]
+
+    C --> C1[Enter Name, Phone, Password]
+    C1 --> C2{Success?}
+    C2 -->|Yes| C3[Store JWT]
+    C2 -->|No| C4[Show Error]
+
+    D --> D1[Enter Phone & Password]
+    D1 --> D2{Success?}
+    D2 -->|Yes| D3[Store JWT]
+    D2 -->|No - Invalid| D4[Invalid credentials]
+    D2 -->|No - Blocked| D5[Account blocked]
+
+    C3 --> E[Driver Dashboard]
+    D3 --> E
+
+</div>
+
+<hr />
+<h2 id="3-driver-dashboard">3. Driver Dashboard</h2>
+<div class="mermaid">
+flowchart TD
+    A[Driver Dashboard] --> B[Today's Rides]
+    A --> C[My Profile]
+    A --> D[My Ratings]
+    A --> E[Availability Toggle]
+
+    B --> B1[GET /driver/bookings<br/>?status=driver_assigned]
+    B1 --> B2[Show Ride Cards<br/>Customer, Pickup, Drop, Time]
+
+    C --> C1[GET /driver/me]
+    C1 --> C2[Show Driver Profile<br/>License, Rating, Total Rides]
+
+    D --> D1[GET /driver/ratings/my]
+    D1 --> D2[Show Rating History<br/>Stars, Reviews from Customers]
+
+    E --> E1[PUT /driver/availability<br/>isAvailable: true/false]
+    E1 --> E2[Toggle On/Off]
+
+</div>
+
+<hr />
+<h2 id="4-ride-execution-flow">4. Ride Execution Flow</h2>
+<div class="mermaid">
+stateDiagram-v2
+    [*] --> DriverAssigned: Admin assigns ride
+    DriverAssigned --> EnRoute: Driver starts navigation
+    EnRoute --> PickedUp: Arrived at pickup
+    PickedUp --> InProgress: Customer aboard
+    InProgress --> StopReached: Intermediate stop
+    StopReached --> InProgress: Continue ride
+    InProgress --> Completed: Destination reached
+    Completed --> [*]
+
+</div>
+
+<div class="mermaid">
+sequenceDiagram
+    participant D as Driver App
+    participant API as Backend
+    participant C as Customer App
+
+    Note over D: Ride assigned by admin
+    D->>API: GET /driver/bookings
+    API-->>D: Show assigned rides
+
+    D->>D: Tap "Start Ride"
+    D->>API: PUT /driver/bookings/:id/status<br/>{status: "driver_en_route"}
+    API-->>C: Notification: Driver on the way
+
+    Note over D: GPS location updates
+    loop Every 5 seconds
+        D->>API: PUT /driver/location<br/>{latitude, longitude}
+        API-->>C: WebSocket: driver position
+    end
+
+    D->>D: Arrived at pickup
+    D->>API: PUT /driver/bookings/:id/status<br/>{status: "picked_up"}
+    API-->>C: Notification: Driver arrived
+
+    D->>D: Customer aboard
+    D->>API: PUT /driver/bookings/:id/status<br/>{status: "in_progress"}
+
+    Note over D: Drive to destination
+
+    D->>D: Reached destination
+    D->>API: PUT /driver/bookings/:id/status<br/>{status: "completed"}
+    API-->>C: Notification: Ride completed
+    API-->>C: Show rating prompt
+
+    D->>API: POST /driver/ratings<br/>{bookingId, rating, review}
+    Note over D: Rate customer
+
+</div>
+
+<hr />
+<h2 id="5-location-update-flow">5. Location Update Flow</h2>
+<div class="mermaid">
+flowchart TD
+    A[Ride Status: en_route / in_progress] --> B[Start Location Tracking]
+    B --> C[navigator.geolocation.watchPosition]
+    C --> D{Moved > 20m?}
+    D -->|Yes| E[PUT /driver/location<br/>latitude, longitude]
+    D -->|No| C
+    E --> F[Backend updates<br/>driver.currentLocation]
+    F --> G[Broadcast to<br/>booking WebSocket room]
+    G --> H[Customer sees<br/>marker move on map]
+    H --> C
+
+    I[Screen Wake Lock<br/>navigator.wakeLock] --> C
+
+</div>
+
+<h3 id="location-api">Location API</h3>
+<pre class="highlight"><code>PUT /api/driver/location
+{
+  latitude: 22.7196,
+  longitude: 75.8577
+}
+</code></pre>
+
+<hr />
+<h2 id="6-availability-management">6. Availability Management</h2>
+<div class="mermaid">
+flowchart TD
+    A[Driver Dashboard] --> B[Availability Toggle]
+    B --> C{Current State?}
+    C -->|Available| D[Toggle OFF]
+    C -->|Unavailable| E[Toggle ON]
+
+    D --> D1[PUT /driver/availability<br/>isAvailable: false]
+    D1 --> D2[Won't be assigned<br/>new rides]
+
+    E --> E1[PUT /driver/availability<br/>isAvailable: true]
+    E1 --> E2[Can be assigned rides]
+
+</div>
+
+<hr />
+<h2 id="7-rating-customers">7. Rating Customers</h2>
+<div class="mermaid">
+flowchart TD
+    A[Ride Completed] --> B[Rate Customer Prompt]
+    B --> C[Select Stars 1-5]
+    C --> D[Write Review optional]
+    D --> E[POST /driver/ratings]
+    E --> F{Success?}
+    F -->|Yes| G[Rating Saved]
+    F -->|No - Already rated| H[Already rated this booking]
+    F -->|No - Not completed| I[Ride not finished yet]
+
+</div>
+
+<hr />
+<h2 id="8-complete-driver-day-flow">8. Complete Driver Day Flow</h2>
+<div class="mermaid">
+flowchart LR
+    A[Login] --> B[Set Available]
+    B --> C[Check Assigned Rides]
+    C --> D[Start Ride]
+    D --> E[Navigate to Pickup]
+    E --> F[Pick Up Customer]
+    F --> G[Drive to Stops]
+    G --> H[Complete Ride]
+    H --> I[Rate Customer]
+    I --> J[Check Next Ride]
+    J --> C
+    J --> K[Set Unavailable<br/>End Day]
+
+</div>
+
+<hr />
+<h2 id="driver-api-reference">Driver API Reference</h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Endpoint</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td>/driver/auth/register</td>
+<td>Register driver account</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/driver/auth/login</td>
+<td>Driver login</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/driver/profile</td>
+<td>Get user profile</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/driver/profile</td>
+<td>Update user profile</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/driver/me</td>
+<td>Get driver profile (license, rating)</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/driver/availability</td>
+<td>Toggle availability</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/driver/location</td>
+<td>Update GPS coordinates</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/driver/bookings</td>
+<td>List assigned bookings</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/driver/bookings/:id</td>
+<td>Get booking detail</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/driver/bookings/:id/status</td>
+<td>Update ride status</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/driver/ratings</td>
+<td>Rate customer</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/driver/ratings/my</td>
+<td>View received ratings</td>
+</tr>
+</tbody>
+</table>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#1f6feb',
+                primaryTextColor: '#e6edf3',
+                primaryBorderColor: '#58a6ff',
+                lineColor: '#8b949e',
+                secondaryColor: '#161b22',
+                tertiaryColor: '#0d1117',
+                background: '#0d1117',
+                mainBkg: '#161b22',
+                nodeBorder: '#30363d',
+                clusterBkg: '#161b22',
+                titleColor: '#58a6ff',
+                edgeLabelBackground: '#161b22',
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Flow & UX</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --green: #3fb950;
+            --red: #f85149;
+            --yellow: #d29922;
+            --purple: #bc8cff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        h1 {
+            font-size: 2rem;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-hover);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.3rem;
+        }
+        h3 {
+            font-size: 1.2rem;
+            margin-top: 1.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--purple);
+        }
+        h4 {
+            font-size: 1rem;
+            margin-top: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        p {
+            margin-bottom: 1rem;
+        }
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+            color: var(--accent-hover);
+        }
+        code {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.15rem 0.4rem;
+            font-size: 0.9em;
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            color: var(--accent-hover);
+        }
+        pre {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+        }
+        pre code {
+            background: none;
+            border: none;
+            padding: 0;
+            color: var(--text);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background: #1c2333;
+            color: var(--accent);
+            font-weight: 600;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+        td {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover td {
+            background: rgba(88, 166, 255, 0.05);
+        }
+        blockquote {
+            border-left: 4px solid var(--accent);
+            background: var(--card);
+            padding: 0.8rem 1.2rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-muted);
+        }
+        blockquote strong {
+            color: var(--yellow);
+        }
+        ul, ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        li {
+            margin-bottom: 0.3rem;
+        }
+        li ul, li ol {
+            margin-bottom: 0;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+        strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+        em {
+            color: var(--text-muted);
+        }
+        .mermaid {
+            background: #1a1f2e;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        .nav {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .nav a {
+            font-size: 0.85rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            background: rgba(88, 166, 255, 0.1);
+        }
+        .nav a:hover {
+            background: rgba(88, 166, 255, 0.2);
+            text-decoration: none;
+        }
+        .nav-label {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        input[type="checkbox"] {
+            accent-color: var(--green);
+            transform: scale(1.2);
+            margin-right: 0.3rem;
+        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.5rem; }
+            table { font-size: 0.85rem; }
+            th, td { padding: 0.4rem 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <span class="nav-label">Navigation:</span>
+        <a href="index.html" style="background:rgba(63,185,80,0.2);color:#3fb950;font-weight:600;">Home</a>
+        <a href="00-executive-summary.html">Summary</a>
+        <a href="01-product-identity.html">Identity</a>
+        <a href="02-competitive-analysis.html">Competitors</a>
+        <a href="03-target-market.html">Market</a>
+        <a href="04-user-flow.html">UX Flow</a>
+        <a href="05-mvp-definition.html">MVP</a>
+        <a href="06-architecture.html">Architecture</a>
+        <a href="07-tech-stack.html">Tech Stack</a>
+        <a href="08-integrations.html">Integrations</a>
+        <a href="10-database-design.html">Database</a>
+        <a href="11-sequence-diagrams.html">Sequences</a>
+        <a href="12-project-flow.html">Project Flow</a>
+        <a href="13-security.html">Security</a>
+        <a href="14-legal-compliance.html">Legal</a>
+        <a href="15-implementation-phases.html">Phases</a>
+        <a href="16-production-checklist.html">Checklist</a>
+        <a href="17-devops.html">DevOps</a>
+        <a href="18-monetization.html">Revenue</a>
+        <a href="19-cost-management.html">Costs</a>
+        <a href="20-marketing.html">Marketing</a>
+        <a href="21-analytics-kpis.html">KPIs</a>
+        <a href="22-accessibility-i18n.html">A11y</a>
+        <a href="23-support-docs.html">Support</a>
+        <a href="24-team-hiring.html">Team</a>
+        <a href="25-risk-assessment.html">Risks</a>
+        <a href="26-future-roadmap.html">Roadmap</a>
+    </nav>
+    <h1 id="user-flow-ux">User Flow &amp; UX</h1>
+<h2 id="role-based-views-same-web-app">Role-Based Views (Same Web App)</h2>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Access</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Guest</strong></td>
+<td>Landing page, search routes, view pricing</td>
+</tr>
+<tr>
+<td><strong>User</strong></td>
+<td>Book rides, track, pay, rate, profile</td>
+</tr>
+<tr>
+<td><strong>Driver</strong></td>
+<td>View assigned rides, navigate, update status</td>
+</tr>
+<tr>
+<td><strong>Admin</strong></td>
+<td>Full dashboard: cars, drivers, users, bookings, settings</td>
+</tr>
+</tbody>
+</table>
+<h2 id="user-journey-map">User Journey Map</h2>
+<h3 id="discovery-first-booking">Discovery → First Booking</h3>
+<pre class="highlight"><code>Visit website → See pricing/routes → Register (phone OTP) →
+Search route (from/to/date) → See available cars →
+Select car + view docs → Add stops (optional) →
+Review pricing → Pay via UPI → Booking confirmed →
+Get SMS + push notification → Track driver on ride day
+</code></pre>
+
+<h2 id="core-user-flows">Core User Flows</h2>
+<h3 id="flow-1-user-registration">Flow 1: User Registration</h3>
+<pre class="highlight"><code>Phone number → OTP verification → Name + Email →
+Profile photo (optional) → Dashboard
+</code></pre>
+
+<h3 id="flow-2-booking-a-ride">Flow 2: Booking a Ride</h3>
+<pre class="highlight"><code>1. Enter pickup location
+2. Enter drop location
+3. Add intermediate stops (optional, drag to reorder)
+4. Select date + time (calendar shows availability)
+5. See available cars (with photos, type, driver rating)
+6. Select car
+7. View price breakdown (base + per-km + tolls)
+8. Choose refund policy type (shown per route config)
+9. Pay via UPI (Razorpay checkout)
+10. Booking confirmed → Notification sent
+</code></pre>
+
+<h3 id="flow-3-ride-day">Flow 3: Ride Day</h3>
+<pre class="highlight"><code>User gets reminder notification (1 day before, 2 hours before) →
+Driver starts ride → User sees live GPS on map →
+Driver reaches pickup → User notified →
+Ride in progress (live tracking) →
+Intermediate stop reached → Both notified →
+Destination reached → Ride completed →
+Rating prompt → Both rate each other →
+Receipt sent via email + SMS
+</code></pre>
+
+<h3 id="flow-4-cancellation">Flow 4: Cancellation</h3>
+<pre class="highlight"><code>User opens booking → Cancel ride →
+See refund policy (full/partial/none based on timing) →
+Confirm cancellation → Refund initiated →
+Notification: &quot;Booking cancelled, refund of ₹X in 3-5 days&quot;
+</code></pre>
+
+<h3 id="flow-5-ride-extension">Flow 5: Ride Extension</h3>
+<pre class="highlight"><code>During ride → User requests extension →
+Enter new destination or extra hours →
+See additional charges →
+Pay extra via UPI → Ride extended →
+Driver notified of new route
+</code></pre>
+
+<h3 id="flow-6-driver-workflow">Flow 6: Driver Workflow</h3>
+<pre class="highlight"><code>Login → See assigned rides (today/upcoming) →
+Accept/acknowledge ride → Navigate to pickup →
+Update status: &quot;On the way&quot; → &quot;Reached pickup&quot; →
+&quot;Ride started&quot; → &quot;At stop 1&quot; → &quot;Ride completed&quot; →
+Rate user
+</code></pre>
+
+<h3 id="flow-7-admin-workflow">Flow 7: Admin Workflow</h3>
+<pre class="highlight"><code>Dashboard overview (today's bookings, revenue, active rides) →
+Manage cars (add/edit/deactivate with documents) →
+Manage drivers (add/edit/block with documents) →
+Manage users (view/block/deactivate) →
+Manage bookings (view all, resolve disputes) →
+Settings (pricing per km, refund policies, company branding)
+</code></pre>
+
+<h2 id="key-screenspages">Key Screens/Pages</h2>
+<h3 id="public-pages">Public Pages</h3>
+<ol>
+<li><strong>Landing page</strong> — Hero, search, features, testimonials</li>
+<li><strong>Route search results</strong> — Available dates, cars, pricing</li>
+<li><strong>About / Contact</strong> — Company info, phone number</li>
+</ol>
+<h3 id="user-pages">User Pages</h3>
+<ol>
+<li><strong>Dashboard</strong> — Upcoming rides, past rides, quick book</li>
+<li><strong>Book a ride</strong> — Multi-step booking form</li>
+<li><strong>Ride tracking</strong> — Live map, driver info, ETA</li>
+<li><strong>My bookings</strong> — List with status filters</li>
+<li><strong>Booking detail</strong> — Full info, cancel/extend options</li>
+<li><strong>Profile</strong> — Edit info, payment history</li>
+<li><strong>Ratings</strong> — Given and received ratings</li>
+</ol>
+<h3 id="driver-pages">Driver Pages</h3>
+<ol>
+<li><strong>Driver dashboard</strong> — Today's rides, upcoming</li>
+<li><strong>Ride detail</strong> — Pickup/drop, route, user info</li>
+<li><strong>Navigation view</strong> — Map with route</li>
+<li><strong>Ride status updater</strong> — Status toggle buttons</li>
+</ol>
+<h3 id="admin-pages">Admin Pages</h3>
+<ol>
+<li><strong>Admin dashboard</strong> — Stats, charts, alerts</li>
+<li><strong>Cars management</strong> — CRUD + document upload</li>
+<li><strong>Drivers management</strong> — CRUD + document upload + assignment</li>
+<li><strong>Users management</strong> — List, search, block/unblock</li>
+<li><strong>Bookings management</strong> — All bookings, filters, dispute resolution</li>
+<li><strong>Payments</strong> — Transaction log, refunds</li>
+<li><strong>Notifications center</strong> — Send manual notifications</li>
+<li><strong>Settings</strong> — Pricing, refund policies, branding, company info</li>
+<li><strong>Reports</strong> — Revenue, rides, driver performance</li>
+</ol>
+<h2 id="onboarding-flow-first-time-user">Onboarding Flow (First-Time User)</h2>
+<ol>
+<li>Welcome screen with app features</li>
+<li>Phone verification (OTP)</li>
+<li>Basic profile (name, email)</li>
+<li>Quick tutorial (3 slides: search → book → track)</li>
+<li>First booking CTA</li>
+</ol>
+<h2 id="pwa-install-prompt">PWA Install Prompt</h2>
+<ul>
+<li>Show after 2nd visit or after first booking</li>
+<li>"Add to Home Screen" banner</li>
+<li>Custom install button in header</li>
+</ul>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#1f6feb',
+                primaryTextColor: '#e6edf3',
+                primaryBorderColor: '#58a6ff',
+                lineColor: '#8b949e',
+                secondaryColor: '#161b22',
+                tertiaryColor: '#0d1117',
+                background: '#0d1117',
+                mainBkg: '#161b22',
+                nodeBorder: '#30363d',
+                clusterBkg: '#161b22',
+                titleColor: '#58a6ff',
+                edgeLabelBackground: '#161b22',
+            }
+        });
+    </script>
+</body>
+</html>

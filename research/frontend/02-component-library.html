@@ -1,0 +1,1711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Books Car Rental -- Component Library Specifications</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --green: #3fb950;
+            --red: #f85149;
+            --yellow: #d29922;
+            --purple: #bc8cff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        h1 {
+            font-size: 2rem;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-hover);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.3rem;
+        }
+        h3 {
+            font-size: 1.2rem;
+            margin-top: 1.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--purple);
+        }
+        h4 {
+            font-size: 1rem;
+            margin-top: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        p {
+            margin-bottom: 1rem;
+        }
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+            color: var(--accent-hover);
+        }
+        code {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.15rem 0.4rem;
+            font-size: 0.9em;
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            color: var(--accent-hover);
+        }
+        pre {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+        }
+        pre code {
+            background: none;
+            border: none;
+            padding: 0;
+            color: var(--text);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background: #1c2333;
+            color: var(--accent);
+            font-weight: 600;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+        td {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover td {
+            background: rgba(88, 166, 255, 0.05);
+        }
+        blockquote {
+            border-left: 4px solid var(--accent);
+            background: var(--card);
+            padding: 0.8rem 1.2rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-muted);
+        }
+        blockquote strong {
+            color: var(--yellow);
+        }
+        ul, ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        li {
+            margin-bottom: 0.3rem;
+        }
+        li ul, li ol {
+            margin-bottom: 0;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+        strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+        em {
+            color: var(--text-muted);
+        }
+        .mermaid {
+            background: #1a1f2e;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        .nav {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .nav a {
+            font-size: 0.85rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            background: rgba(88, 166, 255, 0.1);
+        }
+        .nav a:hover {
+            background: rgba(88, 166, 255, 0.2);
+            text-decoration: none;
+        }
+        .nav-label {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        input[type="checkbox"] {
+            accent-color: var(--green);
+            transform: scale(1.2);
+            margin-right: 0.3rem;
+        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.5rem; }
+            table { font-size: 0.85rem; }
+            th, td { padding: 0.4rem 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <span class="nav-label">Navigation:</span>
+        <a href="../index.html" style="background:rgba(63,185,80,0.2);color:#3fb950;font-weight:600;">Home</a>
+        <a href="../00-executive-summary.html">Summary</a>
+        <a href="../01-product-identity.html">Identity</a>
+        <a href="../02-competitive-analysis.html">Competitors</a>
+        <a href="../03-target-market.html">Market</a>
+        <a href="../04-user-flow.html">UX Flow</a>
+        <a href="../05-mvp-definition.html">MVP</a>
+        <a href="../06-architecture.html">Architecture</a>
+        <a href="../07-tech-stack.html">Tech Stack</a>
+        <a href="../08-integrations.html">Integrations</a>
+        <a href="../10-database-design.html">Database</a>
+        <a href="../11-sequence-diagrams.html">Sequences</a>
+        <a href="../12-project-flow.html">Project Flow</a>
+        <a href="../13-security.html">Security</a>
+        <a href="../14-legal-compliance.html">Legal</a>
+        <a href="../15-implementation-phases.html">Phases</a>
+        <a href="../16-production-checklist.html">Checklist</a>
+        <a href="../17-devops.html">DevOps</a>
+        <a href="../18-monetization.html">Revenue</a>
+        <a href="../19-cost-management.html">Costs</a>
+        <a href="../20-marketing.html">Marketing</a>
+        <a href="../21-analytics-kpis.html">KPIs</a>
+        <a href="../22-accessibility-i18n.html">A11y</a>
+        <a href="../23-support-docs.html">Support</a>
+        <a href="../24-team-hiring.html">Team</a>
+        <a href="../25-risk-assessment.html">Risks</a>
+        <a href="../26-future-roadmap.html">Roadmap</a>
+    </nav>
+    <h1 id="books-car-rental-component-library-specifications">Books Car Rental -- Component Library Specifications</h1>
+<p>Version 1.0 | React + TypeScript | Lucide Icons</p>
+<hr />
+<h2 id="1-buttons">1. Buttons</h2>
+<h3 id="variants">Variants</h3>
+<table>
+<thead>
+<tr>
+<th>Variant</th>
+<th>Background</th>
+<th>Text Color</th>
+<th>Border</th>
+<th>Hover Background</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>primary</code></td>
+<td><code>#2563EB</code></td>
+<td><code>#FFFFFF</code></td>
+<td>none</td>
+<td><code>#1D4ED8</code></td>
+</tr>
+<tr>
+<td><code>secondary</code></td>
+<td><code>#F59E0B</code></td>
+<td><code>#FFFFFF</code></td>
+<td>none</td>
+<td><code>#D97706</code></td>
+</tr>
+<tr>
+<td><code>outline</code></td>
+<td>transparent</td>
+<td><code>#2563EB</code></td>
+<td>1px <code>#2563EB</code></td>
+<td><code>#EFF6FF</code></td>
+</tr>
+<tr>
+<td><code>ghost</code></td>
+<td>transparent</td>
+<td><code>#475569</code></td>
+<td>none</td>
+<td><code>#F1F5F9</code></td>
+</tr>
+<tr>
+<td><code>danger</code></td>
+<td><code>#E11D48</code></td>
+<td><code>#FFFFFF</code></td>
+<td>none</td>
+<td><code>#BE123C</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="sizes">Sizes</h3>
+<table>
+<thead>
+<tr>
+<th>Size</th>
+<th>Height</th>
+<th>Padding (H)</th>
+<th>Font Size</th>
+<th>Icon Size</th>
+<th>Border Radius</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sm</code></td>
+<td>32px</td>
+<td>12px</td>
+<td>14px</td>
+<td>16px</td>
+<td>6px</td>
+</tr>
+<tr>
+<td><code>md</code></td>
+<td>40px</td>
+<td>16px</td>
+<td>14px</td>
+<td>18px</td>
+<td>8px</td>
+</tr>
+<tr>
+<td><code>lg</code></td>
+<td>48px</td>
+<td>20px</td>
+<td>16px</td>
+<td>20px</td>
+<td>8px</td>
+</tr>
+<tr>
+<td><code>xl</code></td>
+<td>56px</td>
+<td>24px</td>
+<td>16px</td>
+<td>20px</td>
+<td>12px</td>
+</tr>
+</tbody>
+</table>
+<h3 id="states">States</h3>
+<ul>
+<li><strong>Default:</strong> Normal appearance</li>
+<li><strong>Hover:</strong> Slightly darker background, cursor pointer</li>
+<li><strong>Active/Pressed:</strong> scale(0.98) transform, darkest shade</li>
+<li><strong>Focused:</strong> <code>--focus-ring</code> applied</li>
+<li><strong>Disabled:</strong> opacity 0.5, cursor not-allowed, no pointer events</li>
+<li><strong>Loading:</strong> Text replaced with spinner (16px), disabled interaction</li>
+</ul>
+<h3 id="button-anatomy">Button Anatomy</h3>
+<pre class="highlight"><code>+--[icon?]--[label]--[icon?]--+
+|        min-width: 0         |
+|    gap: 8px between items   |
++-----------------------------+
+</code></pre>
+
+<h3 id="full-width-cta-button-mobile">Full-Width CTA Button (Mobile)</h3>
+<p>Used at the bottom of forms and checkout flows.</p>
+<pre class="highlight"><code class="language-css">.btn-cta {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px;
+  padding-bottom: calc(16px + env(safe-area-inset-bottom));
+  background: #FFFFFF;
+  border-top: 1px solid #E2E8F0;
+  z-index: 200;
+}
+
+.btn-cta button {
+  width: 100%;
+  height: 56px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+}
+</code></pre>
+
+<hr />
+<h2 id="2-input-fields">2. Input Fields</h2>
+<h3 id="text-input">Text Input</h3>
+<pre class="highlight"><code>+------------------------------------------+
+| [icon?] [label floats up on focus]       |
+| [icon?] [value / placeholder]            |
++------------------------------------------+
+  [helper text or error message]
+</code></pre>
+
+<h3 id="specifications">Specifications</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Height</td>
+<td>48px (mobile), 44px (desktop)</td>
+</tr>
+<tr>
+<td>Padding</td>
+<td>12px horizontal, centered vertical</td>
+</tr>
+<tr>
+<td>Background</td>
+<td><code>#FFFFFF</code></td>
+</tr>
+<tr>
+<td>Border</td>
+<td>1px solid <code>#E2E8F0</code></td>
+</tr>
+<tr>
+<td>Border (focus)</td>
+<td>2px solid <code>#2563EB</code></td>
+</tr>
+<tr>
+<td>Border (error)</td>
+<td>2px solid <code>#E11D48</code></td>
+</tr>
+<tr>
+<td>Border (success)</td>
+<td>2px solid <code>#059669</code></td>
+</tr>
+<tr>
+<td>Border radius</td>
+<td>8px</td>
+</tr>
+<tr>
+<td>Font size</td>
+<td>16px (prevents iOS zoom)</td>
+</tr>
+<tr>
+<td>Placeholder color</td>
+<td><code>#94A3B8</code></td>
+</tr>
+<tr>
+<td>Label size</td>
+<td>14px, <code>#475569</code></td>
+</tr>
+<tr>
+<td>Label (focused)</td>
+<td>12px, <code>#2563EB</code>, translated up</td>
+</tr>
+<tr>
+<td>Helper text</td>
+<td>12px, <code>#64748B</code></td>
+</tr>
+<tr>
+<td>Error text</td>
+<td>12px, <code>#E11D48</code></td>
+</tr>
+<tr>
+<td>Icon color</td>
+<td><code>#94A3B8</code> (default), <code>#2563EB</code> (focused)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="input-variants">Input Variants</h3>
+<p><strong>Phone Number Input</strong></p>
+<pre class="highlight"><code>+----+------------------------------------------+
+| +91| [Mobile number]                           |
+| v  |                                          |
++----+------------------------------------------+
+</code></pre>
+
+<ul>
+<li>Country code selector on left (40px width)</li>
+<li>Numeric keyboard on mobile (<code>inputMode="tel"</code>)</li>
+<li>Auto-format: XXX XXX XXXX</li>
+</ul>
+<p><strong>Password Input</strong></p>
+<pre class="highlight"><code>+------------------------------------------+---+
+| [Password]                               |eye|
++------------------------------------------+---+
+</code></pre>
+
+<ul>
+<li>Toggle visibility icon (Eye / EyeOff)</li>
+<li>Strength indicator bar below (4 segments: red, orange, yellow, green)</li>
+</ul>
+<p><strong>Search Input</strong></p>
+<pre class="highlight"><code>+---+------------------------------------------+---+
+| Q | [Search cars, routes...]                 | X |
++---+------------------------------------------+---+
+</code></pre>
+
+<ul>
+<li>Search icon prefix</li>
+<li>Clear button (X) when has value</li>
+<li>No border, uses shadow-sm for elevation</li>
+<li>Border radius: 9999px (pill shape)</li>
+<li>Background: <code>#F1F5F9</code></li>
+</ul>
+<p><strong>Date Input</strong></p>
+<pre class="highlight"><code>+---+------------------------------------------+---+
+| C | [Select date]                            | &gt; |
++---+------------------------------------------+---+
+</code></pre>
+
+<ul>
+<li>Calendar icon prefix</li>
+<li>Opens native date picker on mobile</li>
+<li>Custom date picker modal on desktop</li>
+<li>Display format: "Mon, 15 Jan 2026"</li>
+</ul>
+<p><strong>Textarea</strong><br />
+- Min height: 96px<br />
+- Auto-grow up to 200px<br />
+- Character counter at bottom right</p>
+<hr />
+<h2 id="3-cards">3. Cards</h2>
+<h3 id="car-card">Car Card</h3>
+<pre class="highlight"><code>+------------------------------------------+
+| +--------------------------------------+ |
+| |                                      | |
+| |        [Car Image - 16:9]            | |
+| |                                      | |
+| +--------------------------------------+ |
+| [AC] [4 Seater] [Diesel]   &lt;-- chips     |
+|                                          |
+| Swift Dzire                 &lt;-- h4 600   |
+| or similar sedan            &lt;-- body-sm  |
+|                                          |
+| Rs 2,500/day                &lt;-- h4 700   |
+| [Select Car]                &lt;-- btn sm   |
++------------------------------------------+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Width</td>
+<td>100% (mobile), 280px (grid)</td>
+</tr>
+<tr>
+<td>Border radius</td>
+<td>12px</td>
+</tr>
+<tr>
+<td>Background</td>
+<td><code>#FFFFFF</code></td>
+</tr>
+<tr>
+<td>Shadow</td>
+<td><code>--shadow-sm</code>, <code>--shadow-md</code> hover</td>
+</tr>
+<tr>
+<td>Padding</td>
+<td>0 (image), 16px (content)</td>
+</tr>
+<tr>
+<td>Image height</td>
+<td>180px, object-fit: cover</td>
+</tr>
+<tr>
+<td>Gap</td>
+<td>8px between elements</td>
+</tr>
+</tbody>
+</table>
+<h3 id="booking-card">Booking Card</h3>
+<pre class="highlight"><code>+------------------------------------------+
+| [Booking #BCR-1234]    [Confirmed] badge |
+|                                          |
+| +---+  Mumbai .......................... |
+| | | |  to                               |
+| +---+  Pune                             |
+|                                          |
+| Mon, 15 Jan  |  09:00 AM  |  Swift Dzire|
+|                                          |
+| ----------------------------------------|
+| Rs 3,500         [View Details -&gt;]       |
++------------------------------------------+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Width</td>
+<td>100%</td>
+</tr>
+<tr>
+<td>Border radius</td>
+<td>12px</td>
+</tr>
+<tr>
+<td>Background</td>
+<td><code>#FFFFFF</code></td>
+</tr>
+<tr>
+<td>Shadow</td>
+<td><code>--shadow-sm</code></td>
+</tr>
+<tr>
+<td>Padding</td>
+<td>16px</td>
+</tr>
+<tr>
+<td>Border-left</td>
+<td>4px solid (color by status)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Border-left colors by status:</strong><br />
+- Pending: <code>#F59E0B</code><br />
+- Confirmed: <code>#2563EB</code><br />
+- In Progress: <code>#8B5CF6</code><br />
+- Completed: <code>#059669</code><br />
+- Cancelled: <code>#E11D48</code></p>
+<h3 id="route-card">Route Card</h3>
+<pre class="highlight"><code>+------------------------------------------+
+| Mumbai --&gt; Pune               3h 30m     |
+| 150 km                     Rs 2,500      |
+| [Popular]                                |
++------------------------------------------+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Border radius</td>
+<td>8px</td>
+</tr>
+<tr>
+<td>Background</td>
+<td><code>#FFFFFF</code></td>
+</tr>
+<tr>
+<td>Border</td>
+<td>1px solid <code>#E2E8F0</code></td>
+</tr>
+<tr>
+<td>Padding</td>
+<td>12px 16px</td>
+</tr>
+</tbody>
+</table>
+<h3 id="stat-card-admin-dashboard">Stat Card (Admin Dashboard)</h3>
+<pre class="highlight"><code>+------------------------------------------+
+| Total Bookings               [icon: Cal] |
+| 1,234                                    |
+| +12% from last month        [sparkline]  |
++------------------------------------------+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Width</td>
+<td>1/2 (mobile), 1/4 (desktop)</td>
+</tr>
+<tr>
+<td>Border radius</td>
+<td>12px</td>
+</tr>
+<tr>
+<td>Background</td>
+<td><code>#FFFFFF</code></td>
+</tr>
+<tr>
+<td>Shadow</td>
+<td><code>--shadow-sm</code></td>
+</tr>
+<tr>
+<td>Padding</td>
+<td>20px</td>
+</tr>
+<tr>
+<td>Value font</td>
+<td>30px, weight 700</td>
+</tr>
+<tr>
+<td>Label font</td>
+<td>14px, <code>#475569</code></td>
+</tr>
+<tr>
+<td>Trend font</td>
+<td>12px, green (up) or red (down)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="driver-card">Driver Card</h3>
+<pre class="highlight"><code>+------------------------------------------+
+| +------+  Rajesh Kumar                   |
+| |avatar|  4.8 [star] | 234 rides         |
+| +------+  [Available]                    |
+|                                          |
+| Swift Dzire (MH 12 AB 1234)             |
+| [Assign] [View Profile]                 |
++------------------------------------------+
+</code></pre>
+
+<hr />
+<h2 id="4-bottom-navigation-bar-mobile">4. Bottom Navigation Bar (Mobile)</h2>
+<pre class="highlight"><code>+----+--------+--------+--------+--------+----+
+|    |  Home  |Bookings| Track  |Profile |    |
+|    |  [ic]  |  [ic]  |  [ic]  |  [ic]  |    |
++----+--------+--------+--------+--------+----+
+     ^^^^^^^^  active tab
+</code></pre>
+
+<h3 id="specifications_1">Specifications</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Height</td>
+<td>64px + safe-area-inset-bottom</td>
+</tr>
+<tr>
+<td>Background</td>
+<td><code>#FFFFFF</code></td>
+</tr>
+<tr>
+<td>Border top</td>
+<td>1px solid <code>#E2E8F0</code></td>
+</tr>
+<tr>
+<td>Shadow</td>
+<td><code>0 -2px 10px rgba(15,23,42,0.05)</code></td>
+</tr>
+<tr>
+<td>Position</td>
+<td>fixed bottom</td>
+</tr>
+<tr>
+<td>z-index</td>
+<td>200</td>
+</tr>
+<tr>
+<td>Icon size</td>
+<td>24px</td>
+</tr>
+<tr>
+<td>Label size</td>
+<td>12px, weight 500</td>
+</tr>
+<tr>
+<td>Active color</td>
+<td><code>#2563EB</code></td>
+</tr>
+<tr>
+<td>Inactive color</td>
+<td><code>#94A3B8</code></td>
+</tr>
+<tr>
+<td>Active indicator</td>
+<td>3px wide dot below icon, <code>#2563EB</code></td>
+</tr>
+<tr>
+<td>Tab width</td>
+<td>equal (25% each)</td>
+</tr>
+<tr>
+<td>Touch target</td>
+<td>full tab area, min 48px wide</td>
+</tr>
+</tbody>
+</table>
+<h3 id="tab-items">Tab Items</h3>
+<table>
+<thead>
+<tr>
+<th>Tab</th>
+<th>Icon</th>
+<th>Label</th>
+<th>Route</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Home</td>
+<td><code>Home</code></td>
+<td>Home</td>
+<td><code>/customer</code></td>
+</tr>
+<tr>
+<td>Bookings</td>
+<td><code>CalendarCheck</code></td>
+<td>Bookings</td>
+<td><code>/customer/bookings</code></td>
+</tr>
+<tr>
+<td>Track</td>
+<td><code>MapPin</code></td>
+<td>Track</td>
+<td><code>/customer/track</code></td>
+</tr>
+<tr>
+<td>Profile</td>
+<td><code>User</code></td>
+<td>Profile</td>
+<td><code>/customer/profile</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="5-top-app-bar">5. Top App Bar</h2>
+<h3 id="default-with-title">Default (with title)</h3>
+<pre class="highlight"><code>+------------------------------------------+
+| [&lt;-]  Page Title             [action?]   |
++------------------------------------------+
+</code></pre>
+
+<h3 id="search-variant">Search variant</h3>
+<pre class="highlight"><code>+------------------------------------------+
+| [&lt;-]  [Search input........................] |
++------------------------------------------+
+</code></pre>
+
+<h3 id="specifications_2">Specifications</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Height</td>
+<td>56px + safe-area-inset-top</td>
+</tr>
+<tr>
+<td>Background</td>
+<td><code>#FFFFFF</code></td>
+</tr>
+<tr>
+<td>Border bottom</td>
+<td>1px solid <code>#E2E8F0</code></td>
+</tr>
+<tr>
+<td>Position</td>
+<td>sticky top</td>
+</tr>
+<tr>
+<td>z-index</td>
+<td>100</td>
+</tr>
+<tr>
+<td>Title font</td>
+<td>18px, weight 600</td>
+</tr>
+<tr>
+<td>Back button</td>
+<td>40px touch target, ChevronLeft</td>
+</tr>
+<tr>
+<td>Action button</td>
+<td>40px touch target</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="6-bottom-sheets-mobile-modals">6. Bottom Sheets (Mobile Modals)</h2>
+<pre class="highlight"><code>+------------------------------------------+
+|            [drag handle]                 |
+|  Sheet Title              [X close?]     |
+|  ======================================  |
+|                                          |
+|  [Sheet content scrollable]              |
+|                                          |
+|                                          |
++------------------------------------------+
+| [Action Button - full width]             |
++------------------------------------------+
+</code></pre>
+
+<h3 id="specifications_3">Specifications</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Background</td>
+<td><code>#FFFFFF</code></td>
+</tr>
+<tr>
+<td>Border radius</td>
+<td>16px 16px 0 0 (top corners only)</td>
+</tr>
+<tr>
+<td>Drag handle</td>
+<td>36px x 4px, <code>#CBD5E1</code>, centered</td>
+</tr>
+<tr>
+<td>Padding top</td>
+<td>8px (above handle) + 16px (below)</td>
+</tr>
+<tr>
+<td>Padding horizontal</td>
+<td>16px</td>
+</tr>
+<tr>
+<td>Max height</td>
+<td>90vh</td>
+</tr>
+<tr>
+<td>Snap points</td>
+<td>40%, 70%, 90% of viewport height</td>
+</tr>
+<tr>
+<td>Overlay</td>
+<td><code>rgba(15, 23, 42, 0.5)</code></td>
+</tr>
+<tr>
+<td>Animation</td>
+<td>slide up with spring easing, 350ms</td>
+</tr>
+<tr>
+<td>Dismiss</td>
+<td>swipe down, tap overlay, X button</td>
+</tr>
+<tr>
+<td>z-index</td>
+<td>400</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="7-status-badges">7. Status Badges</h2>
+<pre class="highlight"><code>[  Confirmed  ]
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Background</th>
+<th>Text Color</th>
+<th>Icon</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pending</code></td>
+<td><code>#FEF3C7</code></td>
+<td><code>#B45309</code></td>
+<td><code>Clock</code></td>
+</tr>
+<tr>
+<td><code>confirmed</code></td>
+<td><code>#DBEAFE</code></td>
+<td><code>#1E40AF</code></td>
+<td><code>CheckCircle</code></td>
+</tr>
+<tr>
+<td><code>in_progress</code></td>
+<td><code>#F3E8FF</code></td>
+<td><code>#7C3AED</code></td>
+<td><code>Navigation</code></td>
+</tr>
+<tr>
+<td><code>completed</code></td>
+<td><code>#D1FAE5</code></td>
+<td><code>#047857</code></td>
+<td><code>CheckCircle</code></td>
+</tr>
+<tr>
+<td><code>cancelled</code></td>
+<td><code>#FFE4E6</code></td>
+<td><code>#BE123C</code></td>
+<td><code>XCircle</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="specifications_4">Specifications</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Height</td>
+<td>24px</td>
+</tr>
+<tr>
+<td>Padding</td>
+<td>4px 10px</td>
+</tr>
+<tr>
+<td>Font size</td>
+<td>12px</td>
+</tr>
+<tr>
+<td>Font weight</td>
+<td>600</td>
+</tr>
+<tr>
+<td>Border radius</td>
+<td>9999px (pill)</td>
+</tr>
+<tr>
+<td>Icon size</td>
+<td>12px, 4px gap from text</td>
+</tr>
+<tr>
+<td>Text transform</td>
+<td>capitalize</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="8-loading-states-skeleton-screens">8. Loading States -- Skeleton Screens</h2>
+<p>Use skeleton screens instead of spinners for all content loading.</p>
+<h3 id="skeleton-block">Skeleton Block</h3>
+<pre class="highlight"><code class="language-css">.skeleton {
+  background: linear-gradient(
+    90deg,
+    #F1F5F9 25%,
+    #E2E8F0 50%,
+    #F1F5F9 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: 8px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+</code></pre>
+
+<h3 id="skeleton-variants">Skeleton Variants</h3>
+<p><strong>Car Card Skeleton</strong></p>
+<pre class="highlight"><code>+------------------------------------------+
+| +--------------------------------------+ |
+| |        [skeleton 180px h]            | |
+| +--------------------------------------+ |
+| [=== 60px ===] [=== 60px ===]           |
+| [========= 140px =========]             |
+| [====== 80px ======]                    |
+| [========= 100px =========]             |
++------------------------------------------+
+</code></pre>
+
+<p><strong>Booking Card Skeleton</strong></p>
+<pre class="highlight"><code>+------------------------------------------+
+| [=== 120px ===]       [=== 80px ===]     |
+| [============= 200px ==============]     |
+| [=== 80px ===] [=== 80px ===] [80px]    |
+| ---------------------------------------- |
+| [=== 80px ===]       [=== 100px ===]    |
++------------------------------------------+
+</code></pre>
+
+<p><strong>List Item Skeleton</strong></p>
+<pre class="highlight"><code>+------------------------------------------+
+| [O 40px]  [========= 160px =========]   |
+|           [======= 120px =======]        |
++------------------------------------------+
+</code></pre>
+
+<hr />
+<h2 id="9-toast-notifications">9. Toast Notifications</h2>
+<pre class="highlight"><code>+--[icon]--[message text]----------[close]-+
++------------------------------------------+
+</code></pre>
+
+<h3 id="specifications_5">Specifications</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Position</td>
+<td>top: 16px + safe-area, centered</td>
+</tr>
+<tr>
+<td>Width</td>
+<td>calc(100% - 32px), max 400px</td>
+</tr>
+<tr>
+<td>Background</td>
+<td><code>#0F172A</code> (dark) for contrast</td>
+</tr>
+<tr>
+<td>Text color</td>
+<td><code>#FFFFFF</code></td>
+</tr>
+<tr>
+<td>Border radius</td>
+<td>12px</td>
+</tr>
+<tr>
+<td>Shadow</td>
+<td><code>--shadow-lg</code></td>
+</tr>
+<tr>
+<td>Padding</td>
+<td>12px 16px</td>
+</tr>
+<tr>
+<td>Font size</td>
+<td>14px</td>
+</tr>
+<tr>
+<td>Icon size</td>
+<td>20px</td>
+</tr>
+<tr>
+<td>Auto dismiss</td>
+<td>4 seconds (success), persistent (error)</td>
+</tr>
+<tr>
+<td>Animation</td>
+<td>slide down + fade in, 250ms</td>
+</tr>
+<tr>
+<td>z-index</td>
+<td>500</td>
+</tr>
+</tbody>
+</table>
+<h3 id="toast-variants">Toast Variants</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Icon Color</th>
+<th>Leading Icon</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>success</code></td>
+<td><code>#10B981</code></td>
+<td><code>CheckCircle</code></td>
+</tr>
+<tr>
+<td><code>error</code></td>
+<td><code>#F43F5E</code></td>
+<td><code>XCircle</code></td>
+</tr>
+<tr>
+<td><code>warning</code></td>
+<td><code>#F97316</code></td>
+<td><code>AlertTriangle</code></td>
+</tr>
+<tr>
+<td><code>info</code></td>
+<td><code>#3B82F6</code></td>
+<td><code>Info</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="10-empty-states">10. Empty States</h2>
+<pre class="highlight"><code>+------------------------------------------+
+|                                          |
+|          [illustration 120px]            |
+|                                          |
+|          No bookings yet                 |
+|    Book your first car rental and        |
+|    it will appear here                   |
+|                                          |
+|         [Browse Cars]                    |
+|                                          |
++------------------------------------------+
+</code></pre>
+
+<h3 id="specifications_6">Specifications</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Illustration size</td>
+<td>120px x 120px</td>
+</tr>
+<tr>
+<td>Illustration style</td>
+<td>Muted line art, blue tint</td>
+</tr>
+<tr>
+<td>Title</td>
+<td>20px, weight 600, <code>#0F172A</code></td>
+</tr>
+<tr>
+<td>Description</td>
+<td>14px, <code>#64748B</code>, centered</td>
+</tr>
+<tr>
+<td>Max text width</td>
+<td>280px</td>
+</tr>
+<tr>
+<td>CTA button</td>
+<td>primary, size md</td>
+</tr>
+<tr>
+<td>Vertical spacing</td>
+<td>16px between elements</td>
+</tr>
+</tbody>
+</table>
+<h3 id="empty-state-contexts">Empty State Contexts</h3>
+<table>
+<thead>
+<tr>
+<th>Page</th>
+<th>Title</th>
+<th>CTA</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bookings</td>
+<td>No bookings yet</td>
+<td>Browse Cars</td>
+</tr>
+<tr>
+<td>Search results</td>
+<td>No cars found</td>
+<td>Modify Search</td>
+</tr>
+<tr>
+<td>Track</td>
+<td>Nothing to track</td>
+<td>View Bookings</td>
+</tr>
+<tr>
+<td>Notifications</td>
+<td>All caught up</td>
+<td>--</td>
+</tr>
+<tr>
+<td>Admin drivers</td>
+<td>No drivers added</td>
+<td>Add Driver</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="11-pull-to-refresh">11. Pull-to-Refresh</h2>
+<pre class="highlight"><code>     [rotating refresh icon]
+     Updating...
++------------------------------------------+
+|  [content pulled down]                   |
++------------------------------------------+
+</code></pre>
+
+<h3 id="specifications_7">Specifications</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Trigger distance</td>
+<td>80px pull down</td>
+</tr>
+<tr>
+<td>Indicator size</td>
+<td>24px spinning icon</td>
+</tr>
+<tr>
+<td>Indicator color</td>
+<td><code>#2563EB</code></td>
+</tr>
+<tr>
+<td>Background</td>
+<td><code>#F8FAFC</code></td>
+</tr>
+<tr>
+<td>Animation</td>
+<td>rotate 360deg, 1s linear loop</td>
+</tr>
+<tr>
+<td>Snap back</td>
+<td>spring easing, 300ms</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="12-swipe-actions-on-list-items">12. Swipe Actions on List Items</h2>
+<pre class="highlight"><code>           &lt;--- swipe left
++------------------------------------------+-------+-------+
+| [Booking item content]                   | Edit  |Cancel |
+|                                          | blue  | red   |
++------------------------------------------+-------+-------+
+</code></pre>
+
+<h3 id="specifications_8">Specifications</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Swipe threshold</td>
+<td>80px to reveal actions</td>
+</tr>
+<tr>
+<td>Action button width</td>
+<td>72px each</td>
+</tr>
+<tr>
+<td>Action height</td>
+<td>matches list item</td>
+</tr>
+<tr>
+<td>Background (edit)</td>
+<td><code>#2563EB</code></td>
+</tr>
+<tr>
+<td>Background (delete)</td>
+<td><code>#E11D48</code></td>
+</tr>
+<tr>
+<td>Icon</td>
+<td>20px, white</td>
+</tr>
+<tr>
+<td>Label</td>
+<td>12px, white</td>
+</tr>
+<tr>
+<td>Haptic</td>
+<td>light impact on threshold reach</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="13-step-indicator-multi-step-forms">13. Step Indicator (Multi-Step Forms)</h2>
+<h3 id="horizontal-steps-mobile">Horizontal Steps (mobile)</h3>
+<pre class="highlight"><code>  (1)-----(2)-----(3)-----(4)-----(5)
+ Route   Date     Car    Review   Pay
+  [done] [done] [active] <input type="checkbox" disabled>     <input type="checkbox" disabled>
+</code></pre>
+
+<h3 id="specifications_9">Specifications</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Circle size</td>
+<td>28px</td>
+</tr>
+<tr>
+<td>Active circle</td>
+<td><code>#2563EB</code> fill, white text</td>
+</tr>
+<tr>
+<td>Completed circle</td>
+<td><code>#059669</code> fill, white check</td>
+</tr>
+<tr>
+<td>Pending circle</td>
+<td><code>#E2E8F0</code> fill, <code>#94A3B8</code> text</td>
+</tr>
+<tr>
+<td>Connector line height</td>
+<td>2px</td>
+</tr>
+<tr>
+<td>Completed line</td>
+<td><code>#059669</code></td>
+</tr>
+<tr>
+<td>Pending line</td>
+<td><code>#E2E8F0</code></td>
+</tr>
+<tr>
+<td>Label font</td>
+<td>12px, weight 500</td>
+</tr>
+<tr>
+<td>Active label color</td>
+<td><code>#2563EB</code></td>
+</tr>
+<tr>
+<td>Gap below circles</td>
+<td>4px to label</td>
+</tr>
+</tbody>
+</table>
+<h3 id="compact-progress-bar-alternative-for-mobile">Compact Progress Bar (alternative for mobile)</h3>
+<pre class="highlight"><code>+==================------+  Step 3 of 5
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Height</td>
+<td>4px</td>
+</tr>
+<tr>
+<td>Background</td>
+<td><code>#E2E8F0</code></td>
+</tr>
+<tr>
+<td>Fill</td>
+<td><code>#2563EB</code></td>
+</tr>
+<tr>
+<td>Border radius</td>
+<td>9999px</td>
+</tr>
+<tr>
+<td>Label</td>
+<td>12px, <code>#64748B</code>, right</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="14-chips-tags">14. Chips / Tags</h2>
+<pre class="highlight"><code>[AC]  [4 Seater]  [Diesel]  [+ Add Stop]
+</code></pre>
+
+<h3 id="specifications_10">Specifications</h3>
+<table>
+<thead>
+<tr>
+<th>Variant</th>
+<th>Background</th>
+<th>Text Color</th>
+<th>Border</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>filled</code></td>
+<td><code>#F1F5F9</code></td>
+<td><code>#334155</code></td>
+<td>none</td>
+</tr>
+<tr>
+<td><code>outlined</code></td>
+<td>transparent</td>
+<td><code>#475569</code></td>
+<td>1px <code>#E2E8F0</code></td>
+</tr>
+<tr>
+<td><code>selected</code></td>
+<td><code>#DBEAFE</code></td>
+<td><code>#1E40AF</code></td>
+<td>1px <code>#93C5FD</code></td>
+</tr>
+<tr>
+<td><code>removable</code></td>
+<td><code>#F1F5F9</code></td>
+<td><code>#334155</code></td>
+<td>none</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Height</td>
+<td>28px</td>
+</tr>
+<tr>
+<td>Padding</td>
+<td>4px 12px</td>
+</tr>
+<tr>
+<td>Font size</td>
+<td>12px, weight 500</td>
+</tr>
+<tr>
+<td>Border radius</td>
+<td>9999px</td>
+</tr>
+<tr>
+<td>Icon size</td>
+<td>14px</td>
+</tr>
+<tr>
+<td>Gap (icon-text)</td>
+<td>4px</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="15-dividers">15. Dividers</h2>
+<table>
+<thead>
+<tr>
+<th>Variant</th>
+<th>Style</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Full width</td>
+<td>1px solid <code>#E2E8F0</code>, full width</td>
+</tr>
+<tr>
+<td>Inset</td>
+<td>1px solid <code>#E2E8F0</code>, 16px left margin</td>
+</tr>
+<tr>
+<td>With label</td>
+<td>Line + centered text ("or") + line</td>
+</tr>
+<tr>
+<td>Spacing</td>
+<td>16px vertical margin (default)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="16-avatar">16. Avatar</h2>
+<table>
+<thead>
+<tr>
+<th>Size</th>
+<th>Pixels</th>
+<th>Border Radius</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>xs</code></td>
+<td>24px</td>
+<td>full</td>
+<td>Inline mentions</td>
+</tr>
+<tr>
+<td><code>sm</code></td>
+<td>32px</td>
+<td>full</td>
+<td>List items</td>
+</tr>
+<tr>
+<td><code>md</code></td>
+<td>40px</td>
+<td>full</td>
+<td>Cards, comments</td>
+</tr>
+<tr>
+<td><code>lg</code></td>
+<td>56px</td>
+<td>full</td>
+<td>Profile headers</td>
+</tr>
+<tr>
+<td><code>xl</code></td>
+<td>80px</td>
+<td>full</td>
+<td>Profile page</td>
+</tr>
+<tr>
+<td><code>2xl</code></td>
+<td>120px</td>
+<td>full</td>
+<td>Profile edit</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Fallback: initials on <code>#DBEAFE</code> background, <code>#1E40AF</code> text</li>
+<li>Border: 2px solid <code>#FFFFFF</code> when overlapping (avatar groups)</li>
+<li>Online indicator: 10px green dot at bottom-right</li>
+</ul>
+<hr />
+<h2 id="17-rating-component">17. Rating Component</h2>
+<pre class="highlight"><code>  [*] [*] [*] [*] [.]     4.0
+</code></pre>
+
+<h3 id="input-mode-tap-to-rate">Input Mode (tap to rate)</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Star size</td>
+<td>32px (tappable), 44px touch target</td>
+</tr>
+<tr>
+<td>Filled color</td>
+<td><code>#F59E0B</code></td>
+</tr>
+<tr>
+<td>Empty color</td>
+<td><code>#E2E8F0</code></td>
+</tr>
+<tr>
+<td>Gap</td>
+<td>4px</td>
+</tr>
+<tr>
+<td>Animation</td>
+<td>scale(1.2) on tap, 150ms</td>
+</tr>
+</tbody>
+</table>
+<h3 id="display-mode-read-only">Display Mode (read-only)</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Star size</td>
+<td>16px</td>
+</tr>
+<tr>
+<td>Filled color</td>
+<td><code>#F59E0B</code></td>
+</tr>
+<tr>
+<td>Half-star</td>
+<td>clip-path half fill</td>
+</tr>
+<tr>
+<td>Number</td>
+<td>14px, weight 600, <code>#0F172A</code></td>
+</tr>
+</tbody>
+</table>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#1f6feb',
+                primaryTextColor: '#e6edf3',
+                primaryBorderColor: '#58a6ff',
+                lineColor: '#8b949e',
+                secondaryColor: '#161b22',
+                tertiaryColor: '#0d1117',
+                background: '#0d1117',
+                mainBkg: '#161b22',
+                nodeBorder: '#30363d',
+                clusterBkg: '#161b22',
+                titleColor: '#58a6ff',
+                edgeLabelBackground: '#161b22',
+            }
+        });
+    </script>
+</body>
+</html>

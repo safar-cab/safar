@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Design (MongoDB)</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --green: #3fb950;
+            --red: #f85149;
+            --yellow: #d29922;
+            --purple: #bc8cff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        h1 {
+            font-size: 2rem;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-hover);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.3rem;
+        }
+        h3 {
+            font-size: 1.2rem;
+            margin-top: 1.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--purple);
+        }
+        h4 {
+            font-size: 1rem;
+            margin-top: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        p {
+            margin-bottom: 1rem;
+        }
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+            color: var(--accent-hover);
+        }
+        code {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.15rem 0.4rem;
+            font-size: 0.9em;
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            color: var(--accent-hover);
+        }
+        pre {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+        }
+        pre code {
+            background: none;
+            border: none;
+            padding: 0;
+            color: var(--text);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background: #1c2333;
+            color: var(--accent);
+            font-weight: 600;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+        td {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover td {
+            background: rgba(88, 166, 255, 0.05);
+        }
+        blockquote {
+            border-left: 4px solid var(--accent);
+            background: var(--card);
+            padding: 0.8rem 1.2rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-muted);
+        }
+        blockquote strong {
+            color: var(--yellow);
+        }
+        ul, ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        li {
+            margin-bottom: 0.3rem;
+        }
+        li ul, li ol {
+            margin-bottom: 0;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+        strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+        em {
+            color: var(--text-muted);
+        }
+        .mermaid {
+            background: #1a1f2e;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        .nav {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .nav a {
+            font-size: 0.85rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            background: rgba(88, 166, 255, 0.1);
+        }
+        .nav a:hover {
+            background: rgba(88, 166, 255, 0.2);
+            text-decoration: none;
+        }
+        .nav-label {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        input[type="checkbox"] {
+            accent-color: var(--green);
+            transform: scale(1.2);
+            margin-right: 0.3rem;
+        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.5rem; }
+            table { font-size: 0.85rem; }
+            th, td { padding: 0.4rem 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <span class="nav-label">Navigation:</span>
+        <a href="index.html" style="background:rgba(63,185,80,0.2);color:#3fb950;font-weight:600;">Home</a>
+        <a href="00-executive-summary.html">Summary</a>
+        <a href="01-product-identity.html">Identity</a>
+        <a href="02-competitive-analysis.html">Competitors</a>
+        <a href="03-target-market.html">Market</a>
+        <a href="04-user-flow.html">UX Flow</a>
+        <a href="05-mvp-definition.html">MVP</a>
+        <a href="06-architecture.html">Architecture</a>
+        <a href="07-tech-stack.html">Tech Stack</a>
+        <a href="08-integrations.html">Integrations</a>
+        <a href="10-database-design.html">Database</a>
+        <a href="11-sequence-diagrams.html">Sequences</a>
+        <a href="12-project-flow.html">Project Flow</a>
+        <a href="13-security.html">Security</a>
+        <a href="14-legal-compliance.html">Legal</a>
+        <a href="15-implementation-phases.html">Phases</a>
+        <a href="16-production-checklist.html">Checklist</a>
+        <a href="17-devops.html">DevOps</a>
+        <a href="18-monetization.html">Revenue</a>
+        <a href="19-cost-management.html">Costs</a>
+        <a href="20-marketing.html">Marketing</a>
+        <a href="21-analytics-kpis.html">KPIs</a>
+        <a href="22-accessibility-i18n.html">A11y</a>
+        <a href="23-support-docs.html">Support</a>
+        <a href="24-team-hiring.html">Team</a>
+        <a href="25-risk-assessment.html">Risks</a>
+        <a href="26-future-roadmap.html">Roadmap</a>
+    </nav>
+    <h1 id="database-design-mongodb">Database Design (MongoDB)</h1>
+<h2 id="er-diagram">ER Diagram</h2>
+<div class="mermaid">
+erDiagram
+    USER ||--o{ BOOKING : makes
+    USER ||--o{ RATING : gives
+    USER ||--o{ NOTIFICATION : receives
+    DRIVER ||--o{ BOOKING : assigned
+    DRIVER ||--o{ RATING : receives
+    CAR ||--o{ BOOKING : used_in
+    CAR }o--|| DRIVER : assigned_to
+    BOOKING ||--|| PAYMENT : has
+    BOOKING ||--o{ BOOKING_STOP : contains
+    BOOKING ||--o{ LOCATION_LOG : tracked
+    BOOKING ||--o{ RATING : has
+    ADMIN ||--o{ CAR : manages
+    ADMIN ||--o{ DRIVER : manages
+
+    USER {
+        ObjectId _id PK
+        String name
+        String phone UK
+        String email
+        String passwordHash
+        String profilePhoto
+        String role "user|driver|admin"
+        Boolean isActive
+        Boolean isBlocked
+        String blockReason
+        Object address
+        Date createdAt
+        Date updatedAt
+    }
+
+    DRIVER {
+        ObjectId _id PK
+        ObjectId userId FK
+        String licenseNumber UK
+        String licensePhoto
+        String aadhaarNumber
+        String aadhaarPhoto
+        String photo
+        Date licenseExpiry
+        Boolean isVerified
+        Boolean isAvailable
+        Number avgRating
+        Number totalRides
+        Object currentLocation
+        Date createdAt
+    }
+
+    CAR {
+        ObjectId _id PK
+        String registrationNumber UK
+        String make
+        String model
+        String year
+        String color
+        String category "sedan|suv|hatchback|tempo"
+        Array photos
+        String rcPhoto
+        String insurancePhoto
+        String pucPhoto
+        String fitnessPhoto
+        Date insuranceExpiry
+        Date pucExpiry
+        Date fitnessExpiry
+        ObjectId assignedDriver FK
+        Boolean isActive
+        String gpsDeviceId
+        Object lastKnownLocation
+        Date createdAt
+    }
+
+    BOOKING {
+        ObjectId _id PK
+        String bookingId UK "auto: BK-20260503-001"
+        ObjectId userId FK
+        ObjectId driverId FK
+        ObjectId carId FK
+        Object pickup "location, address, coords"
+        Object drop "location, address, coords"
+        Array stops "intermediate stops"
+        Date startDateTime
+        Date endDateTime
+        Number distanceKm
+        Number estimatedDurationMin
+        Number pricePerKm
+        Number basePrice
+        Number tollCharges
+        Number totalAmount
+        Number refundAmount
+        String status "pending|confirmed|driver_assigned|in_progress|completed|cancelled"
+        String cancellationReason
+        String cancelledBy "user|admin"
+        String refundPolicy "full|partial|time_based"
+        Object refundConfig
+        Boolean isExtended
+        Date actualStartTime
+        Date actualEndTime
+        Date createdAt
+        Date updatedAt
+    }
+
+    BOOKING_STOP {
+        ObjectId _id PK
+        ObjectId bookingId FK
+        Number order
+        String address
+        Object coordinates "lat, lng"
+        String status "pending|reached|skipped"
+        Date reachedAt
+    }
+
+    PAYMENT {
+        ObjectId _id PK
+        ObjectId bookingId FK
+        ObjectId userId FK
+        String razorpayOrderId
+        String razorpayPaymentId
+        String razorpaySignature
+        Number amount
+        String currency "INR"
+        String method "upi|card|netbanking"
+        String status "created|authorized|captured|refunded|failed"
+        String upiId
+        Number refundAmount
+        String refundId
+        String refundStatus "none|initiated|processed|failed"
+        Date paidAt
+        Date refundedAt
+        Date createdAt
+    }
+
+    RATING {
+        ObjectId _id PK
+        ObjectId bookingId FK
+        ObjectId fromUserId FK
+        ObjectId toUserId FK
+        String raterRole "user|driver"
+        Number rating "1-5"
+        String review
+        Date createdAt
+    }
+
+    NOTIFICATION {
+        ObjectId _id PK
+        ObjectId userId FK
+        String type "booking|payment|ride|cancel|system"
+        String title
+        String body
+        Object data
+        Boolean isRead
+        String channel "push|sms|email"
+        String status "sent|failed|pending"
+        Date sentAt
+        Date readAt
+        Date createdAt
+    }
+
+    LOCATION_LOG {
+        ObjectId _id PK
+        ObjectId bookingId FK
+        ObjectId driverId FK
+        String source "phone|gps_device"
+        Object coordinates "lat, lng"
+        Number speed
+        Number heading
+        Date timestamp
+    }
+
+    ROUTE_PRICING {
+        ObjectId _id PK
+        String name "Indore to Bhopal"
+        Object fromCity
+        Object toCity
+        Number distanceKm
+        Number pricePerKm
+        Number baseFare
+        Number tollEstimate
+        String refundPolicy "full|partial|time_based"
+        Object refundConfig
+        Boolean isActive
+        Date createdAt
+    }
+
+    COMPANY_SETTINGS {
+        ObjectId _id PK
+        String companyName
+        String logo
+        String phone
+        String email
+        String address
+        Number defaultPricePerKm
+        Object defaultRefundPolicy
+        String razorpayKeyId
+        String upiMerchantId
+        Object socialLinks
+        Date updatedAt
+    }
+
+</div>
+
+<h2 id="collection-details">Collection Details</h2>
+<h3 id="users">users</h3>
+<pre class="highlight"><code class="language-javascript">{
+  _id: ObjectId,
+  name: String,           // required
+  phone: String,          // required, unique, indexed
+  email: String,          // optional, unique sparse index
+  passwordHash: String,   // bcrypt
+  profilePhoto: String,   // S3 URL
+  role: {
+    type: String,
+    enum: ['user', 'driver', 'admin'],
+    default: 'user'
+  },
+  isActive: { type: Boolean, default: true },
+  isBlocked: { type: Boolean, default: false },
+  blockReason: String,
+  address: {
+    street: String,
+    city: String,
+    state: String,
+    pincode: String
+  },
+  fcmTokens: [String],   // push notification tokens (multiple devices)
+  lastLogin: Date,
+  createdAt: Date,
+  updatedAt: Date
+}
+// Indexes: { phone: 1 }, { email: 1 }, { role: 1 }
+</code></pre>
+
+<h3 id="drivers">drivers</h3>
+<pre class="highlight"><code class="language-javascript">{
+  _id: ObjectId,
+  userId: { type: ObjectId, ref: 'User', required: true },
+  licenseNumber: String,    // unique
+  licensePhoto: String,     // S3 URL
+  licenseExpiry: Date,
+  aadhaarNumber: String,    // encrypted
+  aadhaarPhoto: String,     // S3 URL
+  photo: String,            // S3 URL
+  isVerified: { type: Boolean, default: false },
+  isAvailable: { type: Boolean, default: true },
+  avgRating: { type: Number, default: 0 },
+  totalRides: { type: Number, default: 0 },
+  currentLocation: {
+    type: { type: String, default: 'Point' },
+    coordinates: [Number]   // [lng, lat]
+  },
+  createdAt: Date
+}
+// Indexes: { userId: 1 }, { currentLocation: '2dsphere' }, { isAvailable: 1 }
+</code></pre>
+
+<h3 id="cars">cars</h3>
+<pre class="highlight"><code class="language-javascript">{
+  _id: ObjectId,
+  registrationNumber: String,  // unique, e.g., &quot;MP09AB1234&quot;
+  make: String,                // &quot;Maruti&quot;
+  model: String,               // &quot;Swift Dzire&quot;
+  year: Number,                // 2023
+  color: String,
+  category: {
+    type: String,
+    enum: ['sedan', 'suv', 'hatchback', 'tempo_traveller', 'luxury']
+  },
+  seats: Number,               // 4, 6, 8
+  photos: [String],            // S3 URLs
+  documents: {
+    rc: { url: String, expiry: Date },
+    insurance: { url: String, expiry: Date },
+    puc: { url: String, expiry: Date },
+    fitness: { url: String, expiry: Date }
+  },
+  assignedDriver: { type: ObjectId, ref: 'Driver' },
+  isActive: { type: Boolean, default: true },
+  gpsDeviceId: String,         // Traccar device ID
+  lastKnownLocation: {
+    type: { type: String, default: 'Point' },
+    coordinates: [Number]
+  },
+  createdAt: Date,
+  updatedAt: Date
+}
+// Indexes: { registrationNumber: 1 }, { category: 1 }, { isActive: 1 }
+</code></pre>
+
+<h3 id="bookings">bookings</h3>
+<pre class="highlight"><code class="language-javascript">{
+  _id: ObjectId,
+  bookingId: String,          // &quot;BK-20260503-001&quot; auto-generated
+  user: { type: ObjectId, ref: 'User' },
+  driver: { type: ObjectId, ref: 'Driver' },
+  car: { type: ObjectId, ref: 'Car' },
+  pickup: {
+    address: String,
+    coordinates: { type: { type: String }, coordinates: [Number] },
+    landmark: String
+  },
+  drop: {
+    address: String,
+    coordinates: { type: { type: String }, coordinates: [Number] },
+    landmark: String
+  },
+  stops: [{
+    order: Number,
+    address: String,
+    coordinates: { type: { type: String }, coordinates: [Number] },
+    status: { type: String, enum: ['pending', 'reached', 'skipped'] },
+    reachedAt: Date
+  }],
+  schedule: {
+    startDate: Date,          // required
+    startTime: String,        // &quot;09:00&quot;
+    endDate: Date,            // for multi-day
+    endTime: String
+  },
+  distance: {
+    estimated: Number,        // km
+    actual: Number            // km (after ride)
+  },
+  pricing: {
+    pricePerKm: Number,
+    baseFare: Number,
+    distanceCharge: Number,
+    tollEstimate: Number,
+    totalAmount: Number,
+    gstAmount: Number
+  },
+  status: {
+    type: String,
+    enum: [
+      'pending',              // just created
+      'confirmed',            // payment done
+      'driver_assigned',      // driver accepted
+      'driver_en_route',      // driver going to pickup
+      'picked_up',            // user picked up
+      'in_progress',          // ride ongoing
+      'completed',            // ride finished
+      'cancelled',            // cancelled by user/admin
+      'refunded'              // refund processed
+    ],
+    default: 'pending'
+  },
+  cancellation: {
+    cancelledBy: String,      // 'user' | 'admin' | 'driver'
+    reason: String,
+    cancelledAt: Date,
+    refundPolicy: String,     // 'full' | 'partial' | 'none'
+    refundPercentage: Number,
+    refundAmount: Number
+  },
+  extension: {
+    isExtended: Boolean,
+    newDrop: Object,
+    additionalAmount: Number,
+    additionalPaymentId: String
+  },
+  actualTimes: {
+    driverStarted: Date,
+    pickedUp: Date,
+    completed: Date
+  },
+  createdAt: Date,
+  updatedAt: Date
+}
+// Indexes: { bookingId: 1 }, { user: 1 }, { driver: 1 }, { car: 1 },
+//          { status: 1 }, { 'schedule.startDate': 1 }, { car: 1, status: 1, 'schedule.startDate': 1 }
+</code></pre>
+
+<h3 id="payments">payments</h3>
+<pre class="highlight"><code class="language-javascript">{
+  _id: ObjectId,
+  booking: { type: ObjectId, ref: 'Booking' },
+  user: { type: ObjectId, ref: 'User' },
+  razorpay: {
+    orderId: String,
+    paymentId: String,
+    signature: String
+  },
+  amount: Number,           // in paise (₹100 = 10000)
+  currency: { type: String, default: 'INR' },
+  method: String,           // 'upi', 'card', 'netbanking'
+  upiId: String,            // if UPI
+  status: {
+    type: String,
+    enum: ['created', 'authorized', 'captured', 'refunded', 'partial_refund', 'failed']
+  },
+  refund: {
+    refundId: String,
+    amount: Number,
+    status: String,         // 'initiated', 'processed', 'failed'
+    processedAt: Date
+  },
+  paidAt: Date,
+  createdAt: Date
+}
+// Indexes: { 'razorpay.orderId': 1 }, { booking: 1 }, { user: 1 }
+</code></pre>
+
+<h2 id="indexing-strategy">Indexing Strategy</h2>
+<h3 id="compound-indexes-performance-critical">Compound Indexes (Performance Critical)</h3>
+<pre class="highlight"><code class="language-javascript">// Car availability check (most frequent query)
+db.bookings.createIndex({
+  car: 1,
+  status: 1,
+  'schedule.startDate': 1,
+  'schedule.endDate': 1
+})
+
+// User's bookings
+db.bookings.createIndex({ user: 1, createdAt: -1 })
+
+// Driver's bookings
+db.bookings.createIndex({ driver: 1, status: 1, 'schedule.startDate': 1 })
+
+// Location tracking (time-series like)
+db.locationLogs.createIndex({ bookingId: 1, timestamp: -1 })
+
+// Geospatial
+db.drivers.createIndex({ currentLocation: '2dsphere' })
+</code></pre>
+
+<h2 id="data-retention">Data Retention</h2>
+<ul>
+<li><strong>Bookings</strong>: Keep forever (audit trail)</li>
+<li><strong>Location logs</strong>: Keep 90 days, then archive to S3</li>
+<li><strong>Notifications</strong>: Keep 30 days read, 7 days unread</li>
+<li><strong>Payment records</strong>: Keep forever (legal requirement)</li>
+</ul>
+<h2 id="soft-delete">Soft Delete</h2>
+<p>Use <code>isActive: false</code> for cars, drivers. Use <code>isBlocked: true</code> for users. Never hard delete data.</p>
+<h2 id="seed-data-for-mvp">Seed Data for MVP</h2>
+<ul>
+<li>1 admin user</li>
+<li>1 driver with documents</li>
+<li>1 car with documents</li>
+<li>5 popular routes with pricing (Indore ↔ Bhopal, Ujjain, Dewas, Omkareshwar, Airport)</li>
+<li>Company settings with branding</li>
+</ul>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#1f6feb',
+                primaryTextColor: '#e6edf3',
+                primaryBorderColor: '#58a6ff',
+                lineColor: '#8b949e',
+                secondaryColor: '#161b22',
+                tertiaryColor: '#0d1117',
+                background: '#0d1117',
+                mainBkg: '#161b22',
+                nodeBorder: '#30363d',
+                clusterBkg: '#161b22',
+                titleColor: '#58a6ff',
+                edgeLabelBackground: '#161b22',
+            }
+        });
+    </script>
+</body>
+</html>

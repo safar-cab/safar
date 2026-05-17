@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Books Car Rental -- Design System & Tokens</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --green: #3fb950;
+            --red: #f85149;
+            --yellow: #d29922;
+            --purple: #bc8cff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        h1 {
+            font-size: 2rem;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-hover);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.3rem;
+        }
+        h3 {
+            font-size: 1.2rem;
+            margin-top: 1.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--purple);
+        }
+        h4 {
+            font-size: 1rem;
+            margin-top: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        p {
+            margin-bottom: 1rem;
+        }
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+            color: var(--accent-hover);
+        }
+        code {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.15rem 0.4rem;
+            font-size: 0.9em;
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            color: var(--accent-hover);
+        }
+        pre {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+        }
+        pre code {
+            background: none;
+            border: none;
+            padding: 0;
+            color: var(--text);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background: #1c2333;
+            color: var(--accent);
+            font-weight: 600;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+        td {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover td {
+            background: rgba(88, 166, 255, 0.05);
+        }
+        blockquote {
+            border-left: 4px solid var(--accent);
+            background: var(--card);
+            padding: 0.8rem 1.2rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-muted);
+        }
+        blockquote strong {
+            color: var(--yellow);
+        }
+        ul, ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        li {
+            margin-bottom: 0.3rem;
+        }
+        li ul, li ol {
+            margin-bottom: 0;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+        strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+        em {
+            color: var(--text-muted);
+        }
+        .mermaid {
+            background: #1a1f2e;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        .nav {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .nav a {
+            font-size: 0.85rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            background: rgba(88, 166, 255, 0.1);
+        }
+        .nav a:hover {
+            background: rgba(88, 166, 255, 0.2);
+            text-decoration: none;
+        }
+        .nav-label {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        input[type="checkbox"] {
+            accent-color: var(--green);
+            transform: scale(1.2);
+            margin-right: 0.3rem;
+        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.5rem; }
+            table { font-size: 0.85rem; }
+            th, td { padding: 0.4rem 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <span class="nav-label">Navigation:</span>
+        <a href="../index.html" style="background:rgba(63,185,80,0.2);color:#3fb950;font-weight:600;">Home</a>
+        <a href="../00-executive-summary.html">Summary</a>
+        <a href="../01-product-identity.html">Identity</a>
+        <a href="../02-competitive-analysis.html">Competitors</a>
+        <a href="../03-target-market.html">Market</a>
+        <a href="../04-user-flow.html">UX Flow</a>
+        <a href="../05-mvp-definition.html">MVP</a>
+        <a href="../06-architecture.html">Architecture</a>
+        <a href="../07-tech-stack.html">Tech Stack</a>
+        <a href="../08-integrations.html">Integrations</a>
+        <a href="../10-database-design.html">Database</a>
+        <a href="../11-sequence-diagrams.html">Sequences</a>
+        <a href="../12-project-flow.html">Project Flow</a>
+        <a href="../13-security.html">Security</a>
+        <a href="../14-legal-compliance.html">Legal</a>
+        <a href="../15-implementation-phases.html">Phases</a>
+        <a href="../16-production-checklist.html">Checklist</a>
+        <a href="../17-devops.html">DevOps</a>
+        <a href="../18-monetization.html">Revenue</a>
+        <a href="../19-cost-management.html">Costs</a>
+        <a href="../20-marketing.html">Marketing</a>
+        <a href="../21-analytics-kpis.html">KPIs</a>
+        <a href="../22-accessibility-i18n.html">A11y</a>
+        <a href="../23-support-docs.html">Support</a>
+        <a href="../24-team-hiring.html">Team</a>
+        <a href="../25-risk-assessment.html">Risks</a>
+        <a href="../26-future-roadmap.html">Roadmap</a>
+    </nav>
+    <h1 id="books-car-rental-design-system-tokens">Books Car Rental -- Design System &amp; Tokens</h1>
+<p>Version 1.0 | Mobile-First | Light Theme</p>
+<hr />
+<h2 id="1-color-palette">1. Color Palette</h2>
+<h3 id="primary-deep-blue-trust-reliability">Primary -- Deep Blue (Trust, Reliability)</h3>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Hex</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--color-primary-50</code></td>
+<td><code>#EFF6FF</code></td>
+<td>Tinted backgrounds, hover states</td>
+</tr>
+<tr>
+<td><code>--color-primary-100</code></td>
+<td><code>#DBEAFE</code></td>
+<td>Selected item backgrounds</td>
+</tr>
+<tr>
+<td><code>--color-primary-200</code></td>
+<td><code>#BFDBFE</code></td>
+<td>Light borders, focus rings</td>
+</tr>
+<tr>
+<td><code>--color-primary-300</code></td>
+<td><code>#93C5FD</code></td>
+<td>Inactive toggles</td>
+</tr>
+<tr>
+<td><code>--color-primary-400</code></td>
+<td><code>#60A5FA</code></td>
+<td>Hover accents</td>
+</tr>
+<tr>
+<td><code>--color-primary-500</code></td>
+<td><code>#3B82F6</code></td>
+<td>Links, active icons</td>
+</tr>
+<tr>
+<td><code>--color-primary-600</code></td>
+<td><code>#2563EB</code></td>
+<td>Primary buttons, active tabs</td>
+</tr>
+<tr>
+<td><code>--color-primary-700</code></td>
+<td><code>#1D4ED8</code></td>
+<td>Button hover</td>
+</tr>
+<tr>
+<td><code>--color-primary-800</code></td>
+<td><code>#1E40AF</code></td>
+<td>Button pressed, headings</td>
+</tr>
+<tr>
+<td><code>--color-primary-900</code></td>
+<td><code>#1E3A8A</code></td>
+<td>Dark accents</td>
+</tr>
+</tbody>
+</table>
+<h3 id="secondary-warm-amber-energy-attention">Secondary -- Warm Amber (Energy, Attention)</h3>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Hex</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--color-secondary-50</code></td>
+<td><code>#FFFBEB</code></td>
+<td>Highlight backgrounds</td>
+</tr>
+<tr>
+<td><code>--color-secondary-100</code></td>
+<td><code>#FEF3C7</code></td>
+<td>Badge backgrounds</td>
+</tr>
+<tr>
+<td><code>--color-secondary-200</code></td>
+<td><code>#FDE68A</code></td>
+<td>Star ratings (filled)</td>
+</tr>
+<tr>
+<td><code>--color-secondary-300</code></td>
+<td><code>#FCD34D</code></td>
+<td>Warning indicator light</td>
+</tr>
+<tr>
+<td><code>--color-secondary-400</code></td>
+<td><code>#FBBF24</code></td>
+<td>CTA accent, price tags</td>
+</tr>
+<tr>
+<td><code>--color-secondary-500</code></td>
+<td><code>#F59E0B</code></td>
+<td>Secondary buttons, icons</td>
+</tr>
+<tr>
+<td><code>--color-secondary-600</code></td>
+<td><code>#D97706</code></td>
+<td>Secondary button hover</td>
+</tr>
+<tr>
+<td><code>--color-secondary-700</code></td>
+<td><code>#B45309</code></td>
+<td>Secondary button pressed</td>
+</tr>
+</tbody>
+</table>
+<h3 id="success-emerald-green">Success -- Emerald Green</h3>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Hex</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--color-success-50</code></td>
+<td><code>#ECFDF5</code></td>
+<td>Success background</td>
+</tr>
+<tr>
+<td><code>--color-success-100</code></td>
+<td><code>#D1FAE5</code></td>
+<td>Success badge background</td>
+</tr>
+<tr>
+<td><code>--color-success-500</code></td>
+<td><code>#10B981</code></td>
+<td>Success icons, completed status</td>
+</tr>
+<tr>
+<td><code>--color-success-600</code></td>
+<td><code>#059669</code></td>
+<td>Success text, confirmed badges</td>
+</tr>
+<tr>
+<td><code>--color-success-700</code></td>
+<td><code>#047857</code></td>
+<td>Success dark</td>
+</tr>
+</tbody>
+</table>
+<h3 id="error-rose-red">Error -- Rose Red</h3>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Hex</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--color-error-50</code></td>
+<td><code>#FFF1F2</code></td>
+<td>Error background</td>
+</tr>
+<tr>
+<td><code>--color-error-100</code></td>
+<td><code>#FFE4E6</code></td>
+<td>Error badge background</td>
+</tr>
+<tr>
+<td><code>--color-error-500</code></td>
+<td><code>#F43F5E</code></td>
+<td>Error icons, validation</td>
+</tr>
+<tr>
+<td><code>--color-error-600</code></td>
+<td><code>#E11D48</code></td>
+<td>Error text, destructive buttons</td>
+</tr>
+<tr>
+<td><code>--color-error-700</code></td>
+<td><code>#BE123C</code></td>
+<td>Error dark</td>
+</tr>
+</tbody>
+</table>
+<h3 id="warning-orange">Warning -- Orange</h3>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Hex</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--color-warning-50</code></td>
+<td><code>#FFF7ED</code></td>
+<td>Warning background</td>
+</tr>
+<tr>
+<td><code>--color-warning-100</code></td>
+<td><code>#FFEDD5</code></td>
+<td>Warning badge background</td>
+</tr>
+<tr>
+<td><code>--color-warning-500</code></td>
+<td><code>#F97316</code></td>
+<td>Warning icons</td>
+</tr>
+<tr>
+<td><code>--color-warning-600</code></td>
+<td><code>#EA580C</code></td>
+<td>Warning text</td>
+</tr>
+</tbody>
+</table>
+<h3 id="neutrals-slate-gray-scale">Neutrals -- Slate Gray Scale</h3>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Hex</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--color-neutral-50</code></td>
+<td><code>#F8FAFC</code></td>
+<td>Page background, subtle fills</td>
+</tr>
+<tr>
+<td><code>--color-neutral-100</code></td>
+<td><code>#F1F5F9</code></td>
+<td>Card hover, section backgrounds</td>
+</tr>
+<tr>
+<td><code>--color-neutral-200</code></td>
+<td><code>#E2E8F0</code></td>
+<td>Borders, dividers</td>
+</tr>
+<tr>
+<td><code>--color-neutral-300</code></td>
+<td><code>#CBD5E1</code></td>
+<td>Disabled text, placeholder</td>
+</tr>
+<tr>
+<td><code>--color-neutral-400</code></td>
+<td><code>#94A3B8</code></td>
+<td>Muted text, icons</td>
+</tr>
+<tr>
+<td><code>--color-neutral-500</code></td>
+<td><code>#64748B</code></td>
+<td>Secondary text</td>
+</tr>
+<tr>
+<td><code>--color-neutral-600</code></td>
+<td><code>#475569</code></td>
+<td>Body text</td>
+</tr>
+<tr>
+<td><code>--color-neutral-700</code></td>
+<td><code>#334155</code></td>
+<td>Strong body text</td>
+</tr>
+<tr>
+<td><code>--color-neutral-800</code></td>
+<td><code>#1E293B</code></td>
+<td>Headings</td>
+</tr>
+<tr>
+<td><code>--color-neutral-900</code></td>
+<td><code>#0F172A</code></td>
+<td>Primary text, high contrast</td>
+</tr>
+</tbody>
+</table>
+<h3 id="semantic-surface-colors">Semantic Surface Colors</h3>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Hex</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--surface-background</code></td>
+<td><code>#FFFFFF</code></td>
+<td>App background</td>
+</tr>
+<tr>
+<td><code>--surface-page</code></td>
+<td><code>#F8FAFC</code></td>
+<td>Page/section background</td>
+</tr>
+<tr>
+<td><code>--surface-card</code></td>
+<td><code>#FFFFFF</code></td>
+<td>Card surfaces</td>
+</tr>
+<tr>
+<td><code>--surface-card-hover</code></td>
+<td><code>#F8FAFC</code></td>
+<td>Card hover state</td>
+</tr>
+<tr>
+<td><code>--surface-overlay</code></td>
+<td><code>rgba(15, 23, 42, 0.5)</code></td>
+<td>Modal overlay</td>
+</tr>
+<tr>
+<td><code>--surface-bottom-sheet</code></td>
+<td><code>#FFFFFF</code></td>
+<td>Bottom sheet background</td>
+</tr>
+</tbody>
+</table>
+<h3 id="text-colors">Text Colors</h3>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Value</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--text-primary</code></td>
+<td><code>#0F172A</code></td>
+<td>Headlines, important labels</td>
+</tr>
+<tr>
+<td><code>--text-secondary</code></td>
+<td><code>#475569</code></td>
+<td>Body text, descriptions</td>
+</tr>
+<tr>
+<td><code>--text-muted</code></td>
+<td><code>#94A3B8</code></td>
+<td>Hints, placeholders, timestamps</td>
+</tr>
+<tr>
+<td><code>--text-inverse</code></td>
+<td><code>#FFFFFF</code></td>
+<td>Text on dark/primary backgrounds</td>
+</tr>
+<tr>
+<td><code>--text-link</code></td>
+<td><code>#2563EB</code></td>
+<td>Hyperlinks, tappable text</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="2-typography">2. Typography</h2>
+<p><strong>Primary Font:</strong> <code>Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif</code></p>
+<h3 id="type-scale">Type Scale</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Size</th>
+<th>Line Height</th>
+<th>Weight</th>
+<th>Letter Spacing</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>display</code></td>
+<td>48px</td>
+<td>56px (1.17)</td>
+<td>700</td>
+<td>-0.02em</td>
+<td>Hero headlines</td>
+</tr>
+<tr>
+<td><code>h1</code></td>
+<td>36px</td>
+<td>44px (1.22)</td>
+<td>700</td>
+<td>-0.02em</td>
+<td>Page titles</td>
+</tr>
+<tr>
+<td><code>h2</code></td>
+<td>30px</td>
+<td>38px (1.27)</td>
+<td>600</td>
+<td>-0.015em</td>
+<td>Section titles</td>
+</tr>
+<tr>
+<td><code>h3</code></td>
+<td>24px</td>
+<td>32px (1.33)</td>
+<td>600</td>
+<td>-0.01em</td>
+<td>Card titles, subsections</td>
+</tr>
+<tr>
+<td><code>h4</code></td>
+<td>20px</td>
+<td>28px (1.4)</td>
+<td>600</td>
+<td>-0.005em</td>
+<td>Widget titles</td>
+</tr>
+<tr>
+<td><code>h5</code></td>
+<td>18px</td>
+<td>26px (1.44)</td>
+<td>600</td>
+<td>0</td>
+<td>Large labels</td>
+</tr>
+<tr>
+<td><code>body-lg</code></td>
+<td>18px</td>
+<td>28px (1.56)</td>
+<td>400</td>
+<td>0</td>
+<td>Large body text</td>
+</tr>
+<tr>
+<td><code>body</code></td>
+<td>16px</td>
+<td>24px (1.5)</td>
+<td>400</td>
+<td>0</td>
+<td>Default body text</td>
+</tr>
+<tr>
+<td><code>body-sm</code></td>
+<td>14px</td>
+<td>20px (1.43)</td>
+<td>400</td>
+<td>0.005em</td>
+<td>Secondary text, captions</td>
+</tr>
+<tr>
+<td><code>caption</code></td>
+<td>12px</td>
+<td>16px (1.33)</td>
+<td>500</td>
+<td>0.01em</td>
+<td>Timestamps, badges, small info</td>
+</tr>
+<tr>
+<td><code>overline</code></td>
+<td>12px</td>
+<td>16px (1.33)</td>
+<td>600</td>
+<td>0.05em</td>
+<td>Labels above fields, categories</td>
+</tr>
+</tbody>
+</table>
+<h3 id="css-custom-properties">CSS Custom Properties</h3>
+<pre class="highlight"><code class="language-css">:root {
+  --font-family-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  --font-size-xs:  0.75rem;   /* 12px */
+  --font-size-sm:  0.875rem;  /* 14px */
+  --font-size-base: 1rem;     /* 16px */
+  --font-size-lg:  1.125rem;  /* 18px */
+  --font-size-xl:  1.25rem;   /* 20px */
+  --font-size-2xl: 1.5rem;    /* 24px */
+  --font-size-3xl: 1.875rem;  /* 30px */
+  --font-size-4xl: 2.25rem;   /* 36px */
+  --font-size-5xl: 3rem;      /* 48px */
+
+  --font-weight-regular: 400;
+  --font-weight-medium:  500;
+  --font-weight-semibold: 600;
+  --font-weight-bold:    700;
+
+  --line-height-tight:  1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+}
+</code></pre>
+
+<hr />
+<h2 id="3-spacing-system">3. Spacing System</h2>
+<p>Base unit: <strong>4px</strong></p>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Value</th>
+<th>Pixels</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--space-0</code></td>
+<td>0</td>
+<td>0px</td>
+<td>Reset</td>
+</tr>
+<tr>
+<td><code>--space-1</code></td>
+<td>0.25rem</td>
+<td>4px</td>
+<td>Tight inline spacing</td>
+</tr>
+<tr>
+<td><code>--space-2</code></td>
+<td>0.5rem</td>
+<td>8px</td>
+<td>Icon-to-text gap, compact padding</td>
+</tr>
+<tr>
+<td><code>--space-3</code></td>
+<td>0.75rem</td>
+<td>12px</td>
+<td>Small padding, list item gap</td>
+</tr>
+<tr>
+<td><code>--space-4</code></td>
+<td>1rem</td>
+<td>16px</td>
+<td>Default padding, component gaps</td>
+</tr>
+<tr>
+<td><code>--space-5</code></td>
+<td>1.25rem</td>
+<td>20px</td>
+<td>Medium padding</td>
+</tr>
+<tr>
+<td><code>--space-6</code></td>
+<td>1.5rem</td>
+<td>24px</td>
+<td>Card padding, section gaps</td>
+</tr>
+<tr>
+<td><code>--space-8</code></td>
+<td>2rem</td>
+<td>32px</td>
+<td>Large section gaps</td>
+</tr>
+<tr>
+<td><code>--space-10</code></td>
+<td>2.5rem</td>
+<td>40px</td>
+<td>Major section spacing</td>
+</tr>
+<tr>
+<td><code>--space-12</code></td>
+<td>3rem</td>
+<td>48px</td>
+<td>Page section separation</td>
+</tr>
+<tr>
+<td><code>--space-16</code></td>
+<td>4rem</td>
+<td>64px</td>
+<td>Top-level layout spacing</td>
+</tr>
+<tr>
+<td><code>--space-20</code></td>
+<td>5rem</td>
+<td>80px</td>
+<td>Hero spacing</td>
+</tr>
+</tbody>
+</table>
+<h3 id="layout-spacing-constants">Layout Spacing Constants</h3>
+<pre class="highlight"><code class="language-css">:root {
+  --page-padding-mobile:  16px;
+  --page-padding-tablet:  24px;
+  --page-padding-desktop: 32px;
+
+  --card-padding:         16px;
+  --card-padding-lg:      24px;
+
+  --bottom-nav-height:    64px;
+  --top-bar-height:       56px;
+  --bottom-cta-height:    80px;  /* includes safe area */
+
+  --safe-area-bottom:     env(safe-area-inset-bottom, 0px);
+  --safe-area-top:        env(safe-area-inset-top, 0px);
+}
+</code></pre>
+
+<hr />
+<h2 id="4-border-radius">4. Border Radius</h2>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Value</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--radius-sm</code></td>
+<td>6px</td>
+<td>Buttons (small), badges, chips</td>
+</tr>
+<tr>
+<td><code>--radius-md</code></td>
+<td>8px</td>
+<td>Input fields, cards (compact)</td>
+</tr>
+<tr>
+<td><code>--radius-lg</code></td>
+<td>12px</td>
+<td>Cards, modals, bottom sheets</td>
+</tr>
+<tr>
+<td><code>--radius-xl</code></td>
+<td>16px</td>
+<td>Large cards, bottom sheet top corners</td>
+</tr>
+<tr>
+<td><code>--radius-2xl</code></td>
+<td>24px</td>
+<td>Image containers, hero elements</td>
+</tr>
+<tr>
+<td><code>--radius-full</code></td>
+<td>9999px</td>
+<td>Avatars, pills, circular buttons</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="5-shadows-elevation">5. Shadows (Elevation)</h2>
+<p>Warm-toned shadows using slate with low opacity to keep the light theme soft.</p>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Value</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--shadow-sm</code></td>
+<td><code>0 1px 2px rgba(15, 23, 42, 0.05)</code></td>
+<td>Cards at rest, input fields</td>
+</tr>
+<tr>
+<td><code>--shadow-md</code></td>
+<td><code>0 4px 6px -1px rgba(15, 23, 42, 0.07), 0 2px 4px -2px rgba(15, 23, 42, 0.05)</code></td>
+<td>Elevated cards, dropdowns</td>
+</tr>
+<tr>
+<td><code>--shadow-lg</code></td>
+<td><code>0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04)</code></td>
+<td>Modals, bottom sheets, popovers</td>
+</tr>
+<tr>
+<td><code>--shadow-xl</code></td>
+<td><code>0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 8px 10px -6px rgba(15, 23, 42, 0.05)</code></td>
+<td>Floating action buttons, top sheets</td>
+</tr>
+</tbody>
+</table>
+<h3 id="focus-ring">Focus Ring</h3>
+<pre class="highlight"><code class="language-css">--focus-ring: 0 0 0 3px rgba(59, 130, 246, 0.4);
+</code></pre>
+
+<hr />
+<h2 id="6-breakpoints">6. Breakpoints</h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Min Width</th>
+<th>Target</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mobile</code></td>
+<td>375px</td>
+<td>Default (design-first target)</td>
+</tr>
+<tr>
+<td><code>tablet</code></td>
+<td>768px</td>
+<td>iPad, landscape phones</td>
+</tr>
+<tr>
+<td><code>desktop</code></td>
+<td>1024px</td>
+<td>Laptops, desktop browsers</td>
+</tr>
+<tr>
+<td><code>wide</code></td>
+<td>1280px</td>
+<td>Large screens, admin dashboard</td>
+</tr>
+</tbody>
+</table>
+<h3 id="media-query-usage">Media Query Usage</h3>
+<pre class="highlight"><code class="language-css">/* Mobile-first: base styles apply to mobile */
+
+/* Tablet and up */
+@media (min-width: 768px) { ... }
+
+/* Desktop and up */
+@media (min-width: 1024px) { ... }
+
+/* Wide screens */
+@media (min-width: 1280px) { ... }
+</code></pre>
+
+<h3 id="container-max-widths">Container Max Widths</h3>
+<table>
+<thead>
+<tr>
+<th>Context</th>
+<th>Max Width</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Content</td>
+<td>640px</td>
+</tr>
+<tr>
+<td>Card grid</td>
+<td>960px</td>
+</tr>
+<tr>
+<td>Admin layout</td>
+<td>1280px</td>
+</tr>
+<tr>
+<td>Full bleed</td>
+<td>100%</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="7-icons">7. Icons</h2>
+<p><strong>Library:</strong> <a href="https://lucide.dev/">Lucide React</a> (<code>lucide-react</code>)</p>
+<h3 id="icon-sizes">Icon Sizes</h3>
+<table>
+<thead>
+<tr>
+<th>Size</th>
+<th>Pixels</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>xs</code></td>
+<td>14px</td>
+<td>Inline with caption text</td>
+</tr>
+<tr>
+<td><code>sm</code></td>
+<td>16px</td>
+<td>Inline with body text, badges</td>
+</tr>
+<tr>
+<td><code>md</code></td>
+<td>20px</td>
+<td>Buttons, input prefixes, list items</td>
+</tr>
+<tr>
+<td><code>lg</code></td>
+<td>24px</td>
+<td>Navigation bar, card actions</td>
+</tr>
+<tr>
+<td><code>xl</code></td>
+<td>32px</td>
+<td>Feature icons, empty states</td>
+</tr>
+<tr>
+<td><code>2xl</code></td>
+<td>48px</td>
+<td>Hero empty states, onboarding</td>
+</tr>
+</tbody>
+</table>
+<h3 id="icon-color-mapping">Icon Color Mapping</h3>
+<ul>
+<li>Default: <code>--color-neutral-500</code> (#64748B)</li>
+<li>Active/selected: <code>--color-primary-600</code> (#2563EB)</li>
+<li>Muted: <code>--color-neutral-400</code> (#94A3B8)</li>
+<li>On-primary: <code>#FFFFFF</code></li>
+<li>Success: <code>--color-success-600</code> (#059669)</li>
+<li>Error: <code>--color-error-600</code> (#E11D48)</li>
+</ul>
+<h3 id="common-icons-used">Common Icons Used</h3>
+<table>
+<thead>
+<tr>
+<th>Purpose</th>
+<th>Icon Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Home</td>
+<td><code>Home</code></td>
+</tr>
+<tr>
+<td>Bookings</td>
+<td><code>CalendarCheck</code></td>
+</tr>
+<tr>
+<td>Track</td>
+<td><code>MapPin</code></td>
+</tr>
+<tr>
+<td>Profile</td>
+<td><code>User</code></td>
+</tr>
+<tr>
+<td>Search</td>
+<td><code>Search</code></td>
+</tr>
+<tr>
+<td>Back</td>
+<td><code>ChevronLeft</code></td>
+</tr>
+<tr>
+<td>Close</td>
+<td><code>X</code></td>
+</tr>
+<tr>
+<td>Car</td>
+<td><code>Car</code></td>
+</tr>
+<tr>
+<td>Calendar</td>
+<td><code>Calendar</code></td>
+</tr>
+<tr>
+<td>Clock</td>
+<td><code>Clock</code></td>
+</tr>
+<tr>
+<td>Phone</td>
+<td><code>Phone</code></td>
+</tr>
+<tr>
+<td>Star (rating)</td>
+<td><code>Star</code></td>
+</tr>
+<tr>
+<td>Navigation</td>
+<td><code>Navigation</code></td>
+</tr>
+<tr>
+<td>Settings</td>
+<td><code>Settings</code></td>
+</tr>
+<tr>
+<td>Logout</td>
+<td><code>LogOut</code></td>
+</tr>
+<tr>
+<td>Edit</td>
+<td><code>Pencil</code></td>
+</tr>
+<tr>
+<td>Delete</td>
+<td><code>Trash2</code></td>
+</tr>
+<tr>
+<td>Add</td>
+<td><code>Plus</code></td>
+</tr>
+<tr>
+<td>Filter</td>
+<td><code>SlidersHorizontal</code></td>
+</tr>
+<tr>
+<td>Sort</td>
+<td><code>ArrowUpDown</code></td>
+</tr>
+<tr>
+<td>Success check</td>
+<td><code>CheckCircle</code></td>
+</tr>
+<tr>
+<td>Warning</td>
+<td><code>AlertTriangle</code></td>
+</tr>
+<tr>
+<td>Error</td>
+<td><code>XCircle</code></td>
+</tr>
+<tr>
+<td>Info</td>
+<td><code>Info</code></td>
+</tr>
+<tr>
+<td>Location from</td>
+<td><code>CircleDot</code></td>
+</tr>
+<tr>
+<td>Location to</td>
+<td><code>MapPin</code></td>
+</tr>
+<tr>
+<td>Rupee/Payment</td>
+<td><code>IndianRupee</code></td>
+</tr>
+<tr>
+<td>Driver</td>
+<td><code>UserCheck</code></td>
+</tr>
+<tr>
+<td>Document</td>
+<td><code>FileText</code></td>
+</tr>
+<tr>
+<td>Camera</td>
+<td><code>Camera</code></td>
+</tr>
+<tr>
+<td>Refresh</td>
+<td><code>RefreshCw</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="8-z-index-scale">8. Z-Index Scale</h2>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Value</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--z-base</code></td>
+<td>0</td>
+<td>Default stacking</td>
+</tr>
+<tr>
+<td><code>--z-sticky</code></td>
+<td>100</td>
+<td>Sticky headers</td>
+</tr>
+<tr>
+<td><code>--z-fixed</code></td>
+<td>200</td>
+<td>Fixed nav bars</td>
+</tr>
+<tr>
+<td><code>--z-overlay</code></td>
+<td>300</td>
+<td>Backdrop overlays</td>
+</tr>
+<tr>
+<td><code>--z-modal</code></td>
+<td>400</td>
+<td>Bottom sheets, modals</td>
+</tr>
+<tr>
+<td><code>--z-toast</code></td>
+<td>500</td>
+<td>Toast notifications</td>
+</tr>
+<tr>
+<td><code>--z-tooltip</code></td>
+<td>600</td>
+<td>Tooltips, popovers</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="9-transitions-easing">9. Transitions &amp; Easing</h2>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Value</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--duration-fast</code></td>
+<td><code>150ms</code></td>
+<td>Hover, focus, color changes</td>
+</tr>
+<tr>
+<td><code>--duration-normal</code></td>
+<td><code>250ms</code></td>
+<td>Expand, collapse, slide</td>
+</tr>
+<tr>
+<td><code>--duration-slow</code></td>
+<td><code>350ms</code></td>
+<td>Page transitions, modals</td>
+</tr>
+<tr>
+<td><code>--duration-slower</code></td>
+<td><code>500ms</code></td>
+<td>Complex animations</td>
+</tr>
+<tr>
+<td><code>--ease-default</code></td>
+<td><code>cubic-bezier(0.4, 0, 0.2, 1)</code></td>
+<td>General purpose</td>
+</tr>
+<tr>
+<td><code>--ease-in</code></td>
+<td><code>cubic-bezier(0.4, 0, 1, 1)</code></td>
+<td>Elements exiting</td>
+</tr>
+<tr>
+<td><code>--ease-out</code></td>
+<td><code>cubic-bezier(0, 0, 0.2, 1)</code></td>
+<td>Elements entering</td>
+</tr>
+<tr>
+<td><code>--ease-spring</code></td>
+<td><code>cubic-bezier(0.34, 1.56, 0.64, 1)</code></td>
+<td>Bouncy interactions</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="10-complete-css-custom-properties">10. Complete CSS Custom Properties</h2>
+<pre class="highlight"><code class="language-css">:root {
+  /* Colors - Primary */
+  --color-primary-50: #EFF6FF;
+  --color-primary-100: #DBEAFE;
+  --color-primary-200: #BFDBFE;
+  --color-primary-300: #93C5FD;
+  --color-primary-400: #60A5FA;
+  --color-primary-500: #3B82F6;
+  --color-primary-600: #2563EB;
+  --color-primary-700: #1D4ED8;
+  --color-primary-800: #1E40AF;
+  --color-primary-900: #1E3A8A;
+
+  /* Colors - Secondary */
+  --color-secondary-50: #FFFBEB;
+  --color-secondary-100: #FEF3C7;
+  --color-secondary-200: #FDE68A;
+  --color-secondary-300: #FCD34D;
+  --color-secondary-400: #FBBF24;
+  --color-secondary-500: #F59E0B;
+  --color-secondary-600: #D97706;
+  --color-secondary-700: #B45309;
+
+  /* Colors - Success */
+  --color-success-50: #ECFDF5;
+  --color-success-100: #D1FAE5;
+  --color-success-500: #10B981;
+  --color-success-600: #059669;
+  --color-success-700: #047857;
+
+  /* Colors - Error */
+  --color-error-50: #FFF1F2;
+  --color-error-100: #FFE4E6;
+  --color-error-500: #F43F5E;
+  --color-error-600: #E11D48;
+  --color-error-700: #BE123C;
+
+  /* Colors - Warning */
+  --color-warning-50: #FFF7ED;
+  --color-warning-100: #FFEDD5;
+  --color-warning-500: #F97316;
+  --color-warning-600: #EA580C;
+
+  /* Colors - Neutral */
+  --color-neutral-50: #F8FAFC;
+  --color-neutral-100: #F1F5F9;
+  --color-neutral-200: #E2E8F0;
+  --color-neutral-300: #CBD5E1;
+  --color-neutral-400: #94A3B8;
+  --color-neutral-500: #64748B;
+  --color-neutral-600: #475569;
+  --color-neutral-700: #334155;
+  --color-neutral-800: #1E293B;
+  --color-neutral-900: #0F172A;
+
+  /* Surfaces */
+  --surface-background: #FFFFFF;
+  --surface-page: #F8FAFC;
+  --surface-card: #FFFFFF;
+  --surface-overlay: rgba(15, 23, 42, 0.5);
+
+  /* Text */
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #94A3B8;
+  --text-inverse: #FFFFFF;
+  --text-link: #2563EB;
+
+  /* Typography */
+  --font-family-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --font-size-4xl: 2.25rem;
+  --font-size-5xl: 3rem;
+
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+
+  /* Border Radius */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.07), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
+  --shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 8px 10px -6px rgba(15, 23, 42, 0.05);
+
+  /* Focus */
+  --focus-ring: 0 0 0 3px rgba(59, 130, 246, 0.4);
+
+  /* Z-Index */
+  --z-base: 0;
+  --z-sticky: 100;
+  --z-fixed: 200;
+  --z-overlay: 300;
+  --z-modal: 400;
+  --z-toast: 500;
+  --z-tooltip: 600;
+
+  /* Transitions */
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 350ms;
+  --duration-slower: 500ms;
+  --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Layout */
+  --page-padding-mobile: 16px;
+  --page-padding-tablet: 24px;
+  --page-padding-desktop: 32px;
+  --bottom-nav-height: 64px;
+  --top-bar-height: 56px;
+  --bottom-cta-height: 80px;
+}
+</code></pre>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#1f6feb',
+                primaryTextColor: '#e6edf3',
+                primaryBorderColor: '#58a6ff',
+                lineColor: '#8b949e',
+                secondaryColor: '#161b22',
+                tertiaryColor: '#0d1117',
+                background: '#0d1117',
+                mainBkg: '#161b22',
+                nodeBorder: '#30363d',
+                clusterBkg: '#161b22',
+                titleColor: '#58a6ff',
+                edgeLabelBackground: '#161b22',
+            }
+        });
+    </script>
+</body>
+</html>

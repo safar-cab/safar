@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Books Car Rental -- Page Layouts & Wireframes</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --green: #3fb950;
+            --red: #f85149;
+            --yellow: #d29922;
+            --purple: #bc8cff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        h1 {
+            font-size: 2rem;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-hover);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.3rem;
+        }
+        h3 {
+            font-size: 1.2rem;
+            margin-top: 1.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--purple);
+        }
+        h4 {
+            font-size: 1rem;
+            margin-top: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        p {
+            margin-bottom: 1rem;
+        }
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+            color: var(--accent-hover);
+        }
+        code {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.15rem 0.4rem;
+            font-size: 0.9em;
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            color: var(--accent-hover);
+        }
+        pre {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+        }
+        pre code {
+            background: none;
+            border: none;
+            padding: 0;
+            color: var(--text);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background: #1c2333;
+            color: var(--accent);
+            font-weight: 600;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+        td {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover td {
+            background: rgba(88, 166, 255, 0.05);
+        }
+        blockquote {
+            border-left: 4px solid var(--accent);
+            background: var(--card);
+            padding: 0.8rem 1.2rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-muted);
+        }
+        blockquote strong {
+            color: var(--yellow);
+        }
+        ul, ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        li {
+            margin-bottom: 0.3rem;
+        }
+        li ul, li ol {
+            margin-bottom: 0;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+        strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+        em {
+            color: var(--text-muted);
+        }
+        .mermaid {
+            background: #1a1f2e;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        .nav {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .nav a {
+            font-size: 0.85rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            background: rgba(88, 166, 255, 0.1);
+        }
+        .nav a:hover {
+            background: rgba(88, 166, 255, 0.2);
+            text-decoration: none;
+        }
+        .nav-label {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        input[type="checkbox"] {
+            accent-color: var(--green);
+            transform: scale(1.2);
+            margin-right: 0.3rem;
+        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.5rem; }
+            table { font-size: 0.85rem; }
+            th, td { padding: 0.4rem 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <span class="nav-label">Navigation:</span>
+        <a href="../index.html" style="background:rgba(63,185,80,0.2);color:#3fb950;font-weight:600;">Home</a>
+        <a href="../00-executive-summary.html">Summary</a>
+        <a href="../01-product-identity.html">Identity</a>
+        <a href="../02-competitive-analysis.html">Competitors</a>
+        <a href="../03-target-market.html">Market</a>
+        <a href="../04-user-flow.html">UX Flow</a>
+        <a href="../05-mvp-definition.html">MVP</a>
+        <a href="../06-architecture.html">Architecture</a>
+        <a href="../07-tech-stack.html">Tech Stack</a>
+        <a href="../08-integrations.html">Integrations</a>
+        <a href="../10-database-design.html">Database</a>
+        <a href="../11-sequence-diagrams.html">Sequences</a>
+        <a href="../12-project-flow.html">Project Flow</a>
+        <a href="../13-security.html">Security</a>
+        <a href="../14-legal-compliance.html">Legal</a>
+        <a href="../15-implementation-phases.html">Phases</a>
+        <a href="../16-production-checklist.html">Checklist</a>
+        <a href="../17-devops.html">DevOps</a>
+        <a href="../18-monetization.html">Revenue</a>
+        <a href="../19-cost-management.html">Costs</a>
+        <a href="../20-marketing.html">Marketing</a>
+        <a href="../21-analytics-kpis.html">KPIs</a>
+        <a href="../22-accessibility-i18n.html">A11y</a>
+        <a href="../23-support-docs.html">Support</a>
+        <a href="../24-team-hiring.html">Team</a>
+        <a href="../25-risk-assessment.html">Risks</a>
+        <a href="../26-future-roadmap.html">Roadmap</a>
+    </nav>
+    <h1 id="books-car-rental-page-layouts-wireframes">Books Car Rental -- Page Layouts &amp; Wireframes</h1>
+<p>Version 1.0 | Mobile-First (375px) | All Pages</p>
+<hr />
+<h2 id="customer-pages-pwa-mobile-first-installable">CUSTOMER PAGES (PWA — Mobile-First, Installable)</h2>
+<blockquote>
+<p>Customer app is a Progressive Web App. Installable from browser via "Add to Home Screen". Runs in standalone mode. Supports offline caching, push notifications, and Web 3.0 PWA features. See <code>07-pwa-platform-strategy.md</code> for details.</p>
+</blockquote>
+<hr />
+<h3 id="1-landing-home-page">1. Landing / Home Page</h3>
+<p><strong>Route:</strong> <code>/customer</code> or <code>/</code></p>
+<pre class="highlight"><code>+------------------------------------------+  &lt;- safe area top
+| Books Car Rental              [bell] [av]|  &lt;- top bar
++------------------------------------------+
+|                                          |
+| Good morning, Sourabh                    |  &lt;- h3, greeting
+| Where are you heading?                   |  &lt;- body, muted
+|                                          |
+| +--------------------------------------+ |
+| | [O] Search pickup location...        | |  &lt;- search bar
+| +--------------------------------------+ |
+|                                          |
+| +--------------------------------------+ |
+| | [pin] From: Mumbai                   | |
+| | [pin] To:   Pune                     | |
+| | [calendar] Date: Select date         | |
+| |                                      | |
+| | [        Search Cars        ]        | |  &lt;- primary btn
+| +--------------------------------------+ |  &lt;- main search card
+|                                          |
+| Popular Routes                    See All|  &lt;- section header
+| +--------+ +--------+ +--------+        |
+| |Mumbai  | |Delhi   | |Bangal- |        |
+| |to Pune | |to Agra | |ore to  |        |
+| |3h 150km| |3h 200km| |Mysore  |        |
+| |Rs 2500 | |Rs 3000 | |2h 150km|        |
+| +--------+ +--------+ +--------+        |  &lt;- horizontal scroll
+|                                          |
+| Recent Bookings                   See All|
+| +--------------------------------------+ |
+| | [car] Mumbai to Pune                 | |
+| | 15 Jan | Confirmed | Rs 3,500       | |
+| +--------------------------------------+ |
+| +--------------------------------------+ |
+| | [car] Delhi to Agra                  | |
+| | 10 Jan | Completed | Rs 4,000       | |
+| +--------------------------------------+ |
+|                                          |
+| Special Offers                           |
+| +--------------------------------------+ |
+| |  [Banner: 20% off first ride]        | |
+| |  Use code: FIRST20                   | |
+| +--------------------------------------+ |  &lt;- horizontal carousel
+|                                          |
+|          [80px bottom spacer]            |  &lt;- for bottom nav
++------------------------------------------+
+| [Home*] [Bookings] [Track] [Profile]     |  &lt;- bottom nav
++------------------------------------------+
+</code></pre>
+
+<p><strong>Layout Notes:</strong><br />
+- Page background: <code>#F8FAFC</code><br />
+- Search card: white, shadow-md, radius-lg, 16px padding<br />
+- Popular routes: horizontal scroll with snap, 16px gap<br />
+- Recent bookings: vertical list, 12px gap<br />
+- Greeting uses time-of-day logic (morning/afternoon/evening)</p>
+<hr />
+<h3 id="2-route-search-results">2. Route Search Results</h3>
+<p><strong>Route:</strong> <code>/customer/search?from=X&amp;to=Y&amp;date=Z</code></p>
+<pre class="highlight"><code>+------------------------------------------+
+| [&lt;-]  Search Results          [filter]   |
++------------------------------------------+
+| Mumbai to Pune | 15 Jan 2026             |  &lt;- summary bar
+| [Edit Search]                            |
++------------------------------------------+
+|                                          |
+| 12 cars available                        |  &lt;- result count
+|                                          |
+| Sort: [Price v] [Rating] [Seats]         |  &lt;- chip filters
+|                                          |
+| +--------------------------------------+ |
+| | +----------------------------------+ | |
+| | |      [Car Image]                 | | |
+| | +----------------------------------+ | |
+| | [AC] [4 Seater] [Petrol]           | | |
+| | Swift Dzire                        | | |
+| | or similar sedan                   | | |
+| |                                    | | |
+| | Rs 2,500          [Select -&gt;]      | | |
+| +--------------------------------------+ |
+|                                          |
+| +--------------------------------------+ |
+| | +----------------------------------+ | |
+| | |      [Car Image]                 | | |
+| | +----------------------------------+ | |
+| | [AC] [6 Seater] [Diesel]          | | |
+| | Toyota Innova                      | | |
+| | or similar MUV                     | | |
+| |                                    | | |
+| | Rs 4,500          [Select -&gt;]      | | |
+| +--------------------------------------+ |
+|                                          |
+|  ... more cards, infinite scroll ...     |
+|                                          |
++------------------------------------------+
+| [Home] [Bookings] [Track] [Profile]      |
++------------------------------------------+
+</code></pre>
+
+<p><strong>Layout Notes:</strong><br />
+- Sticky summary bar below top bar<br />
+- Cars in single-column list on mobile, 2-column grid on tablet+<br />
+- Filter chips horizontally scrollable<br />
+- Infinite scroll with skeleton loading</p>
+<hr />
+<h3 id="3-car-selection-page">3. Car Selection Page</h3>
+<p><strong>Route:</strong> <code>/customer/cars?route=X</code></p>
+<pre class="highlight"><code>+------------------------------------------+
+| [&lt;-]  Choose Your Car                    |
++------------------------------------------+
+|                                          |
+| [Sedan] [SUV] [Hatchback] [MUV] [Luxury]|  &lt;- category tabs
+|                                          |
+| +------------------+ +------------------+|
+| |   [Car Image]    | |   [Car Image]    ||
+| | [AC][4S][Petrol]  | | [AC][7S][Diesel] ||
+| | Swift Dzire       | | Innova Crysta    ||
+| | Rs 2,500/day      | | Rs 5,500/day     ||
+| | [**** 4.5]        | | [**** 4.8]       ||
+| | [Select]          | | [Select]         ||
+| +------------------+ +------------------+|
+|                                          |
+| +------------------+ +------------------+|
+| |   [Car Image]    | |   [Car Image]    ||
+| | [AC][5S][Petrol]  | | [AC][5S][Diesel] ||
+| | Honda City        | | Hyundai Creta    ||
+| | Rs 3,500/day      | | Rs 4,000/day     ||
+| | [**** 4.6]        | | [**** 4.7]       ||
+| | [Select]          | | [Select]         ||
+| +------------------+ +------------------+|
+|                                          |
++------------------------------------------+
+| [Home] [Bookings] [Track] [Profile]      |
++------------------------------------------+
+</code></pre>
+
+<p><strong>Layout Notes:</strong><br />
+- 2-column grid on mobile, 3 on tablet, 4 on desktop<br />
+- Category tabs: horizontally scrollable<br />
+- Card tap opens car detail bottom sheet</p>
+<hr />
+<h3 id="4-booking-form-multi-step">4. Booking Form (Multi-Step)</h3>
+<p><strong>Route:</strong> <code>/customer/book</code></p>
+<h4 id="step-1-pickup-location">Step 1: Pickup Location</h4>
+<pre class="highlight"><code>+------------------------------------------+
+| [&lt;-]  Book a Ride                        |
++------------------------------------------+
+| (1)=====(2)------(3)------(4)------(5)  |  &lt;- step indicator
+| Pickup   Drop    Details   Review   Pay  |
++------------------------------------------+
+|                                          |
+| Pickup Location                          |
+|                                          |
+| +--------------------------------------+ |
+| | [O] Enter pickup address...          | |
+| +--------------------------------------+ |
+|                                          |
+| [pin] Use current location              |  &lt;- quick action
+|                                          |
+| Saved Locations                          |
+| +--------------------------------------+ |
+| | [home] Home                          | |
+| | 123 MG Road, Andheri West, Mumbai    | |
+| +--------------------------------------+ |
+| | [work] Office                        | |
+| | Tech Park, Whitefield, Bangalore     | |
+| +--------------------------------------+ |
+|                                          |
+| Recent Locations                         |
+| +--------------------------------------+ |
+| | [clock] Mumbai Airport T2            | |
+| +--------------------------------------+ |
+| | [clock] Pune Station                 | |
+| +--------------------------------------+ |
+|                                          |
++------------------------------------------+
+| [        Continue        ]               |  &lt;- sticky CTA
++------------------------------------------+
+</code></pre>
+
+<h4 id="step-2-drop-off-stops">Step 2: Drop-off + Stops</h4>
+<pre class="highlight"><code>+------------------------------------------+
+| [&lt;-]  Book a Ride                        |
++------------------------------------------+
+| (1)=====(2)=====(3)------(4)------(5)   |
+| Pickup   Drop   Details   Review   Pay   |
++------------------------------------------+
+|                                          |
+| Drop-off Location                        |
+|                                          |
+| +--------------------------------------+ |
+| | [pin] Enter drop-off address...      | |
+| +--------------------------------------+ |
+|                                          |
+| Add Stops (Optional)                     |
+|                                          |
+| +--------------------------------------+ |
+| | [1] Stop: Lonavala               <input type="checkbox" checked disabled> | |
+| +--------------------------------------+ |
+| [+ Add another stop]                    |
+|                                          |
+| Trip Type                                |
+| +------------------+ +------------------+|
+| | [  One Way   ]   | | [ Round Trip ]   ||
+| |   selected       | |                  ||
+| +------------------+ +------------------+|
+|                                          |
++------------------------------------------+
+| [        Continue        ]               |
++------------------------------------------+
+</code></pre>
+
+<h4 id="step-3-date-time">Step 3: Date &amp; Time</h4>
+<pre class="highlight"><code>+------------------------------------------+
+| [&lt;-]  Book a Ride                        |
++------------------------------------------+
+| (1)=====(2)=====(3)=====(4)------(5)    |
+| Pickup   Drop   Details  Review   Pay    |
++------------------------------------------+
+|                                          |
+| Pickup Date                              |
+| +--------------------------------------+ |
+| | [cal] Mon, 15 Jan 2026              | |
+| +--------------------------------------+ |
+|                                          |
+| Pickup Time                              |
+| +--------------------------------------+ |
+| | [clock] 09:00 AM                     | |
+| +--------------------------------------+ |
+|                                          |
+| Return Date (if round trip)              |
+| +--------------------------------------+ |
+| | [cal] Wed, 17 Jan 2026              | |
+| +--------------------------------------+ |
+|                                          |
+| Select Car                               |
+| +--------------------------------------+ |
+| | [img] Swift Dzire  |  Rs 2,500/day  | |
+| |       [Change Car]                   | |
+| +--------------------------------------+ |
+|                                          |
+| Special Requests                         |
+| +--------------------------------------+ |
+| | [textarea: Any special requests...]  | |
+| +--------------------------------------+ |
+|                                          |
++------------------------------------------+
+| [        Continue        ]               |
++------------------------------------------+
+</code></pre>
+
+<h4 id="step-4-review">Step 4: Review</h4>
+<pre class="highlight"><code>+------------------------------------------+
+| [&lt;-]  Review Booking                     |
++------------------------------------------+
+| (1)=====(2)=====(3)=====(4)=====(5)     |
+| Pickup   Drop   Details  Review*  Pay    |
++------------------------------------------+
+|                                          |
+| Route                            [edit]  |
+| +--------------------------------------+ |
+| | [O] Mumbai, MG Road                 | |
+| | |                                    | |
+| | [+] Lonavala (stop)                  | |
+| | |                                    | |
+| | [V] Pune, Shivaji Nagar             | |
+| +--------------------------------------+ |
+|                                          |
+| Schedule                         [edit]  |
+| +--------------------------------------+ |
+| | Pickup: Mon, 15 Jan, 09:00 AM       | |
+| | Return: Wed, 17 Jan                  | |
+| | Duration: 3 days                     | |
+| +--------------------------------------+ |
+|                                          |
+| Vehicle                          [edit]  |
+| +--------------------------------------+ |
+| | Swift Dzire | Sedan | AC | 4 Seater | |
+| +--------------------------------------+ |
+|                                          |
+| Fare Breakdown                           |
+| +--------------------------------------+ |
+| | Base fare (3 days x Rs 2,500)  7,500 | |
+| | Extra stops (1)                  200 | |
+| | GST (5%)                         385 | |
+| | ------------------------------------ | |
+| | Total                       Rs 8,085 | |
+| +--------------------------------------+ |
+|                                          |
+| +--------------------------------------+ |
+| | [checkbox] I agree to the Terms &amp;    | |
+| | Conditions and Cancellation Policy   | |
+| +--------------------------------------+ |
+|                                          |
++------------------------------------------+
+| [     Proceed to Pay Rs 8,085     ]      |
++------------------------------------------+
+</code></pre>
+
+<h4 id="step-5-payment">Step 5: Payment</h4>
+<pre class="highlight"><code>+------------------------------------------+
+| [&lt;-]  Payment                            |
++------------------------------------------+
+| (1)=====(2)=====(3)=====(4)=====(5)     |
+| Pickup   Drop   Details  Review  Pay*    |
++------------------------------------------+
+|                                          |
+| Pay Rs 8,085                             |  &lt;- h2
+|                                          |
+| Payment Method                           |
+|                                          |
+| +--------------------------------------+ |
+| | (o) UPI                      [icon]  | |
+| +--------------------------------------+ |
+| | ( ) Credit/Debit Card        [icon]  | |
+| +--------------------------------------+ |
+| | ( ) Net Banking              [icon]  | |
+| +--------------------------------------+ |
+| | ( ) Pay Later                [icon]  | |
+| +--------------------------------------+ |
+|                                          |
+| [Razorpay secure badge]                 |
+|                                          |
+| You will be redirected to Razorpay       |
+| secure checkout                          |
+|                                          |
++------------------------------------------+
+| [       Pay Rs 8,085       ]             |
++------------------------------------------+
+</code></pre>
+
+<hr />
+<h3 id="5-booking-detail">5. Booking Detail</h3>
+<p><strong>Route:</strong> <code>/customer/bookings/:id</code></p>
+<pre class="highlight"><code>+------------------------------------------+
+| [&lt;-]  Booking #BCR-1234      [share]     |
++------------------------------------------+
+|                                          |
+| +--------------------------------------+ |
+| |  [Confirmed]  Booking confirmed       | |
+| +--------------------------------------+ |
+|                                          |
+| Status Timeline                          |
+| +--------------------------------------+ |
+| | [*] Booking placed     10:00 AM      | |
+| | |                      15 Jan        | |
+| | [*] Confirmed          10:05 AM      | |
+| | |                                    | |
+| | <input type="checkbox" disabled> Driver assigned    --            | |
+| | |                                    | |
+| | <input type="checkbox" disabled> Ride started       --            | |
+| | |                                    | |
+| | <input type="checkbox" disabled> Ride completed     --            | |
+| +--------------------------------------+ |
+|                                          |
+| Route                                    |
+| +--------------------------------------+ |
+| | [O] Mumbai, MG Road                 | |
+| | |                                    | |
+| | [+] Lonavala                         | |
+| | |                                    | |
+| | [V] Pune, Shivaji Nagar             | |
+| |                                      | |
+| | [View on Map]                        | |
+| +--------------------------------------+ |
+|                                          |
+| Schedule                                 |
+| +--------------------------------------+ |
+| | Mon, 15 Jan 2026 | 09:00 AM         | |
+| | 3 days trip | Return: 17 Jan         | |
+| +--------------------------------------+ |
+|                                          |
+| Vehicle                                  |
+| +--------------------------------------+ |
+| | [img] Swift Dzire                    | |
+| |       White | MH 12 AB 1234         | |
+| |       Sedan | AC | 4 Seater         | |
+| +--------------------------------------+ |
+|                                          |
+| Driver (shown when assigned)             |
+| +--------------------------------------+ |
+| | [avatar] Rajesh Kumar                | |
+| |          4.8 [star] | 234 rides      | |
+| |          [Call]  [Message]           | |
+| +--------------------------------------+ |
+|                                          |
+| Payment                                  |
+| +--------------------------------------+ |
+| | Total: Rs 8,085                      | |
+| | Paid via UPI | Txn: RZP123456       | |
+| | [Download Invoice]                   | |
+| +--------------------------------------+ |
+|                                          |
+| [Cancel Booking]                         |  &lt;- danger ghost btn
+|                                          |
++------------------------------------------+
+| [Home] [Bookings] [Track] [Profile]      |
++------------------------------------------+
+</code></pre>
+
+<hr />
+<h3 id="6-my-bookings">6. My Bookings</h3>
+<p><strong>Route:</strong> <code>/customer/bookings</code></p>
+<pre class="highlight"><code>+------------------------------------------+
+| Bookings                                 |
++------------------------------------------+
+| [Upcoming*] [Past] [Cancelled]           |  &lt;- tab bar
++------------------------------------------+
+|                                          |
+| +--------------------------------------+ |
+| | #BCR-1234          [Confirmed]       | |
+| | [O] Mumbai --&gt; [V] Pune              | |
+| | Mon 15 Jan | 09:00 | Swift Dzire     | |
+| | ------------------------------------ | |
+| | Rs 8,085            [View -&gt;]        | |
+| +--------------------------------------+ |
+|                                          |
+| +--------------------------------------+ |
+| | #BCR-1235          [Pending]         | |
+| | [O] Delhi --&gt; [V] Agra              | |
+| | Wed 17 Jan | 10:00 | Honda City      | |
+| | ------------------------------------ | |
+| | Rs 5,200            [View -&gt;]        | |
+| +--------------------------------------+ |
+|                                          |
+|  ... more bookings ...                   |
+|                                          |
+| [empty state if no bookings in tab]      |
+|                                          |
++------------------------------------------+
+| [Home] [Bookings*] [Track] [Profile]     |
++------------------------------------------+
+</code></pre>
+
+<p><strong>Layout Notes:</strong><br />
+- Tabs: full-width, underline active indicator<br />
+- Each booking card has left border color by status<br />
+- Swipe left to cancel (upcoming only)<br />
+- Pull-to-refresh enabled</p>
+<hr />
+<h3 id="7-live-tracking">7. Live Tracking</h3>
+<p><strong>Route:</strong> <code>/customer/track/:bookingId</code></p>
+<pre class="highlight"><code>+------------------------------------------+
+| [&lt;-]  Live Tracking                      |
++------------------------------------------+
+|                                          |
+|                                          |
+|                                          |
+|           [FULL SCREEN MAP]              |
+|      [car marker moving on route]        |
+|     [pickup pin] .... [drop pin]         |
+|                                          |
+|                                          |
+|                                          |
+|              [Recenter]                  |  &lt;- FAB
+|                                          |
++------------------------------------------+  &lt;- bottom sheet
+|            [drag handle]                 |
+| +--------------------------------------+ |
+| | [avatar] Rajesh Kumar    [Call][Msg]  | |
+| | Swift Dzire | MH 12 AB 1234          | |
+| +--------------------------------------+ |
+| | ETA: 15 min | 5.2 km away            | |
+| +--------------------------------------+ |
+| | [O] Mumbai, MG Road     10:00 AM     | |
+| | |   (driver on the way)              | |
+| | [V] Pune, Shivaji Nagar  --:--       | |
+| +--------------------------------------+ |
++------------------------------------------+
+</code></pre>
+
+<p><strong>Layout Notes:</strong><br />
+- Map takes full viewport behind top bar<br />
+- Bottom sheet with 2 snap points: collapsed (driver info) and expanded (full detail)<br />
+- Car marker animates along route path<br />
+- ETA updates in real time<br />
+- Recenter FAB: 56px circle, white, shadow-md, bottom-right above sheet</p>
+<hr />
+<h3 id="8-payment-razorpay-upi">8. Payment (Razorpay UPI)</h3>
+<p><strong>Route:</strong> <code>/customer/payment/:bookingId</code></p>
+<pre class="highlight"><code>+------------------------------------------+
+| [&lt;-]  Payment                            |
++------------------------------------------+
+|                                          |
+| Booking #BCR-1234                        |
+|                                          |
+| +--------------------------------------+ |
+| | Mumbai to Pune                       | |
+| | Mon, 15 Jan | Swift Dzire            | |
+| +--------------------------------------+ |
+|                                          |
+| Amount: Rs 8,085                         |  &lt;- h2, bold
+|                                          |
+| +--------------------------------------+ |
+| | Fare Breakdown               [v/^]   | |  &lt;- collapsible
+| | Base fare               Rs 7,500     | |
+| | Extra stops                  200     | |
+| | GST (5%)                     385     | |
+| +--------------------------------------+ |
+|                                          |
+| Apply Coupon                             |
+| +-----------------------------------+-+ |
+| | [Enter coupon code]               |Go| |
+| +-----------------------------------+-+ |
+| [FIRST20 applied! -Rs 1,617]            |
+|                                          |
+| +--------------------------------------+ |
+| | You Pay                   Rs 6,468   | |
+| +--------------------------------------+ |
+|                                          |
++------------------------------------------+
+| [       Pay with Razorpay       ]        |  &lt;- opens Razorpay
++------------------------------------------+
+</code></pre>
+
+<p><strong>After payment success:</strong></p>
+<pre class="highlight"><code>+------------------------------------------+
+|                                          |
+|           [check animation]              |
+|                                          |
+|       Payment Successful!                |
+|                                          |
+|       Rs 6,468 paid via UPI              |
+|       Txn: RZP123456789                  |
+|                                          |
+|  Your booking #BCR-1234 is confirmed     |
+|                                          |
+|  [View Booking]     [Back to Home]       |
+|                                          |
++------------------------------------------+
+</code></pre>
+
+<hr />
+<h3 id="9-rating-review">9. Rating &amp; Review</h3>
+<p><strong>Route:</strong> <code>/customer/rate/:bookingId</code></p>
+<pre class="highlight"><code>+------------------------------------------+
+| [&lt;-]  Rate Your Ride                     |
++------------------------------------------+
+|                                          |
+|    +--------+                            |
+|    | [avatar]|                            |
+|    +--------+                            |
+|    Rajesh Kumar                          |
+|    Swift Dzire | Mumbai to Pune           |
+|                                          |
+|    How was your ride?                    |
+|                                          |
+|    [*] [*] [*] [*] [.]                  |  &lt;- tap stars
+|         Tap to rate                      |
+|                                          |
+| Write a review (optional)                |
+| +--------------------------------------+ |
+| | [textarea: Share your experience...] | |
+| |                                      | |
+| |                           0/500      | |
+| +--------------------------------------+ |
+|                                          |
+| Quick feedback                           |
+| [Clean car] [On time] [Good driver]     |
+| [Comfortable] [Safe driving]            |  &lt;- toggle chips
+|                                          |
++------------------------------------------+
+| [        Submit Review        ]          |
++------------------------------------------+
+</code></pre>
+
+<hr />
+<h3 id="10-profile">10. Profile</h3>
+<p><strong>Route:</strong> <code>/customer/profile</code></p>
+<pre class="highlight"><code>+------------------------------------------+
+| Profile                          [edit]  |
++------------------------------------------+
+|                                          |
+|        +----------+                      |
+|        |  [avatar] |                     |
+|        | [camera]  |                     |
+|        +----------+                      |
+|        Sourabh Sen                       |
+|        +91 98765 43210                   |
+|        sourabh@email.com                 |
+|                                          |
+| +--------------------------------------+ |
+| | [user]    Personal Info          [&gt;] | |
+| +--------------------------------------+ |
+| | [mappin]  Saved Addresses        [&gt;] | |
+| +--------------------------------------+ |
+| | [credit]  Payment Methods        [&gt;] | |
+| +--------------------------------------+ |
+| | [bell]    Notifications          [&gt;] | |
+| +--------------------------------------+ |
+| | [shield]  Privacy &amp; Security     [&gt;] | |
+| +--------------------------------------+ |
+| | [help]    Help &amp; Support         [&gt;] | |
+| +--------------------------------------+ |
+| | [file]    Terms &amp; Conditions     [&gt;] | |
+| +--------------------------------------+ |
+| | [info]    About                   [&gt;] | |
+| +--------------------------------------+ |
+|                                          |
+| [Logout]                                 |  &lt;- ghost danger
+|                                          |
+| Version 1.0.0                            |
+|                                          |
++------------------------------------------+
+| [Home] [Bookings] [Track] [Profile*]     |
++------------------------------------------+
+</code></pre>
+
+<hr />
+<h2 id="driver-pages-pwa-mobile-first-installable">DRIVER PAGES (PWA — Mobile-First, Installable)</h2>
+<blockquote>
+<p>Driver app is a PWA with separate manifest (Books Driver). Uses Wake Lock API for screen-on during rides, Geolocation API for GPS tracking. Installable from browser.</p>
+</blockquote>
+<hr />
+<h3 id="11-driver-dashboard">11. Driver Dashboard</h3>
+<p><strong>Route:</strong> <code>/driver</code></p>
+<pre class="highlight"><code>+------------------------------------------+
+| Books Driver              [bell] [avatar]|
++------------------------------------------+
+|                                          |
+| Good morning, Rajesh                     |
+|                                          |
+| +------------------+ +------------------+|
+| | Today's Rides    | | Earnings         ||
+| |     3            | |   Rs 4,500       ||
+| | +1 from yest.    | |   +12% this week ||
+| +------------------+ +------------------+|
+| +------------------+ +------------------+|
+| | Rating           | | Total Rides      ||
+| |     4.8          | |     234          ||
+| | [*****]          | |   this month     ||
+| +------------------+ +------------------+|
+|                                          |
+| Today's Schedule                         |
+|                                          |
+| +--------------------------------------+ |
+| | 09:00 AM                 [In 30 min] | |
+| | Mumbai to Pune                       | |
+| | Sourabh Sen | Swift Dzire            | |
+| | [Start Ride]                         | |
+| +--------------------------------------+ |
+|                                          |
+| +--------------------------------------+ |
+| | 02:00 PM                             | |
+| | Pune to Mumbai (return)              | |
+| | Amit Kumar | Swift Dzire             | |
+| | [View Details]                       | |
+| +--------------------------------------+ |
+|                                          |
+| +--------------------------------------+ |
+| | 06:00 PM                             | |
+| | Mumbai to Lonavala                   | |
+| | Priya Sharma | Honda City            | |
+| | [View Details]                       | |
+| +--------------------------------------+ |
+|                                          |
++------------------------------------------+
+| [Dashboard*] [Rides] [Nav] [Profile]     |
++------------------------------------------+
+</code></pre>
+
+<hr />
+<h3 id="12-driver-ride-detail">12. Driver Ride Detail</h3>
+<p><strong>Route:</strong> <code>/driver/rides/:id</code></p>
+<pre class="highlight"><code>+------------------------------------------+
+| [&lt;-]  Ride #BCR-1234                     |
++------------------------------------------+
+|                                          |
+| [Confirmed]                              |
+|                                          |
+| Customer                                 |
+| +--------------------------------------+ |
+| | [avatar] Sourabh Sen                 | |
+| |          +91 98765 43210             | |
+| |          [Call]  [Message]           | |
+| +--------------------------------------+ |
+|                                          |
+| Route                                    |
+| +--------------------------------------+ |
+| | [O] Mumbai, MG Road                 | |
+| | |                                    | |
+| | [+] Lonavala (stop)                  | |
+| | |                                    | |
+| | [V] Pune, Shivaji Nagar             | |
+| |                                      | |
+| | 150 km | ~3h 30m                     | |
+| +--------------------------------------+ |
+|                                          |
+| Schedule                                 |
+| +--------------------------------------+ |
+| | Pickup: Mon, 15 Jan, 09:00 AM       | |
+| | Duration: 3 days                     | |
+| +--------------------------------------+ |
+|                                          |
+| Vehicle: Swift Dzire | MH 12 AB 1234    |
+|                                          |
+| Earnings: Rs 1,800                       |
+|                                          |
++------------------------------------------+
+| [        Start Ride        ]             |  &lt;- status CTA
++------------------------------------------+
+</code></pre>
+
+<p><strong>Status CTA changes:</strong><br />
+- Before pickup: <code>Start Ride</code> (primary)<br />
+- During ride: <code>Complete Ride</code> (success green)<br />
+- At stop: <code>Resume Ride</code> (primary)</p>
+<hr />
+<h3 id="13-driver-navigation-view">13. Driver Navigation View</h3>
+<p><strong>Route:</strong> <code>/driver/navigate/:rideId</code></p>
+<pre class="highlight"><code>+------------------------------------------+
+|                                          |
+|                                          |
+|           [FULL SCREEN MAP]              |
+|      [turn-by-turn directions]           |
+|      [route line highlighted]            |
+|                                          |
+|                                          |
+| +--------------------------------------+ |
+| | Turn right on MG Road     | 200m     | |
+| +--------------------------------------+ |  &lt;- direction banner
+|                                          |
++------------------------------------------+
+|            [drag handle]                 |
+| Next stop: Lonavala         45 min      |
+| Total remaining: 120 km    2h 15m       |
+| ----------------------------------------|
+| [O] Mumbai (started)        09:00 AM   |
+| [+] Lonavala                10:15 AM   |
+| [V] Pune                    12:30 PM   |
+| ----------------------------------------|
+| [     End Navigation     ]              |
++------------------------------------------+
+</code></pre>
+
+<hr />
+<h3 id="14-driver-profile-documents">14. Driver Profile &amp; Documents</h3>
+<p><strong>Route:</strong> <code>/driver/profile</code></p>
+<pre class="highlight"><code>+------------------------------------------+
+| Profile                                  |
++------------------------------------------+
+|                                          |
+|        +----------+                      |
+|        |  [avatar] |                     |
+|        +----------+                      |
+|        Rajesh Kumar                      |
+|        Driver ID: DRV-0042              |
+|        4.8 [star] | 234 rides            |
+|                                          |
+| +--------------------------------------+ |
+| | [user]    Personal Info          [&gt;] | |
+| +--------------------------------------+ |
+| | [car]     Vehicle Details        [&gt;] | |
+| +--------------------------------------+ |
+| | [file]    Documents              [&gt;] | |
+| |           DL, RC, Insurance          | |
+| |           [Verified] / [Pending]     | |
+| +--------------------------------------+ |
+| | [dollar]  Earnings History       [&gt;] | |
+| +--------------------------------------+ |
+| | [star]    Ratings &amp; Reviews      [&gt;] | |
+| +--------------------------------------+ |
+| | [settings] Settings              [&gt;] | |
+| +--------------------------------------+ |
+|                                          |
+| +--------------------------------------+ |
+| | Availability                         | |
+| | [=====O        ] Online              | |  &lt;- toggle
+| +--------------------------------------+ |
+|                                          |
+| [Logout]                                 |
+|                                          |
++------------------------------------------+
+| [Dashboard] [Rides] [Nav] [Profile*]     |
++------------------------------------------+
+</code></pre>
+
+<hr />
+<h2 id="admin-pages-web-only-desktop-first">ADMIN PAGES (Web-Only — Desktop-First)</h2>
+<blockquote>
+<p>Admin dashboard is a standard web application, NOT a PWA. Desktop-first design with responsive support down to tablet (768px). No service worker, no install prompt, no offline mode. Shows "Desktop Recommended" warning on mobile screens.</p>
+</blockquote>
+<hr />
+<h3 id="15-admin-dashboard">15. Admin Dashboard</h3>
+<p><strong>Route:</strong> <code>/admin</code></p>
+<pre class="highlight"><code>+------------------------------------------+
+| [=] Books Admin        [bell] [avatar]   |  &lt;- hamburger menu
++------------------------------------------+
+| +------+ +------+ +------+ +------+     |
+| |Total | |Active| |Revenue| |Drivers|   |
+| |Books | |Rides | |Today | |Online|     |
+| | 1,234| |  28  | |Rs 45k| |  12  |    |
+| |+12%  | |+5%   | |+8%   | |-2    |    |
+| +------+ +------+ +------+ +------+     |
+|                                          |
+| Revenue (Last 7 Days)                    |
+| +--------------------------------------+ |
+| |  [LINE CHART]                        | |
+| |  ^                                   | |
+| |  |    /\      /\                     | |
+| |  |   /  \    /  \   /               | |
+| |  |  /    \  /    \ /                 | |
+| |  | /      \/      \                  | |
+| |  +--+--+--+--+--+--+--&gt;             | |
+| |  M  T  W  T  F  S  S               | |
+| +--------------------------------------+ |
+|                                          |
+| Bookings by Status                       |
+| +--------------------------------------+ |
+| |  [DONUT CHART]                       | |
+| |  Confirmed: 45%  In Progress: 20%   | |
+| |  Completed: 25%  Cancelled: 10%     | |
+| +--------------------------------------+ |
+|                                          |
+| Recent Bookings                   See All|
+| +--------------------------------------+ |
+| | BCR-1234 | Mumbai&gt;Pune | Confirmed   | |
+| | BCR-1235 | Delhi&gt;Agra  | Pending     | |
+| | BCR-1236 | BLR&gt;Mysore  | In Progress | |
+| +--------------------------------------+ |
+|                                          |
++------------------------------------------+
+</code></pre>
+
+<p><strong>Admin uses sidebar navigation on desktop:</strong></p>
+<pre class="highlight"><code>+--------+------------------------------------------+
+|        |                                          |
+| [logo] |  Main content area                      |
+|        |                                          |
+| Dash   |                                          |
+| Books* |                                          |
+| Cars   |                                          |
+| Drivers|                                          |
+| Users  |                                          |
+| Pay    |                                          |
+| Routes |                                          |
+| Settngs|                                          |
+|        |                                          |
+|        |                                          |
+| [out]  |                                          |
++--------+------------------------------------------+
+</code></pre>
+
+<p>Sidebar: 240px wide, white background, collapsible to 64px (icons only).</p>
+<hr />
+<h3 id="16-admin-cars-management">16. Admin -- Cars Management</h3>
+<p><strong>Route:</strong> <code>/admin/cars</code></p>
+<pre class="highlight"><code>+------------------------------------------+
+| [=]  Cars                     [+ Add Car]|
++------------------------------------------+
+| [Search cars...]  [Filter v] [Sort v]    |
++------------------------------------------+
+|                                          |
+| +--------------------------------------+ |
+| | Model        | Type | Status | Action| |
+| |--------------|------|--------|-------| |
+| | Swift Dzire  |Sedan |Active  | [...] | |
+| | Honda City   |Sedan |Active  | [...] | |
+| | Innova       |MUV   |Maint.  | [...] | |
+| | Creta        |SUV   |Active  | [...] | |
+| +--------------------------------------+ |
+|                                          |
+| Showing 1-10 of 45    [&lt; 1 2 3 4 5 &gt;]  |
++------------------------------------------+
+</code></pre>
+
+<p><strong>Add/Edit Car Form (modal or separate page):</strong></p>
+<pre class="highlight"><code>+------------------------------------------+
+| [&lt;-]  Add New Car                        |
++------------------------------------------+
+|                                          |
+| Car Photos                               |
+| +------+ +------+ +------+ +------+     |
+| | [+]  | | [img] | | [img] |             |
+| | Add  | |       | |       |             |
+| +------+ +------+ +------+              |
+|                                          |
+| Model Name *                             |
+| [Swift Dzire                           ] |
+|                                          |
+| Type *                                   |
+| [Sedan v]                                |
+|                                          |
+| Seats *          | Fuel Type *           |
+| [4           ]   | [Petrol v]           |
+|                                          |
+| AC    [toggle: on]                       |
+|                                          |
+| Registration Number *                    |
+| [MH 12 AB 1234                         ] |
+|                                          |
+| Daily Rate (Rs) *                        |
+| [2500                                  ] |
+|                                          |
+| Per KM Rate (Rs) *                       |
+| [12                                    ] |
+|                                          |
+| Status *                                 |
+| [Active v]                               |
+|                                          |
++------------------------------------------+
+| [Save Car]                               |
++------------------------------------------+
+</code></pre>
+
+<hr />
+<h3 id="17-admin-drivers-management">17. Admin -- Drivers Management</h3>
+<p><strong>Route:</strong> <code>/admin/drivers</code></p>
+<pre class="highlight"><code>+------------------------------------------+
+| [=]  Drivers                [+ Add Driver]|
++------------------------------------------+
+| [Search...]  [Status: All v] [Verified v]|
++------------------------------------------+
+|                                          |
+| +--------------------------------------+ |
+| | [av] Rajesh Kumar                    | |
+| |      4.8 star | 234 rides | Online   | |
+| |      Swift Dzire | Verified [check]  | |
+| |      [View] [Edit] [Disable]         | |
+| +--------------------------------------+ |
+| | [av] Amit Patel                      | |
+| |      4.5 star | 120 rides | Offline  | |
+| |      Honda City | Pending [clock]    | |
+| |      [View] [Edit] [Verify]          | |
+| +--------------------------------------+ |
+|                                          |
++------------------------------------------+
+</code></pre>
+
+<hr />
+<h3 id="18-admin-users-list">18. Admin -- Users List</h3>
+<p><strong>Route:</strong> <code>/admin/users</code></p>
+<pre class="highlight"><code>+------------------------------------------+
+| [=]  Users                               |
++------------------------------------------+
+| [Search by name, phone, email...]        |
+| [Role: All v] [Status: All v]           |
++------------------------------------------+
+|                                          |
+| 1,234 users                             |
+|                                          |
+| +--------------------------------------+ |
+| | Name     | Phone    | Bookings |  Act| |
+| |----------|----------|----------|-----| |
+| | Sourabh  | 98765... |    12    | [...] |
+| | Priya S  | 87654... |     5    | [...] |
+| | Amit K   | 76543... |     8    | [...] |
+| +--------------------------------------+ |
+|                                          |
+| [&lt; 1 2 3 ... 10 &gt;]                      |
++------------------------------------------+
+</code></pre>
+
+<hr />
+<h3 id="19-admin-bookings-management">19. Admin -- Bookings Management</h3>
+<p><strong>Route:</strong> <code>/admin/bookings</code></p>
+<pre class="highlight"><code>+------------------------------------------+
+| [=]  Bookings                            |
++------------------------------------------+
+| [Search ID, customer...]                 |
+| [Status: All v] [Date Range] [Sort v]   |
++------------------------------------------+
+|                                          |
+| +--------------------------------------+ |
+| | #BCR-1234 | Sourabh | Mumbai&gt;Pune   | |
+| | 15 Jan    | [Confirmed] | Rs 8,085   | |
+| | Driver: Rajesh K        [View] [-&gt;]  | |
+| +--------------------------------------+ |
+| | #BCR-1235 | Priya   | Delhi&gt;Agra    | |
+| | 17 Jan    | [Pending]   | Rs 5,200   | |
+| | Driver: --              [Assign][-&gt;] | |
+| +--------------------------------------+ |
+|                                          |
++------------------------------------------+
+</code></pre>
+
+<p><strong>Booking Detail (Admin view) adds:</strong><br />
+- Assign driver button (opens driver selection sheet)<br />
+- Change status dropdown<br />
+- Issue refund button<br />
+- Internal notes section<br />
+- Activity log (all status changes with timestamps)</p>
+<hr />
+<h3 id="20-admin-payments">20. Admin -- Payments</h3>
+<p><strong>Route:</strong> <code>/admin/payments</code></p>
+<pre class="highlight"><code>+------------------------------------------+
+| [=]  Payments                            |
++------------------------------------------+
+| [Search txn ID...]  [Status v] [Date]   |
++------------------------------------------+
+| Total collected: Rs 4,50,000 (this month)|
+|                                          |
+| +--------------------------------------+ |
+| | Txn ID    | Booking | Amount | Status| |
+| |-----------|---------|--------|-------| |
+| | RZP123... | BCR-1234| 8,085  | Paid  | |
+| | RZP124... | BCR-1235| 5,200  | Pend. | |
+| | RZP125... | BCR-1230| 3,500  | Refund| |
+| +--------------------------------------+ |
+|                                          |
+| [&lt; 1 2 3 &gt;]                             |
++------------------------------------------+
+</code></pre>
+
+<p><strong>Refund action:</strong> Opens confirmation modal with amount field and reason textarea.</p>
+<hr />
+<h3 id="21-admin-routes-management">21. Admin -- Routes Management</h3>
+<p><strong>Route:</strong> <code>/admin/routes</code></p>
+<pre class="highlight"><code>+------------------------------------------+
+| [=]  Routes                 [+ Add Route]|
++------------------------------------------+
+| [Search routes...]                       |
++------------------------------------------+
+|                                          |
+| +--------------------------------------+ |
+| | From     | To      | Dist | Rate |Act| |
+| |----------|---------|------|------|---| |
+| | Mumbai   | Pune    | 150km| 2500 |[.]| |
+| | Delhi    | Agra    | 200km| 3000 |[.]| |
+| | BLR      | Mysore  | 150km| 2500 |[.]| |
+| +--------------------------------------+ |
+|                                          |
++------------------------------------------+
+</code></pre>
+
+<p><strong>Add/Edit Route Form:</strong><br />
+- From city (searchable dropdown)<br />
+- To city (searchable dropdown)<br />
+- Distance (km)<br />
+- Estimated duration<br />
+- Base rate (Rs)<br />
+- Per km rate<br />
+- Popular toggle<br />
+- Active toggle</p>
+<hr />
+<h3 id="22-admin-settings">22. Admin -- Settings</h3>
+<p><strong>Route:</strong> <code>/admin/settings</code></p>
+<pre class="highlight"><code>+------------------------------------------+
+| [=]  Settings                            |
++------------------------------------------+
+|                                          |
+| General                                  |
+| +--------------------------------------+ |
+| | App Name         | Books Car Rental  | |
+| | Support Phone    | +91 1800 XXX XXX | |
+| | Support Email    | help@books.com    | |
+| +--------------------------------------+ |
+|                                          |
+| Pricing                                  |
+| +--------------------------------------+ |
+| | GST Rate (%)     | 5                 | |
+| | Min Booking (Rs)  | 500              | |
+| | Cancellation Fee  | 10%              | |
+| +--------------------------------------+ |
+|                                          |
+| Notifications                            |
+| +--------------------------------------+ |
+| | Email notif.     [toggle: on]        | |
+| | SMS notif.       [toggle: on]        | |
+| | Push notif.      [toggle: on]        | |
+| +--------------------------------------+ |
+|                                          |
+| Integrations                             |
+| +--------------------------------------+ |
+| | Razorpay         [Connected]         | |
+| | Google Maps      [Connected]         | |
+| | SMS Gateway      [Configure -&gt;]      | |
+| +--------------------------------------+ |
+|                                          |
+| [Save Changes]                           |
+|                                          |
++------------------------------------------+
+</code></pre>
+
+<hr />
+<h2 id="responsive-behavior-summary">Responsive Behavior Summary</h2>
+<table>
+<thead>
+<tr>
+<th>Page</th>
+<th>Mobile (375px)</th>
+<th>Tablet (768px)</th>
+<th>Desktop (1024px+)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Home</td>
+<td>Single column</td>
+<td>2-col routes</td>
+<td>3-col routes, wider search</td>
+</tr>
+<tr>
+<td>Search results</td>
+<td>Single column cards</td>
+<td>2-col grid</td>
+<td>3-col grid</td>
+</tr>
+<tr>
+<td>Car selection</td>
+<td>2-col grid</td>
+<td>3-col grid</td>
+<td>4-col grid</td>
+</tr>
+<tr>
+<td>Booking form</td>
+<td>Full width steps</td>
+<td>Centered 600px max</td>
+<td>Centered 600px max</td>
+</tr>
+<tr>
+<td>Booking detail</td>
+<td>Full width</td>
+<td>Centered 700px max</td>
+<td>2-col (info + timeline)</td>
+</tr>
+<tr>
+<td>My Bookings</td>
+<td>Full width list</td>
+<td>Full width list</td>
+<td>Table view</td>
+</tr>
+<tr>
+<td>Live tracking</td>
+<td>Full map + sheet</td>
+<td>Map + side panel</td>
+<td>Map + side panel</td>
+</tr>
+<tr>
+<td>Admin dashboard</td>
+<td>2-col stats, stacked</td>
+<td>4-col stats</td>
+<td>4-col stats + sidebar</td>
+</tr>
+<tr>
+<td>Admin tables</td>
+<td>Card layout (mobile)</td>
+<td>Table view</td>
+<td>Table with sidebar</td>
+</tr>
+</tbody>
+</table>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#1f6feb',
+                primaryTextColor: '#e6edf3',
+                primaryBorderColor: '#58a6ff',
+                lineColor: '#8b949e',
+                secondaryColor: '#161b22',
+                tertiaryColor: '#0d1117',
+                background: '#0d1117',
+                mainBkg: '#161b22',
+                nodeBorder: '#30363d',
+                clusterBkg: '#161b22',
+                titleColor: '#58a6ff',
+                edgeLabelBackground: '#161b22',
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team & Hiring</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --green: #3fb950;
+            --red: #f85149;
+            --yellow: #d29922;
+            --purple: #bc8cff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        h1 {
+            font-size: 2rem;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-hover);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.3rem;
+        }
+        h3 {
+            font-size: 1.2rem;
+            margin-top: 1.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--purple);
+        }
+        h4 {
+            font-size: 1rem;
+            margin-top: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        p {
+            margin-bottom: 1rem;
+        }
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+            color: var(--accent-hover);
+        }
+        code {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.15rem 0.4rem;
+            font-size: 0.9em;
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            color: var(--accent-hover);
+        }
+        pre {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+        }
+        pre code {
+            background: none;
+            border: none;
+            padding: 0;
+            color: var(--text);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background: #1c2333;
+            color: var(--accent);
+            font-weight: 600;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+        td {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover td {
+            background: rgba(88, 166, 255, 0.05);
+        }
+        blockquote {
+            border-left: 4px solid var(--accent);
+            background: var(--card);
+            padding: 0.8rem 1.2rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-muted);
+        }
+        blockquote strong {
+            color: var(--yellow);
+        }
+        ul, ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        li {
+            margin-bottom: 0.3rem;
+        }
+        li ul, li ol {
+            margin-bottom: 0;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+        strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+        em {
+            color: var(--text-muted);
+        }
+        .mermaid {
+            background: #1a1f2e;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        .nav {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .nav a {
+            font-size: 0.85rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            background: rgba(88, 166, 255, 0.1);
+        }
+        .nav a:hover {
+            background: rgba(88, 166, 255, 0.2);
+            text-decoration: none;
+        }
+        .nav-label {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        input[type="checkbox"] {
+            accent-color: var(--green);
+            transform: scale(1.2);
+            margin-right: 0.3rem;
+        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.5rem; }
+            table { font-size: 0.85rem; }
+            th, td { padding: 0.4rem 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <span class="nav-label">Navigation:</span>
+        <a href="index.html" style="background:rgba(63,185,80,0.2);color:#3fb950;font-weight:600;">Home</a>
+        <a href="00-executive-summary.html">Summary</a>
+        <a href="01-product-identity.html">Identity</a>
+        <a href="02-competitive-analysis.html">Competitors</a>
+        <a href="03-target-market.html">Market</a>
+        <a href="04-user-flow.html">UX Flow</a>
+        <a href="05-mvp-definition.html">MVP</a>
+        <a href="06-architecture.html">Architecture</a>
+        <a href="07-tech-stack.html">Tech Stack</a>
+        <a href="08-integrations.html">Integrations</a>
+        <a href="10-database-design.html">Database</a>
+        <a href="11-sequence-diagrams.html">Sequences</a>
+        <a href="12-project-flow.html">Project Flow</a>
+        <a href="13-security.html">Security</a>
+        <a href="14-legal-compliance.html">Legal</a>
+        <a href="15-implementation-phases.html">Phases</a>
+        <a href="16-production-checklist.html">Checklist</a>
+        <a href="17-devops.html">DevOps</a>
+        <a href="18-monetization.html">Revenue</a>
+        <a href="19-cost-management.html">Costs</a>
+        <a href="20-marketing.html">Marketing</a>
+        <a href="21-analytics-kpis.html">KPIs</a>
+        <a href="22-accessibility-i18n.html">A11y</a>
+        <a href="23-support-docs.html">Support</a>
+        <a href="24-team-hiring.html">Team</a>
+        <a href="25-risk-assessment.html">Risks</a>
+        <a href="26-future-roadmap.html">Roadmap</a>
+    </nav>
+    <h1 id="team-hiring">Team &amp; Hiring</h1>
+<h2 id="phase-1-solo-developer-months-1-6">Phase 1: Solo Developer (Months 1-6)</h2>
+<h3 id="you-handle-everything">You Handle Everything</h3>
+<ul>
+<li>Full-stack development (React + NestJS)</li>
+<li>UI/UX design (shadcn/ui templates)</li>
+<li>DevOps (Docker, deployment)</li>
+<li>Customer support (WhatsApp + phone)</li>
+<li>Marketing (social media)</li>
+<li>Admin operations</li>
+</ul>
+<h3 id="time-allocation">Time Allocation</h3>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Hours/Week</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Development</td>
+<td>30-40</td>
+</tr>
+<tr>
+<td>Operations (bookings, drivers)</td>
+<td>5-10</td>
+</tr>
+<tr>
+<td>Marketing</td>
+<td>3-5</td>
+</tr>
+<tr>
+<td>Support</td>
+<td>2-3</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="phase-2-first-hires-months-6-12-5-cars">Phase 2: First Hires (Months 6-12, 5+ cars)</h2>
+<h3 id="priority-hires">Priority Hires</h3>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Type</th>
+<th>Salary Range</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Operations Manager</strong></td>
+<td>Full-time</td>
+<td>₹15-20K/month</td>
+<td>Handle bookings, drivers, customer calls</td>
+</tr>
+<tr>
+<td><strong>Drivers</strong> (3-5)</td>
+<td>Full-time</td>
+<td>₹12-18K/month</td>
+<td>Core business</td>
+</tr>
+</tbody>
+</table>
+<h3 id="outsource">Outsource</h3>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Platform</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Logo/branding</td>
+<td>Fiverr</td>
+<td>₹2,000-5,000 one-time</td>
+</tr>
+<tr>
+<td>Social media content</td>
+<td>Freelancer</td>
+<td>₹3,000-5,000/month</td>
+</tr>
+<tr>
+<td>Legal (contracts, compliance)</td>
+<td>Local lawyer</td>
+<td>₹5,000-10,000 one-time</td>
+</tr>
+<tr>
+<td>Accounting/GST filing</td>
+<td>CA</td>
+<td>₹2,000-3,000/month</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="phase-3-growing-team-year-2-10-cars">Phase 3: Growing Team (Year 2, 10+ cars)</h2>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Type</th>
+<th>Salary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Junior developer</td>
+<td>Full-time</td>
+<td>₹20-30K/month</td>
+</tr>
+<tr>
+<td>Marketing executive</td>
+<td>Full-time</td>
+<td>₹15-20K/month</td>
+</tr>
+<tr>
+<td>Operations manager</td>
+<td>Full-time</td>
+<td>₹20-25K/month</td>
+</tr>
+<tr>
+<td>Accountant</td>
+<td>Part-time</td>
+<td>₹10-15K/month</td>
+</tr>
+<tr>
+<td>Drivers (10+)</td>
+<td>Full-time</td>
+<td>₹15-20K/month each</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="driver-recruitment">Driver Recruitment</h2>
+<h3 id="requirements">Requirements</h3>
+<ul>
+<li>Valid commercial driving license</li>
+<li>Clean driving record</li>
+<li>Smartphone with data plan</li>
+<li>Local references</li>
+<li>Know local routes (Indore + MP highways)</li>
+</ul>
+<h3 id="where-to-find">Where to Find</h3>
+<ul>
+<li>Existing taxi driver networks</li>
+<li>Auto driver associations</li>
+<li>Employment offices (Rozgar offices)</li>
+<li>Word of mouth</li>
+<li>Local newspaper classifieds</li>
+</ul>
+<h3 id="onboarding">Onboarding</h3>
+<ol>
+<li>Document verification (license, Aadhaar)</li>
+<li>Background check (police verification)</li>
+<li>Driving test (1-hour evaluation)</li>
+<li>App training (2 hours)</li>
+<li>Customer service training (1 hour)</li>
+<li>Trial rides (3 supervised rides)</li>
+</ol>
+<hr />
+<h2 id="build-vs-buy-vs-outsource">Build vs Buy vs Outsource</h2>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>Decision</th>
+<th>Reasoning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Core app</td>
+<td>Build (you)</td>
+<td>Core product, needs full control</td>
+</tr>
+<tr>
+<td>GPS tracking</td>
+<td>Build + Buy device</td>
+<td>Custom integration, bought hardware</td>
+</tr>
+<tr>
+<td>Payment</td>
+<td>Buy (Razorpay)</td>
+<td>Don't build payment infrastructure</td>
+</tr>
+<tr>
+<td>SMS</td>
+<td>Buy (MSG91)</td>
+<td>Commodity service</td>
+</tr>
+<tr>
+<td>Maps</td>
+<td>Buy (Google Maps)</td>
+<td>Best India data</td>
+</tr>
+<tr>
+<td>Logo</td>
+<td>Outsource (Fiverr)</td>
+<td>One-time, not core skill</td>
+</tr>
+<tr>
+<td>Legal docs</td>
+<td>Outsource (lawyer)</td>
+<td>Expertise needed</td>
+</tr>
+<tr>
+<td>Accounting</td>
+<td>Outsource (CA)</td>
+<td>Compliance critical</td>
+</tr>
+<tr>
+<td>Marketing content</td>
+<td>Do yourself → outsource later</td>
+<td>Budget constraint</td>
+</tr>
+</tbody>
+</table>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#1f6feb',
+                primaryTextColor: '#e6edf3',
+                primaryBorderColor: '#58a6ff',
+                lineColor: '#8b949e',
+                secondaryColor: '#161b22',
+                tertiaryColor: '#0d1117',
+                background: '#0d1117',
+                mainBkg: '#161b22',
+                nodeBorder: '#30363d',
+                clusterBkg: '#161b22',
+                titleColor: '#58a6ff',
+                edgeLabelBackground: '#161b22',
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Books Car Rental -- Mobile-First UX Patterns</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --green: #3fb950;
+            --red: #f85149;
+            --yellow: #d29922;
+            --purple: #bc8cff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        h1 {
+            font-size: 2rem;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-hover);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.3rem;
+        }
+        h3 {
+            font-size: 1.2rem;
+            margin-top: 1.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--purple);
+        }
+        h4 {
+            font-size: 1rem;
+            margin-top: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        p {
+            margin-bottom: 1rem;
+        }
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+            color: var(--accent-hover);
+        }
+        code {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.15rem 0.4rem;
+            font-size: 0.9em;
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            color: var(--accent-hover);
+        }
+        pre {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+        }
+        pre code {
+            background: none;
+            border: none;
+            padding: 0;
+            color: var(--text);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background: #1c2333;
+            color: var(--accent);
+            font-weight: 600;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+        td {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover td {
+            background: rgba(88, 166, 255, 0.05);
+        }
+        blockquote {
+            border-left: 4px solid var(--accent);
+            background: var(--card);
+            padding: 0.8rem 1.2rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-muted);
+        }
+        blockquote strong {
+            color: var(--yellow);
+        }
+        ul, ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        li {
+            margin-bottom: 0.3rem;
+        }
+        li ul, li ol {
+            margin-bottom: 0;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+        strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+        em {
+            color: var(--text-muted);
+        }
+        .mermaid {
+            background: #1a1f2e;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        .nav {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .nav a {
+            font-size: 0.85rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            background: rgba(88, 166, 255, 0.1);
+        }
+        .nav a:hover {
+            background: rgba(88, 166, 255, 0.2);
+            text-decoration: none;
+        }
+        .nav-label {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        input[type="checkbox"] {
+            accent-color: var(--green);
+            transform: scale(1.2);
+            margin-right: 0.3rem;
+        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.5rem; }
+            table { font-size: 0.85rem; }
+            th, td { padding: 0.4rem 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <span class="nav-label">Navigation:</span>
+        <a href="../index.html" style="background:rgba(63,185,80,0.2);color:#3fb950;font-weight:600;">Home</a>
+        <a href="../00-executive-summary.html">Summary</a>
+        <a href="../01-product-identity.html">Identity</a>
+        <a href="../02-competitive-analysis.html">Competitors</a>
+        <a href="../03-target-market.html">Market</a>
+        <a href="../04-user-flow.html">UX Flow</a>
+        <a href="../05-mvp-definition.html">MVP</a>
+        <a href="../06-architecture.html">Architecture</a>
+        <a href="../07-tech-stack.html">Tech Stack</a>
+        <a href="../08-integrations.html">Integrations</a>
+        <a href="../10-database-design.html">Database</a>
+        <a href="../11-sequence-diagrams.html">Sequences</a>
+        <a href="../12-project-flow.html">Project Flow</a>
+        <a href="../13-security.html">Security</a>
+        <a href="../14-legal-compliance.html">Legal</a>
+        <a href="../15-implementation-phases.html">Phases</a>
+        <a href="../16-production-checklist.html">Checklist</a>
+        <a href="../17-devops.html">DevOps</a>
+        <a href="../18-monetization.html">Revenue</a>
+        <a href="../19-cost-management.html">Costs</a>
+        <a href="../20-marketing.html">Marketing</a>
+        <a href="../21-analytics-kpis.html">KPIs</a>
+        <a href="../22-accessibility-i18n.html">A11y</a>
+        <a href="../23-support-docs.html">Support</a>
+        <a href="../24-team-hiring.html">Team</a>
+        <a href="../25-risk-assessment.html">Risks</a>
+        <a href="../26-future-roadmap.html">Roadmap</a>
+    </nav>
+    <h1 id="books-car-rental-mobile-first-ux-patterns">Books Car Rental -- Mobile-First UX Patterns</h1>
+<p>Version 1.0 | Target: iOS &amp; Android PWA | Min viewport: 375px</p>
+<hr />
+<h2 id="1-touch-targets">1. Touch Targets</h2>
+<p>All interactive elements must meet minimum touch target requirements.</p>
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Min Size</th>
+<th>Recommended</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Buttons</td>
+<td>44px</td>
+<td>48px</td>
+<td>Height and width</td>
+</tr>
+<tr>
+<td>Icon buttons</td>
+<td>44px</td>
+<td>44px</td>
+<td>Padding around 24px icon</td>
+</tr>
+<tr>
+<td>List items</td>
+<td>48px</td>
+<td>56px</td>
+<td>Full row is tappable</td>
+</tr>
+<tr>
+<td>Tab bar items</td>
+<td>48px</td>
+<td>64px</td>
+<td>Full tab width tappable</td>
+</tr>
+<tr>
+<td>Chips/tags</td>
+<td>32px</td>
+<td>36px</td>
+<td>With adequate spacing</td>
+</tr>
+<tr>
+<td>Checkboxes</td>
+<td>44px</td>
+<td>44px</td>
+<td>Visual size 20px, hit area 44px</td>
+</tr>
+<tr>
+<td>Toggle switches</td>
+<td>44px</td>
+<td>48px</td>
+<td>Track + thumb area</td>
+</tr>
+<tr>
+<td>Links in text</td>
+<td>44px</td>
+<td>--</td>
+<td>Vertical padding for hit area</td>
+</tr>
+</tbody>
+</table>
+<h3 id="spacing-between-touch-targets">Spacing Between Touch Targets</h3>
+<ul>
+<li>Minimum 8px gap between adjacent tappable elements</li>
+<li>Recommended 12px gap in dense layouts (admin tables, filter chips)</li>
+</ul>
+<pre class="highlight"><code class="language-css">/* Example: ensuring touch target with padding */
+.icon-button {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px; /* (44 - 24) / 2 = 10px padding around 24px icon */
+  border-radius: 50%;
+  -webkit-tap-highlight-color: transparent;
+}
+</code></pre>
+
+<hr />
+<h2 id="2-gesture-navigation">2. Gesture Navigation</h2>
+<h3 id="swipe-back-ios-style">Swipe Back (iOS-style)</h3>
+<pre class="highlight"><code>  &lt;-- swipe from left edge
++--[current page slides right]--+
+|  [previous page peeks from left]
++-------------------------------+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Trigger zone</td>
+<td>20px from left edge</td>
+</tr>
+<tr>
+<td>Threshold</td>
+<td>30% of screen width to complete</td>
+</tr>
+<tr>
+<td>Animation</td>
+<td>Spring easing, 350ms</td>
+</tr>
+<tr>
+<td>Velocity threshold</td>
+<td>500px/s for quick swipe</td>
+</tr>
+<tr>
+<td>Visual feedback</td>
+<td>Current page slides right with shadow on left edge</td>
+</tr>
+<tr>
+<td>Cancel behavior</td>
+<td>If below threshold, snap back</td>
+</tr>
+</tbody>
+</table>
+<pre class="highlight"><code class="language-typescript">// React implementation concept
+const SWIPE_THRESHOLD = window.innerWidth * 0.3;
+const EDGE_ZONE = 20; // px from left edge
+</code></pre>
+
+<h3 id="pull-to-refresh">Pull-to-Refresh</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Trigger distance</td>
+<td>80px pull down</td>
+</tr>
+<tr>
+<td>Max pull distance</td>
+<td>120px (rubber band after 80)</td>
+</tr>
+<tr>
+<td>Indicator</td>
+<td>RefreshCw icon, rotates</td>
+</tr>
+<tr>
+<td>Text states</td>
+<td>"Pull to refresh" -&gt; "Release to refresh" -&gt; "Updating..."</td>
+</tr>
+<tr>
+<td>Rubber band physics</td>
+<td>Resistance increases past threshold</td>
+</tr>
+<tr>
+<td>Used on pages</td>
+<td>My Bookings, Search Results, Driver Dashboard, Admin lists</td>
+</tr>
+</tbody>
+</table>
+<pre class="highlight"><code class="language-css">.pull-indicator {
+  transition: transform 0.2s var(--ease-spring);
+}
+
+.pull-indicator.refreshing {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+</code></pre>
+
+<h3 id="swipe-to-dismiss-cancel">Swipe to Dismiss / Cancel</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Direction</td>
+<td>Swipe left on booking cards</td>
+</tr>
+<tr>
+<td>Reveal distance</td>
+<td>144px (two action buttons at 72px)</td>
+</tr>
+<tr>
+<td>Snap points</td>
+<td>0 (closed), 72px (one action), 144px (both)</td>
+</tr>
+<tr>
+<td>Background actions</td>
+<td>Edit (blue), Cancel/Delete (red)</td>
+</tr>
+<tr>
+<td>Haptic feedback</td>
+<td>Light impact when action is revealed</td>
+</tr>
+<tr>
+<td>Full swipe</td>
+<td>80% width triggers primary action</td>
+</tr>
+</tbody>
+</table>
+<h3 id="swipe-to-close-bottom-sheet">Swipe to Close Bottom Sheet</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Direction</td>
+<td>Swipe down on drag handle</td>
+</tr>
+<tr>
+<td>Threshold</td>
+<td>30% of sheet height</td>
+</tr>
+<tr>
+<td>Velocity close</td>
+<td>800px/s downward</td>
+</tr>
+<tr>
+<td>Snap points</td>
+<td>Configurable (40%, 70%, 90%)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="3-bottom-sheet-patterns">3. Bottom Sheet Patterns</h2>
+<p>Use bottom sheets instead of dropdowns and modals on mobile.</p>
+<h3 id="when-to-use-bottom-sheets">When to Use Bottom Sheets</h3>
+<table>
+<thead>
+<tr>
+<th>Instead of...</th>
+<th>Use bottom sheet for...</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Select dropdown</td>
+<td>City selection, car type filter</td>
+</tr>
+<tr>
+<td>Alert dialog</td>
+<td>Confirmation (cancel booking, logout)</td>
+</tr>
+<tr>
+<td>Modal form</td>
+<td>Quick edit (date change, coupon)</td>
+</tr>
+<tr>
+<td>Options menu</td>
+<td>Action menu (share, report, edit)</td>
+</tr>
+<tr>
+<td>Date picker</td>
+<td>Custom date range selection</td>
+</tr>
+</tbody>
+</table>
+<h3 id="bottom-sheet-sizes">Bottom Sheet Sizes</h3>
+<table>
+<thead>
+<tr>
+<th>Size</th>
+<th>Height</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>small</code></td>
+<td>40% vh</td>
+<td>Simple confirmations, quick selects</td>
+</tr>
+<tr>
+<td><code>medium</code></td>
+<td>70% vh</td>
+<td>Forms, detailed selections</td>
+</tr>
+<tr>
+<td><code>large</code></td>
+<td>90% vh</td>
+<td>Complex content, search with results</td>
+</tr>
+</tbody>
+</table>
+<h3 id="implementation-pattern">Implementation Pattern</h3>
+<pre class="highlight"><code class="language-css">.bottom-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #FFFFFF;
+  border-radius: 16px 16px 0 0;
+  z-index: 400;
+  transform: translateY(100%);
+  transition: transform 350ms var(--ease-spring);
+  max-height: 90vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.bottom-sheet.open {
+  transform: translateY(0);
+}
+
+.bottom-sheet-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  z-index: 399;
+  opacity: 0;
+  transition: opacity 250ms ease;
+}
+
+.bottom-sheet-overlay.visible {
+  opacity: 1;
+}
+
+.bottom-sheet-handle {
+  width: 36px;
+  height: 4px;
+  background: #CBD5E1;
+  border-radius: 9999px;
+  margin: 8px auto 16px;
+}
+</code></pre>
+
+<hr />
+<h2 id="4-sticky-bottom-cta-buttons">4. Sticky Bottom CTA Buttons</h2>
+<p>All primary actions on form pages use a sticky bottom CTA.</p>
+<pre class="highlight"><code>+------------------------------------------+
+|           [scrollable content]            |
+|                                          |
++------------------------------------------+  &lt;- border-top
+|  16px padding                            |
+|  [========= Full Width CTA =========]   |  &lt;- 56px height
+|  safe-area-bottom padding                |
++------------------------------------------+
+</code></pre>
+
+<h3 id="implementation">Implementation</h3>
+<pre class="highlight"><code class="language-css">.sticky-cta {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px;
+  padding-bottom: calc(16px + env(safe-area-inset-bottom));
+  background: #FFFFFF;
+  border-top: 1px solid #E2E8F0;
+  z-index: 200;
+}
+
+/* Add bottom padding to page content so CTA doesn't cover last items */
+.page-with-cta {
+  padding-bottom: calc(80px + env(safe-area-inset-bottom));
+}
+
+/* On pages with both CTA and bottom nav */
+.page-with-cta-and-nav {
+  padding-bottom: calc(80px + 64px + env(safe-area-inset-bottom));
+}
+</code></pre>
+
+<h3 id="cta-variants">CTA Variants</h3>
+<table>
+<thead>
+<tr>
+<th>Page</th>
+<th>CTA Text</th>
+<th>Secondary Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Search results</td>
+<td>"Select This Car"</td>
+<td>--</td>
+</tr>
+<tr>
+<td>Booking step 1-3</td>
+<td>"Continue"</td>
+<td>--</td>
+</tr>
+<tr>
+<td>Booking review</td>
+<td>"Proceed to Pay Rs X,XXX"</td>
+<td>--</td>
+</tr>
+<tr>
+<td>Payment</td>
+<td>"Pay Rs X,XXX"</td>
+<td>--</td>
+</tr>
+<tr>
+<td>Rate ride</td>
+<td>"Submit Review"</td>
+<td>"Skip"</td>
+</tr>
+<tr>
+<td>Driver ride detail</td>
+<td>"Start Ride" / "Complete"</td>
+<td>--</td>
+</tr>
+<tr>
+<td>Admin assign driver</td>
+<td>"Assign Driver"</td>
+<td>"Cancel"</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="5-thumb-zone-optimization">5. Thumb-Zone Optimization</h2>
+<p>Designing for one-handed use on mobile (right-handed majority).</p>
+<pre class="highlight"><code>+------------------------------------------+
+|          Hard to reach zone              |  &lt;- navigation, info
+|              (top 1/3)                   |
+|                                          |
+|                                          |
+|         Moderate zone                    |  &lt;- content, secondary
+|             (middle 1/3)                 |
+|                                          |
+|                                          |
+|         Easy / Natural zone              |  &lt;- primary actions,
+|             (bottom 1/3)                 |     CTA buttons, tabs
++------------------------------------------+
+</code></pre>
+
+<h3 id="placement-rules">Placement Rules</h3>
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Zone</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Primary CTA</td>
+<td>Bottom</td>
+<td>Easy thumb reach</td>
+</tr>
+<tr>
+<td>Bottom navigation</td>
+<td>Bottom</td>
+<td>Constant access</td>
+</tr>
+<tr>
+<td>Search bar</td>
+<td>Top-mid</td>
+<td>Finger travels naturally</td>
+</tr>
+<tr>
+<td>Action menu</td>
+<td>Bottom</td>
+<td>Sheet from bottom, not top</td>
+</tr>
+<tr>
+<td>Back button</td>
+<td>Top-left</td>
+<td>System convention (unavoidable)</td>
+</tr>
+<tr>
+<td>Filters</td>
+<td>Top</td>
+<td>Set-and-forget, not frequent</td>
+</tr>
+<tr>
+<td>FAB (if used)</td>
+<td>Bottom-right</td>
+<td>Natural thumb rest position</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="6-native-feeling-transitions">6. Native-Feeling Transitions</h2>
+<h3 id="page-transitions">Page Transitions</h3>
+<table>
+<thead>
+<tr>
+<th>Transition Type</th>
+<th>Duration</th>
+<th>Easing</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Push (forward)</td>
+<td>350ms</td>
+<td><code>cubic-bezier(0.4, 0, 0.2, 1)</code></td>
+<td>Navigate deeper</td>
+</tr>
+<tr>
+<td>Pop (back)</td>
+<td>300ms</td>
+<td><code>cubic-bezier(0.4, 0, 0.2, 1)</code></td>
+<td>Navigate back</td>
+</tr>
+<tr>
+<td>Fade</td>
+<td>250ms</td>
+<td><code>ease</code></td>
+<td>Tab switches</td>
+</tr>
+<tr>
+<td>Scale up</td>
+<td>300ms</td>
+<td><code>cubic-bezier(0.34, 1.56, 0.64, 1)</code></td>
+<td>Modal opening</td>
+</tr>
+<tr>
+<td>Slide up</td>
+<td>350ms</td>
+<td><code>cubic-bezier(0.34, 1.56, 0.64, 1)</code></td>
+<td>Bottom sheet opening</td>
+</tr>
+</tbody>
+</table>
+<h3 id="push-transition-css">Push Transition CSS</h3>
+<pre class="highlight"><code class="language-css">/* Page entering (pushing forward) */
+@keyframes page-enter {
+  from {
+    transform: translateX(100%);
+    opacity: 0.8;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Page leaving (being pushed back) */
+@keyframes page-leave {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-30%);
+    opacity: 0.6;
+  }
+}
+
+.page-transition-enter {
+  animation: page-enter 350ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.page-transition-exit {
+  animation: page-leave 350ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+</code></pre>
+
+<hr />
+<h2 id="7-haptic-feedback-cues">7. Haptic Feedback Cues</h2>
+<p>Use the Vibration API where supported for tactile confirmation.</p>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Pattern</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Button tap</td>
+<td>10ms</td>
+<td>Light impact</td>
+</tr>
+<tr>
+<td>Toggle switch</td>
+<td>15ms</td>
+<td>Medium impact</td>
+</tr>
+<tr>
+<td>Swipe action revealed</td>
+<td>10ms</td>
+<td>Light impact</td>
+</tr>
+<tr>
+<td>Pull-to-refresh threshold</td>
+<td>15ms</td>
+<td>Medium impact</td>
+</tr>
+<tr>
+<td>Booking confirmed</td>
+<td>10ms, 50ms, 10ms</td>
+<td>Success</td>
+</tr>
+<tr>
+<td>Error / validation fail</td>
+<td>20ms, 30ms, 20ms</td>
+<td>Error</td>
+</tr>
+<tr>
+<td>Long press (context menu)</td>
+<td>25ms</td>
+<td>Heavy impact</td>
+</tr>
+</tbody>
+</table>
+<pre class="highlight"><code class="language-typescript">// Haptic feedback utility
+const haptic = {
+  light: () =&gt; navigator.vibrate?.(10),
+  medium: () =&gt; navigator.vibrate?.(15),
+  heavy: () =&gt; navigator.vibrate?.(25),
+  success: () =&gt; navigator.vibrate?.([10, 50, 10]),
+  error: () =&gt; navigator.vibrate?.([20, 30, 20]),
+};
+</code></pre>
+
+<hr />
+<h2 id="8-offline-first-patterns">8. Offline-First Patterns</h2>
+<h3 id="offline-capability-matrix">Offline Capability Matrix</h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Offline Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>View past bookings</td>
+<td>Cached locally, show stale data</td>
+</tr>
+<tr>
+<td>View booking detail</td>
+<td>Cached if previously viewed</td>
+</tr>
+<tr>
+<td>Search cars</td>
+<td>Show "No connection" with retry</td>
+</tr>
+<tr>
+<td>Create booking</td>
+<td>Queue action, sync when online</td>
+</tr>
+<tr>
+<td>Live tracking</td>
+<td>Show last known position + "Offline"</td>
+</tr>
+<tr>
+<td>Profile view</td>
+<td>Full offline support (cached)</td>
+</tr>
+<tr>
+<td>Admin pages</td>
+<td>"Requires connection" overlay</td>
+</tr>
+</tbody>
+</table>
+<h3 id="offline-ui-patterns">Offline UI Patterns</h3>
+<p><strong>Connection Status Bar:</strong></p>
+<pre class="highlight"><code>+------------------------------------------+
+| [wifi-off] You're offline. Data may be   |
+| outdated. [Retry]                        |
++------------------------------------------+
+</code></pre>
+
+<ul>
+<li>Background: <code>#FEF3C7</code></li>
+<li>Text: <code>#B45309</code></li>
+<li>Position: sticky below top bar</li>
+<li>Height: 40px</li>
+<li>Auto-dismiss on reconnection with "Back online!" toast (green)</li>
+</ul>
+<p><strong>Queued Actions Indicator:</strong></p>
+<pre class="highlight"><code>+------------------------------------------+
+| [clock] 1 action pending sync            |
++------------------------------------------+
+</code></pre>
+
+<h3 id="caching-strategy">Caching Strategy</h3>
+<pre class="highlight"><code class="language-typescript">// Service Worker cache priority
+const CACHE_STRATEGIES = {
+  'api/bookings': 'stale-while-revalidate',  // show cached, refresh in bg
+  'api/cars': 'network-first',                // need fresh, fallback to cache
+  'api/tracking': 'network-only',             // real-time only
+  'static/*': 'cache-first',                  // assets rarely change
+  'api/profile': 'stale-while-revalidate',    // cached with bg refresh
+};
+</code></pre>
+
+<hr />
+<h2 id="9-progressive-loading">9. Progressive Loading</h2>
+<h3 id="loading-priority-per-page">Loading Priority (per page)</h3>
+<p><strong>Home Page:</strong><br />
+1. App shell (header, nav, search card) -- instant from cache<br />
+2. Greeting + search form -- immediate<br />
+3. Popular routes -- load first API call<br />
+4. Recent bookings -- second API call<br />
+5. Special offers -- lazy load on scroll</p>
+<p><strong>Search Results:</strong><br />
+1. Header + search summary -- immediate<br />
+2. Filter chips -- immediate<br />
+3. First 3 car cards -- first batch<br />
+4. Remaining cards -- infinite scroll, 6 per batch</p>
+<h3 id="skeleton-loading-sequence">Skeleton Loading Sequence</h3>
+<pre class="highlight"><code>Time 0ms:    Shell renders (header, nav, empty containers)
+Time 50ms:   Skeleton placeholders appear with shimmer
+Time 200ms:  Above-the-fold content replaces skeletons
+Time 400ms:  Below-fold content appears as user scrolls
+</code></pre>
+
+<h3 id="image-loading">Image Loading</h3>
+<pre class="highlight"><code class="language-css">/* Lazy load images with blur-up technique */
+.car-image {
+  background-color: #F1F5F9;  /* placeholder color */
+  transition: filter 300ms ease;
+}
+
+.car-image.loading {
+  filter: blur(10px);
+}
+
+.car-image.loaded {
+  filter: blur(0);
+}
+</code></pre>
+
+<pre class="highlight"><code class="language-typescript">// Intersection Observer for lazy loading
+const imageObserver = new IntersectionObserver(
+  (entries) =&gt; {
+    entries.forEach(entry =&gt; {
+      if (entry.isIntersecting) {
+        const img = entry.target as HTMLImageElement;
+        img.src = img.dataset.src!;
+        img.classList.add('loaded');
+        imageObserver.unobserve(img);
+      }
+    });
+  },
+  { rootMargin: '100px' } // start loading 100px before visible
+);
+</code></pre>
+
+<hr />
+<h2 id="10-keyboard-behavior">10. Keyboard Behavior</h2>
+<h3 id="auto-focus-rules">Auto-Focus Rules</h3>
+<table>
+<thead>
+<tr>
+<th>Page / Component</th>
+<th>Auto-Focus Target</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Search (home)</td>
+<td>Pickup location input</td>
+</tr>
+<tr>
+<td>Route search results</td>
+<td>None (show results immediately)</td>
+</tr>
+<tr>
+<td>Booking step 1</td>
+<td>Location input</td>
+</tr>
+<tr>
+<td>Login/Signup</td>
+<td>Phone number input</td>
+</tr>
+<tr>
+<td>Search (admin)</td>
+<td>Search input</td>
+</tr>
+<tr>
+<td>Add coupon</td>
+<td>Coupon code input</td>
+</tr>
+</tbody>
+</table>
+<h3 id="next-field-navigation">Next-Field Navigation</h3>
+<pre class="highlight"><code class="language-html">&lt;!-- Use enterkeyhint for mobile keyboard behavior --&gt;
+&lt;input enterkeyhint=&quot;next&quot; /&gt;   &lt;!-- Shows &quot;Next&quot; on keyboard --&gt;
+&lt;input enterkeyhint=&quot;search&quot; /&gt; &lt;!-- Shows &quot;Search&quot; on keyboard --&gt;
+&lt;input enterkeyhint=&quot;done&quot; /&gt;   &lt;!-- Shows &quot;Done&quot; on keyboard --&gt;
+&lt;input enterkeyhint=&quot;go&quot; /&gt;     &lt;!-- Shows &quot;Go&quot; on keyboard --&gt;
+</code></pre>
+
+<h3 id="form-flow-booking">Form Flow (Booking)</h3>
+<pre class="highlight"><code>Phone number  [Next -&gt;]
+Name          [Next -&gt;]
+Email         [Next -&gt;]
+Date          [opens picker]
+Time          [opens picker]
+Notes         [Done]
+</code></pre>
+
+<h3 id="keyboard-avoidance">Keyboard Avoidance</h3>
+<pre class="highlight"><code class="language-css">/* Ensure input is visible when keyboard opens */
+.form-page {
+  min-height: 100vh;
+  min-height: 100dvh; /* dynamic viewport height */
+  padding-bottom: 200px; /* room for keyboard push */
+}
+
+/* Scroll input into view on focus */
+input:focus {
+  scroll-margin-bottom: 120px;
+}
+</code></pre>
+
+<pre class="highlight"><code class="language-typescript">// Scroll focused input into view
+const handleFocus = (e: FocusEvent) =&gt; {
+  setTimeout(() =&gt; {
+    (e.target as HTMLElement).scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+    });
+  }, 300); // wait for keyboard animation
+};
+</code></pre>
+
+<hr />
+<h2 id="11-phone-number-input">11. Phone Number Input</h2>
+<pre class="highlight"><code>+----+------------------------------------------+
+| +91| [  9 8 7 6 5  4 3 2 1 0  ]              |
+| [v] |                                         |
++----+------------------------------------------+
+  ^          ^
+  country    auto-formatted with spaces
+  selector
+</code></pre>
+
+<h3 id="specifications">Specifications</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Country code width</td>
+<td>64px</td>
+</tr>
+<tr>
+<td>Country selector</td>
+<td>Opens bottom sheet with search</td>
+</tr>
+<tr>
+<td>Default country</td>
+<td>India (+91)</td>
+</tr>
+<tr>
+<td>Input mode</td>
+<td><code>tel</code></td>
+</tr>
+<tr>
+<td>Max length</td>
+<td>10 digits (India)</td>
+</tr>
+<tr>
+<td>Auto-format</td>
+<td><code>XXX XXX XXXX</code></td>
+</tr>
+<tr>
+<td>Validation</td>
+<td>Real-time, show check on valid</td>
+</tr>
+<tr>
+<td>Keyboard</td>
+<td>Numeric pad</td>
+</tr>
+</tbody>
+</table>
+<pre class="highlight"><code class="language-typescript">// Phone formatting
+const formatPhone = (value: string): string =&gt; {
+  const digits = value.replace(/\D/g, '').slice(0, 10);
+  if (digits.length &lt;= 3) return digits;
+  if (digits.length &lt;= 6) return `${digits.slice(0, 3)} ${digits.slice(3)}`;
+  return `${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6)}`;
+};
+</code></pre>
+
+<hr />
+<h2 id="12-date-picker">12. Date Picker</h2>
+<h3 id="mobile-native-date-picker">Mobile: Native Date Picker</h3>
+<pre class="highlight"><code class="language-html">&lt;input
+  type=&quot;date&quot;
+  min=&quot;2026-01-15&quot;
+  max=&quot;2026-12-31&quot;
+  class=&quot;date-input-native&quot;
+/&gt;
+</code></pre>
+
+<ul>
+<li>Uses native OS date picker (iOS wheel, Android calendar)</li>
+<li>Display value formatted as "Mon, 15 Jan 2026" via a visible overlay</li>
+<li>Actual <code>&lt;input type="date"&gt;</code> is visually hidden but functionally active</li>
+</ul>
+<h3 id="desktop-custom-calendar-modal">Desktop: Custom Calendar Modal</h3>
+<pre class="highlight"><code>+--------------------------------------+
+|  &lt; January 2026 &gt;                    |
+|  Mo Tu We Th Fr Sa Su                |
+|               1  2  3  4             |
+|   5  6  7  8  9 10 11               |
+|  12 13 14 [15] 16 17 18             |  &lt;- selected
+|  19 20 21 22 23 24 25               |
+|  26 27 28 29 30 31                   |
+|                                      |
+|  [Cancel]        [Confirm]           |
++--------------------------------------+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cell size</td>
+<td>40px x 40px</td>
+</tr>
+<tr>
+<td>Selected cell</td>
+<td><code>#2563EB</code> bg, white text</td>
+</tr>
+<tr>
+<td>Today cell</td>
+<td>Blue outline</td>
+</tr>
+<tr>
+<td>Disabled dates</td>
+<td><code>#CBD5E1</code> text, no pointer</td>
+</tr>
+<tr>
+<td>Range selection</td>
+<td><code>#DBEAFE</code> background fill</td>
+</tr>
+<tr>
+<td>Width</td>
+<td>320px</td>
+</tr>
+<tr>
+<td>Border radius</td>
+<td>12px</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="13-map-interaction-patterns">13. Map Interaction Patterns</h2>
+<h3 id="map-controls">Map Controls</h3>
+<pre class="highlight"><code>+------------------------------------------+
+|                                          |
+|  [full screen map]                       |
+|                                          |
+|                     [+]                  |  &lt;- zoom in
+|                     [-]                  |  &lt;- zoom out
+|                     [O]                  |  &lt;- recenter
+|                                          |
++------------------------------------------+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Zoom buttons</td>
+<td>40px circle, white, shadow-md</td>
+</tr>
+<tr>
+<td>Zoom button position</td>
+<td>16px from right edge, centered vert</td>
+</tr>
+<tr>
+<td>Recenter button</td>
+<td>48px circle, white, shadow-md</td>
+</tr>
+<tr>
+<td>Recenter position</td>
+<td>16px from right, above bottom sheet</td>
+</tr>
+<tr>
+<td>Pinch zoom</td>
+<td>Native gesture support</td>
+</tr>
+<tr>
+<td>Double-tap zoom</td>
+<td>Zoom in one level, 300ms</td>
+</tr>
+<tr>
+<td>Pan</td>
+<td>Free pan with inertia</td>
+</tr>
+</tbody>
+</table>
+<h3 id="map-markers">Map Markers</h3>
+<table>
+<thead>
+<tr>
+<th>Marker</th>
+<th>Style</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pickup</td>
+<td>Green circle (24px), white dot center</td>
+</tr>
+<tr>
+<td>Drop-off</td>
+<td>Red pin (32px), standard map pin shape</td>
+</tr>
+<tr>
+<td>Stop</td>
+<td>Blue diamond (20px)</td>
+</tr>
+<tr>
+<td>Car (tracking)</td>
+<td>Car icon (32px), rotates with heading</td>
+</tr>
+<tr>
+<td>Driver location</td>
+<td>Pulsing blue dot (16px + 32px pulse ring)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="map-marker-css-pulse-animation">Map Marker CSS (Pulse Animation)</h3>
+<pre class="highlight"><code class="language-css">.driver-marker {
+  width: 16px;
+  height: 16px;
+  background: #2563EB;
+  border-radius: 50%;
+  border: 3px solid #FFFFFF;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+  position: relative;
+}
+
+.driver-marker::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 2px solid #2563EB;
+  animation: pulse 2s ease-out infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+</code></pre>
+
+<hr />
+<h2 id="14-pwa-install-prompt">14. PWA Install Prompt</h2>
+<h3 id="timing-strategy">Timing Strategy</h3>
+<p>Do NOT show install prompt:<br />
+- On first visit<br />
+- During active booking flow<br />
+- On payment page<br />
+- When user is mid-task</p>
+<p>Show install prompt:<br />
+- After 3rd visit OR<br />
+- After first completed booking OR<br />
+- On the profile page (subtle banner)<br />
+- After 60 seconds of engagement on 2nd visit</p>
+<h3 id="install-banner">Install Banner</h3>
+<pre class="highlight"><code>+------------------------------------------+
+| [app icon]  Get the Books app    [X]     |
+|             Faster, offline access        |
+|             [Install]                     |
++------------------------------------------+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Position</td>
+<td>Bottom of page, above nav</td>
+</tr>
+<tr>
+<td>Background</td>
+<td><code>#EFF6FF</code></td>
+</tr>
+<tr>
+<td>Border</td>
+<td>1px solid <code>#BFDBFE</code></td>
+</tr>
+<tr>
+<td>Border radius</td>
+<td>12px</td>
+</tr>
+<tr>
+<td>Padding</td>
+<td>12px 16px</td>
+</tr>
+<tr>
+<td>Dismiss</td>
+<td>X button, don't show for 7 days</td>
+</tr>
+<tr>
+<td>Install button</td>
+<td>primary, size sm</td>
+</tr>
+</tbody>
+</table>
+<pre class="highlight"><code class="language-typescript">// PWA install prompt handler
+let deferredPrompt: BeforeInstallPromptEvent | null = null;
+
+window.addEventListener('beforeinstallprompt', (e) =&gt; {
+  e.preventDefault();
+  deferredPrompt = e;
+
+  // Check engagement criteria
+  const visitCount = parseInt(localStorage.getItem('visitCount') || '0');
+  const hasCompletedBooking = localStorage.getItem('hasCompletedBooking');
+
+  if (visitCount &gt;= 3 || hasCompletedBooking) {
+    showInstallBanner();
+  }
+});
+
+const handleInstallClick = async () =&gt; {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  // Track outcome for analytics
+};
+</code></pre>
+
+<hr />
+<h2 id="15-scroll-behavior">15. Scroll Behavior</h2>
+<h3 id="infinite-scroll-lists">Infinite Scroll (Lists)</h3>
+<pre class="highlight"><code class="language-typescript">// Load more when 200px from bottom
+const handleScroll = () =&gt; {
+  const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+  if (scrollHeight - scrollTop - clientHeight &lt; 200) {
+    loadNextPage();
+  }
+};
+</code></pre>
+
+<ul>
+<li>Show 3 skeleton cards while loading next batch</li>
+<li>"No more results" message at end</li>
+<li>Batch size: 10 items</li>
+</ul>
+<h3 id="scroll-restoration">Scroll Restoration</h3>
+<ul>
+<li>Remember scroll position when navigating away from lists</li>
+<li>Restore position on back navigation</li>
+<li>Reset scroll on new navigation (forward)</li>
+</ul>
+<h3 id="scroll-snapping-horizontal-carousels">Scroll Snapping (Horizontal Carousels)</h3>
+<pre class="highlight"><code class="language-css">.horizontal-scroll {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 16px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.horizontal-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.horizontal-scroll &gt; * {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+</code></pre>
+
+<hr />
+<h2 id="16-accessibility-on-mobile">16. Accessibility on Mobile</h2>
+<table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Implementation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Color contrast</td>
+<td>Min 4.5:1 for text, 3:1 for UI</td>
+</tr>
+<tr>
+<td>Focus indicators</td>
+<td>3px blue ring on all interactive</td>
+</tr>
+<tr>
+<td>Screen reader labels</td>
+<td>aria-label on icon-only buttons</td>
+</tr>
+<tr>
+<td>Reduced motion</td>
+<td><code>prefers-reduced-motion</code> media query</td>
+</tr>
+<tr>
+<td>Font scaling</td>
+<td>Support up to 200% zoom</td>
+</tr>
+<tr>
+<td>Touch target spacing</td>
+<td>Min 8px between targets</td>
+</tr>
+<tr>
+<td>Error announcements</td>
+<td>aria-live="polite" for form errors</td>
+</tr>
+<tr>
+<td>Skip navigation</td>
+<td>Hidden skip link for keyboard users</td>
+</tr>
+</tbody>
+</table>
+<pre class="highlight"><code class="language-css">@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+</code></pre>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#1f6feb',
+                primaryTextColor: '#e6edf3',
+                primaryBorderColor: '#58a6ff',
+                lineColor: '#8b949e',
+                secondaryColor: '#161b22',
+                tertiaryColor: '#0d1117',
+                background: '#0d1117',
+                mainBkg: '#161b22',
+                nodeBorder: '#30363d',
+                clusterBkg: '#161b22',
+                titleColor: '#58a6ff',
+                edgeLabelBackground: '#161b22',
+            }
+        });
+    </script>
+</body>
+</html>

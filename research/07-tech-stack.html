@@ -1,0 +1,1523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technology Stack</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --green: #3fb950;
+            --red: #f85149;
+            --yellow: #d29922;
+            --purple: #bc8cff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        h1 {
+            font-size: 2rem;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-hover);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.3rem;
+        }
+        h3 {
+            font-size: 1.2rem;
+            margin-top: 1.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--purple);
+        }
+        h4 {
+            font-size: 1rem;
+            margin-top: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        p {
+            margin-bottom: 1rem;
+        }
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+            color: var(--accent-hover);
+        }
+        code {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.15rem 0.4rem;
+            font-size: 0.9em;
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            color: var(--accent-hover);
+        }
+        pre {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+        }
+        pre code {
+            background: none;
+            border: none;
+            padding: 0;
+            color: var(--text);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background: #1c2333;
+            color: var(--accent);
+            font-weight: 600;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+        td {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover td {
+            background: rgba(88, 166, 255, 0.05);
+        }
+        blockquote {
+            border-left: 4px solid var(--accent);
+            background: var(--card);
+            padding: 0.8rem 1.2rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-muted);
+        }
+        blockquote strong {
+            color: var(--yellow);
+        }
+        ul, ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        li {
+            margin-bottom: 0.3rem;
+        }
+        li ul, li ol {
+            margin-bottom: 0;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+        strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+        em {
+            color: var(--text-muted);
+        }
+        .mermaid {
+            background: #1a1f2e;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        .nav {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .nav a {
+            font-size: 0.85rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            background: rgba(88, 166, 255, 0.1);
+        }
+        .nav a:hover {
+            background: rgba(88, 166, 255, 0.2);
+            text-decoration: none;
+        }
+        .nav-label {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        input[type="checkbox"] {
+            accent-color: var(--green);
+            transform: scale(1.2);
+            margin-right: 0.3rem;
+        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.5rem; }
+            table { font-size: 0.85rem; }
+            th, td { padding: 0.4rem 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <span class="nav-label">Navigation:</span>
+        <a href="index.html" style="background:rgba(63,185,80,0.2);color:#3fb950;font-weight:600;">Home</a>
+        <a href="00-executive-summary.html">Summary</a>
+        <a href="01-product-identity.html">Identity</a>
+        <a href="02-competitive-analysis.html">Competitors</a>
+        <a href="03-target-market.html">Market</a>
+        <a href="04-user-flow.html">UX Flow</a>
+        <a href="05-mvp-definition.html">MVP</a>
+        <a href="06-architecture.html">Architecture</a>
+        <a href="07-tech-stack.html">Tech Stack</a>
+        <a href="08-integrations.html">Integrations</a>
+        <a href="10-database-design.html">Database</a>
+        <a href="11-sequence-diagrams.html">Sequences</a>
+        <a href="12-project-flow.html">Project Flow</a>
+        <a href="13-security.html">Security</a>
+        <a href="14-legal-compliance.html">Legal</a>
+        <a href="15-implementation-phases.html">Phases</a>
+        <a href="16-production-checklist.html">Checklist</a>
+        <a href="17-devops.html">DevOps</a>
+        <a href="18-monetization.html">Revenue</a>
+        <a href="19-cost-management.html">Costs</a>
+        <a href="20-marketing.html">Marketing</a>
+        <a href="21-analytics-kpis.html">KPIs</a>
+        <a href="22-accessibility-i18n.html">A11y</a>
+        <a href="23-support-docs.html">Support</a>
+        <a href="24-team-hiring.html">Team</a>
+        <a href="25-risk-assessment.html">Risks</a>
+        <a href="26-future-roadmap.html">Roadmap</a>
+    </nav>
+    <h1 id="technology-stack">Technology Stack</h1>
+<h2 id="stack-overview">Stack Overview</h2>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Technology</th>
+<th>Why</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Frontend</strong></td>
+<td>React 19 + Vite</td>
+<td>Fast SPA/PWA, no SSR complexity</td>
+<td>Free</td>
+</tr>
+<tr>
+<td><strong>Backend</strong></td>
+<td>NestJS 11</td>
+<td>Full DI, guards, WebSocket, cron, queues</td>
+<td>Free</td>
+</tr>
+<tr>
+<td><strong>Language</strong></td>
+<td>TypeScript (both)</td>
+<td>Type safety across entire stack</td>
+<td>Free</td>
+</tr>
+<tr>
+<td><strong>Styling</strong></td>
+<td>Tailwind CSS 4</td>
+<td>Utility-first, fast development</td>
+<td>Free</td>
+</tr>
+<tr>
+<td><strong>UI Components</strong></td>
+<td>shadcn/ui</td>
+<td>Beautiful, accessible, zero lock-in</td>
+<td>Free</td>
+</tr>
+<tr>
+<td><strong>Routing</strong></td>
+<td>React Router v7</td>
+<td>Client-side routing, nested layouts</td>
+<td>Free</td>
+</tr>
+<tr>
+<td><strong>State</strong></td>
+<td>Redux Toolkit + Redux-Saga</td>
+<td>Centralized state, complex async flows, WebSocket sagas</td>
+<td>Free</td>
+</tr>
+<tr>
+<td><strong>Forms</strong></td>
+<td>React Hook Form + Zod</td>
+<td>Performant forms + schema validation</td>
+<td>Free</td>
+</tr>
+<tr>
+<td><strong>Auth/Session</strong></td>
+<td>httpOnly Cookies + Server Sessions (BFF)</td>
+<td>Secure cookies, refresh token rotation (30-day auto-refresh), no JWT exposed to browser</td>
+<td>Free</td>
+</tr>
+<tr>
+<td><strong>Database</strong></td>
+<td>MongoDB + Mongoose</td>
+<td>Flexible schema, geospatial, free tier</td>
+<td>Free (512MB)</td>
+</tr>
+<tr>
+<td><strong>ORM</strong></td>
+<td>@nestjs/mongoose</td>
+<td>Official NestJS MongoDB integration</td>
+<td>Free</td>
+</tr>
+<tr>
+<td><strong>File Storage</strong></td>
+<td>AWS S3</td>
+<td>Reliable, cheap, 5GB free</td>
+<td>Free tier</td>
+</tr>
+<tr>
+<td><strong>Real-time</strong></td>
+<td>Socket.io + @nestjs/websockets</td>
+<td>First-class NestJS WebSocket gateway</td>
+<td>Free</td>
+</tr>
+<tr>
+<td><strong>Job Queue</strong></td>
+<td>BullMQ + @nestjs/bull</td>
+<td>Background jobs, retries, cron</td>
+<td>Free</td>
+</tr>
+<tr>
+<td><strong>Maps</strong></td>
+<td>Google Maps API (India)</td>
+<td>Best India coverage, directions</td>
+<td>Free tier</td>
+</tr>
+<tr>
+<td><strong>Payments</strong></td>
+<td>Razorpay</td>
+<td>Best Indian UPI, 2% + GST</td>
+<td>Pay per use</td>
+</tr>
+<tr>
+<td><strong>Push Notifications</strong></td>
+<td>Firebase Cloud Messaging</td>
+<td>Unlimited free push</td>
+<td>Free</td>
+</tr>
+<tr>
+<td><strong>SMS</strong></td>
+<td>MSG91</td>
+<td>Cheapest India SMS, DLT compliant</td>
+<td>~₹0.20/SMS</td>
+</tr>
+<tr>
+<td><strong>Email</strong></td>
+<td>Resend</td>
+<td>100 emails/day free, great API</td>
+<td>Free tier</td>
+</tr>
+<tr>
+<td><strong>GPS Tracker Server</strong></td>
+<td>Traccar (open source)</td>
+<td>200+ protocols, 2000+ devices, REST API</td>
+<td>Free</td>
+</tr>
+<tr>
+<td><strong>Hosting</strong></td>
+<td>AWS EC2 (Docker)</td>
+<td>Full control, free tier 12 months</td>
+<td>Free tier</td>
+</tr>
+<tr>
+<td><strong>CI/CD</strong></td>
+<td>GitHub Actions</td>
+<td>2000 min/month free</td>
+<td>Free</td>
+</tr>
+<tr>
+<td><strong>Containerization</strong></td>
+<td>Docker + Docker Compose</td>
+<td>Consistent deployments, white-label</td>
+<td>Free</td>
+</tr>
+<tr>
+<td><strong>Reverse Proxy</strong></td>
+<td>Nginx</td>
+<td>SSL, load balancing, static serving</td>
+<td>Free</td>
+</tr>
+<tr>
+<td><strong>SSL</strong></td>
+<td>Let's Encrypt (Certbot)</td>
+<td>Free SSL certificates</td>
+<td>Free</td>
+</tr>
+<tr>
+<td><strong>PWA</strong></td>
+<td>vite-plugin-pwa</td>
+<td>Service worker, offline, install prompt</td>
+<td>Free</td>
+</tr>
+<tr>
+<td><strong>Web APIs</strong></td>
+<td>12 modern browser APIs</td>
+<td>Geolocation, Wake Lock, Web Share, Payment Request, etc.</td>
+<td>Free (native)</td>
+</tr>
+<tr>
+<td><strong>Error Tracking</strong></td>
+<td>Built-in (NestJS → MongoDB → Admin)</td>
+<td>Global exception filter, stack traces, admin dashboard</td>
+<td>Free</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="detailed-decisions">Detailed Decisions</h2>
+<h3 id="frontend-react-19-vite-not-nextjs">Frontend: React 19 + Vite (NOT Next.js)</h3>
+<p><strong>Why React + Vite over Next.js:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Concern</th>
+<th>Next.js</th>
+<th>React + Vite</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SSR complexity</td>
+<td>Server/Client component confusion</td>
+<td>No SSR — pure SPA</td>
+</tr>
+<tr>
+<td>Backend coupling</td>
+<td>API routes = split logic</td>
+<td>NestJS handles ALL backend</td>
+</tr>
+<tr>
+<td>Dev speed</td>
+<td>Slower HMR</td>
+<td>Vite HMR is instant</td>
+</tr>
+<tr>
+<td>Build output</td>
+<td>Node.js server needed</td>
+<td>Static files — served by Nginx</td>
+</tr>
+<tr>
+<td>PWA support</td>
+<td>Serwist (workarounds for App Router)</td>
+<td>vite-plugin-pwa (seamless)</td>
+</tr>
+<tr>
+<td>Docker image</td>
+<td>~200MB+ (Node runtime)</td>
+<td>~10MB (Nginx + static files)</td>
+</tr>
+<tr>
+<td>SEO</td>
+<td>Built-in SSR</td>
+<td>Pre-render landing page at build time</td>
+</tr>
+<tr>
+<td>Learning curve</td>
+<td>App Router + RSC patterns</td>
+<td>Standard React patterns</td>
+</tr>
+</tbody>
+</table>
+<p><strong>When you need SEO</strong>: Landing page, route search, pricing — pre-render these at build time using <code>vite-plugin-ssr</code> or <code>react-snap</code>. App pages (dashboard, booking, tracking) don't need SEO.</p>
+<h3 id="backend-nestjs-11">Backend: NestJS 11</h3>
+<p><strong>Why NestJS handles everything:</strong><br />
+- <code>@nestjs/websockets</code> + <code>@nestjs/platform-socket.io</code> — first-class WebSocket gateway with decorators<br />
+- <code>@nestjs/schedule</code> — <code>@Cron()</code> decorators for scheduled tasks (reminders, doc expiry alerts)<br />
+- <code>@nestjs/bull</code> — BullMQ integration for notification queues with retry logic<br />
+- Custom session middleware — httpOnly cookie sessions with 30-day sliding refresh<br />
+- <code>@nestjs/mongoose</code> — MongoDB schemas with decorators<br />
+- Guards (<code>@UseGuards</code>), Pipes (<code>@UsePipes</code>), Interceptors — structured middleware<br />
+- Dependency Injection — testable, modular services<br />
+- Exception Filters — centralized error handling<br />
+- Swagger (<code>@nestjs/swagger</code>) — auto-generated API docs</p>
+<h3 id="auth-httponly-cookies-server-sessions-bff-pattern">Auth: httpOnly Cookies + Server Sessions (BFF Pattern)</h3>
+<p>No JWT exposed to browser. No NextAuth. No Clerk. Pure server-side session with secure cookies.</p>
+<p><strong>Why BFF (Backend-For-Frontend) Session over JWT in browser:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Concern</th>
+<th>BFF Cookie Session</th>
+<th>JWT in Browser (Bearer token)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>XSS safety</strong></td>
+<td>Token never in JS — httpOnly cookie</td>
+<td>Token in localStorage/memory — stealable via XSS</td>
+</tr>
+<tr>
+<td><strong>CSRF</strong></td>
+<td>Mitigated with SameSite + CSRF token</td>
+<td>Not applicable (no cookie)</td>
+</tr>
+<tr>
+<td><strong>Token theft</strong></td>
+<td>Cannot be read by JS at all</td>
+<td>Any XSS reads/exfiltrates token</td>
+</tr>
+<tr>
+<td><strong>Refresh flow</strong></td>
+<td>Server auto-refreshes via cookie — transparent</td>
+<td>Client must handle refresh logic</td>
+</tr>
+<tr>
+<td><strong>Revocation</strong></td>
+<td>Server invalidates session instantly</td>
+<td>JWT valid until expiry (no server check)</td>
+</tr>
+<tr>
+<td><strong>WebSocket auth</strong></td>
+<td>Session cookie sent on handshake automatically</td>
+<td>Must manually pass token</td>
+</tr>
+<tr>
+<td><strong>Simplicity</strong></td>
+<td>Browser handles cookies automatically</td>
+<td>Manual Authorization header on every request</td>
+</tr>
+<tr>
+<td><strong>Multi-tab</strong></td>
+<td>Cookies shared across tabs automatically</td>
+<td>Must sync token across tabs</td>
+</tr>
+</tbody>
+</table>
+<p><strong>How it works — BFF Session Architecture:</strong></p>
+<pre class="highlight"><code>┌─────────────────────────────────────────────────────────────┐
+│                    React App (Browser)                        │
+│                                                              │
+│  No tokens in JS. No localStorage. No Authorization header. │
+│  Browser sends httpOnly cookies automatically with every     │
+│  request to same-origin /api/* endpoints.                    │
+└──────────────────────────┬───────────────────────────────────┘
+                           │ Every request includes cookies
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    NestJS Backend                             │
+│                                                              │
+│  Session Middleware:                                          │
+│  1. Read session cookie from request                         │
+│  2. Look up session in MongoDB (sessions collection)         │
+│  3. Attach user + role to request object                     │
+│  4. If session expired but refresh window active:            │
+│     → Auto-refresh: issue new session, set new cookie        │
+│  5. If fully expired (&gt;30 days):                             │
+│     → 401 → redirect to login                                │
+│                                                              │
+│  On login success:                                           │
+│  → Create session document in MongoDB                        │
+│  → Set httpOnly cookie: session_id                           │
+│  → Set cookie maxAge: 30 days (auto-refresh window)          │
+└─────────────────────────────────────────────────────────────┘
+</code></pre>
+
+<p><strong>Session Flow — Login to Auto-Refresh:</strong></p>
+<pre class="highlight"><code>1. LOGIN:
+   POST /api/auth/send-otp   → MSG91 sends OTP to phone
+   POST /api/auth/verify-otp → Verify OTP
+     → Create session in MongoDB:
+       {
+         _id: ObjectId,
+         userId: ObjectId,
+         role: 'user',
+         userAgent: req.headers['user-agent'],
+         ip: req.ip,
+         createdAt: Date,
+         expiresAt: Date (now + 30 days),
+         lastActiveAt: Date,
+       }
+     → Set response cookie:
+       Set-Cookie: sid=&lt;sessionId&gt;;
+         HttpOnly;
+         Secure;
+         SameSite=Strict;
+         Path=/;
+         Max-Age=2592000 (30 days)
+     → Return: { user: { name, phone, role } }
+       (NO tokens in response body)
+
+2. EVERY API CALL:
+   Browser auto-sends cookie → NestJS middleware reads sid
+   → MongoDB lookup: sessions.findById(sid)
+   → If valid + not expired:
+     → Update lastActiveAt (sliding window)
+     → Attach user to req
+     → Continue to controller
+   → If expired:
+     → Delete session
+     → 401 response
+     → React redirects to login
+
+3. AUTO-REFRESH (30-day sliding window):
+   Every successful request resets lastActiveAt.
+   Session stays alive as long as user is active
+   within any 30-day window.
+   30 days of ZERO activity → session expires → re-login.
+
+4. LOGOUT:
+   POST /api/auth/logout
+   → Delete session from MongoDB
+   → Clear cookie: Set-Cookie: sid=; Max-Age=0
+   → All tabs lose auth immediately (shared cookie)
+
+5. WEBSOCKET AUTH:
+   Socket.io handshake sends cookies automatically
+   → NestJS gateway reads sid from handshake cookies
+   → MongoDB session lookup → attach user
+   → No manual token passing needed
+
+6. FORCE LOGOUT (admin blocks user):
+   → Delete all sessions for userId from MongoDB
+   → Next request from any device → 401 → login page
+   → Instant revocation (unlike JWT which stays valid)
+</code></pre>
+
+<p><strong>NestJS Implementation:</strong></p>
+<pre class="highlight"><code class="language-typescript">// auth/session.middleware.ts
+@Injectable()
+export class SessionMiddleware implements NestMiddleware {
+  constructor(
+    @InjectModel(Session.name) private sessionModel: Model&lt;Session&gt;,
+    @InjectModel(User.name) private userModel: Model&lt;User&gt;,
+  ) {}
+
+  async use(req: Request, res: Response, next: NextFunction) {
+    const sid = req.cookies?.sid;
+    if (!sid) return next(); // No session — public route or guard will reject
+
+    const session = await this.sessionModel.findById(sid);
+    if (!session || session.expiresAt &lt; new Date()) {
+      if (session) await session.deleteOne();
+      res.clearCookie('sid');
+      return next();
+    }
+
+    // Sliding window: refresh lastActiveAt
+    session.lastActiveAt = new Date();
+    await session.save();
+
+    // Attach user to request
+    const user = await this.userModel.findById(session.userId).lean();
+    req['user'] = user;
+    req['session'] = session;
+    next();
+  }
+}
+
+// auth/auth.service.ts
+@Injectable()
+export class AuthService {
+  async createSession(userId: ObjectId, role: string, req: Request, res: Response) {
+    const session = await this.sessionModel.create({
+      userId,
+      role,
+      userAgent: req.headers['user-agent'],
+      ip: req.ip,
+      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+      lastActiveAt: new Date(),
+    });
+
+    res.cookie('sid', session._id.toString(), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+      path: '/',
+    });
+
+    return session;
+  }
+
+  async destroySession(sessionId: string, res: Response) {
+    await this.sessionModel.findByIdAndDelete(sessionId);
+    res.clearCookie('sid');
+  }
+
+  async destroyAllUserSessions(userId: ObjectId) {
+    // Force logout from all devices
+    await this.sessionModel.deleteMany({ userId });
+  }
+}
+
+// auth/guards/auth.guard.ts
+@Injectable()
+export class SessionAuthGuard implements CanActivate {
+  canActivate(context: ExecutionContext): boolean {
+    const req = context.switchToHttp().getRequest();
+    if (!req.user) throw new UnauthorizedException('Not authenticated');
+    return true;
+  }
+}
+
+// auth/guards/roles.guard.ts
+@Injectable()
+export class RolesGuard implements CanActivate {
+  constructor(private reflector: Reflector) {}
+
+  canActivate(context: ExecutionContext): boolean {
+    const roles = this.reflector.get&lt;string[]&gt;('roles', context.getHandler());
+    if (!roles) return true;
+    const req = context.switchToHttp().getRequest();
+    return roles.includes(req.user?.role);
+  }
+}
+
+// Usage in controllers:
+@UseGuards(SessionAuthGuard, RolesGuard)
+@Roles('admin')
+@Get('/admin/users')
+getUsers() { ... }
+</code></pre>
+
+<p><strong>WebSocket Session Auth:</strong></p>
+<pre class="highlight"><code class="language-typescript">// tracking/tracking.gateway.ts
+@WebSocketGateway({ cors: { origin: true, credentials: true } })
+export class TrackingGateway implements OnGatewayConnection {
+  constructor(private authService: AuthService) {}
+
+  async handleConnection(client: Socket) {
+    // Socket.io sends cookies automatically with credentials: true
+    const cookieHeader = client.handshake.headers.cookie;
+    const sid = parseCookie(cookieHeader)?.sid;
+
+    if (!sid) {
+      client.disconnect();
+      return;
+    }
+
+    const session = await this.authService.validateSession(sid);
+    if (!session) {
+      client.disconnect();
+      return;
+    }
+
+    // Attach user to socket for later use
+    client.data.user = session.user;
+    client.data.role = session.role;
+  }
+}
+</code></pre>
+
+<p><strong>React Side — Zero Token Management:</strong></p>
+<pre class="highlight"><code class="language-typescript">// services/api.ts
+import axios from 'axios';
+
+const api = axios.create({
+  baseURL: '/api',
+  withCredentials: true, // This sends cookies automatically
+});
+
+// Interceptor: redirect to login on 401
+api.interceptors.response.use(
+  (res) =&gt; res,
+  (error) =&gt; {
+    if (error.response?.status === 401) {
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
+
+export default api;
+
+// Usage — no token, no header, just call:
+const bookings = await api.get('/bookings');
+const user = await api.get('/auth/me');
+await api.post('/bookings', bookingData);
+// Cookies handle everything.
+</code></pre>
+
+<p><strong>MongoDB Session Schema:</strong></p>
+<pre class="highlight"><code class="language-typescript">// schemas/session.schema.ts
+@Schema({ timestamps: true })
+export class Session {
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true, index: true })
+  userId: Types.ObjectId;
+
+  @Prop({ required: true })
+  role: string;
+
+  @Prop()
+  userAgent: string;
+
+  @Prop()
+  ip: string;
+
+  @Prop({ required: true, index: true })
+  expiresAt: Date;
+
+  @Prop({ default: Date.now })
+  lastActiveAt: Date;
+}
+
+// TTL index: MongoDB auto-deletes expired sessions
+SessionSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+</code></pre>
+
+<p><strong>Security Hardening:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Protection</th>
+<th>How</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>XSS</strong></td>
+<td>httpOnly — JS can't access cookie at all</td>
+</tr>
+<tr>
+<td><strong>CSRF</strong></td>
+<td>SameSite=Strict — cookie not sent on cross-origin requests</td>
+</tr>
+<tr>
+<td><strong>Session fixation</strong></td>
+<td>New session ID on login (delete old, create new)</td>
+</tr>
+<tr>
+<td><strong>Brute force</strong></td>
+<td>Rate limit on /auth/send-otp (3 per 10 min per phone)</td>
+</tr>
+<tr>
+<td><strong>Session hijacking</strong></td>
+<td>Validate userAgent + IP on each request (optional strict mode)</td>
+</tr>
+<tr>
+<td><strong>Force logout</strong></td>
+<td>Delete session from MongoDB → instant revocation across all devices</td>
+</tr>
+<tr>
+<td><strong>Session listing</strong></td>
+<td>Admin can see all active sessions for a user → revoke any</td>
+</tr>
+<tr>
+<td><strong>Concurrent limit</strong></td>
+<td>Max 5 sessions per user (reject new login or evict oldest)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="database-mongodb-nestjsmongoose">Database: MongoDB + @nestjs/mongoose</h3>
+<p><strong>Why MongoDB + Mongoose:</strong><br />
+- Geospatial indexes (<code>2dsphere</code>) — find available cars near a location<br />
+- Flexible document model — bookings with nested stops, pricing, status history<br />
+- Aggregation pipelines — revenue reports, driver performance analytics<br />
+- <code>@nestjs/mongoose</code> — decorator-based schemas, full TypeScript types<br />
+- Free tier (Atlas M0, 512MB, Mumbai region)<br />
+- TTL indexes — auto-delete old location logs</p>
+<h3 id="ui-tailwind-css-4-shadcnui">UI: Tailwind CSS 4 + shadcn/ui</h3>
+<p><strong>Why shadcn/ui:</strong><br />
+- Components copied into your codebase (zero dependency)<br />
+- Built on Radix UI (accessible, ARIA-compliant)<br />
+- 50+ components: Button, Dialog, Calendar, DatePicker, DataTable, Form, etc.<br />
+- Full customization — override anything for white-label branding<br />
+- Works perfectly with React + Vite (no Next.js dependency)</p>
+<h3 id="state-redux-toolkit-redux-saga">State: Redux Toolkit + Redux-Saga</h3>
+<p><strong>Redux Toolkit (RTK)</strong> — centralized, predictable state for entire app:<br />
+- Auth state (user, token, role, login status)<br />
+- Booking state (wizard steps, selected car, route, pricing)<br />
+- Tracking state (driver position, map center, GPS source)<br />
+- UI state (sidebar, modals, notifications drawer)<br />
+- Cars, drivers, users — cached in store slices<br />
+- Admin dashboard data</p>
+<p><strong>Redux-Saga</strong> — powerful side-effect management:<br />
+- Complex async flows: booking → payment → confirmation → notifications<br />
+- WebSocket channel handling (Socket.io events as sagas)<br />
+- Retry logic for failed API calls<br />
+- Debounce/throttle GPS updates<br />
+- Cancellable operations (cancel booking mid-payment)<br />
+- Fork parallel tasks (fetch cars + routes simultaneously)<br />
+- <code>takeLatest</code>, <code>takeEvery</code>, <code>race</code>, <code>all</code> — fine-grained control</p>
+<p><strong>Why Redux + Saga over Zustand + TanStack Query:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Concern</th>
+<th>Redux + Saga</th>
+<th>Zustand + TanStack Query</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Complex async flows</td>
+<td>Saga generators — readable, testable</td>
+<td>Scattered across hooks</td>
+</tr>
+<tr>
+<td>WebSocket events</td>
+<td><code>eventChannel</code> — first-class saga pattern</td>
+<td>Manual useEffect cleanup</td>
+</tr>
+<tr>
+<td>Booking wizard (multi-step)</td>
+<td>Single slice with saga orchestrating steps</td>
+<td>Multiple stores/hooks</td>
+</tr>
+<tr>
+<td>Cancel in-flight requests</td>
+<td><code>race()</code> / <code>cancelled()</code> built-in</td>
+<td>Manual AbortController</td>
+</tr>
+<tr>
+<td>Debugging</td>
+<td>Redux DevTools — time-travel, action log</td>
+<td>Limited</td>
+</tr>
+<tr>
+<td>Testing</td>
+<td>Saga generators are pure, easy to test</td>
+<td>Hook testing is complex</td>
+</tr>
+<tr>
+<td>Team scalability</td>
+<td>Standard patterns everyone knows</td>
+<td>Custom patterns per developer</td>
+</tr>
+<tr>
+<td>Middleware</td>
+<td>Saga IS middleware — intercept any action</td>
+<td>No middleware concept</td>
+</tr>
+<tr>
+<td>White-label resale</td>
+<td>Predictable architecture for other devs</td>
+<td>Harder to hand off</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Redux Toolkit eliminates old Redux boilerplate:</strong><br />
+- <code>createSlice</code> — reducer + actions in one<br />
+- <code>createAsyncThunk</code> — for simple async (use Saga for complex)<br />
+- Immer built-in — mutate state directly<br />
+- RTK Query available if needed later (but Saga handles API calls)</p>
+<p><strong>Store Structure:</strong></p>
+<pre class="highlight"><code class="language-typescript">// store/
+├── store.ts              // configureStore + sagaMiddleware
+├── rootSaga.ts           // all sagas combined
+├── slices/
+│   ├── authSlice.ts      // user, token, role, isAuthenticated
+│   ├── bookingSlice.ts   // current booking, wizard step, bookings list
+│   ├── carsSlice.ts      // available cars, car details
+│   ├── driversSlice.ts   // driver info, assignments
+│   ├── trackingSlice.ts  // driver position, car position, fused position
+│   ├── notificationSlice.ts // notifications list, unread count
+│   ├── adminSlice.ts     // dashboard stats, user management
+│   └── uiSlice.ts        // sidebar, modals, loading states
+└── sagas/
+    ├── authSaga.ts       // login, OTP, token refresh
+    ├── bookingSaga.ts    // create → pay → confirm flow
+    ├── paymentSaga.ts    // Razorpay checkout orchestration
+    ├── trackingSaga.ts   // WebSocket eventChannel for GPS
+    ├── notificationSaga.ts // push permission, FCM token
+    └── adminSaga.ts      // CRUD operations
+</code></pre>
+
+<p><strong>Saga Example — WebSocket GPS Tracking:</strong></p>
+<pre class="highlight"><code class="language-typescript">function createSocketChannel(socket, bookingId) {
+  return eventChannel((emit) =&gt; {
+    socket.on('driver:location', (data) =&gt; emit(data));
+    socket.emit('join:booking', bookingId);
+    return () =&gt; socket.emit('leave:booking', bookingId);
+  });
+}
+
+function* watchTracking(action) {
+  const socket = yield call(connectSocket);
+  const channel = yield call(createSocketChannel, socket, action.payload.bookingId);
+
+  try {
+    while (true) {
+      const position = yield take(channel);
+      yield put(trackingActions.updateDriverPosition(position));
+    }
+  } finally {
+    if (yield cancelled()) {
+      channel.close();
+    }
+  }
+}
+
+function* trackingSaga() {
+  yield takeLatest('tracking/startTracking', watchTracking);
+}
+</code></pre>
+
+<p><strong>Saga Example — Booking Flow Orchestration:</strong></p>
+<pre class="highlight"><code class="language-typescript">function* createBookingSaga(action) {
+  try {
+    yield put(bookingActions.setLoading(true));
+
+    // 1. Create booking
+    const booking = yield call(api.createBooking, action.payload);
+    yield put(bookingActions.setCurrentBooking(booking));
+
+    // 2. Create Razorpay order
+    const order = yield call(api.createPaymentOrder, booking._id);
+
+    // 3. Open Razorpay checkout (returns promise)
+    const paymentResult = yield call(openRazorpayCheckout, order);
+
+    // 4. Verify payment
+    yield call(api.verifyPayment, paymentResult);
+    yield put(bookingActions.setStatus('confirmed'));
+
+    // 5. Show success notification
+    yield put(notificationActions.showSuccess('Booking confirmed!'));
+
+  } catch (error) {
+    yield put(bookingActions.setError(error.message));
+    yield put(notificationActions.showError('Booking failed'));
+  } finally {
+    yield put(bookingActions.setLoading(false));
+  }
+}
+</code></pre>
+
+<h3 id="real-time-socketio-via-nestjswebsockets">Real-time: Socket.io via @nestjs/websockets</h3>
+<p>NestJS WebSocket Gateway is first-class:</p>
+<pre class="highlight"><code class="language-typescript">@WebSocketGateway({ cors: true, namespace: '/tracking' })
+export class TrackingGateway {
+  @WebSocketServer() server: Server;
+
+  @SubscribeMessage('location:update')
+  handleLocation(@ConnectedSocket() client, @MessageBody() data) {
+    this.server.to(`booking:${data.bookingId}`).emit('driver:location', data);
+  }
+}
+</code></pre>
+
+<p>Socket.io rooms per booking — user joins room when viewing tracking page, driver broadcasts to room.</p>
+<h3 id="maps-google-maps-visglreact-google-maps">Maps: Google Maps + @vis.gl/react-google-maps</h3>
+<p>Google Maps for India — best accuracy, traffic data, place autocomplete. $200/month free credit covers ~40,000 route calculations.</p>
+<h3 id="pwa-vite-plugin-pwa">PWA: vite-plugin-pwa</h3>
+<p>Simpler than Serwist for React apps:<br />
+- Auto-generates service worker (Workbox under hood)<br />
+- Manifest.json configured in vite.config.ts<br />
+- Install prompt handling<br />
+- Offline fallback<br />
+- Cache strategies per route</p>
+<h3 id="forms-react-hook-form-zod">Forms: React Hook Form + Zod</h3>
+<ul>
+<li>Zod schemas shared between frontend validation and NestJS DTOs (<code>class-validator</code> on backend, or use Zod everywhere via <code>nestjs-zod</code>)</li>
+<li>React Hook Form: uncontrolled, minimal re-renders</li>
+</ul>
+<hr />
+<h2 id="modern-web-apis-web-30-features">Modern Web APIs (Web 3.0 Features)</h2>
+<p>All browser-native, zero cost, zero dependencies. Grouped by implementation phase.</p>
+<h3 id="mvp-month-1-core-apis">MVP (Month 1) — Core APIs</h3>
+<h4 id="1-pwa-progressive-web-app">1. PWA (Progressive Web App)</h4>
+<ul>
+<li><strong>What</strong>: Installable app from browser, offline shell, cached assets</li>
+<li><strong>Where</strong>: Entire app</li>
+<li><strong>Setup</strong>: <code>vite-plugin-pwa</code> in vite.config.ts</li>
+<li><strong>Benefit</strong>: Users "install" from browser — no app store needed</li>
+</ul>
+<h4 id="2-web-push-api-notifications-api">2. Web Push API + Notifications API</h4>
+<ul>
+<li><strong>What</strong>: System-level notifications even when tab not focused</li>
+<li><strong>Where</strong>: Booking confirm, driver arriving, ride complete, payment, cancel</li>
+<li><strong>Setup</strong>: FCM + VAPID keys + service worker</li>
+<li><strong>Benefit</strong>: 90%+ engagement vs email</li>
+</ul>
+<h4 id="3-geolocation-api">3. Geolocation API</h4>
+<ul>
+<li><strong>What</strong>: Real-time GPS from driver's phone</li>
+<li><strong>Where</strong>: Driver PWA during active ride</li>
+<li><strong>Setup</strong>: <code>navigator.geolocation.watchPosition()</code></li>
+<li><strong>Benefit</strong>: Live tracking without native app</li>
+</ul>
+<pre class="highlight"><code class="language-typescript">// hooks/useGeolocation.ts
+export function useDriverTracking(bookingId: string) {
+  useEffect(() =&gt; {
+    const watchId = navigator.geolocation.watchPosition(
+      (pos) =&gt; {
+        socket.emit('location:update', {
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+          speed: pos.coords.speed,
+          accuracy: pos.coords.accuracy,
+          bookingId,
+          source: 'phone',
+        });
+      },
+      (err) =&gt; console.error('GPS error:', err),
+      { enableHighAccuracy: true, maximumAge: 5000, timeout: 10000 }
+    );
+    return () =&gt; navigator.geolocation.clearWatch(watchId);
+  }, [bookingId]);
+}
+</code></pre>
+
+<h4 id="4-wake-lock-api">4. Wake Lock API</h4>
+<ul>
+<li><strong>What</strong>: Prevents screen from turning off</li>
+<li><strong>Where</strong>: Driver app during active ride (GPS must keep running)</li>
+<li><strong>Setup</strong>: <code>navigator.wakeLock.request('screen')</code></li>
+<li><strong>Benefit</strong>: No GPS interruption from screen timeout</li>
+</ul>
+<pre class="highlight"><code class="language-typescript">// hooks/useWakeLock.ts
+export function useWakeLock(active: boolean) {
+  const wakeLockRef = useRef&lt;WakeLockSentinel | null&gt;(null);
+
+  useEffect(() =&gt; {
+    if (active &amp;&amp; 'wakeLock' in navigator) {
+      navigator.wakeLock.request('screen').then((wl) =&gt; {
+        wakeLockRef.current = wl;
+      });
+    }
+    return () =&gt; { wakeLockRef.current?.release(); };
+  }, [active]);
+}
+
+// Usage: useWakeLock(rideStatus === 'in_progress');
+</code></pre>
+
+<h4 id="5-web-notifications-api">5. Web Notifications API</h4>
+<ul>
+<li><strong>What</strong>: System notifications from service worker (works when tab closed)</li>
+<li><strong>Where</strong>: All notification types</li>
+<li><strong>Setup</strong>: Part of FCM integration</li>
+</ul>
+<pre class="highlight"><code class="language-typescript">// In service worker
+self.registration.showNotification('Driver Arriving!', {
+  body: 'Ramesh is 2 min away in MP09AB1234',
+  icon: '/icons/icon-192.png',
+  badge: '/icons/badge-72.png',
+  vibrate: [200, 100, 200],
+  tag: 'driver-arriving',
+  data: { bookingId, url: '/tracking/BK-123' },
+  actions: [
+    { action: 'track', title: 'Track Live' },
+    { action: 'call', title: 'Call Driver' },
+  ],
+});
+</code></pre>
+
+<h3 id="mvp-polish-week-4-quick-adds">MVP Polish (Week 4) — Quick Adds</h3>
+<h4 id="6-vibration-api">6. Vibration API</h4>
+<ul>
+<li><strong>What</strong>: Haptic feedback on phone</li>
+<li><strong>Where</strong>: Booking confirmed, driver arrived, payment success, ride complete</li>
+<li><strong>Setup</strong>: One line — <code>navigator.vibrate()</code></li>
+</ul>
+<pre class="highlight"><code class="language-typescript">// utils/haptics.ts
+export const haptics = {
+  success: () =&gt; navigator.vibrate?.([100, 50, 200]),       // short-pause-long
+  alert:   () =&gt; navigator.vibrate?.([200, 100, 200, 100, 200]), // urgent triple
+  tap:     () =&gt; navigator.vibrate?.(50),                    // light tap
+};
+
+// Usage in saga:
+yield put(bookingActions.setStatus('confirmed'));
+haptics.success();
+</code></pre>
+
+<h4 id="7-screen-orientation-api">7. Screen Orientation API</h4>
+<ul>
+<li><strong>What</strong>: Lock screen to portrait or landscape</li>
+<li><strong>Where</strong>: Lock portrait on tracking map, allow landscape on admin dashboard</li>
+<li><strong>Setup</strong>: <code>screen.orientation.lock()</code></li>
+</ul>
+<pre class="highlight"><code class="language-typescript">// On tracking page mount:
+screen.orientation?.lock?.('portrait').catch(() =&gt; {});
+
+// On admin reports page:
+screen.orientation?.lock?.('landscape').catch(() =&gt; {});
+
+// Unlock on unmount:
+screen.orientation?.unlock?.();
+</code></pre>
+
+<h4 id="8-web-share-api">8. Web Share API</h4>
+<ul>
+<li><strong>What</strong>: Native OS share dialog (WhatsApp, SMS, email, etc.)</li>
+<li><strong>Where</strong>: Share ride tracking link with family for safety</li>
+<li><strong>Setup</strong>: <code>navigator.share()</code></li>
+<li><strong>Benefit</strong>: Safety feature — family can track ride in real-time</li>
+</ul>
+<pre class="highlight"><code class="language-typescript">// components/booking/ShareRideButton.tsx
+const shareRide = async (booking: Booking) =&gt; {
+  if (!navigator.share) {
+    // Fallback: copy link to clipboard
+    await navigator.clipboard.writeText(trackingUrl);
+    toast.success('Link copied!');
+    return;
+  }
+
+  await navigator.share({
+    title: 'Track my ride',
+    text: `I'm traveling from ${booking.pickup.address} to ${booking.drop.address}. Track my live location:`,
+    url: `${window.location.origin}/track/${booking.bookingId}`,
+  });
+};
+
+// Share button shows native Android/iOS share sheet
+// User picks WhatsApp → family member clicks link → sees live map
+</code></pre>
+
+<h3 id="month-2-high-value">Month 2 — High Value</h3>
+<h4 id="9-payment-request-api">9. Payment Request API</h4>
+<ul>
+<li><strong>What</strong>: Native browser payment sheet — triggers UPI app directly</li>
+<li><strong>Where</strong>: Alternative to Razorpay checkout for faster UPI flow</li>
+<li><strong>Benefit</strong>: Fewer taps, native UPI intent, higher conversion</li>
+</ul>
+<pre class="highlight"><code class="language-typescript">// services/nativePayment.ts
+export async function payWithNativeUPI(booking: Booking) {
+  if (!window.PaymentRequest) {
+    // Fall back to Razorpay checkout
+    return openRazorpayCheckout(booking);
+  }
+
+  const supportedMethods = [{
+    supportedMethods: 'https://tez.google.com/pay',
+    data: {
+      pa: 'merchant@upi',           // Your UPI VPA
+      pn: 'CabBookingApp',
+      tr: booking.bookingId,
+      am: String(booking.pricing.totalAmount),
+      cu: 'INR',
+      tn: `Ride: ${booking.pickup.address} to ${booking.drop.address}`,
+    },
+  }];
+
+  const details = {
+    total: {
+      label: `Ride to ${booking.drop.address}`,
+      amount: { currency: 'INR', value: String(booking.pricing.totalAmount) },
+    },
+  };
+
+  const request = new PaymentRequest(supportedMethods, details);
+  const response = await request.show();
+
+  // Verify on backend
+  await api.verifyNativePayment(booking._id, response);
+  await response.complete('success');
+}
+</code></pre>
+
+<h4 id="10-background-sync-api">10. Background Sync API</h4>
+<ul>
+<li><strong>What</strong>: Queue actions when offline, auto-sync when back online</li>
+<li><strong>Where</strong>: Booking creation on spotty connection, driver status updates</li>
+<li><strong>Benefit</strong>: No "network error" frustration in low-connectivity areas (highways)</li>
+</ul>
+<pre class="highlight"><code class="language-typescript">// service-worker.ts — register sync
+import { BackgroundSyncPlugin } from 'workbox-background-sync';
+
+const bgSyncPlugin = new BackgroundSyncPlugin('booking-queue', {
+  maxRetentionTime: 24 * 60, // Retry for 24 hours
+});
+
+registerRoute(
+  '/api/bookings',
+  new NetworkOnly({ plugins: [bgSyncPlugin] }),
+  'POST'
+);
+
+// When user books offline:
+// 1. Request fails (no network)
+// 2. BackgroundSyncPlugin queues it in IndexedDB
+// 3. When online → browser fires 'sync' event
+// 4. Plugin replays the POST request
+// 5. Booking created successfully
+</code></pre>
+
+<h3 id="future-v2-differentiators">Future (v2) — Differentiators</h3>
+<h4 id="11-webrtc">11. WebRTC</h4>
+<ul>
+<li><strong>What</strong>: Peer-to-peer audio/video calls in browser</li>
+<li><strong>Where</strong>: In-app voice call between user and driver</li>
+<li><strong>Benefit</strong>: No phone number exchange needed — privacy + safety</li>
+</ul>
+<pre class="highlight"><code class="language-typescript">// Future implementation sketch:
+// User clicks &quot;Call Driver&quot; → WebRTC peer connection via NestJS signaling server
+// Direct audio call in browser, no phone network needed
+// Works on WiFi/data — useful when phone balance is low
+// Call recording possible for dispute resolution
+</code></pre>
+
+<h4 id="12-web-bluetooth-api">12. Web Bluetooth API</h4>
+<ul>
+<li><strong>What</strong>: Connect to Bluetooth devices from browser</li>
+<li><strong>Where</strong>: Read car OBD-II diagnostics via Bluetooth dongle</li>
+<li><strong>Benefit</strong>: Real-time engine data, fuel level, speed in admin dashboard</li>
+</ul>
+<pre class="highlight"><code class="language-typescript">// Future: connect to ELM327 OBD-II Bluetooth adapter
+// Read: speed, RPM, fuel level, engine temperature
+// Use for: maintenance alerts, fuel expense tracking, driver behavior scoring
+</code></pre>
+
+<h3 id="browser-support-matrix-india-relevant">Browser Support Matrix (India-Relevant)</h3>
+<table>
+<thead>
+<tr>
+<th>API</th>
+<th>Chrome Android</th>
+<th>Safari iOS</th>
+<th>Desktop Chrome</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PWA Install</td>
+<td>Full</td>
+<td>Home Screen</td>
+<td>Full</td>
+</tr>
+<tr>
+<td>Web Push</td>
+<td>Full</td>
+<td>iOS 16.4+ (PWA only)</td>
+<td>Full</td>
+</tr>
+<tr>
+<td>Geolocation</td>
+<td>Full</td>
+<td>Full</td>
+<td>Full</td>
+</tr>
+<tr>
+<td>Wake Lock</td>
+<td>Full</td>
+<td>Partial</td>
+<td>Full</td>
+</tr>
+<tr>
+<td>Vibration</td>
+<td>Full</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Screen Orientation</td>
+<td>Full</td>
+<td>No</td>
+<td>Limited</td>
+</tr>
+<tr>
+<td>Web Share</td>
+<td>Full</td>
+<td>Full</td>
+<td>Full</td>
+</tr>
+<tr>
+<td>Payment Request</td>
+<td>Full (Google Pay)</td>
+<td>Apple Pay only</td>
+<td>Limited</td>
+</tr>
+<tr>
+<td>Background Sync</td>
+<td>Full</td>
+<td>No</td>
+<td>Full</td>
+</tr>
+<tr>
+<td>WebRTC</td>
+<td>Full</td>
+<td>Full</td>
+<td>Full</td>
+</tr>
+<tr>
+<td>Web Bluetooth</td>
+<td>Full</td>
+<td>No</td>
+<td>Full</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>India context</strong>: Android = ~95% market share. All APIs fully supported on Chrome Android. iOS gaps (vibration, background sync, screen lock) affect only ~5% users.</p>
+</blockquote>
+<h3 id="implementation-priority-summary">Implementation Priority Summary</h3>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>APIs</th>
+<th>Effort</th>
+<th>Impact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>MVP Week 1-2</strong></td>
+<td>PWA, Geolocation, Web Push, Notifications</td>
+<td>Built into architecture</td>
+<td>Critical</td>
+</tr>
+<tr>
+<td><strong>MVP Week 3</strong></td>
+<td>Wake Lock</td>
+<td>10 lines</td>
+<td>High (driver GPS reliability)</td>
+</tr>
+<tr>
+<td><strong>MVP Week 4</strong></td>
+<td>Vibration, Screen Orientation, Web Share</td>
+<td>5-20 lines each</td>
+<td>Medium (UX polish)</td>
+</tr>
+<tr>
+<td><strong>Month 2</strong></td>
+<td>Payment Request, Background Sync</td>
+<td>50-100 lines each</td>
+<td>High (conversion, reliability)</td>
+</tr>
+<tr>
+<td><strong>v2</strong></td>
+<td>WebRTC, Web Bluetooth</td>
+<td>Full feature</td>
+<td>Differentiator</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="package-lists">Package Lists</h2>
+<h3 id="react-apppackagejson">react-app/package.json</h3>
+<pre class="highlight"><code class="language-json">{
+  &quot;dependencies&quot;: {
+    &quot;react&quot;: &quot;^19.x&quot;,
+    &quot;react-dom&quot;: &quot;^19.x&quot;,
+    &quot;react-router&quot;: &quot;^7.x&quot;,
+    &quot;typescript&quot;: &quot;^5.x&quot;,
+    &quot;@reduxjs/toolkit&quot;: &quot;^2.x&quot;,
+    &quot;react-redux&quot;: &quot;^9.x&quot;,
+    &quot;redux-saga&quot;: &quot;^1.x&quot;,
+    &quot;react-hook-form&quot;: &quot;^7.x&quot;,
+    &quot;@hookform/resolvers&quot;: &quot;^3.x&quot;,
+    &quot;zod&quot;: &quot;^3.x&quot;,
+    &quot;axios&quot;: &quot;^1.x&quot;,
+    &quot;socket.io-client&quot;: &quot;^4.x&quot;,
+    &quot;@vis.gl/react-google-maps&quot;: &quot;^1.x&quot;,
+    &quot;date-fns&quot;: &quot;^4.x&quot;,
+    &quot;firebase&quot;: &quot;^11.x&quot;
+  },
+  &quot;devDependencies&quot;: {
+    &quot;vite&quot;: &quot;^6.x&quot;,
+    &quot;tailwindcss&quot;: &quot;^4.x&quot;,
+    &quot;vite-plugin-pwa&quot;: &quot;^0.21.x&quot;,
+    &quot;eslint&quot;: &quot;^9.x&quot;,
+    &quot;prettier&quot;: &quot;^3.x&quot;
+  }
+}
+</code></pre>
+
+<h3 id="nestjs-apipackagejson">nestjs-api/package.json</h3>
+<pre class="highlight"><code class="language-json">{
+  &quot;dependencies&quot;: {
+    &quot;@nestjs/core&quot;: &quot;^11.x&quot;,
+    &quot;@nestjs/common&quot;: &quot;^11.x&quot;,
+    &quot;@nestjs/platform-express&quot;: &quot;^11.x&quot;,
+    &quot;@nestjs/mongoose&quot;: &quot;^11.x&quot;,
+    &quot;cookie-parser&quot;: &quot;^1.x&quot;,
+    &quot;@nestjs/websockets&quot;: &quot;^11.x&quot;,
+    &quot;@nestjs/platform-socket.io&quot;: &quot;^11.x&quot;,
+    &quot;@nestjs/schedule&quot;: &quot;^5.x&quot;,
+    &quot;@nestjs/bull&quot;: &quot;^11.x&quot;,
+    &quot;@nestjs/swagger&quot;: &quot;^8.x&quot;,
+    &quot;mongoose&quot;: &quot;^8.x&quot;,
+    &quot;bcrypt&quot;: &quot;^5.x&quot;,
+    &quot;razorpay&quot;: &quot;^2.x&quot;,
+    &quot;firebase-admin&quot;: &quot;^13.x&quot;,
+    &quot;@aws-sdk/client-s3&quot;: &quot;^3.x&quot;,
+    &quot;@aws-sdk/s3-request-presigner&quot;: &quot;^3.x&quot;,
+    &quot;bullmq&quot;: &quot;^5.x&quot;,
+    &quot;ioredis&quot;: &quot;^5.x&quot;,
+    &quot;class-validator&quot;: &quot;^0.14.x&quot;,
+    &quot;class-transformer&quot;: &quot;^0.5.x&quot;,
+    &quot;web-push&quot;: &quot;^3.x&quot;,
+    &quot;socket.io&quot;: &quot;^4.x&quot;,
+    &quot;helmet&quot;: &quot;^8.x&quot;,
+    &quot;zod&quot;: &quot;^3.x&quot;
+  },
+  &quot;devDependencies&quot;: {
+    &quot;@nestjs/cli&quot;: &quot;^11.x&quot;,
+    &quot;@nestjs/testing&quot;: &quot;^11.x&quot;,
+    &quot;typescript&quot;: &quot;^5.x&quot;,
+    &quot;jest&quot;: &quot;^29.x&quot;,
+    &quot;eslint&quot;: &quot;^9.x&quot;,
+    &quot;prettier&quot;: &quot;^3.x&quot;
+  }
+}
+</code></pre>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#1f6feb',
+                primaryTextColor: '#e6edf3',
+                primaryBorderColor: '#58a6ff',
+                lineColor: '#8b949e',
+                secondaryColor: '#161b22',
+                tertiaryColor: '#0d1117',
+                background: '#0d1117',
+                mainBkg: '#161b22',
+                nodeBorder: '#30363d',
+                clusterBkg: '#161b22',
+                titleColor: '#58a6ff',
+                edgeLabelBackground: '#161b22',
+            }
+        });
+    </script>
+</body>
+</html>

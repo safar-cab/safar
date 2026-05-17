@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Maps Setup Guide</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --green: #3fb950;
+            --red: #f85149;
+            --yellow: #d29922;
+            --purple: #bc8cff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        h1 {
+            font-size: 2rem;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-hover);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.3rem;
+        }
+        h3 {
+            font-size: 1.2rem;
+            margin-top: 1.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--purple);
+        }
+        h4 {
+            font-size: 1rem;
+            margin-top: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        p {
+            margin-bottom: 1rem;
+        }
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+            color: var(--accent-hover);
+        }
+        code {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.15rem 0.4rem;
+            font-size: 0.9em;
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            color: var(--accent-hover);
+        }
+        pre {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+        }
+        pre code {
+            background: none;
+            border: none;
+            padding: 0;
+            color: var(--text);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background: #1c2333;
+            color: var(--accent);
+            font-weight: 600;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+        td {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover td {
+            background: rgba(88, 166, 255, 0.05);
+        }
+        blockquote {
+            border-left: 4px solid var(--accent);
+            background: var(--card);
+            padding: 0.8rem 1.2rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-muted);
+        }
+        blockquote strong {
+            color: var(--yellow);
+        }
+        ul, ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        li {
+            margin-bottom: 0.3rem;
+        }
+        li ul, li ol {
+            margin-bottom: 0;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+        strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+        em {
+            color: var(--text-muted);
+        }
+        .mermaid {
+            background: #1a1f2e;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        .nav {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .nav a {
+            font-size: 0.85rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            background: rgba(88, 166, 255, 0.1);
+        }
+        .nav a:hover {
+            background: rgba(88, 166, 255, 0.2);
+            text-decoration: none;
+        }
+        .nav-label {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        input[type="checkbox"] {
+            accent-color: var(--green);
+            transform: scale(1.2);
+            margin-right: 0.3rem;
+        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.5rem; }
+            table { font-size: 0.85rem; }
+            th, td { padding: 0.4rem 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <span class="nav-label">Navigation:</span>
+        <a href="../index.html" style="background:rgba(63,185,80,0.2);color:#3fb950;font-weight:600;">Home</a>
+        <a href="../00-executive-summary.html">Summary</a>
+        <a href="../01-product-identity.html">Identity</a>
+        <a href="../02-competitive-analysis.html">Competitors</a>
+        <a href="../03-target-market.html">Market</a>
+        <a href="../04-user-flow.html">UX Flow</a>
+        <a href="../05-mvp-definition.html">MVP</a>
+        <a href="../06-architecture.html">Architecture</a>
+        <a href="../07-tech-stack.html">Tech Stack</a>
+        <a href="../08-integrations.html">Integrations</a>
+        <a href="../10-database-design.html">Database</a>
+        <a href="../11-sequence-diagrams.html">Sequences</a>
+        <a href="../12-project-flow.html">Project Flow</a>
+        <a href="../13-security.html">Security</a>
+        <a href="../14-legal-compliance.html">Legal</a>
+        <a href="../15-implementation-phases.html">Phases</a>
+        <a href="../16-production-checklist.html">Checklist</a>
+        <a href="../17-devops.html">DevOps</a>
+        <a href="../18-monetization.html">Revenue</a>
+        <a href="../19-cost-management.html">Costs</a>
+        <a href="../20-marketing.html">Marketing</a>
+        <a href="../21-analytics-kpis.html">KPIs</a>
+        <a href="../22-accessibility-i18n.html">A11y</a>
+        <a href="../23-support-docs.html">Support</a>
+        <a href="../24-team-hiring.html">Team</a>
+        <a href="../25-risk-assessment.html">Risks</a>
+        <a href="../26-future-roadmap.html">Roadmap</a>
+    </nav>
+    <h1 id="google-maps-setup-guide">Google Maps Setup Guide</h1>
+<h2 id="1-create-google-cloud-project">1. Create Google Cloud Project</h2>
+<ol>
+<li>Go to https://console.cloud.google.com</li>
+<li>Create new project: "CabBookingApp"</li>
+<li>Enable billing (credit card required — won't charge within free tier)</li>
+</ol>
+<h2 id="2-enable-apis">2. Enable APIs</h2>
+<p>Enable these APIs in Google Cloud Console:<br />
+1. <strong>Maps JavaScript API</strong> — Display maps<br />
+2. <strong>Directions API</strong> — Route calculation<br />
+3. <strong>Distance Matrix API</strong> — Distance between points<br />
+4. <strong>Places API</strong> — Address autocomplete<br />
+5. <strong>Geocoding API</strong> — Address to coordinates</p>
+<h2 id="3-create-api-key">3. Create API Key</h2>
+<ol>
+<li>APIs &amp; Services → Credentials → Create Credentials → API Key</li>
+<li>Restrict the key:</li>
+<li><strong>Application restriction</strong>: HTTP referrers</li>
+<li>Add: <code>yourdomain.in/*</code>, <code>localhost:3000/*</code></li>
+<li><strong>API restriction</strong>: Select only the 5 APIs above</li>
+</ol>
+<h2 id="4-environment-variables">4. Environment Variables</h2>
+<pre class="highlight"><code class="language-env">NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=AIzaSyxxxxxxxxxxxxxxxxxxxxxxxxxx
+GOOGLE_MAPS_SERVER_KEY=AIzaSyxxxxxxxxxxxxxxxxxxxxxxxxxx  # For server-side API calls
+</code></pre>
+
+<blockquote>
+<p>Use separate keys for client (restricted to HTTP referrer) and server (restricted to IP).</p>
+</blockquote>
+<h2 id="5-install-package">5. Install Package</h2>
+<pre class="highlight"><code class="language-bash">npm install @react-google-maps/api
+</code></pre>
+
+<h2 id="6-map-component">6. Map Component</h2>
+<pre class="highlight"><code class="language-typescript">// components/maps/BookingMap.tsx
+'use client';
+
+import { GoogleMap, Marker, DirectionsRenderer, useJsApiLoader } from '@react-google-maps/api';
+import { useState, useCallback } from 'react';
+
+const libraries: ('places')[] = ['places'];
+
+export function BookingMap({ pickup, drop, stops }: Props) {
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
+    libraries,
+  });
+
+  const [directions, setDirections] = useState&lt;google.maps.DirectionsResult | null&gt;(null);
+
+  const calculateRoute = useCallback(async () =&gt; {
+    if (!pickup || !drop) return;
+
+    const directionsService = new google.maps.DirectionsService();
+    const result = await directionsService.route({
+      origin: pickup,
+      destination: drop,
+      waypoints: stops?.map(s =&gt; ({ location: s, stopover: true })) || [],
+      travelMode: google.maps.TravelMode.DRIVING,
+    });
+
+    setDirections(result);
+  }, [pickup, drop, stops]);
+
+  if (!isLoaded) return &lt;div&gt;Loading map...&lt;/div&gt;;
+
+  return (
+    &lt;GoogleMap
+      mapContainerStyle={{ width: '100%', height: '400px' }}
+      center={{ lat: 22.7196, lng: 75.8577 }} // Indore
+      zoom={12}
+    &gt;
+      {directions &amp;&amp; &lt;DirectionsRenderer directions={directions} /&gt;}
+    &lt;/GoogleMap&gt;
+  );
+}
+</code></pre>
+
+<h2 id="7-place-autocomplete">7. Place Autocomplete</h2>
+<pre class="highlight"><code class="language-typescript">// components/maps/PlaceAutocomplete.tsx
+import { Autocomplete } from '@react-google-maps/api';
+
+export function PlaceAutocomplete({ onSelect }: { onSelect: (place: Place) =&gt; void }) {
+  const [autocomplete, setAutocomplete] = useState&lt;google.maps.places.Autocomplete | null&gt;(null);
+
+  return (
+    &lt;Autocomplete
+      onLoad={setAutocomplete}
+      onPlaceChanged={() =&gt; {
+        if (autocomplete) {
+          const place = autocomplete.getPlace();
+          onSelect({
+            address: place.formatted_address!,
+            lat: place.geometry!.location!.lat(),
+            lng: place.geometry!.location!.lng(),
+          });
+        }
+      }}
+      options={{ componentRestrictions: { country: 'in' } }}
+    &gt;
+      &lt;input type=&quot;text&quot; placeholder=&quot;Enter location&quot; className=&quot;...&quot; /&gt;
+    &lt;/Autocomplete&gt;
+  );
+}
+</code></pre>
+
+<h2 id="8-server-side-distance-calculation">8. Server-Side Distance Calculation</h2>
+<pre class="highlight"><code class="language-typescript">// lib/maps.ts
+export async function calculateDistance(
+  origin: string,
+  destination: string,
+  waypoints?: string[]
+) {
+  const waypointStr = waypoints?.length
+    ? `&amp;waypoints=${waypoints.join('|')}`
+    : '';
+
+  const res = await fetch(
+    `https://maps.googleapis.com/maps/api/directions/json?origin=${origin}&amp;destination=${destination}${waypointStr}&amp;key=${process.env.GOOGLE_MAPS_SERVER_KEY}`
+  );
+  const data = await res.json();
+
+  const route = data.routes[0];
+  const totalDistance = route.legs.reduce((sum: number, leg: any) =&gt; sum + leg.distance.value, 0);
+  const totalDuration = route.legs.reduce((sum: number, leg: any) =&gt; sum + leg.duration.value, 0);
+
+  return {
+    distanceKm: Math.round(totalDistance / 1000),
+    durationMinutes: Math.round(totalDuration / 60),
+  };
+}
+</code></pre>
+
+<h2 id="9-india-specific-pricing">9. India-Specific Pricing</h2>
+<ul>
+<li>Billing in INR</li>
+<li>Free monthly thresholds per API</li>
+<li>Monitor usage in Google Cloud Console → APIs &amp; Services → Dashboard</li>
+<li>Set budget alerts at ₹500, ₹1000</li>
+</ul>
+<h2 id="10-cost-optimization">10. Cost Optimization</h2>
+<ul>
+<li>Cache route calculations (same route = same distance)</li>
+<li>Use Leaflet + OpenStreetMap for map display (free)</li>
+<li>Use Google only for Directions + Distance (paid APIs)</li>
+<li>Minimize Places API calls (debounce autocomplete input)</li>
+</ul>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#1f6feb',
+                primaryTextColor: '#e6edf3',
+                primaryBorderColor: '#58a6ff',
+                lineColor: '#8b949e',
+                secondaryColor: '#161b22',
+                tertiaryColor: '#0d1117',
+                background: '#0d1117',
+                mainBkg: '#161b22',
+                nodeBorder: '#30363d',
+                clusterBkg: '#161b22',
+                titleColor: '#58a6ff',
+                edgeLabelBackground: '#161b22',
+            }
+        });
+    </script>
+</body>
+</html>

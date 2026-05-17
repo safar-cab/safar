@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Workflow</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --green: #3fb950;
+            --red: #f85149;
+            --yellow: #d29922;
+            --purple: #bc8cff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        h1 {
+            font-size: 2rem;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-hover);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.3rem;
+        }
+        h3 {
+            font-size: 1.2rem;
+            margin-top: 1.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--purple);
+        }
+        h4 {
+            font-size: 1rem;
+            margin-top: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        p {
+            margin-bottom: 1rem;
+        }
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+            color: var(--accent-hover);
+        }
+        code {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.15rem 0.4rem;
+            font-size: 0.9em;
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            color: var(--accent-hover);
+        }
+        pre {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+        }
+        pre code {
+            background: none;
+            border: none;
+            padding: 0;
+            color: var(--text);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background: #1c2333;
+            color: var(--accent);
+            font-weight: 600;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+        td {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover td {
+            background: rgba(88, 166, 255, 0.05);
+        }
+        blockquote {
+            border-left: 4px solid var(--accent);
+            background: var(--card);
+            padding: 0.8rem 1.2rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-muted);
+        }
+        blockquote strong {
+            color: var(--yellow);
+        }
+        ul, ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        li {
+            margin-bottom: 0.3rem;
+        }
+        li ul, li ol {
+            margin-bottom: 0;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+        strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+        em {
+            color: var(--text-muted);
+        }
+        .mermaid {
+            background: #1a1f2e;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        .nav {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .nav a {
+            font-size: 0.85rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            background: rgba(88, 166, 255, 0.1);
+        }
+        .nav a:hover {
+            background: rgba(88, 166, 255, 0.2);
+            text-decoration: none;
+        }
+        .nav-label {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        input[type="checkbox"] {
+            accent-color: var(--green);
+            transform: scale(1.2);
+            margin-right: 0.3rem;
+        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.5rem; }
+            table { font-size: 0.85rem; }
+            th, td { padding: 0.4rem 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <span class="nav-label">Navigation:</span>
+        <a href="index.html" style="background:rgba(63,185,80,0.2);color:#3fb950;font-weight:600;">Home</a>
+        <a href="00-executive-summary.html">Summary</a>
+        <a href="01-product-identity.html">Identity</a>
+        <a href="02-competitive-analysis.html">Competitors</a>
+        <a href="03-target-market.html">Market</a>
+        <a href="04-user-flow.html">UX Flow</a>
+        <a href="05-mvp-definition.html">MVP</a>
+        <a href="06-architecture.html">Architecture</a>
+        <a href="07-tech-stack.html">Tech Stack</a>
+        <a href="08-integrations.html">Integrations</a>
+        <a href="10-database-design.html">Database</a>
+        <a href="11-sequence-diagrams.html">Sequences</a>
+        <a href="12-project-flow.html">Project Flow</a>
+        <a href="13-security.html">Security</a>
+        <a href="14-legal-compliance.html">Legal</a>
+        <a href="15-implementation-phases.html">Phases</a>
+        <a href="16-production-checklist.html">Checklist</a>
+        <a href="17-devops.html">DevOps</a>
+        <a href="18-monetization.html">Revenue</a>
+        <a href="19-cost-management.html">Costs</a>
+        <a href="20-marketing.html">Marketing</a>
+        <a href="21-analytics-kpis.html">KPIs</a>
+        <a href="22-accessibility-i18n.html">A11y</a>
+        <a href="23-support-docs.html">Support</a>
+        <a href="24-team-hiring.html">Team</a>
+        <a href="25-risk-assessment.html">Risks</a>
+        <a href="26-future-roadmap.html">Roadmap</a>
+    </nav>
+    <h1 id="admin-workflow">Admin Workflow</h1>
+<h2 id="overview">Overview</h2>
+<p>Complete admin workflow for managing the car rental platform. All admin APIs use <code>/api/admin/*</code> prefix with JWT + admin role guard.</p>
+<hr />
+<h2 id="1-admin-authentication">1. Admin Authentication</h2>
+<div class="mermaid">
+flowchart TD
+    A[Admin Login Page] --> B[Enter Phone & Password]
+    B --> C[POST /admin/auth/login]
+    C --> D{Valid Admin?}
+    D -->|Yes| E[Store JWT Token]
+    D -->|No - Invalid| F[Error: Invalid admin credentials]
+    D -->|No - Not admin role| F
+    E --> G[Admin Dashboard]
+    F --> A
+
+</div>
+
+<blockquote>
+<p>Admin accounts created via seed script or direct DB. No public registration.</p>
+</blockquote>
+<hr />
+<h2 id="2-dashboard-overview">2. Dashboard Overview</h2>
+<div class="mermaid">
+flowchart TD
+    A[Admin Dashboard] --> B[GET /admin/dashboard/stats]
+    B --> C["Stats Cards:<br/>Total Users | Total Drivers<br/>Total Cars | Total Bookings<br/>Today's Bookings | Active Bookings<br/>Completed | Revenue"]
+
+    A --> D[GET /admin/dashboard/revenue-chart<br/>?days=30]
+    D --> E[Revenue Line Chart<br/>Daily revenue for last 30 days]
+
+    A --> F[GET /admin/dashboard/booking-stats<br/>?days=30]
+    F --> G[Booking Pie Chart<br/>By status: pending, confirmed,<br/>completed, cancelled]
+
+    A --> H[Quick Actions]
+    H --> H1[Add Car]
+    H --> H2[Add Driver]
+    H --> H3[View Bookings]
+    H --> H4[Settings]
+
+</div>
+
+<h3 id="dashboard-stats-response">Dashboard Stats Response</h3>
+<pre class="highlight"><code class="language-json">{
+  &quot;totalUsers&quot;: 150,
+  &quot;totalDrivers&quot;: 12,
+  &quot;totalCars&quot;: 8,
+  &quot;totalBookings&quot;: 340,
+  &quot;todayBookings&quot;: 5,
+  &quot;activeBookings&quot;: 3,
+  &quot;completedBookings&quot;: 285,
+  &quot;totalRevenue&quot;: 1250000,
+  &quot;todayRevenue&quot;: 15000
+}
+</code></pre>
+
+<hr />
+<h2 id="3-car-management">3. Car Management</h2>
+<div class="mermaid">
+flowchart TD
+    A[Cars Page] --> B[GET /admin/cars<br/>?page=1&limit=20&category=sedan]
+    B --> C[Cars List Table<br/>Reg No, Make, Model, Category,<br/>Driver, Status]
+
+    C --> D[Add New Car]
+    D --> D1["POST /admin/cars<br/>registrationNumber, make, model,<br/>year, color, category, seats, photos"]
+    D1 --> D2{Success?}
+    D2 -->|Yes| D3[Car Created<br/>isActive: true]
+    D2 -->|No - Duplicate reg| D4[Error: Already exists]
+
+    C --> E[Edit Car]
+    E --> E1[PUT /admin/cars/:id<br/>Update any field]
+
+    C --> F[Assign Driver]
+    F --> F1[PUT /admin/cars/:id/assign-driver/:driverId]
+    F1 --> F2[Driver linked to car]
+
+    C --> G[Deactivate]
+    G --> G1[PUT /admin/cars/:id/deactivate]
+    G1 --> G2[Car hidden from<br/>customer search]
+
+    C --> H[Activate]
+    H --> H1[PUT /admin/cars/:id/activate]
+
+</div>
+
+<div class="mermaid">
+flowchart LR
+    A[Add Car] --> B[Upload Photos]
+    B --> C[Upload Documents<br/>RC, Insurance, PUC, Fitness]
+    C --> D[Assign Driver]
+    D --> E[Car Active &<br/>Bookable]
+
+</div>
+
+<hr />
+<h2 id="4-driver-management">4. Driver Management</h2>
+<div class="mermaid">
+flowchart TD
+    A[Drivers Page] --> B[GET /admin/drivers<br/>?isVerified=false]
+    B --> C[Drivers List Table<br/>Name, Phone, License, Verified,<br/>Available, Rating, Rides]
+
+    C --> D[Create Driver Profile]
+    D --> D1["POST /admin/drivers<br/>userId, licenseNumber,<br/>licensePhoto, licenseExpiry,<br/>aadhaarNumber, aadhaarPhoto, photo"]
+    D1 --> D2[Profile Created<br/>isVerified: false]
+
+    C --> E[Review & Verify]
+    E --> E1[View Documents]
+    E1 --> E2{Docs Valid?}
+    E2 -->|Yes| E3[PUT /admin/drivers/:id/verify]
+    E2 -->|No| E4[Contact Driver<br/>Request correct docs]
+    E3 --> E5[isVerified: true<br/>Can be assigned rides]
+
+    C --> F[Update Driver]
+    F --> F1[PUT /admin/drivers/:id<br/>Update license, photo, etc.]
+
+    C --> G[View Performance]
+    G --> G1[avgRating, totalRides]
+
+</div>
+
+<div class="mermaid">
+flowchart LR
+    A[Register Driver User] --> B[Create Driver Profile]
+    B --> C[Upload Documents]
+    C --> D[Admin Verifies]
+    D --> E[Assign to Car]
+    E --> F[Driver Ready]
+
+</div>
+
+<hr />
+<h2 id="5-user-management">5. User Management</h2>
+<div class="mermaid">
+flowchart TD
+    A[Users Page] --> B["GET /admin/users<br/>?role=customer"]
+    B --> C["Users Table<br/>Name, Phone, Email,<br/>Role, Active, Blocked"]
+
+    C --> D[View User Detail]
+    D --> D1[GET /admin/users/:id]
+    D1 --> D2[Full Profile + Booking History]
+
+    C --> E[Block User]
+    E --> E1["PUT /admin/users/:id/block<br/>reason: Fraudulent activity"]
+    E1 --> E2["User cannot login<br/>JWT validation fails"]
+
+    C --> F[Unblock User]
+    F --> F1[PUT /admin/users/:id/unblock]
+    F1 --> F2[User can login again]
+
+    C --> G["Filter + Search"]
+    G --> G1["By Role: customer, driver, admin"]
+    G --> G2["By Name, Phone, Email"]
+
+</div>
+
+<hr />
+<h2 id="6-booking-management">6. Booking Management</h2>
+<div class="mermaid">
+flowchart TD
+    A[Bookings Page] --> B["GET /admin/bookings<br/>?status=confirmed"]
+    B --> C["Bookings Table<br/>BookingID, Customer, Car,<br/>Route, Date, Status, Amount"]
+
+    C --> D[View Detail]
+    D --> D1[GET /admin/bookings/:id]
+    D1 --> D2["Full Booking Info<br/>Customer, Car, Driver,<br/>Pricing, Status Timeline"]
+
+    C --> E[Assign Driver]
+    E --> E1["PUT /admin/bookings/:id/assign-driver"]
+    E1 --> E2["Status: driver_assigned<br/>Driver notified"]
+
+    C --> F[Update Status]
+    F --> F1["PUT /admin/bookings/:id/status"]
+
+    C --> G[Cancel Booking]
+    G --> G1["PUT /admin/bookings/:id/cancel"]
+    G1 --> G2["Status: cancelled<br/>Refund initiated"]
+
+</div>
+
+<h3 id="booking-assignment-flow">Booking Assignment Flow</h3>
+<div class="mermaid">
+sequenceDiagram
+    participant A as Admin
+    participant API as Backend
+    participant D as Driver
+    participant C as Customer
+
+    Note over A: New confirmed booking
+    A->>API: GET /admin/bookings?status=confirmed
+    API-->>A: List unassigned bookings
+
+    A->>A: Check available drivers<br/>GET /admin/drivers?isAvailable=true
+
+    A->>API: PUT /admin/bookings/:id/assign-driver<br/>{driverId}
+    API->>API: Update booking status<br/>→ driver_assigned
+    API-->>D: Notification: New ride assigned
+    API-->>C: Notification: Driver assigned
+    API-->>A: Booking updated
+
+</div>
+
+<hr />
+<h2 id="7-payment-management">7. Payment Management</h2>
+<div class="mermaid">
+flowchart TD
+    A[Payments Page] --> B[GET /admin/payments<br/>?status=captured]
+    B --> C[Payments Table<br/>BookingID, Customer, Amount,<br/>Method, Status, Date]
+
+    C --> D[View Payment Detail]
+    D --> D1[Razorpay Order ID<br/>Payment ID, UPI ID,<br/>Paid At, Refund Status]
+
+    C --> E[Initiate Refund]
+    E --> E1{Full or Partial?}
+    E1 -->|Full| E2[POST /admin/payments/:id/refund]
+    E1 -->|Partial| E3[POST /admin/payments/:id/refund<br/>amount: 5000 paise]
+    E2 --> E4[Razorpay refund created<br/>Status: refunded]
+    E3 --> E5[Razorpay partial refund<br/>Status: partial_refund]
+
+</div>
+
+<hr />
+<h2 id="8-route-pricing-management">8. Route Pricing Management</h2>
+<div class="mermaid">
+flowchart TD
+    A[Routes Page] --> B[GET /admin/routes]
+    B --> C[Routes Table<br/>Name, Distance, Price/km,<br/>Base Fare, Tolls, Status]
+
+    C --> D[Add Route]
+    D --> D1["POST /admin/routes<br/>name: 'Indore to Bhopal'<br/>distanceKm: 195<br/>pricePerKm: 12<br/>baseFare: 500<br/>tollEstimate: 200"]
+    D1 --> D2[Route Created<br/>isActive: true]
+
+    C --> E[Update Route]
+    E --> E1[PUT /admin/routes/:id<br/>Update pricing, distance]
+
+    C --> F[Deactivate Route]
+    F --> F1[PUT /admin/routes/:id/deactivate]
+    F1 --> F2[Route hidden from<br/>customer search]
+
+</div>
+
+<hr />
+<h2 id="9-company-settings">9. Company Settings</h2>
+<div class="mermaid">
+flowchart TD
+    A[Settings Page] --> B[GET /admin/dashboard/settings]
+    B --> C["Company Settings Form:<br/>Company Name<br/>Phone<br/>Email<br/>Default Price/km<br/>Default Refund Policy<br/>Razorpay Key ID<br/>UPI Merchant ID<br/>Social Links"]
+    C --> D[Edit & Save]
+    D --> E[PUT /admin/dashboard/settings]
+    E --> F[Settings Updated]
+
+</div>
+
+<hr />
+<h2 id="10-admin-daily-workflow">10. Admin Daily Workflow</h2>
+<div class="mermaid">
+flowchart TD
+    A[Morning: Check Dashboard] --> B[Review overnight bookings]
+    B --> C[Assign drivers to<br/>confirmed bookings]
+    C --> D[Check driver availability]
+    D --> E[Monitor active rides]
+    E --> F{Issues?}
+    F -->|Cancellation request| G[Process cancellation<br/>& refund]
+    F -->|Customer complaint| H[Review booking<br/>Contact driver]
+    F -->|Document expiry| I[Notify driver to<br/>update documents]
+    F -->|No issues| J[Continue monitoring]
+    G --> J
+    H --> J
+    I --> J
+    J --> K[End of day:<br/>Review stats & revenue]
+
+</div>
+
+<hr />
+<h2 id="admin-api-reference">Admin API Reference</h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Endpoint</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td>/admin/auth/login</td>
+<td>Admin login</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/admin/dashboard/stats</td>
+<td>Dashboard statistics</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/admin/dashboard/revenue-chart</td>
+<td>Revenue chart data</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/admin/dashboard/booking-stats</td>
+<td>Booking stats by status</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/admin/dashboard/settings</td>
+<td>Company settings</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/admin/dashboard/settings</td>
+<td>Update settings</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/admin/users</td>
+<td>List users (paginated, filterable)</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/admin/users/:id</td>
+<td>Get user detail</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/admin/users/:id/block</td>
+<td>Block user</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/admin/users/:id/unblock</td>
+<td>Unblock user</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/admin/cars</td>
+<td>Add car</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/admin/cars</td>
+<td>List cars</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/admin/cars/:id</td>
+<td>Get car detail</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/admin/cars/:id</td>
+<td>Update car</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/admin/cars/:id/activate</td>
+<td>Activate car</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/admin/cars/:id/deactivate</td>
+<td>Deactivate car</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/admin/cars/:id/assign-driver/:driverId</td>
+<td>Assign driver</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/admin/drivers</td>
+<td>Create driver profile</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/admin/drivers</td>
+<td>List drivers</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/admin/drivers/:id</td>
+<td>Get driver detail</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/admin/drivers/:id</td>
+<td>Update driver</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/admin/drivers/:id/verify</td>
+<td>Verify driver</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/admin/bookings</td>
+<td>List bookings</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/admin/bookings/:id</td>
+<td>Get booking detail</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/admin/bookings/:id/assign-driver</td>
+<td>Assign driver</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/admin/bookings/:id/status</td>
+<td>Update status</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/admin/bookings/:id/cancel</td>
+<td>Cancel booking</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/admin/payments</td>
+<td>List payments</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/admin/payments/:id/refund</td>
+<td>Initiate refund</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/admin/routes</td>
+<td>Create route pricing</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/admin/routes</td>
+<td>List routes</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/admin/routes/:id</td>
+<td>Update route</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/admin/routes/:id/deactivate</td>
+<td>Deactivate route</td>
+</tr>
+</tbody>
+</table>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#1f6feb',
+                primaryTextColor: '#e6edf3',
+                primaryBorderColor: '#58a6ff',
+                lineColor: '#8b949e',
+                secondaryColor: '#161b22',
+                tertiaryColor: '#0d1117',
+                background: '#0d1117',
+                mainBkg: '#161b22',
+                nodeBorder: '#30363d',
+                clusterBkg: '#161b22',
+                titleColor: '#58a6ff',
+                edgeLabelBackground: '#161b22',
+            }
+        });
+    </script>
+</body>
+</html>

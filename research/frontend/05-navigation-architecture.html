@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Books Car Rental -- Navigation & Information Architecture</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --green: #3fb950;
+            --red: #f85149;
+            --yellow: #d29922;
+            --purple: #bc8cff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        h1 {
+            font-size: 2rem;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-hover);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.3rem;
+        }
+        h3 {
+            font-size: 1.2rem;
+            margin-top: 1.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--purple);
+        }
+        h4 {
+            font-size: 1rem;
+            margin-top: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        p {
+            margin-bottom: 1rem;
+        }
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+            color: var(--accent-hover);
+        }
+        code {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.15rem 0.4rem;
+            font-size: 0.9em;
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            color: var(--accent-hover);
+        }
+        pre {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+        }
+        pre code {
+            background: none;
+            border: none;
+            padding: 0;
+            color: var(--text);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background: #1c2333;
+            color: var(--accent);
+            font-weight: 600;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+        td {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover td {
+            background: rgba(88, 166, 255, 0.05);
+        }
+        blockquote {
+            border-left: 4px solid var(--accent);
+            background: var(--card);
+            padding: 0.8rem 1.2rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-muted);
+        }
+        blockquote strong {
+            color: var(--yellow);
+        }
+        ul, ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        li {
+            margin-bottom: 0.3rem;
+        }
+        li ul, li ol {
+            margin-bottom: 0;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+        strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+        em {
+            color: var(--text-muted);
+        }
+        .mermaid {
+            background: #1a1f2e;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        .nav {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .nav a {
+            font-size: 0.85rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            background: rgba(88, 166, 255, 0.1);
+        }
+        .nav a:hover {
+            background: rgba(88, 166, 255, 0.2);
+            text-decoration: none;
+        }
+        .nav-label {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        input[type="checkbox"] {
+            accent-color: var(--green);
+            transform: scale(1.2);
+            margin-right: 0.3rem;
+        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.5rem; }
+            table { font-size: 0.85rem; }
+            th, td { padding: 0.4rem 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <span class="nav-label">Navigation:</span>
+        <a href="../index.html" style="background:rgba(63,185,80,0.2);color:#3fb950;font-weight:600;">Home</a>
+        <a href="../00-executive-summary.html">Summary</a>
+        <a href="../01-product-identity.html">Identity</a>
+        <a href="../02-competitive-analysis.html">Competitors</a>
+        <a href="../03-target-market.html">Market</a>
+        <a href="../04-user-flow.html">UX Flow</a>
+        <a href="../05-mvp-definition.html">MVP</a>
+        <a href="../06-architecture.html">Architecture</a>
+        <a href="../07-tech-stack.html">Tech Stack</a>
+        <a href="../08-integrations.html">Integrations</a>
+        <a href="../10-database-design.html">Database</a>
+        <a href="../11-sequence-diagrams.html">Sequences</a>
+        <a href="../12-project-flow.html">Project Flow</a>
+        <a href="../13-security.html">Security</a>
+        <a href="../14-legal-compliance.html">Legal</a>
+        <a href="../15-implementation-phases.html">Phases</a>
+        <a href="../16-production-checklist.html">Checklist</a>
+        <a href="../17-devops.html">DevOps</a>
+        <a href="../18-monetization.html">Revenue</a>
+        <a href="../19-cost-management.html">Costs</a>
+        <a href="../20-marketing.html">Marketing</a>
+        <a href="../21-analytics-kpis.html">KPIs</a>
+        <a href="../22-accessibility-i18n.html">A11y</a>
+        <a href="../23-support-docs.html">Support</a>
+        <a href="../24-team-hiring.html">Team</a>
+        <a href="../25-risk-assessment.html">Risks</a>
+        <a href="../26-future-roadmap.html">Roadmap</a>
+    </nav>
+    <h1 id="books-car-rental-navigation-information-architecture">Books Car Rental -- Navigation &amp; Information Architecture</h1>
+<p>Version 1.0 | React Router v6 | Role-Based Routing</p>
+<hr />
+<h2 id="1-app-navigation-tree">1. App Navigation Tree</h2>
+<pre class="highlight"><code>Books Car Rental
+|
++-- / (Landing / Role redirect)
+|
++-- /auth
+|   +-- /login              Phone + OTP login
+|   +-- /signup             Registration form
+|   +-- /forgot-password    Password reset
+|   +-- /verify-otp         OTP verification screen
+|
++-- /customer               (Protected: role=customer)
+|   +-- /                   Home / Dashboard
+|   +-- /search             Route search results
+|   +-- /cars               Car selection grid
+|   +-- /book               Multi-step booking form
+|   |   +-- ?step=pickup
+|   |   +-- ?step=dropoff
+|   |   +-- ?step=details
+|   |   +-- ?step=review
+|   |   +-- ?step=payment
+|   +-- /bookings           My Bookings list
+|   |   +-- /:id            Booking detail
+|   +-- /track/:bookingId   Live tracking
+|   +-- /payment/:bookingId Payment page
+|   +-- /rate/:bookingId    Rating &amp; review
+|   +-- /profile            Profile page
+|   |   +-- /edit           Edit profile
+|   |   +-- /addresses      Saved addresses
+|   |   +-- /payments       Payment methods
+|   +-- /notifications      Notification list
+|
++-- /driver                 (Protected: role=driver)
+|   +-- /                   Driver dashboard
+|   +-- /rides              Ride list
+|   |   +-- /:id            Ride detail
+|   +-- /navigate/:rideId   Navigation view
+|   +-- /earnings           Earnings history
+|   +-- /profile            Driver profile
+|   |   +-- /edit           Edit profile
+|   |   +-- /documents      Document upload
+|   |   +-- /vehicle        Vehicle details
+|   +-- /notifications      Notification list
+|
++-- /admin                  (Protected: role=admin)
+|   +-- /                   Admin dashboard
+|   +-- /bookings           Bookings management
+|   |   +-- /:id            Booking detail
+|   +-- /cars               Cars management
+|   |   +-- /new            Add car form
+|   |   +-- /:id/edit       Edit car form
+|   +-- /drivers            Drivers management
+|   |   +-- /:id            Driver detail
+|   |   +-- /new            Add driver form
+|   |   +-- /:id/edit       Edit driver form
+|   +-- /users              Users management
+|   |   +-- /:id            User detail
+|   +-- /payments           Payments list
+|   |   +-- /:id            Payment detail
+|   +-- /routes             Routes management
+|   |   +-- /new            Add route form
+|   |   +-- /:id/edit       Edit route form
+|   +-- /settings           App settings
+|   +-- /reports            Reports &amp; analytics
+|
++-- /404                    Not found page
+</code></pre>
+
+<hr />
+<h2 id="2-tab-bar-structure">2. Tab Bar Structure</h2>
+<h3 id="customer-tab-bar-bottom-navigation">Customer Tab Bar (Bottom Navigation)</h3>
+<pre class="highlight"><code>+--------+--------+--------+--------+
+|  Home  |Bookings| Track  |Profile |
++--------+--------+--------+--------+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th>Tab</th>
+<th>Icon</th>
+<th>Route</th>
+<th>Badge</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Home</td>
+<td><code>Home</code></td>
+<td><code>/customer</code></td>
+<td>--</td>
+</tr>
+<tr>
+<td>Bookings</td>
+<td><code>CalendarCheck</code></td>
+<td><code>/customer/bookings</code></td>
+<td>Count of upcoming bookings</td>
+</tr>
+<tr>
+<td>Track</td>
+<td><code>MapPin</code></td>
+<td><code>/customer/track</code></td>
+<td>Active ride indicator (dot)</td>
+</tr>
+<tr>
+<td>Profile</td>
+<td><code>User</code></td>
+<td><code>/customer/profile</code></td>
+<td>--</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Tab visibility rules:</strong><br />
+- Show on: Home, Bookings list, Profile<br />
+- Hide on: Booking form, Payment, Live tracking (full screen), Rating<br />
+- Transition: Slide down to hide, slide up to show (150ms)</p>
+<h3 id="driver-tab-bar-bottom-navigation">Driver Tab Bar (Bottom Navigation)</h3>
+<pre class="highlight"><code>+----------+--------+--------+--------+
+| Dashboard| Rides  |  Nav   |Profile |
++----------+--------+--------+--------+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th>Tab</th>
+<th>Icon</th>
+<th>Route</th>
+<th>Badge</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dashboard</td>
+<td><code>LayoutDashboard</code></td>
+<td><code>/driver</code></td>
+<td>--</td>
+</tr>
+<tr>
+<td>Rides</td>
+<td><code>Car</code></td>
+<td><code>/driver/rides</code></td>
+<td>Pending ride count</td>
+</tr>
+<tr>
+<td>Nav</td>
+<td><code>Navigation</code></td>
+<td><code>/driver/navigate</code></td>
+<td>Active if navigating</td>
+</tr>
+<tr>
+<td>Profile</td>
+<td><code>User</code></td>
+<td><code>/driver/profile</code></td>
+<td>Pending docs indicator</td>
+</tr>
+</tbody>
+</table>
+<h3 id="admin-navigation-sidebar-desktop">Admin Navigation (Sidebar -- Desktop)</h3>
+<pre class="highlight"><code>+-----------------------------+
+|  [logo] Books Admin         |
++-----------------------------+
+|  Dashboard        [chart]   |
+|  Bookings         [calendar]|
+|  Cars             [car]     |
+|  Drivers          [users]   |
+|  Users            [user]    |
+|  Payments         [rupee]   |
+|  Routes           [map]     |
+|  ________________________   |
+|  Settings         [gear]    |
+|  Logout           [logout]  |
++-----------------------------+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Icon</th>
+<th>Route</th>
+<th>Badge</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dashboard</td>
+<td><code>LayoutDashboard</code></td>
+<td><code>/admin</code></td>
+<td>--</td>
+</tr>
+<tr>
+<td>Bookings</td>
+<td><code>CalendarCheck</code></td>
+<td><code>/admin/bookings</code></td>
+<td>Pending count</td>
+</tr>
+<tr>
+<td>Cars</td>
+<td><code>Car</code></td>
+<td><code>/admin/cars</code></td>
+<td>--</td>
+</tr>
+<tr>
+<td>Drivers</td>
+<td><code>UserCheck</code></td>
+<td><code>/admin/drivers</code></td>
+<td>Unverified count</td>
+</tr>
+<tr>
+<td>Users</td>
+<td><code>Users</code></td>
+<td><code>/admin/users</code></td>
+<td>--</td>
+</tr>
+<tr>
+<td>Payments</td>
+<td><code>IndianRupee</code></td>
+<td><code>/admin/payments</code></td>
+<td>Pending refund count</td>
+</tr>
+<tr>
+<td>Routes</td>
+<td><code>Map</code></td>
+<td><code>/admin/routes</code></td>
+<td>--</td>
+</tr>
+<tr>
+<td>Settings</td>
+<td><code>Settings</code></td>
+<td><code>/admin/settings</code></td>
+<td>--</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Admin sidebar behavior:</strong><br />
+- Desktop (1024px+): Always visible, 240px wide<br />
+- Tablet (768-1023px): Collapsible, icon-only (64px) by default<br />
+- Mobile (&lt;768px): Show "Desktop Recommended" warning, allow continue with hamburger menu</p>
+<p><strong>Admin is web-only (no PWA):</strong><br />
+- No service worker, no manifest, no install prompt<br />
+- Desktop-first responsive design<br />
+- No offline support — requires active network<br />
+- Accessed via browser on laptop/desktop</p>
+<hr />
+<h2 id="3-route-hierarchy">3. Route Hierarchy</h2>
+<h3 id="route-configuration">Route Configuration</h3>
+<pre class="highlight"><code class="language-typescript">// routes.tsx
+import { createBrowserRouter } from 'react-router-dom';
+
+const router = createBrowserRouter([
+  // Public routes
+  {
+    path: '/',
+    element: &lt;RootRedirect /&gt;,  // redirects based on auth + role
+  },
+  {
+    path: '/auth',
+    element: &lt;AuthLayout /&gt;,
+    children: [
+      { path: 'login', element: &lt;Login /&gt; },
+      { path: 'signup', element: &lt;Signup /&gt; },
+      { path: 'verify-otp', element: &lt;VerifyOtp /&gt; },
+      { path: 'forgot-password', element: &lt;ForgotPassword /&gt; },
+    ],
+  },
+
+  // Customer routes
+  {
+    path: '/customer',
+    element: &lt;ProtectedRoute role=&quot;customer&quot;&gt;&lt;CustomerLayout /&gt;&lt;/ProtectedRoute&gt;,
+    children: [
+      { index: true, element: &lt;CustomerHome /&gt; },
+      { path: 'search', element: &lt;SearchResults /&gt; },
+      { path: 'cars', element: &lt;CarSelection /&gt; },
+      { path: 'book', element: &lt;BookingForm /&gt; },
+      { path: 'bookings', element: &lt;MyBookings /&gt; },
+      { path: 'bookings/:id', element: &lt;BookingDetail /&gt; },
+      { path: 'track/:bookingId', element: &lt;LiveTracking /&gt; },
+      { path: 'payment/:bookingId', element: &lt;Payment /&gt; },
+      { path: 'rate/:bookingId', element: &lt;RateRide /&gt; },
+      { path: 'profile', element: &lt;Profile /&gt; },
+      { path: 'profile/edit', element: &lt;EditProfile /&gt; },
+      { path: 'profile/addresses', element: &lt;SavedAddresses /&gt; },
+      { path: 'notifications', element: &lt;Notifications /&gt; },
+    ],
+  },
+
+  // Driver routes
+  {
+    path: '/driver',
+    element: &lt;ProtectedRoute role=&quot;driver&quot;&gt;&lt;DriverLayout /&gt;&lt;/ProtectedRoute&gt;,
+    children: [
+      { index: true, element: &lt;DriverDashboard /&gt; },
+      { path: 'rides', element: &lt;RideList /&gt; },
+      { path: 'rides/:id', element: &lt;RideDetail /&gt; },
+      { path: 'navigate/:rideId', element: &lt;NavigationView /&gt; },
+      { path: 'earnings', element: &lt;Earnings /&gt; },
+      { path: 'profile', element: &lt;DriverProfile /&gt; },
+      { path: 'profile/edit', element: &lt;EditDriverProfile /&gt; },
+      { path: 'profile/documents', element: &lt;Documents /&gt; },
+      { path: 'notifications', element: &lt;Notifications /&gt; },
+    ],
+  },
+
+  // Admin routes
+  {
+    path: '/admin',
+    element: &lt;ProtectedRoute role=&quot;admin&quot;&gt;&lt;AdminLayout /&gt;&lt;/ProtectedRoute&gt;,
+    children: [
+      { index: true, element: &lt;AdminDashboard /&gt; },
+      { path: 'bookings', element: &lt;AdminBookings /&gt; },
+      { path: 'bookings/:id', element: &lt;AdminBookingDetail /&gt; },
+      { path: 'cars', element: &lt;AdminCars /&gt; },
+      { path: 'cars/new', element: &lt;AddCar /&gt; },
+      { path: 'cars/:id/edit', element: &lt;EditCar /&gt; },
+      { path: 'drivers', element: &lt;AdminDrivers /&gt; },
+      { path: 'drivers/:id', element: &lt;DriverDetail /&gt; },
+      { path: 'drivers/new', element: &lt;AddDriver /&gt; },
+      { path: 'drivers/:id/edit', element: &lt;EditDriver /&gt; },
+      { path: 'users', element: &lt;AdminUsers /&gt; },
+      { path: 'users/:id', element: &lt;UserDetail /&gt; },
+      { path: 'payments', element: &lt;AdminPayments /&gt; },
+      { path: 'payments/:id', element: &lt;PaymentDetail /&gt; },
+      { path: 'routes', element: &lt;AdminRoutes /&gt; },
+      { path: 'routes/new', element: &lt;AddRoute /&gt; },
+      { path: 'routes/:id/edit', element: &lt;EditRoute /&gt; },
+      { path: 'settings', element: &lt;AdminSettings /&gt; },
+      { path: 'reports', element: &lt;Reports /&gt; },
+    ],
+  },
+
+  // 404
+  { path: '*', element: &lt;NotFound /&gt; },
+]);
+</code></pre>
+
+<hr />
+<h2 id="4-deep-linking-strategy">4. Deep Linking Strategy</h2>
+<h3 id="supported-deep-links">Supported Deep Links</h3>
+<table>
+<thead>
+<tr>
+<th>Deep Link</th>
+<th>Opens</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>books://booking/{id}</code></td>
+<td>Booking detail</td>
+<td>Auth check -&gt; redirect if needed</td>
+</tr>
+<tr>
+<td><code>books://track/{bookingId}</code></td>
+<td>Live tracking</td>
+<td>Only if ride is active</td>
+</tr>
+<tr>
+<td><code>books://rate/{bookingId}</code></td>
+<td>Rating page</td>
+<td>Only if ride completed, unrated</td>
+</tr>
+<tr>
+<td><code>books://payment/{bookingId}</code></td>
+<td>Payment page</td>
+<td>Only if payment pending</td>
+</tr>
+<tr>
+<td><code>books://profile</code></td>
+<td>Profile page</td>
+<td>Auth required</td>
+</tr>
+<tr>
+<td><code>books://search?from=X&amp;to=Y&amp;date=Z</code></td>
+<td>Search results</td>
+<td>Pre-fill search</td>
+</tr>
+</tbody>
+</table>
+<h3 id="web-url-mapping">Web URL Mapping</h3>
+<table>
+<thead>
+<tr>
+<th>Web URL</th>
+<th>Maps to Deep Link</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>https://books.app/customer/bookings/123</code></td>
+<td><code>books://booking/123</code></td>
+</tr>
+<tr>
+<td><code>https://books.app/customer/track/123</code></td>
+<td><code>books://track/123</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="deep-link-handling">Deep Link Handling</h3>
+<pre class="highlight"><code class="language-typescript">// Handle deep link on app open
+const handleDeepLink = (url: string) =&gt; {
+  const parsed = new URL(url);
+  const path = parsed.pathname;
+
+  // Check authentication
+  if (!isAuthenticated()) {
+    // Store intended destination
+    sessionStorage.setItem('redirectAfterLogin', path);
+    navigate('/auth/login');
+    return;
+  }
+
+  // Route to destination
+  navigate(path);
+};
+</code></pre>
+
+<h3 id="share-links">Share Links</h3>
+<p>Booking confirmations and receipts generate shareable links:</p>
+<pre class="highlight"><code>https://books.app/s/BCR-1234  -&gt;  resolves to /customer/bookings/BCR-1234
+</code></pre>
+
+<hr />
+<h2 id="5-back-button-behavior">5. Back Button Behavior</h2>
+<h3 id="back-button-rules">Back Button Rules</h3>
+<table>
+<thead>
+<tr>
+<th>Current Page</th>
+<th>Back Goes To</th>
+<th>Method</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Home</td>
+<td>Exit app (or do nothing)</td>
+<td>System back</td>
+</tr>
+<tr>
+<td>Search results</td>
+<td>Home</td>
+<td>Router back</td>
+</tr>
+<tr>
+<td>Car selection</td>
+<td>Search results</td>
+<td>Router back</td>
+</tr>
+<tr>
+<td>Booking step 1</td>
+<td>Car selection or Home</td>
+<td>Router back</td>
+</tr>
+<tr>
+<td>Booking step 2+</td>
+<td>Previous step</td>
+<td>Step state back</td>
+</tr>
+<tr>
+<td>Booking detail</td>
+<td>My Bookings</td>
+<td>Router back</td>
+</tr>
+<tr>
+<td>Live tracking</td>
+<td>Booking detail</td>
+<td>Router back</td>
+</tr>
+<tr>
+<td>Payment</td>
+<td>Booking review (with confirm)</td>
+<td>Confirm dialog</td>
+</tr>
+<tr>
+<td>Rating</td>
+<td>Booking detail</td>
+<td>Router back</td>
+</tr>
+<tr>
+<td>Profile sub-pages</td>
+<td>Profile</td>
+<td>Router back</td>
+</tr>
+<tr>
+<td>Admin sub-pages</td>
+<td>Parent list page</td>
+<td>Router back</td>
+</tr>
+</tbody>
+</table>
+<h3 id="special-back-button-cases">Special Back Button Cases</h3>
+<p><strong>During booking flow:</strong><br />
+- Show confirmation dialog: "Are you sure? Your progress will be saved."<br />
+- Save form state to session storage for recovery</p>
+<p><strong>During payment:</strong><br />
+- Show warning: "Payment is in progress. Are you sure you want to go back?"<br />
+- Cancel payment flow if confirmed</p>
+<p><strong>Bottom sheet open:</strong><br />
+- First back press closes bottom sheet<br />
+- Second back press navigates back</p>
+<h3 id="implementation">Implementation</h3>
+<pre class="highlight"><code class="language-typescript">// Custom back handler for booking flow
+const useBookingBackHandler = (currentStep: number, setStep: Function) =&gt; {
+  useEffect(() =&gt; {
+    const handlePopState = (e: PopStateEvent) =&gt; {
+      e.preventDefault();
+
+      if (currentStep &gt; 1) {
+        // Go to previous step instead of leaving
+        setStep(currentStep - 1);
+        // Push state to maintain history
+        window.history.pushState(null, '', `?step=${currentStep - 1}`);
+      } else {
+        // Actually navigate back
+        navigate(-1);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () =&gt; window.removeEventListener('popstate', handlePopState);
+  }, [currentStep]);
+};
+</code></pre>
+
+<hr />
+<h2 id="6-protected-routes-redirect-logic">6. Protected Routes &amp; Redirect Logic</h2>
+<h3 id="authentication-flow">Authentication Flow</h3>
+<pre class="highlight"><code>User visits any protected route
+        |
+        v
+   Authenticated?
+    /        \
+  Yes         No
+   |           |
+   v           v
+ Has role?   Store intended route
+  /    \     in sessionStorage
+Yes    No       |
+ |      |       v
+ v      v    /auth/login
+Page   Redirect     |
+       to role      v
+       home      Login success
+                    |
+                    v
+                 Redirect to
+                 stored route
+                 or role home
+</code></pre>
+
+<h3 id="role-based-redirects">Role-Based Redirects</h3>
+<pre class="highlight"><code class="language-typescript">const ProtectedRoute = ({
+  role,
+  children,
+}: {
+  role: 'customer' | 'driver' | 'admin';
+  children: React.ReactNode;
+}) =&gt; {
+  const { user, isLoading } = useAuth();
+
+  if (isLoading) {
+    return &lt;FullPageLoader /&gt;;
+  }
+
+  if (!user) {
+    // Store current path for redirect after login
+    sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
+    return &lt;Navigate to=&quot;/auth/login&quot; replace /&gt;;
+  }
+
+  if (user.role !== role) {
+    // Redirect to correct role's home
+    const roleHomeMap = {
+      customer: '/customer',
+      driver: '/driver',
+      admin: '/admin',
+    };
+    return &lt;Navigate to={roleHomeMap[user.role]} replace /&gt;;
+  }
+
+  return &lt;&gt;{children}&lt;/&gt;;
+};
+</code></pre>
+
+<h3 id="root-redirect-logic">Root Redirect Logic</h3>
+<pre class="highlight"><code class="language-typescript">const RootRedirect = () =&gt; {
+  const { user, isLoading } = useAuth();
+
+  if (isLoading) return &lt;SplashScreen /&gt;;
+
+  if (!user) return &lt;Navigate to=&quot;/auth/login&quot; replace /&gt;;
+
+  const redirectMap = {
+    customer: '/customer',
+    driver: '/driver',
+    admin: '/admin',
+  };
+
+  return &lt;Navigate to={redirectMap[user.role]} replace /&gt;;
+};
+</code></pre>
+
+<h3 id="after-login-redirect">After Login Redirect</h3>
+<pre class="highlight"><code class="language-typescript">const handleLoginSuccess = (user: User) =&gt; {
+  const intendedRoute = sessionStorage.getItem('redirectAfterLogin');
+  sessionStorage.removeItem('redirectAfterLogin');
+
+  if (intendedRoute &amp;&amp; intendedRoute.startsWith(`/${user.role}`)) {
+    navigate(intendedRoute);
+  } else {
+    const defaultRoutes = {
+      customer: '/customer',
+      driver: '/driver',
+      admin: '/admin',
+    };
+    navigate(defaultRoutes[user.role]);
+  }
+};
+</code></pre>
+
+<hr />
+<h2 id="7-breadcrumb-pattern-admin">7. Breadcrumb Pattern (Admin)</h2>
+<h3 id="desktop-breadcrumbs">Desktop Breadcrumbs</h3>
+<pre class="highlight"><code>Dashboard &gt; Bookings &gt; #BCR-1234
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Font size</td>
+<td>14px</td>
+</tr>
+<tr>
+<td>Color (links)</td>
+<td><code>#2563EB</code></td>
+</tr>
+<tr>
+<td>Color (current)</td>
+<td><code>#475569</code></td>
+</tr>
+<tr>
+<td>Separator</td>
+<td><code>ChevronRight</code> icon, 14px</td>
+</tr>
+<tr>
+<td>Separator color</td>
+<td><code>#94A3B8</code></td>
+</tr>
+<tr>
+<td>Position</td>
+<td>Below top bar, above page title</td>
+</tr>
+<tr>
+<td>Padding</td>
+<td>8px 0</td>
+</tr>
+</tbody>
+</table>
+<h3 id="breadcrumb-map">Breadcrumb Map</h3>
+<table>
+<thead>
+<tr>
+<th>Page</th>
+<th>Breadcrumb</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Admin Dashboard</td>
+<td>Dashboard</td>
+</tr>
+<tr>
+<td>Bookings list</td>
+<td>Dashboard &gt; Bookings</td>
+</tr>
+<tr>
+<td>Booking detail</td>
+<td>Dashboard &gt; Bookings &gt; #BCR-1234</td>
+</tr>
+<tr>
+<td>Cars list</td>
+<td>Dashboard &gt; Cars</td>
+</tr>
+<tr>
+<td>Add car</td>
+<td>Dashboard &gt; Cars &gt; Add New</td>
+</tr>
+<tr>
+<td>Edit car</td>
+<td>Dashboard &gt; Cars &gt; Swift Dzire &gt; Edit</td>
+</tr>
+<tr>
+<td>Drivers list</td>
+<td>Dashboard &gt; Drivers</td>
+</tr>
+<tr>
+<td>Driver detail</td>
+<td>Dashboard &gt; Drivers &gt; Rajesh Kumar</td>
+</tr>
+<tr>
+<td>Settings</td>
+<td>Dashboard &gt; Settings</td>
+</tr>
+</tbody>
+</table>
+<h3 id="implementation_1">Implementation</h3>
+<pre class="highlight"><code class="language-typescript">// Auto-generate breadcrumbs from route
+const useBreadcrumbs = () =&gt; {
+  const location = useLocation();
+  const segments = location.pathname.split('/').filter(Boolean);
+
+  const breadcrumbs = segments.map((segment, index) =&gt; {
+    const path = '/' + segments.slice(0, index + 1).join('/');
+    const label = formatSegmentLabel(segment); // 'bookings' -&gt; 'Bookings'
+    const isLast = index === segments.length - 1;
+
+    return { path, label, isLast };
+  });
+
+  return breadcrumbs;
+};
+</code></pre>
+
+<h3 id="mobile-behavior">Mobile Behavior</h3>
+<ul>
+<li>No breadcrumbs on mobile (&lt; 768px)</li>
+<li>Use back button + page title instead</li>
+<li>Page title indicates current context</li>
+</ul>
+<hr />
+<h2 id="8-navigation-transitions">8. Navigation Transitions</h2>
+<table>
+<thead>
+<tr>
+<th>Navigation Type</th>
+<th>Transition</th>
+<th>Duration</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tab switch</td>
+<td>Fade</td>
+<td>200ms</td>
+</tr>
+<tr>
+<td>Push forward</td>
+<td>New page slides in from right</td>
+<td>350ms</td>
+</tr>
+<tr>
+<td>Pop back</td>
+<td>Current page slides out to right</td>
+<td>300ms</td>
+</tr>
+<tr>
+<td>Modal open</td>
+<td>Fade in + scale from 0.95</td>
+<td>250ms</td>
+</tr>
+<tr>
+<td>Modal close</td>
+<td>Fade out + scale to 0.95</td>
+<td>200ms</td>
+</tr>
+<tr>
+<td>Bottom sheet open</td>
+<td>Slide up from bottom</td>
+<td>350ms</td>
+</tr>
+<tr>
+<td>Bottom sheet close</td>
+<td>Slide down</td>
+<td>300ms</td>
+</tr>
+<tr>
+<td>Admin sidebar toggle</td>
+<td>Slide + width animation</td>
+<td>250ms</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="9-url-state-management">9. URL State Management</h2>
+<h3 id="query-parameters-for-state">Query Parameters for State</h3>
+<table>
+<thead>
+<tr>
+<th>Page</th>
+<th>Query Params</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Search results</td>
+<td><code>?from=mumbai&amp;to=pune&amp;date=2026-01-15</code></td>
+</tr>
+<tr>
+<td>Car selection</td>
+<td><code>?type=sedan&amp;sort=price</code></td>
+</tr>
+<tr>
+<td>Booking form</td>
+<td><code>?step=pickup&amp;routeId=123</code></td>
+</tr>
+<tr>
+<td>My Bookings</td>
+<td><code>?tab=upcoming</code></td>
+</tr>
+<tr>
+<td>Admin bookings</td>
+<td><code>?status=pending&amp;page=2&amp;search=BCR</code></td>
+</tr>
+<tr>
+<td>Admin cars</td>
+<td><code>?type=suv&amp;status=active</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="benefits">Benefits</h3>
+<ul>
+<li>Shareable URLs</li>
+<li>Browser back/forward preserves filters</li>
+<li>Bookmark-able search results</li>
+<li>Analytics tracking per view state</li>
+</ul>
+<pre class="highlight"><code class="language-typescript">// Hook for syncing state with URL params
+const useQueryState = (key: string, defaultValue: string) =&gt; {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const value = searchParams.get(key) || defaultValue;
+
+  const setValue = (newValue: string) =&gt; {
+    setSearchParams(prev =&gt; {
+      prev.set(key, newValue);
+      return prev;
+    });
+  };
+
+  return [value, setValue] as const;
+};
+</code></pre>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#1f6feb',
+                primaryTextColor: '#e6edf3',
+                primaryBorderColor: '#58a6ff',
+                lineColor: '#8b949e',
+                secondaryColor: '#161b22',
+                tertiaryColor: '#0d1117',
+                background: '#0d1117',
+                mainBkg: '#161b22',
+                nodeBorder: '#30363d',
+                clusterBkg: '#161b22',
+                titleColor: '#58a6ff',
+                edgeLabelBackground: '#161b22',
+            }
+        });
+    </script>
+</body>
+</html>

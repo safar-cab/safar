@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Competitive Analysis</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --green: #3fb950;
+            --red: #f85149;
+            --yellow: #d29922;
+            --purple: #bc8cff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        h1 {
+            font-size: 2rem;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-hover);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.3rem;
+        }
+        h3 {
+            font-size: 1.2rem;
+            margin-top: 1.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--purple);
+        }
+        h4 {
+            font-size: 1rem;
+            margin-top: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        p {
+            margin-bottom: 1rem;
+        }
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+            color: var(--accent-hover);
+        }
+        code {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.15rem 0.4rem;
+            font-size: 0.9em;
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            color: var(--accent-hover);
+        }
+        pre {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+        }
+        pre code {
+            background: none;
+            border: none;
+            padding: 0;
+            color: var(--text);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background: #1c2333;
+            color: var(--accent);
+            font-weight: 600;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+        td {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover td {
+            background: rgba(88, 166, 255, 0.05);
+        }
+        blockquote {
+            border-left: 4px solid var(--accent);
+            background: var(--card);
+            padding: 0.8rem 1.2rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-muted);
+        }
+        blockquote strong {
+            color: var(--yellow);
+        }
+        ul, ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        li {
+            margin-bottom: 0.3rem;
+        }
+        li ul, li ol {
+            margin-bottom: 0;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+        strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+        em {
+            color: var(--text-muted);
+        }
+        .mermaid {
+            background: #1a1f2e;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        .nav {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .nav a {
+            font-size: 0.85rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            background: rgba(88, 166, 255, 0.1);
+        }
+        .nav a:hover {
+            background: rgba(88, 166, 255, 0.2);
+            text-decoration: none;
+        }
+        .nav-label {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        input[type="checkbox"] {
+            accent-color: var(--green);
+            transform: scale(1.2);
+            margin-right: 0.3rem;
+        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.5rem; }
+            table { font-size: 0.85rem; }
+            th, td { padding: 0.4rem 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <span class="nav-label">Navigation:</span>
+        <a href="index.html" style="background:rgba(63,185,80,0.2);color:#3fb950;font-weight:600;">Home</a>
+        <a href="00-executive-summary.html">Summary</a>
+        <a href="01-product-identity.html">Identity</a>
+        <a href="02-competitive-analysis.html">Competitors</a>
+        <a href="03-target-market.html">Market</a>
+        <a href="04-user-flow.html">UX Flow</a>
+        <a href="05-mvp-definition.html">MVP</a>
+        <a href="06-architecture.html">Architecture</a>
+        <a href="07-tech-stack.html">Tech Stack</a>
+        <a href="08-integrations.html">Integrations</a>
+        <a href="10-database-design.html">Database</a>
+        <a href="11-sequence-diagrams.html">Sequences</a>
+        <a href="12-project-flow.html">Project Flow</a>
+        <a href="13-security.html">Security</a>
+        <a href="14-legal-compliance.html">Legal</a>
+        <a href="15-implementation-phases.html">Phases</a>
+        <a href="16-production-checklist.html">Checklist</a>
+        <a href="17-devops.html">DevOps</a>
+        <a href="18-monetization.html">Revenue</a>
+        <a href="19-cost-management.html">Costs</a>
+        <a href="20-marketing.html">Marketing</a>
+        <a href="21-analytics-kpis.html">KPIs</a>
+        <a href="22-accessibility-i18n.html">A11y</a>
+        <a href="23-support-docs.html">Support</a>
+        <a href="24-team-hiring.html">Team</a>
+        <a href="25-risk-assessment.html">Risks</a>
+        <a href="26-future-roadmap.html">Roadmap</a>
+    </nav>
+    <h1 id="competitive-analysis">Competitive Analysis</h1>
+<h2 id="market-overview">Market Overview</h2>
+<ul>
+<li>India taxi market: <strong>$24 billion</strong> (2026)</li>
+<li>Growth: <strong>7.78% CAGR</strong> → $34.87B by 2031</li>
+<li>150M+ monthly ride-hailing users</li>
+<li>70.84% bookings via digital channels (2025)</li>
+<li>Intercity segment growing fastest with app-based adoption</li>
+</ul>
+<h2 id="direct-competitors">Direct Competitors</h2>
+<h3 id="1-ola">1. Ola</h3>
+<ul>
+<li><strong>Type</strong>: Aggregator (intra + intercity)</li>
+<li><strong>Pricing</strong>: Dynamic surge pricing</li>
+<li><strong>Strengths</strong>: Massive fleet, Tier-2/3 coverage, brand recognition</li>
+<li><strong>Weaknesses</strong>: Surge pricing complaints, driver issues, inconsistent quality</li>
+<li><strong>Indore</strong>: Available but limited intercity options</li>
+</ul>
+<h3 id="2-uber">2. Uber</h3>
+<ul>
+<li><strong>Type</strong>: Aggregator (intra + intercity)</li>
+<li><strong>Pricing</strong>: Dynamic, Intercity flat rates</li>
+<li><strong>Strengths</strong>: International brand, reliable tech, UPI integration</li>
+<li><strong>Weaknesses</strong>: Expensive for long routes, limited MP coverage outside cities</li>
+<li><strong>Indore</strong>: Available for intracity, limited outstation</li>
+</ul>
+<h3 id="3-savaari">3. Savaari</h3>
+<ul>
+<li><strong>Type</strong>: Intercity specialist (chauffeur-driven)</li>
+<li><strong>Revenue</strong>: ₹274 Cr (FY2025)</li>
+<li><strong>Coverage</strong>: 98 cities, 50,000+ vehicles</li>
+<li><strong>Pricing</strong>: Per-km transparent pricing</li>
+<li><strong>Strengths</strong>: Intercity focus, transparent pricing, professional drivers</li>
+<li><strong>Weaknesses</strong>: No intracity, web-heavy (app less polished), no real-time tracking</li>
+</ul>
+<h3 id="4-cabbazar">4. CabBazar</h3>
+<ul>
+<li><strong>Type</strong>: Intercity aggregator</li>
+<li><strong>Pricing</strong>: True one-way pricing, competitive</li>
+<li><strong>Strengths</strong>: Deep Tier-2/3 reach, honest pricing, background-verified drivers</li>
+<li><strong>Weaknesses</strong>: Not as well-known, limited brand presence</li>
+</ul>
+<h3 id="5-gozo-cabs">5. Gozo Cabs</h3>
+<ul>
+<li><strong>Type</strong>: Intercity + airport transfers</li>
+<li><strong>Pricing</strong>: Fixed per-km</li>
+<li><strong>Strengths</strong>: Airport focus, corporate clients, clean cars</li>
+<li><strong>Weaknesses</strong>: Limited city coverage, premium pricing</li>
+</ul>
+<h3 id="6-intrcity-by-railyatri">6. IntrCity (by RailYatri)</h3>
+<ul>
+<li><strong>Type</strong>: Intercity bus + cab</li>
+<li><strong>Pricing</strong>: Fixed rates</li>
+<li><strong>Strengths</strong>: Combined bus+cab, SmartBus innovation</li>
+<li><strong>Weaknesses</strong>: More bus-focused, cab is secondary</li>
+</ul>
+<h3 id="7-meru-cabs">7. Meru Cabs</h3>
+<ul>
+<li><strong>Type</strong>: Radio taxi → corporate</li>
+<li><strong>Pricing</strong>: Metered + fixed</li>
+<li><strong>Strengths</strong>: Corporate tie-ups, EV fleet, established brand</li>
+<li><strong>Weaknesses</strong>: Lost market share to Ola/Uber, limited cities</li>
+</ul>
+<h2 id="local-indore-competitors">Local Indore Competitors</h2>
+<h3 id="8-hurryup-cabs">8. HurryUp Cabs</h3>
+<ul>
+<li><strong>Type</strong>: Local Indore cab service</li>
+<li><strong>Strengths</strong>: Reliable, affordable, MP coverage</li>
+<li><strong>Weaknesses</strong>: Limited tech, no live tracking, phone-based booking</li>
+</ul>
+<h3 id="9-indore-prime-cabs">9. Indore Prime Cabs</h3>
+<ul>
+<li><strong>Type</strong>: Local operator</li>
+<li><strong>Services</strong>: Local, outstation, airport pickup</li>
+<li><strong>Strengths</strong>: 24/7, multiple vehicle types</li>
+<li><strong>Weaknesses</strong>: Basic website, no app, manual booking</li>
+</ul>
+<h3 id="10-bookurtaxi">10. BookUrTaxi</h3>
+<ul>
+<li><strong>Type</strong>: Pan-India budget cab</li>
+<li><strong>Pricing</strong>: From ₹9/km</li>
+<li><strong>Strengths</strong>: Low pricing, clean cabs</li>
+<li><strong>Weaknesses</strong>: Limited brand awareness</li>
+</ul>
+<h3 id="11-bharat-taxi">11. Bharat Taxi</h3>
+<ul>
+<li><strong>Type</strong>: Pan-India cab booking</li>
+<li><strong>Strengths</strong>: Wide city coverage</li>
+<li><strong>Weaknesses</strong>: Generic, no differentiation</li>
+</ul>
+<h2 id="competitor-pricing-comparison-indore-bhopal-195-km">Competitor Pricing Comparison (Indore → Bhopal, ~195 km)</h2>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Sedan</th>
+<th>SUV</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ola Outstation</td>
+<td>₹2,500-3,500</td>
+<td>₹3,500-5,000</td>
+</tr>
+<tr>
+<td>Uber Intercity</td>
+<td>₹2,800-3,800</td>
+<td>₹4,000-5,500</td>
+</tr>
+<tr>
+<td>Savaari</td>
+<td>₹2,200-2,800</td>
+<td>₹3,200-4,000</td>
+</tr>
+<tr>
+<td>CabBazar</td>
+<td>₹2,000-2,600</td>
+<td>₹3,000-3,800</td>
+</tr>
+<tr>
+<td>Local operators</td>
+<td>₹1,800-2,500</td>
+<td>₹2,800-3,500</td>
+</tr>
+</tbody>
+</table>
+<h2 id="common-user-complaints-opportunity-areas">Common User Complaints (Opportunity Areas)</h2>
+<ol>
+<li><strong>Surge pricing</strong> — Users hate unpredictable fares</li>
+<li><strong>Cash handling</strong> — Drivers prefer cash, disputes over change</li>
+<li><strong>Driver cancellations</strong> — Last-minute cancellations on long routes</li>
+<li><strong>No real tracking</strong> — Especially local operators</li>
+<li><strong>Hidden charges</strong> — Toll, parking, night charges not transparent</li>
+<li><strong>Poor refund process</strong> — Delayed or denied refunds</li>
+<li><strong>No multi-stop</strong> — Rigid point-to-point, no intermediate stops</li>
+<li><strong>Document trust</strong> — No way to verify driver/car credentials</li>
+</ol>
+<h2 id="your-differentiation-strategy">Your Differentiation Strategy</h2>
+<table>
+<thead>
+<tr>
+<th>Gap</th>
+<th>Your Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Surge pricing</td>
+<td><strong>Fixed per-km pricing</strong> set by admin, no surge ever</td>
+</tr>
+<tr>
+<td>Cash hassles</td>
+<td><strong>UPI-only payments</strong>, no cash at all</td>
+</tr>
+<tr>
+<td>Last-minute cancels</td>
+<td><strong>Advance booking only</strong> (1+ day), commitment from both sides</td>
+</tr>
+<tr>
+<td>No tracking</td>
+<td><strong>Dual GPS tracking</strong> (driver phone + car GPS device)</td>
+</tr>
+<tr>
+<td>Hidden charges</td>
+<td><strong>All-inclusive pricing</strong> or clearly shown extras</td>
+</tr>
+<tr>
+<td>Poor refunds</td>
+<td><strong>Configurable refund policy</strong> (full/partial/time-based per route)</td>
+</tr>
+<tr>
+<td>No multi-stop</td>
+<td><strong>Built-in multi-stop routing</strong> with intermediate halts</td>
+</tr>
+<tr>
+<td>Document trust</td>
+<td><strong>Verified documents</strong> visible to user (driver license, car RC, insurance)</td>
+</tr>
+<tr>
+<td>Rating quality</td>
+<td><strong>Bidirectional ratings</strong> — user rates driver AND driver rates user</td>
+</tr>
+</tbody>
+</table>
+<h2 id="swot-analysis">SWOT Analysis</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Helpful</th>
+<th>Harmful</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Internal</strong></td>
+<td>Fixed pricing, UPI-only, verified docs, multi-stop, white-label</td>
+<td>Solo developer, 1 car initially, limited budget</td>
+</tr>
+<tr>
+<td><strong>External</strong></td>
+<td>Underserved Tier-2 market, digital payment growth, trust issues with aggregators</td>
+<td>Ola/Uber brand dominance, regulatory requirements, customer acquisition cost</td>
+</tr>
+</tbody>
+</table>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#1f6feb',
+                primaryTextColor: '#e6edf3',
+                primaryBorderColor: '#58a6ff',
+                lineColor: '#8b949e',
+                secondaryColor: '#161b22',
+                tertiaryColor: '#0d1117',
+                background: '#0d1117',
+                mainBkg: '#161b22',
+                nodeBorder: '#30363d',
+                clusterBkg: '#161b22',
+                titleColor: '#58a6ff',
+                edgeLabelBackground: '#161b22',
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support & Documentation</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --green: #3fb950;
+            --red: #f85149;
+            --yellow: #d29922;
+            --purple: #bc8cff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        h1 {
+            font-size: 2rem;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-hover);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.3rem;
+        }
+        h3 {
+            font-size: 1.2rem;
+            margin-top: 1.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--purple);
+        }
+        h4 {
+            font-size: 1rem;
+            margin-top: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        p {
+            margin-bottom: 1rem;
+        }
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+            color: var(--accent-hover);
+        }
+        code {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.15rem 0.4rem;
+            font-size: 0.9em;
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            color: var(--accent-hover);
+        }
+        pre {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+        }
+        pre code {
+            background: none;
+            border: none;
+            padding: 0;
+            color: var(--text);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background: #1c2333;
+            color: var(--accent);
+            font-weight: 600;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+        td {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover td {
+            background: rgba(88, 166, 255, 0.05);
+        }
+        blockquote {
+            border-left: 4px solid var(--accent);
+            background: var(--card);
+            padding: 0.8rem 1.2rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-muted);
+        }
+        blockquote strong {
+            color: var(--yellow);
+        }
+        ul, ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        li {
+            margin-bottom: 0.3rem;
+        }
+        li ul, li ol {
+            margin-bottom: 0;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+        strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+        em {
+            color: var(--text-muted);
+        }
+        .mermaid {
+            background: #1a1f2e;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        .nav {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .nav a {
+            font-size: 0.85rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            background: rgba(88, 166, 255, 0.1);
+        }
+        .nav a:hover {
+            background: rgba(88, 166, 255, 0.2);
+            text-decoration: none;
+        }
+        .nav-label {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        input[type="checkbox"] {
+            accent-color: var(--green);
+            transform: scale(1.2);
+            margin-right: 0.3rem;
+        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.5rem; }
+            table { font-size: 0.85rem; }
+            th, td { padding: 0.4rem 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <span class="nav-label">Navigation:</span>
+        <a href="index.html" style="background:rgba(63,185,80,0.2);color:#3fb950;font-weight:600;">Home</a>
+        <a href="00-executive-summary.html">Summary</a>
+        <a href="01-product-identity.html">Identity</a>
+        <a href="02-competitive-analysis.html">Competitors</a>
+        <a href="03-target-market.html">Market</a>
+        <a href="04-user-flow.html">UX Flow</a>
+        <a href="05-mvp-definition.html">MVP</a>
+        <a href="06-architecture.html">Architecture</a>
+        <a href="07-tech-stack.html">Tech Stack</a>
+        <a href="08-integrations.html">Integrations</a>
+        <a href="10-database-design.html">Database</a>
+        <a href="11-sequence-diagrams.html">Sequences</a>
+        <a href="12-project-flow.html">Project Flow</a>
+        <a href="13-security.html">Security</a>
+        <a href="14-legal-compliance.html">Legal</a>
+        <a href="15-implementation-phases.html">Phases</a>
+        <a href="16-production-checklist.html">Checklist</a>
+        <a href="17-devops.html">DevOps</a>
+        <a href="18-monetization.html">Revenue</a>
+        <a href="19-cost-management.html">Costs</a>
+        <a href="20-marketing.html">Marketing</a>
+        <a href="21-analytics-kpis.html">KPIs</a>
+        <a href="22-accessibility-i18n.html">A11y</a>
+        <a href="23-support-docs.html">Support</a>
+        <a href="24-team-hiring.html">Team</a>
+        <a href="25-risk-assessment.html">Risks</a>
+        <a href="26-future-roadmap.html">Roadmap</a>
+    </nav>
+    <h1 id="support-documentation">Support &amp; Documentation</h1>
+<h2 id="user-support-channels">User Support Channels</h2>
+<h3 id="mvp-free">MVP (Free)</h3>
+<table>
+<thead>
+<tr>
+<th>Channel</th>
+<th>Tool</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>WhatsApp Business</td>
+<td>Direct chat</td>
+<td>₹0</td>
+</tr>
+<tr>
+<td>Phone</td>
+<td>Company phone number</td>
+<td>Existing</td>
+</tr>
+<tr>
+<td>In-app help</td>
+<td>FAQ page</td>
+<td>₹0</td>
+</tr>
+<tr>
+<td>Email</td>
+<td>support@yourdomain.in</td>
+<td>₹0</td>
+</tr>
+</tbody>
+</table>
+<h3 id="future">Future</h3>
+<ul>
+<li>In-app chat (Chatwoot — open source, self-hosted)</li>
+<li>WhatsApp Business API (automated responses)</li>
+<li>AI chatbot for FAQs</li>
+</ul>
+<h2 id="faq-page-content">FAQ Page Content</h2>
+<h3 id="for-users">For Users</h3>
+<ol>
+<li>How to create an account?</li>
+<li>How to book a ride?</li>
+<li>What payment methods are accepted? (UPI only)</li>
+<li>How to cancel a booking?</li>
+<li>What is the refund policy?</li>
+<li>How to track my ride?</li>
+<li>How to contact the driver?</li>
+<li>How to rate my ride?</li>
+<li>What if the driver doesn't show up?</li>
+<li>How to change my booking details?</li>
+<li>How to add stops to my route?</li>
+<li>How to share my ride with family?</li>
+<li>Is my payment secure?</li>
+<li>How to install the app on my phone (PWA)?</li>
+</ol>
+<h3 id="for-drivers">For Drivers</h3>
+<ol>
+<li>How to see my assigned rides?</li>
+<li>How to update ride status?</li>
+<li>How to navigate to pickup?</li>
+<li>What if the user doesn't show up?</li>
+<li>How to contact the user?</li>
+<li>How to report an issue?</li>
+</ol>
+<h2 id="feedback-collection">Feedback Collection</h2>
+<h3 id="after-every-ride">After Every Ride</h3>
+<ul>
+<li>Star rating (1-5) — mandatory</li>
+<li>Written review — optional</li>
+<li>Quick tags: "On time", "Clean car", "Polite driver", "Safe driving"</li>
+</ul>
+<h3 id="monthly-nps-survey">Monthly NPS Survey</h3>
+<ul>
+<li>"How likely are you to recommend us?" (0-10)</li>
+<li>Sent via push notification to users with 3+ rides</li>
+<li>Track NPS trend monthly</li>
+</ul>
+<h3 id="bug-reporting">Bug Reporting</h3>
+<ul>
+<li>In-app: "Report an issue" button</li>
+<li>Email: bugs@yourdomain.in</li>
+<li>Admin dashboard: Issue tracker</li>
+</ul>
+<h2 id="admin-documentation">Admin Documentation</h2>
+<h3 id="internal-docs-notion-or-readme">Internal Docs (Notion or README)</h3>
+<ol>
+<li>How to add a new car</li>
+<li>How to add a new driver</li>
+<li>How to configure route pricing</li>
+<li>How to process a refund</li>
+<li>How to block/unblock a user</li>
+<li>How to handle disputes</li>
+<li>Deployment guide</li>
+<li>Environment variable reference</li>
+<li>Database backup procedures</li>
+<li>Emergency: server down protocol</li>
+</ol>
+<h2 id="api-documentation-if-white-labeling">API Documentation (If White-Labeling)</h2>
+<ul>
+<li>Auto-generated from Zod schemas</li>
+<li>Or use Swagger/OpenAPI spec</li>
+<li>Document all API routes with request/response examples</li>
+<li>Authentication guide</li>
+<li>Webhook integration guide</li>
+</ul>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#1f6feb',
+                primaryTextColor: '#e6edf3',
+                primaryBorderColor: '#58a6ff',
+                lineColor: '#8b949e',
+                secondaryColor: '#161b22',
+                tertiaryColor: '#0d1117',
+                background: '#0d1117',
+                mainBkg: '#161b22',
+                nodeBorder: '#30363d',
+                clusterBkg: '#161b22',
+                titleColor: '#58a6ff',
+                edgeLabelBackground: '#161b22',
+            }
+        });
+    </script>
+</body>
+</html>

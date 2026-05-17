@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Executive Summary — Cab Booking Web App</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --green: #3fb950;
+            --red: #f85149;
+            --yellow: #d29922;
+            --purple: #bc8cff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        h1 {
+            font-size: 2rem;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-hover);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.3rem;
+        }
+        h3 {
+            font-size: 1.2rem;
+            margin-top: 1.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--purple);
+        }
+        h4 {
+            font-size: 1rem;
+            margin-top: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        p {
+            margin-bottom: 1rem;
+        }
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+            color: var(--accent-hover);
+        }
+        code {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.15rem 0.4rem;
+            font-size: 0.9em;
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            color: var(--accent-hover);
+        }
+        pre {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+        }
+        pre code {
+            background: none;
+            border: none;
+            padding: 0;
+            color: var(--text);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background: #1c2333;
+            color: var(--accent);
+            font-weight: 600;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+        td {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover td {
+            background: rgba(88, 166, 255, 0.05);
+        }
+        blockquote {
+            border-left: 4px solid var(--accent);
+            background: var(--card);
+            padding: 0.8rem 1.2rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-muted);
+        }
+        blockquote strong {
+            color: var(--yellow);
+        }
+        ul, ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        li {
+            margin-bottom: 0.3rem;
+        }
+        li ul, li ol {
+            margin-bottom: 0;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+        strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+        em {
+            color: var(--text-muted);
+        }
+        .mermaid {
+            background: #1a1f2e;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        .nav {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .nav a {
+            font-size: 0.85rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            background: rgba(88, 166, 255, 0.1);
+        }
+        .nav a:hover {
+            background: rgba(88, 166, 255, 0.2);
+            text-decoration: none;
+        }
+        .nav-label {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        input[type="checkbox"] {
+            accent-color: var(--green);
+            transform: scale(1.2);
+            margin-right: 0.3rem;
+        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.5rem; }
+            table { font-size: 0.85rem; }
+            th, td { padding: 0.4rem 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <span class="nav-label">Navigation:</span>
+        <a href="index.html" style="background:rgba(63,185,80,0.2);color:#3fb950;font-weight:600;">Home</a>
+        <a href="00-executive-summary.html">Summary</a>
+        <a href="01-product-identity.html">Identity</a>
+        <a href="02-competitive-analysis.html">Competitors</a>
+        <a href="03-target-market.html">Market</a>
+        <a href="04-user-flow.html">UX Flow</a>
+        <a href="05-mvp-definition.html">MVP</a>
+        <a href="06-architecture.html">Architecture</a>
+        <a href="07-tech-stack.html">Tech Stack</a>
+        <a href="08-integrations.html">Integrations</a>
+        <a href="10-database-design.html">Database</a>
+        <a href="11-sequence-diagrams.html">Sequences</a>
+        <a href="12-project-flow.html">Project Flow</a>
+        <a href="13-security.html">Security</a>
+        <a href="14-legal-compliance.html">Legal</a>
+        <a href="15-implementation-phases.html">Phases</a>
+        <a href="16-production-checklist.html">Checklist</a>
+        <a href="17-devops.html">DevOps</a>
+        <a href="18-monetization.html">Revenue</a>
+        <a href="19-cost-management.html">Costs</a>
+        <a href="20-marketing.html">Marketing</a>
+        <a href="21-analytics-kpis.html">KPIs</a>
+        <a href="22-accessibility-i18n.html">A11y</a>
+        <a href="23-support-docs.html">Support</a>
+        <a href="24-team-hiring.html">Team</a>
+        <a href="25-risk-assessment.html">Risks</a>
+        <a href="26-future-roadmap.html">Roadmap</a>
+    </nav>
+    <h1 id="executive-summary-cab-booking-web-app">Executive Summary — Cab Booking Web App</h1>
+<h2 id="product-overview">Product Overview</h2>
+<p>White-label, Dockerized cab booking web app (PWA) for a single company managing chauffeur-driven cars. Starting with 1 car in Indore, MP, India — scaling to multi-car fleet. Intercity and intracity rides with advance booking, UPI-only payments, real-time GPS tracking, and full admin control.</p>
+<h2 id="key-decisions">Key Decisions</h2>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>Decision</th>
+<th>Reasoning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Frontend</strong></td>
+<td>React 19 + Vite + TypeScript</td>
+<td>Pure SPA/PWA, fast HMR, tiny Docker image</td>
+</tr>
+<tr>
+<td><strong>Backend</strong></td>
+<td>NestJS 11 (ALL server logic)</td>
+<td>DI, guards, WebSocket gateway, cron, queues</td>
+</tr>
+<tr>
+<td><strong>Database</strong></td>
+<td>MongoDB Atlas (free M0 → paid)</td>
+<td>Flexible schema, geospatial queries, free tier</td>
+</tr>
+<tr>
+<td><strong>Auth/Session</strong></td>
+<td>httpOnly Cookies + Server Sessions (BFF)</td>
+<td>Secure cookies, 30-day auto-refresh, no tokens in browser</td>
+</tr>
+<tr>
+<td><strong>UI</strong></td>
+<td>Tailwind CSS + shadcn/ui</td>
+<td>Beautiful, accessible, zero lock-in</td>
+</tr>
+<tr>
+<td><strong>Payments</strong></td>
+<td>Razorpay (UPI + QR)</td>
+<td>Best docs, Node.js SDK, 2% + GST, fast KYC</td>
+</tr>
+<tr>
+<td><strong>Maps</strong></td>
+<td>Google Maps (India pricing)</td>
+<td>Best India coverage, $200/month free credit</td>
+</tr>
+<tr>
+<td><strong>GPS Tracking</strong></td>
+<td>Dual: Phone Geolocation + Car GPS (Traccar)</td>
+<td>Fusion service picks best source, real-time via Socket.io</td>
+</tr>
+<tr>
+<td><strong>Notifications</strong></td>
+<td>FCM (push) + MSG91 (SMS) + Resend (email)</td>
+<td>FCM free, MSG91 cheapest Indian SMS</td>
+</tr>
+<tr>
+<td><strong>Hosting</strong></td>
+<td>AWS EC2 (Docker Compose — all services)</td>
+<td>Single server, free tier 12 months</td>
+</tr>
+<tr>
+<td><strong>Domain</strong></td>
+<td>.in domain (~₹99-199/year)</td>
+<td>Cheapest, India-focused</td>
+</tr>
+<tr>
+<td><strong>CI/CD</strong></td>
+<td>GitHub Actions</td>
+<td>2000 free minutes/month</td>
+</tr>
+</tbody>
+</table>
+<h2 id="market-opportunity">Market Opportunity</h2>
+<ul>
+<li>India taxi market: <strong>$24B</strong> (2026), growing <strong>7.78% CAGR</strong></li>
+<li>150M+ monthly ride-hailing users in India</li>
+<li>70%+ bookings now digital</li>
+<li>Gap: Intercity cab booking in Tier-2/3 cities underserved</li>
+<li>Indore: Growing city, limited organized cab services</li>
+</ul>
+<h2 id="mvp-scope-1-month">MVP Scope (1 Month)</h2>
+<ol>
+<li>User registration/login (phone + email)</li>
+<li>Booking system (advance booking, calendar availability)</li>
+<li>Multi-stop route planning</li>
+<li>UPI payment with configurable refund policy</li>
+<li>Admin panel (cars, drivers, users, bookings)</li>
+<li>Driver panel (assigned rides, navigation)</li>
+<li>Real-time GPS tracking</li>
+<li>Push + SMS notifications</li>
+<li>Rating system (bidirectional)</li>
+<li>Document management (car RC, insurance, driver license)</li>
+</ol>
+<h2 id="estimated-monthly-costs">Estimated Monthly Costs</h2>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Cost (₹/month)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MVP (free tiers)</td>
+<td>₹0-500</td>
+</tr>
+<tr>
+<td>Growth (100 bookings/mo)</td>
+<td>₹1,500-3,000</td>
+</tr>
+<tr>
+<td>Scale (500+ bookings/mo)</td>
+<td>₹5,000-10,000</td>
+</tr>
+</tbody>
+</table>
+<h2 id="risk-summary">Risk Summary</h2>
+<ul>
+<li><strong>Legal</strong>: Motor Vehicle Aggregator Guidelines compliance needed</li>
+<li><strong>Technical</strong>: Solo developer, 1-month timeline is aggressive</li>
+<li><strong>Financial</strong>: Self-funded, need revenue quickly</li>
+<li><strong>Market</strong>: Competing with Ola/Uber brand recognition</li>
+</ul>
+<h2 id="files-in-this-research">Files in This Research</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>File</th>
+<th>Topic</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>01</td>
+<td>product-identity.md</td>
+<td>Names, branding</td>
+</tr>
+<tr>
+<td>02</td>
+<td>competitive-analysis.md</td>
+<td>10+ competitors analyzed</td>
+</tr>
+<tr>
+<td>03</td>
+<td>target-market.md</td>
+<td>Personas, TAM/SAM/SOM</td>
+</tr>
+<tr>
+<td>04</td>
+<td>user-flow.md</td>
+<td>User journeys, screens</td>
+</tr>
+<tr>
+<td>05</td>
+<td>mvp-definition.md</td>
+<td>Feature prioritization</td>
+</tr>
+<tr>
+<td>06</td>
+<td>architecture.md</td>
+<td>System design, diagrams</td>
+</tr>
+<tr>
+<td>07</td>
+<td>tech-stack.md</td>
+<td>All technology choices</td>
+</tr>
+<tr>
+<td>08</td>
+<td>integrations.md</td>
+<td>3rd party services</td>
+</tr>
+<tr>
+<td>09</td>
+<td>setup-guides/</td>
+<td>Integration setup guides</td>
+</tr>
+<tr>
+<td>10</td>
+<td>database-design.md</td>
+<td>MongoDB schema, ER diagram</td>
+</tr>
+<tr>
+<td>11</td>
+<td>sequence-diagrams.md</td>
+<td>Flow diagrams</td>
+</tr>
+<tr>
+<td>12</td>
+<td>project-flow.md</td>
+<td>Architecture diagrams</td>
+</tr>
+<tr>
+<td>13</td>
+<td>security.md</td>
+<td>Auth, encryption, OWASP</td>
+</tr>
+<tr>
+<td>14</td>
+<td>legal-compliance.md</td>
+<td>RTO, DPDPA, GST</td>
+</tr>
+<tr>
+<td>15</td>
+<td>implementation-phases.md</td>
+<td>4-week plan</td>
+</tr>
+<tr>
+<td>16</td>
+<td>production-checklist.md</td>
+<td>Go-live checklist</td>
+</tr>
+<tr>
+<td>17</td>
+<td>devops.md</td>
+<td>CI/CD, Docker, deployment</td>
+</tr>
+<tr>
+<td>18</td>
+<td>monetization.md</td>
+<td>Revenue model</td>
+</tr>
+<tr>
+<td>19</td>
+<td>cost-management.md</td>
+<td>Cost breakdown</td>
+</tr>
+<tr>
+<td>20</td>
+<td>marketing.md</td>
+<td>Launch strategy</td>
+</tr>
+<tr>
+<td>21</td>
+<td>analytics-kpis.md</td>
+<td>Metrics, dashboards</td>
+</tr>
+<tr>
+<td>22</td>
+<td>accessibility-i18n.md</td>
+<td>WCAG, future i18n</td>
+</tr>
+<tr>
+<td>23</td>
+<td>support-docs.md</td>
+<td>Help center, feedback</td>
+</tr>
+<tr>
+<td>24</td>
+<td>team-hiring.md</td>
+<td>Scaling team</td>
+</tr>
+<tr>
+<td>25</td>
+<td>risk-assessment.md</td>
+<td>Risk matrix</td>
+</tr>
+<tr>
+<td>26</td>
+<td>future-roadmap.md</td>
+<td>6mo, 1yr, 2yr plan</td>
+</tr>
+</tbody>
+</table>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#1f6feb',
+                primaryTextColor: '#e6edf3',
+                primaryBorderColor: '#58a6ff',
+                lineColor: '#8b949e',
+                secondaryColor: '#161b22',
+                tertiaryColor: '#0d1117',
+                background: '#0d1117',
+                mainBkg: '#161b22',
+                nodeBorder: '#30363d',
+                clusterBkg: '#161b22',
+                titleColor: '#58a6ff',
+                edgeLabelBackground: '#161b22',
+            }
+        });
+    </script>
+</body>
+</html>

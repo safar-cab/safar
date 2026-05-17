@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Books Car Rental -- Animation & Motion Design</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --green: #3fb950;
+            --red: #f85149;
+            --yellow: #d29922;
+            --purple: #bc8cff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        h1 {
+            font-size: 2rem;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-hover);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.3rem;
+        }
+        h3 {
+            font-size: 1.2rem;
+            margin-top: 1.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--purple);
+        }
+        h4 {
+            font-size: 1rem;
+            margin-top: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        p {
+            margin-bottom: 1rem;
+        }
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+            color: var(--accent-hover);
+        }
+        code {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.15rem 0.4rem;
+            font-size: 0.9em;
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            color: var(--accent-hover);
+        }
+        pre {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+        }
+        pre code {
+            background: none;
+            border: none;
+            padding: 0;
+            color: var(--text);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background: #1c2333;
+            color: var(--accent);
+            font-weight: 600;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+        td {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover td {
+            background: rgba(88, 166, 255, 0.05);
+        }
+        blockquote {
+            border-left: 4px solid var(--accent);
+            background: var(--card);
+            padding: 0.8rem 1.2rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-muted);
+        }
+        blockquote strong {
+            color: var(--yellow);
+        }
+        ul, ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        li {
+            margin-bottom: 0.3rem;
+        }
+        li ul, li ol {
+            margin-bottom: 0;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+        strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+        em {
+            color: var(--text-muted);
+        }
+        .mermaid {
+            background: #1a1f2e;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        .nav {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .nav a {
+            font-size: 0.85rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            background: rgba(88, 166, 255, 0.1);
+        }
+        .nav a:hover {
+            background: rgba(88, 166, 255, 0.2);
+            text-decoration: none;
+        }
+        .nav-label {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        input[type="checkbox"] {
+            accent-color: var(--green);
+            transform: scale(1.2);
+            margin-right: 0.3rem;
+        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.5rem; }
+            table { font-size: 0.85rem; }
+            th, td { padding: 0.4rem 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <span class="nav-label">Navigation:</span>
+        <a href="../index.html" style="background:rgba(63,185,80,0.2);color:#3fb950;font-weight:600;">Home</a>
+        <a href="../00-executive-summary.html">Summary</a>
+        <a href="../01-product-identity.html">Identity</a>
+        <a href="../02-competitive-analysis.html">Competitors</a>
+        <a href="../03-target-market.html">Market</a>
+        <a href="../04-user-flow.html">UX Flow</a>
+        <a href="../05-mvp-definition.html">MVP</a>
+        <a href="../06-architecture.html">Architecture</a>
+        <a href="../07-tech-stack.html">Tech Stack</a>
+        <a href="../08-integrations.html">Integrations</a>
+        <a href="../10-database-design.html">Database</a>
+        <a href="../11-sequence-diagrams.html">Sequences</a>
+        <a href="../12-project-flow.html">Project Flow</a>
+        <a href="../13-security.html">Security</a>
+        <a href="../14-legal-compliance.html">Legal</a>
+        <a href="../15-implementation-phases.html">Phases</a>
+        <a href="../16-production-checklist.html">Checklist</a>
+        <a href="../17-devops.html">DevOps</a>
+        <a href="../18-monetization.html">Revenue</a>
+        <a href="../19-cost-management.html">Costs</a>
+        <a href="../20-marketing.html">Marketing</a>
+        <a href="../21-analytics-kpis.html">KPIs</a>
+        <a href="../22-accessibility-i18n.html">A11y</a>
+        <a href="../23-support-docs.html">Support</a>
+        <a href="../24-team-hiring.html">Team</a>
+        <a href="../25-risk-assessment.html">Risks</a>
+        <a href="../26-future-roadmap.html">Roadmap</a>
+    </nav>
+    <h1 id="books-car-rental-animation-motion-design">Books Car Rental -- Animation &amp; Motion Design</h1>
+<p>Version 1.0 | Framer Motion + CSS Animations | 60fps Target</p>
+<hr />
+<h2 id="1-page-transitions">1. Page Transitions</h2>
+<h3 id="push-navigation-forward">Push Navigation (Forward)</h3>
+<p>When navigating deeper (e.g., Home -&gt; Booking Detail):</p>
+<pre class="highlight"><code>  Current Page               New Page
++----------------+     +----------------+
+|                |     |                |
+|   slides to    | &lt;-- |  slides in     |
+|   left (-30%)  |     |  from right    |
+|   + opacity    |     |  (100% -&gt; 0%)  |
+|    0.6         |     |                |
++----------------+     +----------------+
+</code></pre>
+
+<pre class="highlight"><code class="language-typescript">// Framer Motion variants
+const pageTransition = {
+  initial: {
+    x: '100%',
+    opacity: 0.8,
+  },
+  animate: {
+    x: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.35,
+      ease: [0.4, 0, 0.2, 1],
+    },
+  },
+  exit: {
+    x: '-30%',
+    opacity: 0.6,
+    transition: {
+      duration: 0.3,
+      ease: [0.4, 0, 0.2, 1],
+    },
+  },
+};
+</code></pre>
+
+<h3 id="pop-navigation-back">Pop Navigation (Back)</h3>
+<pre class="highlight"><code>  Previous Page               Current Page
++----------------+     +----------------+
+|                |     |                |
+|  slides in     | --&gt; |  slides out    |
+|  from left     |     |  to right      |
+|  (-30% -&gt; 0%)  |     |  (0% -&gt; 100%)  |
++----------------+     +----------------+
+</code></pre>
+
+<pre class="highlight"><code class="language-typescript">const pageTransitionBack = {
+  initial: {
+    x: '-30%',
+    opacity: 0.6,
+  },
+  animate: {
+    x: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.3,
+      ease: [0.4, 0, 0.2, 1],
+    },
+  },
+  exit: {
+    x: '100%',
+    opacity: 0.8,
+    transition: {
+      duration: 0.35,
+      ease: [0.4, 0, 0.2, 1],
+    },
+  },
+};
+</code></pre>
+
+<h3 id="tab-switch-fade">Tab Switch (Fade)</h3>
+<pre class="highlight"><code class="language-typescript">const tabTransition = {
+  initial: { opacity: 0 },
+  animate: {
+    opacity: 1,
+    transition: { duration: 0.2, ease: 'easeOut' },
+  },
+  exit: {
+    opacity: 0,
+    transition: { duration: 0.15, ease: 'easeIn' },
+  },
+};
+</code></pre>
+
+<h3 id="modal-full-screen-overlay">Modal / Full-Screen Overlay</h3>
+<pre class="highlight"><code class="language-typescript">const modalTransition = {
+  initial: {
+    opacity: 0,
+    scale: 0.95,
+  },
+  animate: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      duration: 0.25,
+      ease: [0.4, 0, 0.2, 1],
+    },
+  },
+  exit: {
+    opacity: 0,
+    scale: 0.95,
+    transition: {
+      duration: 0.2,
+      ease: [0.4, 0, 1, 1],
+    },
+  },
+};
+</code></pre>
+
+<hr />
+<h2 id="2-micro-interactions">2. Micro-Interactions</h2>
+<h3 id="button-press">Button Press</h3>
+<pre class="highlight"><code class="language-css">.button {
+  transition: transform 150ms var(--ease-default),
+              background-color 150ms var(--ease-default),
+              box-shadow 150ms var(--ease-default);
+}
+
+.button:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.button:active {
+  transform: scale(0.98) translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+</code></pre>
+
+<pre class="highlight"><code class="language-typescript">// Framer Motion button with spring
+const buttonVariants = {
+  idle: { scale: 1 },
+  hover: { scale: 1.02, y: -1 },
+  tap: { scale: 0.98 },
+};
+
+&lt;motion.button
+  variants={buttonVariants}
+  initial=&quot;idle&quot;
+  whileHover=&quot;hover&quot;
+  whileTap=&quot;tap&quot;
+  transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+&gt;
+</code></pre>
+
+<h3 id="toggle-switch">Toggle Switch</h3>
+<pre class="highlight"><code>OFF:  [O        ]     -&gt;    ON:  [        O]
+      gray bg                    blue bg
+</code></pre>
+
+<pre class="highlight"><code class="language-css">.toggle-track {
+  width: 48px;
+  height: 28px;
+  border-radius: 14px;
+  background: #CBD5E1;
+  transition: background-color 200ms ease;
+  position: relative;
+}
+
+.toggle-track.on {
+  background: #2563EB;
+}
+
+.toggle-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.toggle-track.on .toggle-thumb {
+  transform: translateX(20px);
+}
+</code></pre>
+
+<h3 id="heart-favorite">Heart / Favorite</h3>
+<pre class="highlight"><code class="language-typescript">const heartVariants = {
+  unliked: { scale: 1, color: '#94A3B8' },
+  liked: {
+    scale: [1, 1.3, 0.9, 1.1, 1],
+    color: '#E11D48',
+    transition: {
+      scale: { duration: 0.5, times: [0, 0.2, 0.4, 0.6, 1] },
+      color: { duration: 0.1 },
+    },
+  },
+};
+</code></pre>
+
+<h3 id="star-rating-tap">Star Rating (Tap)</h3>
+<pre class="highlight"><code class="language-typescript">const starVariants = {
+  empty: {
+    scale: 1,
+    color: '#E2E8F0',
+  },
+  filled: {
+    scale: [1, 1.3, 1],
+    color: '#F59E0B',
+    transition: {
+      scale: {
+        duration: 0.3,
+        ease: [0.34, 1.56, 0.64, 1],
+      },
+      color: {
+        duration: 0.1,
+      },
+    },
+  },
+};
+
+// Staggered fill: each star animates 50ms after the previous
+&lt;motion.div
+  animate=&quot;filled&quot;
+  transition={{ delay: index * 0.05 }}
+&gt;
+</code></pre>
+
+<h3 id="checkbox">Checkbox</h3>
+<pre class="highlight"><code class="language-css">.checkbox-input:checked + .checkbox-visual {
+  background: #2563EB;
+  border-color: #2563EB;
+}
+
+.checkbox-check {
+  stroke-dasharray: 16;
+  stroke-dashoffset: 16;
+  transition: stroke-dashoffset 200ms ease 50ms;
+}
+
+.checkbox-input:checked + .checkbox-visual .checkbox-check {
+  stroke-dashoffset: 0;
+}
+</code></pre>
+
+<h3 id="counter-animation-stat-cards">Counter Animation (Stat Cards)</h3>
+<pre class="highlight"><code class="language-typescript">// Animate numbers counting up
+const AnimatedNumber = ({ value, duration = 1000 }) =&gt; {
+  const [display, setDisplay] = useState(0);
+
+  useEffect(() =&gt; {
+    const start = performance.now();
+    const animate = (now: number) =&gt; {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+      setDisplay(Math.round(eased * value));
+      if (progress &lt; 1) requestAnimationFrame(animate);
+    };
+    requestAnimationFrame(animate);
+  }, [value]);
+
+  return &lt;span&gt;{display.toLocaleString()}&lt;/span&gt;;
+};
+</code></pre>
+
+<h3 id="ripple-effect-material-style-optional">Ripple Effect (Material-style, optional)</h3>
+<pre class="highlight"><code class="language-css">.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(0);
+  animation: ripple-expand 600ms ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes ripple-expand {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+</code></pre>
+
+<hr />
+<h2 id="3-loading-animations">3. Loading Animations</h2>
+<h3 id="skeleton-shimmer">Skeleton Shimmer</h3>
+<pre class="highlight"><code class="language-css">.skeleton {
+  background: linear-gradient(
+    90deg,
+    #F1F5F9 0%,
+    #F1F5F9 25%,
+    #E2E8F0 50%,
+    #F1F5F9 75%,
+    #F1F5F9 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--radius-md);
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+</code></pre>
+
+<h3 id="skeleton-to-content-transition">Skeleton to Content Transition</h3>
+<pre class="highlight"><code class="language-typescript">const skeletonToContent = {
+  initial: { opacity: 0 },
+  animate: {
+    opacity: 1,
+    transition: {
+      duration: 0.3,
+      ease: 'easeOut',
+    },
+  },
+};
+
+// Usage
+{isLoading ? (
+  &lt;SkeletonCard /&gt;
+) : (
+  &lt;motion.div {...skeletonToContent}&gt;
+    &lt;ActualCard data={data} /&gt;
+  &lt;/motion.div&gt;
+)}
+</code></pre>
+
+<h3 id="progress-bar-payment-upload">Progress Bar (Payment, Upload)</h3>
+<pre class="highlight"><code class="language-css">.progress-bar {
+  height: 4px;
+  background: #E2E8F0;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: #2563EB;
+  border-radius: 9999px;
+  transition: width 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Indeterminate variant */
+.progress-bar-indeterminate .progress-bar-fill {
+  width: 40%;
+  animation: indeterminate 1.5s ease-in-out infinite;
+}
+
+@keyframes indeterminate {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(350%);
+  }
+}
+</code></pre>
+
+<h3 id="content-loading-spinner-inline">Content Loading Spinner (Inline)</h3>
+<p>Used only for small inline loading states (button loading, refreshing data).</p>
+<pre class="highlight"><code class="language-css">.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #FFFFFF;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Dark variant (for use on light backgrounds) */
+.spinner-dark {
+  border-color: rgba(37, 99, 235, 0.2);
+  border-top-color: #2563EB;
+}
+</code></pre>
+
+<hr />
+<h2 id="4-map-marker-animations">4. Map Marker Animations</h2>
+<h3 id="driver-location-pulse">Driver Location Pulse</h3>
+<pre class="highlight"><code class="language-css">.driver-marker {
+  position: relative;
+  z-index: 10;
+}
+
+.driver-marker-dot {
+  width: 16px;
+  height: 16px;
+  background: #2563EB;
+  border: 3px solid #FFFFFF;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+}
+
+.driver-marker-pulse {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid rgba(37, 99, 235, 0.4);
+  animation: marker-pulse 2s ease-out infinite;
+}
+
+@keyframes marker-pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0.5);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 0;
+  }
+}
+</code></pre>
+
+<h3 id="bounce-on-arrival">Bounce on Arrival</h3>
+<p>When a car marker arrives at a pickup/drop point:</p>
+<pre class="highlight"><code class="language-typescript">const bounceAnimation = {
+  y: [0, -20, 0, -10, 0, -5, 0],
+  transition: {
+    duration: 0.8,
+    times: [0, 0.2, 0.4, 0.55, 0.7, 0.85, 1],
+    ease: 'easeOut',
+  },
+};
+</code></pre>
+
+<pre class="highlight"><code class="language-css">@keyframes marker-bounce {
+  0%, 100% { transform: translateY(0); }
+  20%      { transform: translateY(-20px); }
+  40%      { transform: translateY(0); }
+  55%      { transform: translateY(-10px); }
+  70%      { transform: translateY(0); }
+  85%      { transform: translateY(-5px); }
+}
+
+.marker-bounce {
+  animation: marker-bounce 0.8s ease-out;
+}
+</code></pre>
+
+<h3 id="car-marker-rotation">Car Marker Rotation</h3>
+<pre class="highlight"><code class="language-typescript">// Smoothly rotate car icon to match heading direction
+const CarMarker = ({ heading }: { heading: number }) =&gt; (
+  &lt;motion.div
+    animate={{ rotate: heading }}
+    transition={{
+      type: 'spring',
+      stiffness: 100,
+      damping: 20,
+    }}
+  &gt;
+    &lt;Car size={32} /&gt;
+  &lt;/motion.div&gt;
+);
+</code></pre>
+
+<h3 id="route-line-drawing">Route Line Drawing</h3>
+<pre class="highlight"><code class="language-css">/* Animate route path drawing on map load */
+.route-path {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: draw-route 1.5s ease-out forwards;
+}
+
+@keyframes draw-route {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+</code></pre>
+
+<h3 id="pickupdrop-pin-drop">Pickup/Drop Pin Drop</h3>
+<pre class="highlight"><code class="language-css">@keyframes pin-drop {
+  0% {
+    transform: translateY(-200px);
+    opacity: 0;
+  }
+  60% {
+    transform: translateY(10px);
+    opacity: 1;
+  }
+  80% {
+    transform: translateY(-5px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.pin-marker {
+  animation: pin-drop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+</code></pre>
+
+<hr />
+<h2 id="5-status-change-celebrations">5. Status Change Celebrations</h2>
+<h3 id="booking-confirmed-confetti">Booking Confirmed -- Confetti</h3>
+<p>Triggered when booking status changes to "confirmed" after payment.</p>
+<pre class="highlight"><code class="language-typescript">// Using canvas-confetti library
+import confetti from 'canvas-confetti';
+
+const celebrateBookingConfirmed = () =&gt; {
+  // First burst
+  confetti({
+    particleCount: 100,
+    spread: 70,
+    origin: { y: 0.6 },
+    colors: ['#2563EB', '#F59E0B', '#10B981', '#FFFFFF'],
+  });
+
+  // Second burst (delayed)
+  setTimeout(() =&gt; {
+    confetti({
+      particleCount: 50,
+      angle: 60,
+      spread: 55,
+      origin: { x: 0 },
+      colors: ['#2563EB', '#F59E0B'],
+    });
+    confetti({
+      particleCount: 50,
+      angle: 120,
+      spread: 55,
+      origin: { x: 1 },
+      colors: ['#10B981', '#3B82F6'],
+    });
+  }, 250);
+};
+</code></pre>
+
+<h3 id="success-checkmark-animation">Success Checkmark Animation</h3>
+<p>After payment completes, a check mark draws itself.</p>
+<pre class="highlight"><code class="language-css">.success-checkmark {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: block;
+  stroke-width: 3;
+  stroke: #059669;
+  stroke-miterlimit: 10;
+  box-shadow: inset 0 0 0 #D1FAE5;
+  animation: fill-green 0.4s ease-in-out 0.4s forwards,
+             scale-check 0.3s ease-in-out 0.9s both;
+}
+
+.success-checkmark-circle {
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  stroke-width: 3;
+  stroke-miterlimit: 10;
+  stroke: #059669;
+  fill: none;
+  animation: stroke-circle 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.success-checkmark-check {
+  transform-origin: 50% 50%;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: stroke-check 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+}
+
+@keyframes stroke-circle {
+  100% { stroke-dashoffset: 0; }
+}
+
+@keyframes stroke-check {
+  100% { stroke-dashoffset: 0; }
+}
+
+@keyframes fill-green {
+  100% {
+    box-shadow: inset 0 0 0 40px #ECFDF5;
+  }
+}
+
+@keyframes scale-check {
+  0%, 100% { transform: none; }
+  50% { transform: scale3d(1.1, 1.1, 1); }
+}
+</code></pre>
+
+<h3 id="ride-completed-subtle-celebration">Ride Completed -- Subtle Celebration</h3>
+<pre class="highlight"><code class="language-typescript">// Lighter celebration for ride completion
+const rideCompletedAnimation = {
+  initial: { scale: 0, opacity: 0 },
+  animate: {
+    scale: [0, 1.2, 1],
+    opacity: [0, 1, 1],
+    transition: {
+      duration: 0.5,
+      ease: [0.34, 1.56, 0.64, 1],
+    },
+  },
+};
+</code></pre>
+
+<hr />
+<h2 id="6-spring-physics-for-bottom-sheets">6. Spring Physics for Bottom Sheets</h2>
+<h3 id="bottom-sheet-spring-configuration">Bottom Sheet Spring Configuration</h3>
+<pre class="highlight"><code class="language-typescript">const bottomSheetSpring = {
+  type: 'spring',
+  damping: 30,
+  stiffness: 300,
+  mass: 0.8,
+};
+
+// Bottom sheet with drag-to-dismiss
+const BottomSheet = ({ isOpen, onClose, children, snapPoints = [0.4, 0.7, 0.9] }) =&gt; {
+  const sheetHeight = window.innerHeight;
+  const snapPixels = snapPoints.map(p =&gt; sheetHeight * (1 - p));
+
+  return (
+    &lt;AnimatePresence&gt;
+      {isOpen &amp;&amp; (
+        &lt;&gt;
+          {/* Overlay */}
+          &lt;motion.div
+            className=&quot;bottom-sheet-overlay&quot;
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+          /&gt;
+
+          {/* Sheet */}
+          &lt;motion.div
+            className=&quot;bottom-sheet&quot;
+            initial={{ y: sheetHeight }}
+            animate={{ y: snapPixels[0] }}
+            exit={{ y: sheetHeight }}
+            transition={bottomSheetSpring}
+            drag=&quot;y&quot;
+            dragConstraints={{
+              top: snapPixels[snapPixels.length - 1],
+              bottom: sheetHeight,
+            }}
+            dragElastic={0.1}
+            onDragEnd={(_, info) =&gt; {
+              if (info.velocity.y &gt; 800 || info.offset.y &gt; sheetHeight * 0.3) {
+                onClose();
+              } else {
+                // Snap to nearest snap point
+                const closestSnap = snapPixels.reduce((prev, curr) =&gt;
+                  Math.abs(curr - info.point.y) &lt; Math.abs(prev - info.point.y)
+                    ? curr : prev
+                );
+                // animate to closestSnap
+              }
+            }}
+          &gt;
+            &lt;div className=&quot;bottom-sheet-handle&quot; /&gt;
+            {children}
+          &lt;/motion.div&gt;
+        &lt;/&gt;
+      )}
+    &lt;/AnimatePresence&gt;
+  );
+};
+</code></pre>
+
+<h3 id="rubber-band-effect-over-scroll">Rubber Band Effect (Over-scroll)</h3>
+<pre class="highlight"><code class="language-typescript">// When dragging past bounds, apply resistance
+const rubberBand = (distance: number, dimension: number, constant = 0.55) =&gt; {
+  return (distance * dimension * constant) / (dimension + constant * distance);
+};
+</code></pre>
+
+<h3 id="bottom-sheet-snap-points">Bottom Sheet Snap Points</h3>
+<pre class="highlight"><code>+------------------------------------------+
+|  90% ---&gt; Full expanded (complex content)|
+|                                          |
+|                                          |
+|  70% ---&gt; Medium (forms, details)        |
+|                                          |
+|  40% ---&gt; Peek (summary info)            |
+|                                          |
+|   0% ---&gt; Closed (dismissed)             |
++------------------------------------------+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th>Sheet Use Case</th>
+<th>Default Snap</th>
+<th>Allowed Snaps</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Action menu</td>
+<td>40%</td>
+<td>40%, 0%</td>
+</tr>
+<tr>
+<td>Car detail</td>
+<td>70%</td>
+<td>40%, 70%, 0%</td>
+</tr>
+<tr>
+<td>Driver info (track)</td>
+<td>40%</td>
+<td>40%, 70%, 0%</td>
+</tr>
+<tr>
+<td>Filter</td>
+<td>70%</td>
+<td>70%, 0%</td>
+</tr>
+<tr>
+<td>City search</td>
+<td>90%</td>
+<td>90%, 0%</td>
+</tr>
+<tr>
+<td>Confirmation</td>
+<td>40%</td>
+<td>40%, 0%</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="7-staggered-list-item-animations">7. Staggered List Item Animations</h2>
+<h3 id="list-appear-animation">List Appear Animation</h3>
+<p>When a list loads, items stagger in from the bottom.</p>
+<pre class="highlight"><code class="language-typescript">const listContainerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.05,    // 50ms between each item
+      delayChildren: 0.1,       // 100ms initial delay
+    },
+  },
+};
+
+const listItemVariants = {
+  hidden: {
+    opacity: 0,
+    y: 20,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.3,
+      ease: [0.4, 0, 0.2, 1],
+    },
+  },
+};
+
+// Usage
+&lt;motion.div
+  variants={listContainerVariants}
+  initial=&quot;hidden&quot;
+  animate=&quot;visible&quot;
+&gt;
+  {bookings.map((booking) =&gt; (
+    &lt;motion.div key={booking.id} variants={listItemVariants}&gt;
+      &lt;BookingCard booking={booking} /&gt;
+    &lt;/motion.div&gt;
+  ))}
+&lt;/motion.div&gt;
+</code></pre>
+
+<h3 id="performance-rules-for-stagger">Performance Rules for Stagger</h3>
+<table>
+<thead>
+<tr>
+<th>List Size</th>
+<th>Stagger Delay</th>
+<th>Max Animated</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1-5 items</td>
+<td>80ms</td>
+<td>All</td>
+</tr>
+<tr>
+<td>6-10 items</td>
+<td>50ms</td>
+<td>All</td>
+</tr>
+<tr>
+<td>11-20 items</td>
+<td>30ms</td>
+<td>First 10</td>
+</tr>
+<tr>
+<td>20+ items</td>
+<td>0ms</td>
+<td>None (fade in as group)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="card-grid-stagger">Card Grid Stagger</h3>
+<p>For 2+ column grids (car selection), stagger by row then column:</p>
+<pre class="highlight"><code class="language-typescript">const gridItemVariants = {
+  hidden: {
+    opacity: 0,
+    scale: 0.95,
+    y: 15,
+  },
+  visible: (index: number) =&gt; ({
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: {
+      delay: index * 0.06,
+      duration: 0.3,
+      ease: [0.4, 0, 0.2, 1],
+    },
+  }),
+};
+
+// Usage
+{cars.map((car, index) =&gt; (
+  &lt;motion.div
+    key={car.id}
+    variants={gridItemVariants}
+    initial=&quot;hidden&quot;
+    animate=&quot;visible&quot;
+    custom={index}
+  &gt;
+    &lt;CarCard car={car} /&gt;
+  &lt;/motion.div&gt;
+))}
+</code></pre>
+
+<h3 id="item-removal-animation">Item Removal Animation</h3>
+<p>When a booking is cancelled or an item is removed:</p>
+<pre class="highlight"><code class="language-typescript">const removeItemVariants = {
+  exit: {
+    opacity: 0,
+    height: 0,
+    marginBottom: 0,
+    paddingTop: 0,
+    paddingBottom: 0,
+    transition: {
+      opacity: { duration: 0.2 },
+      height: { duration: 0.3, delay: 0.1 },
+      margin: { duration: 0.3, delay: 0.1 },
+      padding: { duration: 0.3, delay: 0.1 },
+    },
+  },
+};
+</code></pre>
+
+<hr />
+<h2 id="8-notification-toast-animations">8. Notification &amp; Toast Animations</h2>
+<h3 id="toast-entryexit">Toast Entry/Exit</h3>
+<pre class="highlight"><code class="language-typescript">const toastVariants = {
+  initial: {
+    y: -100,
+    opacity: 0,
+    scale: 0.95,
+  },
+  animate: {
+    y: 0,
+    opacity: 1,
+    scale: 1,
+    transition: {
+      type: 'spring',
+      stiffness: 400,
+      damping: 25,
+    },
+  },
+  exit: {
+    y: -20,
+    opacity: 0,
+    scale: 0.95,
+    transition: {
+      duration: 0.2,
+      ease: 'easeIn',
+    },
+  },
+};
+</code></pre>
+
+<h3 id="toast-auto-dismiss-progress-bar">Toast Auto-Dismiss Progress Bar</h3>
+<pre class="highlight"><code class="language-css">.toast-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 0 0 12px 12px;
+  animation: toast-countdown 4s linear forwards;
+}
+
+@keyframes toast-countdown {
+  from { width: 100%; }
+  to { width: 0%; }
+}
+</code></pre>
+
+<hr />
+<h2 id="9-reduced-motion-support">9. Reduced Motion Support</h2>
+<p>All animations must respect the user's motion preference.</p>
+<pre class="highlight"><code class="language-typescript">// Hook for checking motion preference
+const usePrefersReducedMotion = () =&gt; {
+  const [prefersReduced, setPrefersReduced] = useState(
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  );
+
+  useEffect(() =&gt; {
+    const mql = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const handler = (e: MediaQueryListEvent) =&gt; setPrefersReduced(e.matches);
+    mql.addEventListener('change', handler);
+    return () =&gt; mql.removeEventListener('change', handler);
+  }, []);
+
+  return prefersReduced;
+};
+</code></pre>
+
+<pre class="highlight"><code class="language-css">@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .skeleton {
+    animation: none;
+    background: #F1F5F9;
+  }
+}
+</code></pre>
+
+<h3 id="reduced-motion-alternatives">Reduced Motion Alternatives</h3>
+<table>
+<thead>
+<tr>
+<th>Full Motion</th>
+<th>Reduced Motion Alternative</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Slide transition</td>
+<td>Instant cut / fade 100ms</td>
+</tr>
+<tr>
+<td>Confetti celebration</td>
+<td>Static success icon</td>
+</tr>
+<tr>
+<td>Skeleton shimmer</td>
+<td>Static gray placeholder</td>
+</tr>
+<tr>
+<td>Staggered list entry</td>
+<td>All items appear at once</td>
+</tr>
+<tr>
+<td>Bounce on arrive</td>
+<td>Static pin placement</td>
+</tr>
+<tr>
+<td>Star rating scale</td>
+<td>Instant color change</td>
+</tr>
+<tr>
+<td>Bottom sheet spring</td>
+<td>Instant show/hide</td>
+</tr>
+<tr>
+<td>Pulse on map marker</td>
+<td>Static colored ring</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="10-animation-performance-guidelines">10. Animation Performance Guidelines</h2>
+<h3 id="rules">Rules</h3>
+<ol>
+<li><strong>Only animate <code>transform</code> and <code>opacity</code></strong> -- these are GPU-composited and do not trigger layout or paint.</li>
+<li><strong>Use <code>will-change</code> sparingly</strong> -- only on elements about to animate, remove after.</li>
+<li><strong>Keep animations under 16ms per frame</strong> (60fps budget).</li>
+<li><strong>Avoid animating during scroll</strong> -- can cause jank.</li>
+<li><strong>Use <code>requestAnimationFrame</code></strong> for JS-driven animations.</li>
+<li><strong>Batch DOM reads and writes</strong> -- avoid layout thrashing.</li>
+</ol>
+<h3 id="css-performance-hints">CSS Performance Hints</h3>
+<pre class="highlight"><code class="language-css">/* Apply before animation starts */
+.will-animate {
+  will-change: transform, opacity;
+}
+
+/* Remove after animation completes */
+.animation-done {
+  will-change: auto;
+}
+
+/* Use 3D transforms to force GPU layer */
+.gpu-accelerated {
+  transform: translateZ(0);
+  /* or */
+  transform: translate3d(0, 0, 0);
+}
+
+/* Contain layout during animation */
+.animated-container {
+  contain: layout style;
+}
+</code></pre>
+
+<h3 id="animation-budget-per-page">Animation Budget Per Page</h3>
+<table>
+<thead>
+<tr>
+<th>Page Type</th>
+<th>Max Concurrent Animations</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Home</td>
+<td>5</td>
+<td>Carousel, stagger, search</td>
+</tr>
+<tr>
+<td>Search results</td>
+<td>8</td>
+<td>Staggered card entry</td>
+</tr>
+<tr>
+<td>Booking form</td>
+<td>3</td>
+<td>Step transition, inputs</td>
+</tr>
+<tr>
+<td>Live tracking</td>
+<td>3</td>
+<td>Car, pulse, ETA counter</td>
+</tr>
+<tr>
+<td>Admin dashboard</td>
+<td>6</td>
+<td>Charts, counters, cards</td>
+</tr>
+<tr>
+<td>Payment success</td>
+<td>4</td>
+<td>Check, confetti, text</td>
+</tr>
+</tbody>
+</table>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#1f6feb',
+                primaryTextColor: '#e6edf3',
+                primaryBorderColor: '#58a6ff',
+                lineColor: '#8b949e',
+                secondaryColor: '#161b22',
+                tertiaryColor: '#0d1117',
+                background: '#0d1117',
+                mainBkg: '#161b22',
+                nodeBorder: '#30363d',
+                clusterBkg: '#161b22',
+                titleColor: '#58a6ff',
+                edgeLabelBackground: '#161b22',
+            }
+        });
+    </script>
+</body>
+</html>

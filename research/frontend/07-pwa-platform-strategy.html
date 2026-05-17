@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PWA & Platform Strategy</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --green: #3fb950;
+            --red: #f85149;
+            --yellow: #d29922;
+            --purple: #bc8cff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        h1 {
+            font-size: 2rem;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-hover);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.3rem;
+        }
+        h3 {
+            font-size: 1.2rem;
+            margin-top: 1.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--purple);
+        }
+        h4 {
+            font-size: 1rem;
+            margin-top: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        p {
+            margin-bottom: 1rem;
+        }
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+            color: var(--accent-hover);
+        }
+        code {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.15rem 0.4rem;
+            font-size: 0.9em;
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            color: var(--accent-hover);
+        }
+        pre {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+        }
+        pre code {
+            background: none;
+            border: none;
+            padding: 0;
+            color: var(--text);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background: #1c2333;
+            color: var(--accent);
+            font-weight: 600;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+        td {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover td {
+            background: rgba(88, 166, 255, 0.05);
+        }
+        blockquote {
+            border-left: 4px solid var(--accent);
+            background: var(--card);
+            padding: 0.8rem 1.2rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-muted);
+        }
+        blockquote strong {
+            color: var(--yellow);
+        }
+        ul, ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        li {
+            margin-bottom: 0.3rem;
+        }
+        li ul, li ol {
+            margin-bottom: 0;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+        strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+        em {
+            color: var(--text-muted);
+        }
+        .mermaid {
+            background: #1a1f2e;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        .nav {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .nav a {
+            font-size: 0.85rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            background: rgba(88, 166, 255, 0.1);
+        }
+        .nav a:hover {
+            background: rgba(88, 166, 255, 0.2);
+            text-decoration: none;
+        }
+        .nav-label {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        input[type="checkbox"] {
+            accent-color: var(--green);
+            transform: scale(1.2);
+            margin-right: 0.3rem;
+        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.5rem; }
+            table { font-size: 0.85rem; }
+            th, td { padding: 0.4rem 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <span class="nav-label">Navigation:</span>
+        <a href="../index.html" style="background:rgba(63,185,80,0.2);color:#3fb950;font-weight:600;">Home</a>
+        <a href="../00-executive-summary.html">Summary</a>
+        <a href="../01-product-identity.html">Identity</a>
+        <a href="../02-competitive-analysis.html">Competitors</a>
+        <a href="../03-target-market.html">Market</a>
+        <a href="../04-user-flow.html">UX Flow</a>
+        <a href="../05-mvp-definition.html">MVP</a>
+        <a href="../06-architecture.html">Architecture</a>
+        <a href="../07-tech-stack.html">Tech Stack</a>
+        <a href="../08-integrations.html">Integrations</a>
+        <a href="../10-database-design.html">Database</a>
+        <a href="../11-sequence-diagrams.html">Sequences</a>
+        <a href="../12-project-flow.html">Project Flow</a>
+        <a href="../13-security.html">Security</a>
+        <a href="../14-legal-compliance.html">Legal</a>
+        <a href="../15-implementation-phases.html">Phases</a>
+        <a href="../16-production-checklist.html">Checklist</a>
+        <a href="../17-devops.html">DevOps</a>
+        <a href="../18-monetization.html">Revenue</a>
+        <a href="../19-cost-management.html">Costs</a>
+        <a href="../20-marketing.html">Marketing</a>
+        <a href="../21-analytics-kpis.html">KPIs</a>
+        <a href="../22-accessibility-i18n.html">A11y</a>
+        <a href="../23-support-docs.html">Support</a>
+        <a href="../24-team-hiring.html">Team</a>
+        <a href="../25-risk-assessment.html">Risks</a>
+        <a href="../26-future-roadmap.html">Roadmap</a>
+    </nav>
+    <h1 id="pwa-platform-strategy">PWA &amp; Platform Strategy</h1>
+<h2 id="platform-architecture">Platform Architecture</h2>
+<pre class="highlight"><code>Books Car Rental — Three Portals, Two Platforms
+
+┌─────────────────────────────────────────────────────┐
+│  CUSTOMER APP (PWA)          DRIVER APP (PWA)       │
+│  ─────────────────           ─────────────────      │
+│  Mobile-first                Mobile-first           │
+│  Installable via browser     Installable via browser│
+│  Offline support             Offline support        │
+│  Push notifications (FCM)    Push notifications     │
+│  Service worker caching      GPS background         │
+│  Add to Home Screen          Add to Home Screen     │
+│  Full screen (standalone)    Full screen (standalone)│
+│  Web 3.0 PWA features       Web 3.0 PWA features   │
+└─────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────┐
+│  ADMIN DASHBOARD (Web App — Desktop-First)          │
+│  ─────────────────────────────────────────          │
+│  Desktop-first, responsive                          │
+│  Browser-only (no PWA install)                      │
+│  No service worker needed                           │
+│  No offline support needed                          │
+│  Sidebar navigation                                 │
+│  Data tables, charts, forms                         │
+│  Accessed via laptop/desktop browser                │
+└─────────────────────────────────────────────────────┘
+</code></pre>
+
+<hr />
+<h2 id="pwa-configuration-customer-driver">PWA Configuration (Customer + Driver)</h2>
+<h3 id="manifestjson">manifest.json</h3>
+<pre class="highlight"><code class="language-json">{
+  &quot;name&quot;: &quot;Books Car Rental&quot;,
+  &quot;short_name&quot;: &quot;Books&quot;,
+  &quot;description&quot;: &quot;Book intercity car rides with ease&quot;,
+  &quot;start_url&quot;: &quot;/customer&quot;,
+  &quot;display&quot;: &quot;standalone&quot;,
+  &quot;orientation&quot;: &quot;portrait&quot;,
+  &quot;background_color&quot;: &quot;#FFFFFF&quot;,
+  &quot;theme_color&quot;: &quot;#2563EB&quot;,
+  &quot;icons&quot;: [
+    {
+      &quot;src&quot;: &quot;/icons/icon-72x72.png&quot;,
+      &quot;sizes&quot;: &quot;72x72&quot;,
+      &quot;type&quot;: &quot;image/png&quot;
+    },
+    {
+      &quot;src&quot;: &quot;/icons/icon-96x96.png&quot;,
+      &quot;sizes&quot;: &quot;96x96&quot;,
+      &quot;type&quot;: &quot;image/png&quot;
+    },
+    {
+      &quot;src&quot;: &quot;/icons/icon-128x128.png&quot;,
+      &quot;sizes&quot;: &quot;128x128&quot;,
+      &quot;type&quot;: &quot;image/png&quot;
+    },
+    {
+      &quot;src&quot;: &quot;/icons/icon-144x144.png&quot;,
+      &quot;sizes&quot;: &quot;144x144&quot;,
+      &quot;type&quot;: &quot;image/png&quot;
+    },
+    {
+      &quot;src&quot;: &quot;/icons/icon-152x152.png&quot;,
+      &quot;sizes&quot;: &quot;152x152&quot;,
+      &quot;type&quot;: &quot;image/png&quot;
+    },
+    {
+      &quot;src&quot;: &quot;/icons/icon-192x192.png&quot;,
+      &quot;sizes&quot;: &quot;192x192&quot;,
+      &quot;type&quot;: &quot;image/png&quot;,
+      &quot;purpose&quot;: &quot;any maskable&quot;
+    },
+    {
+      &quot;src&quot;: &quot;/icons/icon-384x384.png&quot;,
+      &quot;sizes&quot;: &quot;384x384&quot;,
+      &quot;type&quot;: &quot;image/png&quot;
+    },
+    {
+      &quot;src&quot;: &quot;/icons/icon-512x512.png&quot;,
+      &quot;sizes&quot;: &quot;512x512&quot;,
+      &quot;type&quot;: &quot;image/png&quot;,
+      &quot;purpose&quot;: &quot;any maskable&quot;
+    }
+  ],
+  &quot;screenshots&quot;: [
+    {
+      &quot;src&quot;: &quot;/screenshots/home.png&quot;,
+      &quot;sizes&quot;: &quot;390x844&quot;,
+      &quot;type&quot;: &quot;image/png&quot;,
+      &quot;form_factor&quot;: &quot;narrow&quot;,
+      &quot;label&quot;: &quot;Home screen&quot;
+    },
+    {
+      &quot;src&quot;: &quot;/screenshots/booking.png&quot;,
+      &quot;sizes&quot;: &quot;390x844&quot;,
+      &quot;type&quot;: &quot;image/png&quot;,
+      &quot;form_factor&quot;: &quot;narrow&quot;,
+      &quot;label&quot;: &quot;Booking flow&quot;
+    }
+  ],
+  &quot;categories&quot;: [&quot;travel&quot;, &quot;transportation&quot;],
+  &quot;shortcuts&quot;: [
+    {
+      &quot;name&quot;: &quot;Book a Ride&quot;,
+      &quot;url&quot;: &quot;/customer/book&quot;,
+      &quot;icons&quot;: [{ &quot;src&quot;: &quot;/icons/shortcut-book.png&quot;, &quot;sizes&quot;: &quot;96x96&quot; }]
+    },
+    {
+      &quot;name&quot;: &quot;My Bookings&quot;,
+      &quot;url&quot;: &quot;/customer/bookings&quot;,
+      &quot;icons&quot;: [{ &quot;src&quot;: &quot;/icons/shortcut-bookings.png&quot;, &quot;sizes&quot;: &quot;96x96&quot; }]
+    }
+  ]
+}
+</code></pre>
+
+<h3 id="driver-manifestjson-differences">Driver manifest.json differences</h3>
+<pre class="highlight"><code class="language-json">{
+  &quot;name&quot;: &quot;Books Driver&quot;,
+  &quot;short_name&quot;: &quot;Books Driver&quot;,
+  &quot;start_url&quot;: &quot;/driver&quot;,
+  &quot;theme_color&quot;: &quot;#059669&quot;,
+  &quot;shortcuts&quot;: [
+    {
+      &quot;name&quot;: &quot;My Rides&quot;,
+      &quot;url&quot;: &quot;/driver/rides&quot;
+    },
+    {
+      &quot;name&quot;: &quot;Go Online&quot;,
+      &quot;url&quot;: &quot;/driver?online=true&quot;
+    }
+  ]
+}
+</code></pre>
+
+<hr />
+<h2 id="service-worker-strategy">Service Worker Strategy</h2>
+<h3 id="vite-pwa-plugin-config">Vite PWA Plugin Config</h3>
+<pre class="highlight"><code class="language-typescript">// vite.config.ts
+import { VitePWA } from 'vite-plugin-pwa';
+
+export default defineConfig({
+  plugins: [
+    react(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      includeAssets: ['favicon.ico', 'robots.txt', 'icons/*.png'],
+      workbox: {
+        // Cache strategies
+        runtimeCaching: [
+          {
+            // API calls - Network First
+            urlPattern: /^https:\/\/api\.books\.in\/api\/.*/i,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'api-cache',
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 60 * 60, // 1 hour
+              },
+              networkTimeoutSeconds: 10,
+            },
+          },
+          {
+            // Static assets - Cache First
+            urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'image-cache',
+              expiration: {
+                maxEntries: 60,
+                maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
+              },
+            },
+          },
+          {
+            // Google Fonts - Stale While Revalidate
+            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'font-cache',
+            },
+          },
+        ],
+        // Skip waiting and claim clients immediately
+        skipWaiting: true,
+        clientsClaim: true,
+      },
+      manifest: {
+        // ... manifest.json contents above
+      },
+    }),
+  ],
+});
+</code></pre>
+
+<h3 id="what-gets-cached-offline">What Gets Cached Offline</h3>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th>Strategy</th>
+<th>Cache Duration</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>App shell (HTML/JS/CSS)</td>
+<td>Precache</td>
+<td>Until next deploy</td>
+</tr>
+<tr>
+<td>Static images</td>
+<td>Cache First</td>
+<td>30 days</td>
+</tr>
+<tr>
+<td>API responses</td>
+<td>Network First</td>
+<td>1 hour fallback</td>
+</tr>
+<tr>
+<td>Google Fonts</td>
+<td>Stale While Revalidate</td>
+<td>Until new version</td>
+</tr>
+<tr>
+<td>Car photos</td>
+<td>Cache First</td>
+<td>7 days</td>
+</tr>
+<tr>
+<td>User profile data</td>
+<td>Network First</td>
+<td>Cached fallback</td>
+</tr>
+</tbody>
+</table>
+<h3 id="offline-behavior">Offline Behavior</h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Offline Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Browse routes</td>
+<td>Show cached routes</td>
+</tr>
+<tr>
+<td>View my bookings</td>
+<td>Show cached booking list</td>
+</tr>
+<tr>
+<td>Booking detail</td>
+<td>Show cached detail</td>
+</tr>
+<tr>
+<td>Create booking</td>
+<td>Queue and sync when online</td>
+</tr>
+<tr>
+<td>Live tracking</td>
+<td>Show "Offline" banner, last known position</td>
+</tr>
+<tr>
+<td>Payment</td>
+<td>Block — requires network</td>
+</tr>
+<tr>
+<td>Profile</td>
+<td>Show cached profile</td>
+</tr>
+<tr>
+<td>Admin dashboard</td>
+<td>Not applicable (web-only)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="install-prompt-strategy">Install Prompt Strategy</h2>
+<h3 id="when-to-show-install-prompt">When to Show Install Prompt</h3>
+<pre class="highlight"><code class="language-typescript">// Custom install prompt timing
+const useInstallPrompt = () =&gt; {
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [showPrompt, setShowPrompt] = useState(false);
+
+  useEffect(() =&gt; {
+    const handler = (e: Event) =&gt; {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () =&gt; window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  // Show prompt conditions:
+  // 1. After 2nd visit (tracked in localStorage)
+  // 2. After first booking confirmation
+  // 3. Never if already installed
+  // 4. Max once per 7 days
+  const shouldShow = () =&gt; {
+    if (!deferredPrompt) return false;
+    const isInstalled = window.matchMedia('(display-mode: standalone)').matches;
+    if (isInstalled) return false;
+
+    const lastPrompt = localStorage.getItem('installPromptDate');
+    if (lastPrompt) {
+      const daysSince = (Date.now() - parseInt(lastPrompt)) / (1000 * 60 * 60 * 24);
+      if (daysSince &lt; 7) return false;
+    }
+
+    const visitCount = parseInt(localStorage.getItem('visitCount') || '0');
+    return visitCount &gt;= 2;
+  };
+
+  return { deferredPrompt, shouldShow, showPrompt, setShowPrompt };
+};
+</code></pre>
+
+<h3 id="install-prompt-ui">Install Prompt UI</h3>
+<pre class="highlight"><code>┌──────────────────────────────────────┐
+│                                      │
+│  ┌─────────────────────────────────┐ │
+│  │ 📱 Install Books App            │ │
+│  │                                 │ │
+│  │ Get quick access to bookings,   │ │
+│  │ live tracking, and instant      │ │
+│  │ notifications.                  │ │
+│  │                                 │ │
+│  │ [  Install  ]  [  Not Now  ]    │ │
+│  └─────────────────────────────────┘ │
+│                                      │
+└──────────────────────────────────────┘
+
+Style: bottom sheet on mobile, banner on desktop
+Animation: slide up, 300ms spring
+Dismissible: swipe down or &quot;Not Now&quot;
+</code></pre>
+
+<hr />
+<h2 id="push-notifications-fcm-service-worker">Push Notifications (FCM + Service Worker)</h2>
+<h3 id="registration-flow">Registration Flow</h3>
+<pre class="highlight"><code>1. User logs in
+2. Check notification permission
+3. If not granted → show custom prompt explaining benefits
+4. If granted → get FCM token via getToken()
+5. Send token to backend → stored in user.fcmTokens[]
+6. Service worker handles incoming push messages
+</code></pre>
+
+<h3 id="notification-types">Notification Types</h3>
+<table>
+<thead>
+<tr>
+<th>Event</th>
+<th>Title</th>
+<th>Body</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Booking confirmed</td>
+<td>Booking Confirmed</td>
+<td>Your ride BK-001 is confirmed</td>
+<td>Open booking detail</td>
+</tr>
+<tr>
+<td>Driver assigned</td>
+<td>Driver Assigned</td>
+<td>Ramesh is your driver for tomorrow</td>
+<td>Open booking detail</td>
+</tr>
+<tr>
+<td>Driver en route</td>
+<td>Driver On The Way</td>
+<td>Your driver is heading to pickup</td>
+<td>Open live tracking</td>
+</tr>
+<tr>
+<td>Ride completed</td>
+<td>Ride Completed</td>
+<td>Rate your ride with Ramesh</td>
+<td>Open rating page</td>
+</tr>
+<tr>
+<td>Payment received</td>
+<td>Payment Received</td>
+<td>Rs 3,192 received for BK-001</td>
+<td>Open payment history</td>
+</tr>
+<tr>
+<td>Cancellation</td>
+<td>Booking Cancelled</td>
+<td>BK-001 cancelled. Refund in 3-5 days</td>
+<td>Open booking detail</td>
+</tr>
+</tbody>
+</table>
+<h3 id="service-worker-push-handler">Service Worker Push Handler</h3>
+<pre class="highlight"><code class="language-typescript">// sw.js (service worker)
+self.addEventListener('push', (event) =&gt; {
+  const data = event.data?.json();
+
+  const options = {
+    body: data.body,
+    icon: '/icons/icon-192x192.png',
+    badge: '/icons/badge-72x72.png',
+    vibrate: [200, 100, 200],
+    tag: data.tag || 'default',
+    renotify: true,
+    data: {
+      url: data.actionUrl || '/customer/bookings',
+    },
+    actions: data.actions || [],
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(data.title, options)
+  );
+});
+
+self.addEventListener('notificationclick', (event) =&gt; {
+  event.notification.close();
+  const url = event.notification.data.url;
+  event.waitUntil(
+    clients.openWindow(url)
+  );
+});
+</code></pre>
+
+<hr />
+<h2 id="web-30-pwa-features-used">Web 3.0 PWA Features Used</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>API</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Install prompt</td>
+<td><code>beforeinstallprompt</code></td>
+<td>Custom install UI</td>
+</tr>
+<tr>
+<td>Standalone display</td>
+<td><code>display: standalone</code></td>
+<td>Full screen app feel</td>
+</tr>
+<tr>
+<td>Push notifications</td>
+<td>Push API + FCM</td>
+<td>Booking updates</td>
+</tr>
+<tr>
+<td>Background sync</td>
+<td>Background Sync API</td>
+<td>Queue offline bookings</td>
+</tr>
+<tr>
+<td>Screen wake lock</td>
+<td>Wake Lock API</td>
+<td>Keep screen on during tracking (driver)</td>
+</tr>
+<tr>
+<td>Geolocation</td>
+<td>Geolocation API</td>
+<td>Driver location updates</td>
+</tr>
+<tr>
+<td>Share</td>
+<td>Web Share API</td>
+<td>Share booking/receipt</td>
+</tr>
+<tr>
+<td>Vibration</td>
+<td>Vibration API</td>
+<td>Haptic feedback on actions</td>
+</tr>
+<tr>
+<td>Persistent storage</td>
+<td>Storage API</td>
+<td>Keep cached data</td>
+</tr>
+<tr>
+<td>App shortcuts</td>
+<td>Manifest shortcuts</td>
+<td>Quick book, my bookings</td>
+</tr>
+<tr>
+<td>App badges</td>
+<td>Badging API</td>
+<td>Unread notification count</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="admin-web-only-no-pwa">Admin — Web-Only (No PWA)</h2>
+<h3 id="why-no-pwa-for-admin">Why No PWA for Admin</h3>
+<ul>
+<li>Admin accesses on desktop/laptop — no need for home screen install</li>
+<li>Admin needs reliable network for real-time data — offline mode not useful</li>
+<li>Complex tables and charts optimized for large screens</li>
+<li>No push notifications needed — admin checks dashboard periodically</li>
+<li>No geolocation or camera features needed</li>
+</ul>
+<h3 id="admin-technical-stack">Admin Technical Stack</h3>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Choice</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Layout</td>
+<td>Desktop-first, responsive down to tablet</td>
+</tr>
+<tr>
+<td>Min width</td>
+<td>768px (show mobile warning below this)</td>
+</tr>
+<tr>
+<td>Navigation</td>
+<td>Fixed sidebar (240px)</td>
+</tr>
+<tr>
+<td>Data display</td>
+<td>Tables with sort/filter/pagination</td>
+</tr>
+<tr>
+<td>Charts</td>
+<td>Recharts or Chart.js</td>
+</tr>
+<tr>
+<td>Forms</td>
+<td>React Hook Form</td>
+</tr>
+<tr>
+<td>No service worker</td>
+<td>Direct API calls only</td>
+</tr>
+<tr>
+<td>No manifest</td>
+<td>Standard web page</td>
+</tr>
+</tbody>
+</table>
+<h3 id="mobile-warning-for-admin">Mobile Warning for Admin</h3>
+<pre class="highlight"><code>┌──────────────────────────────────┐
+│                                  │
+│  💻 Desktop Recommended         │
+│                                  │
+│  Admin dashboard works best on   │
+│  a laptop or desktop browser.    │
+│                                  │
+│  [  Continue Anyway  ]           │
+│                                  │
+└──────────────────────────────────┘
+
+Show when: viewport &lt; 768px
+Dismissible: yes, remember choice in localStorage
+</code></pre>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#1f6feb',
+                primaryTextColor: '#e6edf3',
+                primaryBorderColor: '#58a6ff',
+                lineColor: '#8b949e',
+                secondaryColor: '#161b22',
+                tertiaryColor: '#0d1117',
+                background: '#0d1117',
+                mainBkg: '#161b22',
+                nodeBorder: '#30363d',
+                clusterBkg: '#161b22',
+                titleColor: '#58a6ff',
+                edgeLabelBackground: '#161b22',
+            }
+        });
+    </script>
+</body>
+</html>

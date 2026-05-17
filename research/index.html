@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cab Booking App — Research Hub</title>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --card-hover: #1c2333;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --green: #3fb950;
+            --red: #f85149;
+            --yellow: #d29922;
+            --purple: #bc8cff;
+            --orange: #f0883e;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        .header {
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #1c2333 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+        .header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .stat {
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--green);
+        }
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        .section-title {
+            font-size: 1.3rem;
+            color: var(--purple);
+            margin: 2rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.2rem 1.4rem;
+            text-decoration: none;
+            color: var(--text);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        .card:hover {
+            background: var(--card-hover);
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(88, 166, 255, 0.1);
+        }
+        .card-icon {
+            font-size: 1.6rem;
+            min-width: 2rem;
+            text-align: center;
+            line-height: 1;
+            margin-top: 0.2rem;
+        }
+        .card-content {
+            flex: 1;
+        }
+        .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--accent-hover);
+            margin-bottom: 0.3rem;
+        }
+        .card-num {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            background: rgba(88,166,255,0.1);
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            margin-right: 0.5rem;
+        }
+        .card-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+        .tag {
+            display: inline-block;
+            font-size: 0.7rem;
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            margin-top: 0.4rem;
+            margin-right: 0.3rem;
+        }
+        .tag-green { background: rgba(63,185,80,0.15); color: var(--green); }
+        .tag-yellow { background: rgba(210,153,34,0.15); color: var(--yellow); }
+        .tag-purple { background: rgba(188,140,255,0.15); color: var(--purple); }
+        .tag-orange { background: rgba(240,136,62,0.15); color: var(--orange); }
+        .tag-blue { background: rgba(88,166,255,0.15); color: var(--accent); }
+
+        .quick-links {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+            justify-content: center;
+        }
+        .quick-link {
+            font-size: 0.8rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--accent);
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .quick-link:hover {
+            background: rgba(88,166,255,0.15);
+            border-color: var(--accent);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border);
+            margin-top: 3rem;
+        }
+        .footer a { color: var(--accent); text-decoration: none; }
+
+        .setup-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.8rem;
+        }
+        .setup-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.8rem 1rem;
+            text-decoration: none;
+            color: var(--text);
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .setup-card:hover {
+            background: var(--card-hover);
+            border-color: var(--green);
+        }
+        .setup-card .icon { font-size: 1.5rem; margin-bottom: 0.3rem; }
+        .setup-card .name { font-size: 0.9rem; font-weight: 600; color: var(--green); }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.8rem; }
+            .grid { grid-template-columns: 1fr; }
+            .stats { gap: 1rem; }
+            .container { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Cab Booking App</h1>
+    <p>Complete product research — from idea to production. White-label, Dockerized, chauffeur-driven cab booking platform.</p>
+    <div class="stats">
+        <div class="stat">
+            <div class="stat-value">26</div>
+            <div class="stat-label">Research Docs</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value">5</div>
+            <div class="stat-label">Setup Guides</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value">$24B</div>
+            <div class="stat-label">India Taxi Market</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value">4 Weeks</div>
+            <div class="stat-label">MVP Timeline</div>
+        </div>
+    </div>
+    <div class="quick-links">
+        <a href="00-executive-summary.html" class="quick-link">Executive Summary</a>
+        <a href="07-tech-stack.html" class="quick-link">Tech Stack</a>
+        <a href="10-database-design.html" class="quick-link">Database</a>
+        <a href="15-implementation-phases.html" class="quick-link">Build Plan</a>
+        <a href="19-cost-management.html" class="quick-link">Costs</a>
+    </div>
+</div>
+
+<div class="container">
+
+    <h2 class="section-title">Product & Market</h2>
+    <div class="grid">
+        <a href="00-executive-summary.html" class="card">
+            <div class="card-icon">&#9733;</div>
+            <div class="card-content">
+                <div class="card-title"><span class="card-num">00</span>Executive Summary</div>
+                <div class="card-desc">Key decisions, stack overview, cost summary, risk highlights</div>
+                <span class="tag tag-green">START HERE</span>
+            </div>
+        </a>
+        <a href="01-product-identity.html" class="card">
+            <div class="card-icon">&#127991;</div>
+            <div class="card-content">
+                <div class="card-title"><span class="card-num">01</span>Product Identity</div>
+                <div class="card-desc">Name suggestions, domain strategy, branding, taglines</div>
+                <span class="tag tag-purple">Branding</span>
+            </div>
+        </a>
+        <a href="02-competitive-analysis.html" class="card">
+            <div class="card-icon">&#9878;</div>
+            <div class="card-content">
+                <div class="card-title"><span class="card-num">02</span>Competitive Analysis</div>
+                <div class="card-desc">10+ competitors analyzed — Ola, Uber, Savaari, local Indore operators</div>
+                <span class="tag tag-orange">Market</span>
+            </div>
+        </a>
+        <a href="03-target-market.html" class="card">
+            <div class="card-icon">&#127919;</div>
+            <div class="card-content">
+                <div class="card-title"><span class="card-num">03</span>Target Market</div>
+                <div class="card-desc">User personas, TAM/SAM/SOM, popular routes from Indore</div>
+                <span class="tag tag-orange">Market</span>
+            </div>
+        </a>
+    </div>
+
+    <h2 class="section-title">Design & Planning</h2>
+    <div class="grid">
+        <a href="04-user-flow.html" class="card">
+            <div class="card-icon">&#128736;</div>
+            <div class="card-content">
+                <div class="card-title"><span class="card-num">04</span>User Flow & UX</div>
+                <div class="card-desc">User journeys, 23 screens/pages, onboarding flow, role-based views</div>
+                <span class="tag tag-blue">UX</span>
+            </div>
+        </a>
+        <a href="05-mvp-definition.html" class="card">
+            <div class="card-icon">&#128640;</div>
+            <div class="card-content">
+                <div class="card-title"><span class="card-num">05</span>MVP Definition</div>
+                <div class="card-desc">Feature prioritization (P0-P3), success criteria, what to cut</div>
+                <span class="tag tag-green">Priority</span>
+            </div>
+        </a>
+        <a href="15-implementation-phases.html" class="card">
+            <div class="card-icon">&#128197;</div>
+            <div class="card-content">
+                <div class="card-title"><span class="card-num">15</span>Implementation Phases</div>
+                <div class="card-desc">Week-by-week 4-week build plan with daily task breakdown</div>
+                <span class="tag tag-green">BUILD PLAN</span>
+            </div>
+        </a>
+    </div>
+
+    <h2 class="section-title">Architecture & Technology</h2>
+    <div class="grid">
+        <a href="06-architecture.html" class="card">
+            <div class="card-icon">&#9881;</div>
+            <div class="card-content">
+                <div class="card-title"><span class="card-num">06</span>Architecture</div>
+                <div class="card-desc">System design, hybrid Next.js + WebSocket, Docker, scaling strategy</div>
+                <span class="tag tag-blue">Tech</span>
+            </div>
+        </a>
+        <a href="07-tech-stack.html" class="card">
+            <div class="card-icon">&#128187;</div>
+            <div class="card-content">
+                <div class="card-title"><span class="card-num">07</span>Tech Stack</div>
+                <div class="card-desc">Every technology choice with reasoning — Next.js, MongoDB, shadcn, etc.</div>
+                <span class="tag tag-blue">Tech</span>
+                <span class="tag tag-green">KEY DOC</span>
+            </div>
+        </a>
+        <a href="08-integrations.html" class="card">
+            <div class="card-icon">&#128268;</div>
+            <div class="card-content">
+                <div class="card-title"><span class="card-num">08</span>3rd Party Integrations</div>
+                <div class="card-desc">Razorpay, Google Maps, FCM, MSG91, S3, Sentry — costs and free tiers</div>
+                <span class="tag tag-blue">Tech</span>
+            </div>
+        </a>
+        <a href="10-database-design.html" class="card">
+            <div class="card-icon">&#128451;</div>
+            <div class="card-content">
+                <div class="card-title"><span class="card-num">10</span>Database Design</div>
+                <div class="card-desc">MongoDB schemas, ER diagram, indexes, all collections detailed</div>
+                <span class="tag tag-blue">Tech</span>
+                <span class="tag tag-green">KEY DOC</span>
+            </div>
+        </a>
+        <a href="12-project-flow.html" class="card">
+            <div class="card-icon">&#128200;</div>
+            <div class="card-content">
+                <div class="card-title"><span class="card-num">12</span>Project Flow & Diagrams</div>
+                <div class="card-desc">Architecture diagrams, Docker Compose, folder structure, CI/CD flow</div>
+                <span class="tag tag-blue">Tech</span>
+            </div>
+        </a>
+    </div>
+
+    <h2 class="section-title">Diagrams & Flows</h2>
+    <div class="grid">
+        <a href="11-sequence-diagrams.html" class="card">
+            <div class="card-icon">&#8644;</div>
+            <div class="card-content">
+                <div class="card-title"><span class="card-num">11</span>Sequence Diagrams</div>
+                <div class="card-desc">Registration, booking, ride day, cancellation, payment webhook flows</div>
+                <span class="tag tag-purple">Mermaid</span>
+            </div>
+        </a>
+    </div>
+
+    <h2 class="section-title">Security & Legal</h2>
+    <div class="grid">
+        <a href="13-security.html" class="card">
+            <div class="card-icon">&#128274;</div>
+            <div class="card-content">
+                <div class="card-title"><span class="card-num">13</span>Security Architecture</div>
+                <div class="card-desc">JWT auth, RBAC, OWASP top 10, encryption, rate limiting, headers</div>
+                <span class="tag tag-yellow">Security</span>
+            </div>
+        </a>
+        <a href="14-legal-compliance.html" class="card">
+            <div class="card-icon">&#9878;</div>
+            <div class="card-content">
+                <div class="card-title"><span class="card-num">14</span>Legal & Compliance</div>
+                <div class="card-desc">Motor Vehicle Act, GST, DPDPA, aggregator vs fleet, compliance checklist</div>
+                <span class="tag tag-yellow">Legal</span>
+                <span class="tag tag-orange">Important</span>
+            </div>
+        </a>
+    </div>
+
+    <h2 class="section-title">DevOps & Production</h2>
+    <div class="grid">
+        <a href="16-production-checklist.html" class="card">
+            <div class="card-icon">&#9745;</div>
+            <div class="card-content">
+                <div class="card-title"><span class="card-num">16</span>Production Checklist</div>
+                <div class="card-desc">Go-live checklist — infra, SSL, DB, security, external services, testing</div>
+                <span class="tag tag-yellow">Ops</span>
+            </div>
+        </a>
+        <a href="17-devops.html" class="card">
+            <div class="card-icon">&#128295;</div>
+            <div class="card-content">
+                <div class="card-title"><span class="card-num">17</span>DevOps & CI/CD</div>
+                <div class="card-desc">Dockerfile, docker-compose, Nginx, GitHub Actions, EC2 setup script</div>
+                <span class="tag tag-blue">Tech</span>
+                <span class="tag tag-green">KEY DOC</span>
+            </div>
+        </a>
+    </div>
+
+    <h2 class="section-title">Business & Finance</h2>
+    <div class="grid">
+        <a href="18-monetization.html" class="card">
+            <div class="card-icon">&#128176;</div>
+            <div class="card-content">
+                <div class="card-title"><span class="card-num">18</span>Monetization</div>
+                <div class="card-desc">Pricing strategy, per-ride economics, revenue projections, break-even</div>
+                <span class="tag tag-orange">Business</span>
+            </div>
+        </a>
+        <a href="19-cost-management.html" class="card">
+            <div class="card-icon">&#128178;</div>
+            <div class="card-content">
+                <div class="card-title"><span class="card-num">19</span>Cost Management</div>
+                <div class="card-desc">3 budget scenarios (free / ₹1-2K / ₹3-5K), free tier maximization</div>
+                <span class="tag tag-orange">Business</span>
+                <span class="tag tag-green">KEY DOC</span>
+            </div>
+        </a>
+        <a href="20-marketing.html" class="card">
+            <div class="card-icon">&#128227;</div>
+            <div class="card-content">
+                <div class="card-title"><span class="card-num">20</span>Marketing Strategy</div>
+                <div class="card-desc">Pre-launch, launch, SEO, referral program, seasonal opportunities</div>
+                <span class="tag tag-orange">Business</span>
+            </div>
+        </a>
+        <a href="21-analytics-kpis.html" class="card">
+            <div class="card-icon">&#128202;</div>
+            <div class="card-content">
+                <div class="card-title"><span class="card-num">21</span>Analytics & KPIs</div>
+                <div class="card-desc">North star metric, dashboards, funnels, alerts, reporting schedule</div>
+                <span class="tag tag-purple">Metrics</span>
+            </div>
+        </a>
+    </div>
+
+    <h2 class="section-title">Operations & Growth</h2>
+    <div class="grid">
+        <a href="22-accessibility-i18n.html" class="card">
+            <div class="card-icon">&#127760;</div>
+            <div class="card-content">
+                <div class="card-title"><span class="card-num">22</span>Accessibility & i18n</div>
+                <div class="card-desc">WCAG essentials, currency/date formatting, future Hindi support</div>
+                <span class="tag tag-purple">UX</span>
+            </div>
+        </a>
+        <a href="23-support-docs.html" class="card">
+            <div class="card-icon">&#128172;</div>
+            <div class="card-content">
+                <div class="card-title"><span class="card-num">23</span>Support & Documentation</div>
+                <div class="card-desc">FAQ content, feedback collection, NPS survey, support channels</div>
+                <span class="tag tag-purple">Ops</span>
+            </div>
+        </a>
+        <a href="24-team-hiring.html" class="card">
+            <div class="card-icon">&#128101;</div>
+            <div class="card-content">
+                <div class="card-title"><span class="card-num">24</span>Team & Hiring</div>
+                <div class="card-desc">Solo → team growth, driver recruitment, build vs buy vs outsource</div>
+                <span class="tag tag-orange">Business</span>
+            </div>
+        </a>
+        <a href="25-risk-assessment.html" class="card">
+            <div class="card-icon">&#9888;</div>
+            <div class="card-content">
+                <div class="card-title"><span class="card-num">25</span>Risk Assessment</div>
+                <div class="card-desc">Risk matrix, technical/market/financial/legal risks, contingency plans</div>
+                <span class="tag tag-yellow">Critical</span>
+            </div>
+        </a>
+        <a href="26-future-roadmap.html" class="card">
+            <div class="card-icon">&#128752;</div>
+            <div class="card-content">
+                <div class="card-title"><span class="card-num">26</span>Future Roadmap</div>
+                <div class="card-desc">6-month, 1-year, 2-year plan — mobile app, white-label, AI features</div>
+                <span class="tag tag-green">Vision</span>
+            </div>
+        </a>
+    </div>
+
+    <h2 class="section-title">Setup Guides (Step-by-Step)</h2>
+    <div class="setup-grid">
+        <a href="09-setup-guides/razorpay-setup.html" class="setup-card">
+            <div class="icon">&#128179;</div>
+            <div class="name">Razorpay</div>
+            <div class="card-desc">UPI payments, refunds, webhooks</div>
+        </a>
+        <a href="09-setup-guides/google-maps-setup.html" class="setup-card">
+            <div class="icon">&#128506;</div>
+            <div class="name">Google Maps</div>
+            <div class="card-desc">Maps, directions, autocomplete</div>
+        </a>
+        <a href="09-setup-guides/fcm-push-setup.html" class="setup-card">
+            <div class="icon">&#128276;</div>
+            <div class="name">FCM Push</div>
+            <div class="card-desc">Web push notifications</div>
+        </a>
+        <a href="09-setup-guides/msg91-sms-setup.html" class="setup-card">
+            <div class="icon">&#128172;</div>
+            <div class="name">MSG91 SMS</div>
+            <div class="card-desc">OTP, transactional SMS, DLT</div>
+        </a>
+        <a href="09-setup-guides/aws-s3-setup.html" class="setup-card">
+            <div class="icon">&#128193;</div>
+            <div class="name">AWS S3</div>
+            <div class="card-desc">File uploads, presigned URLs</div>
+        </a>
+    </div>
+
+</div>
+
+<div class="footer">
+    <p>Generated by <a href="#">Research Skill</a> | 26 Documents + 5 Setup Guides | Last updated: May 2026</p>
+    <p style="margin-top:0.5rem">Re-generate HTML: <code>python3 research/convert-to-html.py</code></p>
+</div>
+
+</body>
+</html>

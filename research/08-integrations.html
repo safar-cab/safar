@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3rd Party Integrations</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --green: #3fb950;
+            --red: #f85149;
+            --yellow: #d29922;
+            --purple: #bc8cff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        h1 {
+            font-size: 2rem;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-hover);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.3rem;
+        }
+        h3 {
+            font-size: 1.2rem;
+            margin-top: 1.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--purple);
+        }
+        h4 {
+            font-size: 1rem;
+            margin-top: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        p {
+            margin-bottom: 1rem;
+        }
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+            color: var(--accent-hover);
+        }
+        code {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.15rem 0.4rem;
+            font-size: 0.9em;
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            color: var(--accent-hover);
+        }
+        pre {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+        }
+        pre code {
+            background: none;
+            border: none;
+            padding: 0;
+            color: var(--text);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background: #1c2333;
+            color: var(--accent);
+            font-weight: 600;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+        td {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover td {
+            background: rgba(88, 166, 255, 0.05);
+        }
+        blockquote {
+            border-left: 4px solid var(--accent);
+            background: var(--card);
+            padding: 0.8rem 1.2rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-muted);
+        }
+        blockquote strong {
+            color: var(--yellow);
+        }
+        ul, ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        li {
+            margin-bottom: 0.3rem;
+        }
+        li ul, li ol {
+            margin-bottom: 0;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+        strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+        em {
+            color: var(--text-muted);
+        }
+        .mermaid {
+            background: #1a1f2e;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        .nav {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .nav a {
+            font-size: 0.85rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            background: rgba(88, 166, 255, 0.1);
+        }
+        .nav a:hover {
+            background: rgba(88, 166, 255, 0.2);
+            text-decoration: none;
+        }
+        .nav-label {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        input[type="checkbox"] {
+            accent-color: var(--green);
+            transform: scale(1.2);
+            margin-right: 0.3rem;
+        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.5rem; }
+            table { font-size: 0.85rem; }
+            th, td { padding: 0.4rem 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <span class="nav-label">Navigation:</span>
+        <a href="index.html" style="background:rgba(63,185,80,0.2);color:#3fb950;font-weight:600;">Home</a>
+        <a href="00-executive-summary.html">Summary</a>
+        <a href="01-product-identity.html">Identity</a>
+        <a href="02-competitive-analysis.html">Competitors</a>
+        <a href="03-target-market.html">Market</a>
+        <a href="04-user-flow.html">UX Flow</a>
+        <a href="05-mvp-definition.html">MVP</a>
+        <a href="06-architecture.html">Architecture</a>
+        <a href="07-tech-stack.html">Tech Stack</a>
+        <a href="08-integrations.html">Integrations</a>
+        <a href="10-database-design.html">Database</a>
+        <a href="11-sequence-diagrams.html">Sequences</a>
+        <a href="12-project-flow.html">Project Flow</a>
+        <a href="13-security.html">Security</a>
+        <a href="14-legal-compliance.html">Legal</a>
+        <a href="15-implementation-phases.html">Phases</a>
+        <a href="16-production-checklist.html">Checklist</a>
+        <a href="17-devops.html">DevOps</a>
+        <a href="18-monetization.html">Revenue</a>
+        <a href="19-cost-management.html">Costs</a>
+        <a href="20-marketing.html">Marketing</a>
+        <a href="21-analytics-kpis.html">KPIs</a>
+        <a href="22-accessibility-i18n.html">A11y</a>
+        <a href="23-support-docs.html">Support</a>
+        <a href="24-team-hiring.html">Team</a>
+        <a href="25-risk-assessment.html">Risks</a>
+        <a href="26-future-roadmap.html">Roadmap</a>
+    </nav>
+    <h1 id="3rd-party-integrations">3rd Party Integrations</h1>
+<h2 id="integration-summary">Integration Summary</h2>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Provider</th>
+<th>Free Tier</th>
+<th>Paid Pricing</th>
+<th>Priority</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Auth/Session</strong></td>
+<td>Built-in (httpOnly cookies + MongoDB sessions)</td>
+<td>Free</td>
+<td>Free</td>
+<td>P0</td>
+</tr>
+<tr>
+<td><strong>Payments</strong></td>
+<td>Razorpay</td>
+<td>No monthly fee</td>
+<td>2% + GST per txn</td>
+<td>P0</td>
+</tr>
+<tr>
+<td><strong>Push Notifications</strong></td>
+<td>Firebase (FCM)</td>
+<td>Unlimited</td>
+<td>Free</td>
+<td>P0</td>
+</tr>
+<tr>
+<td><strong>SMS</strong></td>
+<td>MSG91</td>
+<td>No free tier</td>
+<td>₹0.16-0.30/SMS</td>
+<td>P0</td>
+</tr>
+<tr>
+<td><strong>Maps &amp; Directions</strong></td>
+<td>Google Maps</td>
+<td>Monthly free threshold</td>
+<td>Pay per use</td>
+<td>P0</td>
+</tr>
+<tr>
+<td><strong>File Storage</strong></td>
+<td>AWS S3</td>
+<td>5GB, 20K GET/month</td>
+<td>~$0.023/GB</td>
+<td>P0</td>
+</tr>
+<tr>
+<td><strong>Email</strong></td>
+<td>Resend</td>
+<td>100/day, 3000/month</td>
+<td>$20/mo for 50K</td>
+<td>P1</td>
+</tr>
+<tr>
+<td><strong>GPS Tracker</strong></td>
+<td>Traccar</td>
+<td>Open source</td>
+<td>Free (self-hosted)</td>
+<td>P1</td>
+</tr>
+<tr>
+<td><strong>Error Tracking</strong></td>
+<td>Built-in (NestJS → MongoDB → Admin Panel)</td>
+<td>Free</td>
+<td>Free</td>
+<td>P0</td>
+</tr>
+<tr>
+<td><strong>Analytics</strong></td>
+<td>Built-in (Event tracking → MongoDB → Admin Dashboard)</td>
+<td>Free</td>
+<td>Free</td>
+<td>P1</td>
+</tr>
+<tr>
+<td><strong>Uptime Monitoring</strong></td>
+<td>Built-in (NestJS @Cron health checks → alerts)</td>
+<td>Free</td>
+<td>Free</td>
+<td>P0</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="1-razorpay-payments">1. Razorpay (Payments)</h2>
+<h3 id="why-razorpay">Why Razorpay</h3>
+<ul>
+<li>Best documentation in India</li>
+<li>Official Node.js SDK</li>
+<li>UPI, cards, net banking, wallets</li>
+<li>QR code generation for UPI</li>
+<li>Refund API (full + partial)</li>
+<li>Webhook support for payment verification</li>
+<li>Fast KYC (hours, not days)</li>
+<li>RBI-authorized Payment Aggregator</li>
+</ul>
+<h3 id="pricing">Pricing</h3>
+<ul>
+<li><strong>Setup fee</strong>: ₹0</li>
+<li><strong>Monthly fee</strong>: ₹0</li>
+<li><strong>Transaction fee</strong>: 2% + 18% GST = <strong>2.36% effective</strong></li>
+<li><strong>UPI specifically</strong>: 2% + GST (may be lower for small merchants)</li>
+<li><strong>Refund fee</strong>: No fee on refund, original transaction fee NOT returned</li>
+</ul>
+<h3 id="requirements">Requirements</h3>
+<ul>
+<li>PAN card</li>
+<li>Bank account (business or individual)</li>
+<li>GST certificate (optional but recommended)</li>
+<li>Business address proof</li>
+<li>Names must match: PAN name = Bank account name = GST legal name</li>
+</ul>
+<h3 id="key-apis">Key APIs</h3>
+<ul>
+<li>Create Order → Checkout → Verify Payment (webhook)</li>
+<li>Create Refund (full/partial)</li>
+<li>Fetch Payment details</li>
+<li>Generate QR code</li>
+</ul>
+<h3 id="important-note-2026">Important Note (2026)</h3>
+<blockquote>
+<p>UPI Collect flow deprecated from Feb 28, 2026 (NPCI guidelines). Users can't enter VPA manually. Use QR code or UPI intent instead.</p>
+</blockquote>
+<hr />
+<h2 id="2-google-maps-platform-maps-directions">2. Google Maps Platform (Maps &amp; Directions)</h2>
+<h3 id="why-google-maps">Why Google Maps</h3>
+<ul>
+<li>Best India road data and coverage</li>
+<li>Accurate distance + time estimation</li>
+<li>Multi-stop directions</li>
+<li>Place autocomplete for address input</li>
+<li>Geocoding (address ↔ coordinates)</li>
+<li>India-specific pricing (INR billing)</li>
+</ul>
+<h3 id="apis-needed">APIs Needed</h3>
+<table>
+<thead>
+<tr>
+<th>API</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Maps JavaScript API</td>
+<td>Display maps, markers, routes</td>
+</tr>
+<tr>
+<td>Directions API</td>
+<td>Route between points, multi-stop</td>
+</tr>
+<tr>
+<td>Distance Matrix API</td>
+<td>Calculate distance + duration</td>
+</tr>
+<tr>
+<td>Places Autocomplete</td>
+<td>Address search suggestions</td>
+</tr>
+<tr>
+<td>Geocoding API</td>
+<td>Address to coordinates</td>
+</tr>
+</tbody>
+</table>
+<h3 id="pricing-india-2026">Pricing (India, 2026)</h3>
+<ul>
+<li>Billing in INR with free monthly thresholds</li>
+<li>Each API has its own free tier</li>
+<li>Typically sufficient for 100-500 bookings/month on free tier</li>
+<li>Credit card required for billing account</li>
+</ul>
+<h3 id="alternative-leaflet-openstreetmap">Alternative: Leaflet + OpenStreetMap</h3>
+<ul>
+<li>Free, no API key needed</li>
+<li>Good for map display</li>
+<li>Use Google only for Directions/Distance (paid APIs)</li>
+<li>Reduces cost significantly</li>
+</ul>
+<hr />
+<h2 id="3-firebase-cloud-messaging-push-notifications">3. Firebase Cloud Messaging (Push Notifications)</h2>
+<h3 id="why-fcm">Why FCM</h3>
+<ul>
+<li><strong>Completely free</strong> — no per-message cost</li>
+<li>Works with PWA (Web Push API)</li>
+<li>Works on Android, iOS, Desktop browsers</li>
+<li>VAPID key based authentication</li>
+<li>Message targeting: individual, topic, or all</li>
+</ul>
+<h3 id="capabilities">Capabilities</h3>
+<ul>
+<li>Notification messages (show when app closed)</li>
+<li>Data messages (handle in service worker)</li>
+<li>Topic messaging (all drivers, all users)</li>
+<li>Scheduled messages (via Cloud Functions or custom server)</li>
+</ul>
+<h3 id="limits">Limits</h3>
+<ul>
+<li>Free tier: Unlimited messages</li>
+<li>Max payload: 4KB</li>
+<li>TTL: Up to 28 days</li>
+</ul>
+<hr />
+<h2 id="4-msg91-sms">4. MSG91 (SMS)</h2>
+<h3 id="why-msg91">Why MSG91</h3>
+<ul>
+<li>Cheapest India SMS provider</li>
+<li>DLT compliance built-in</li>
+<li>OTP widget (free, no extra charge)</li>
+<li>Template management</li>
+<li>Node.js SDK</li>
+<li>Delivery reports</li>
+</ul>
+<h3 id="pricing_1">Pricing</h3>
+<ul>
+<li><strong>Transactional SMS</strong>: ₹0.16-0.30/SMS</li>
+<li><strong>OTP Widget</strong>: No additional charge</li>
+<li><strong>DLT registration</strong>: Handled through platform</li>
+</ul>
+<h3 id="dlt-registration-mandatory-in-india">DLT Registration (Mandatory in India)</h3>
+<ol>
+<li>Register as "Entity" on telecom DLT portal (Jio/Airtel/Vodafone)</li>
+<li>Submit business documents</li>
+<li>Register sender ID (e.g., "CABAPP")</li>
+<li>Get message templates approved</li>
+<li>Templates must match exactly when sending</li>
+</ol>
+<h3 id="sms-templates-needed">SMS Templates Needed</h3>
+<ul>
+<li>OTP: "Your OTP for {app_name} is {otp}. Valid for 10 minutes."</li>
+<li>Booking confirmed: "Booking #{id} confirmed. {car} on {date}. Driver: {driver}."</li>
+<li>Ride started: "Your ride has started. Track live: {link}"</li>
+<li>Ride completed: "Ride completed. Amount: ₹{amount}. Rate your ride: {link}"</li>
+<li>Cancellation: "Booking #{id} cancelled. Refund ₹{amount} in 3-5 days."</li>
+<li>Payment received: "Payment ₹{amount} received for booking #{id}."</li>
+</ul>
+<hr />
+<h2 id="5-aws-s3-file-storage">5. AWS S3 (File Storage)</h2>
+<h3 id="why-s3">Why S3</h3>
+<ul>
+<li>5GB free (12 months)</li>
+<li>Highly reliable (99.999999999% durability)</li>
+<li>Direct upload from browser (presigned URLs)</li>
+<li>CloudFront CDN integration</li>
+<li>Image resizing with Lambda (future)</li>
+</ul>
+<h3 id="use-cases">Use Cases</h3>
+<ul>
+<li>Car photos (multiple per car)</li>
+<li>Car documents (RC, insurance, PUC, fitness)</li>
+<li>Driver documents (license, Aadhaar, photo)</li>
+<li>User profile photos</li>
+<li>Payment screenshots</li>
+</ul>
+<h3 id="free-tier-12-months">Free Tier (12 months)</h3>
+<ul>
+<li>5GB storage</li>
+<li>20,000 GET requests/month</li>
+<li>2,000 PUT requests/month</li>
+<li>100GB data transfer out</li>
+</ul>
+<hr />
+<h2 id="6-resend-email">6. Resend (Email)</h2>
+<h3 id="why-resend">Why Resend</h3>
+<ul>
+<li>Modern API, great DX</li>
+<li>React Email for templates</li>
+<li>100 emails/day free</li>
+<li>3,000/month free</li>
+<li>Simple Node.js SDK</li>
+</ul>
+<h3 id="use-cases_1">Use Cases</h3>
+<ul>
+<li>Booking confirmation email</li>
+<li>Payment receipt</li>
+<li>Cancellation confirmation</li>
+<li>Password reset (if email auth)</li>
+<li>Admin alerts</li>
+</ul>
+<h3 id="alternative-aws-ses">Alternative: AWS SES</h3>
+<ul>
+<li>~₹0.08/email (cheaper at scale)</li>
+<li>Requires email verification</li>
+<li>More setup but cheaper</li>
+</ul>
+<hr />
+<h2 id="7-traccar-gps-tracker-server">7. Traccar (GPS Tracker Server)</h2>
+<h3 id="what-it-is">What It Is</h3>
+<ul>
+<li>Open-source GPS tracking server</li>
+<li>Supports 2000+ GPS device models</li>
+<li>REST API for integration</li>
+<li>Real-time tracking + history</li>
+<li>Geofencing support</li>
+<li>Free (self-hosted)</li>
+</ul>
+<h3 id="how-to-use">How to Use</h3>
+<ol>
+<li>Buy GPS tracker device (₹2,000-5,000)</li>
+<li>Install in car</li>
+<li>Configure device to send data to Traccar server</li>
+<li>Self-host Traccar on same EC2 instance</li>
+<li>Use Traccar API to get location in your app</li>
+</ol>
+<h3 id="popular-gps-devices-in-india">Popular GPS Devices in India</h3>
+<ul>
+<li>WorldTrack (budget-friendly)</li>
+<li>Onelap (good API)</li>
+<li>Letstrack (consumer-friendly)</li>
+<li>Price range: ₹1,500-5,000</li>
+</ul>
+<hr />
+<h2 id="8-error-tracking-built-in-no-sentry">8. Error Tracking — Built-In (No Sentry)</h2>
+<p>No third-party service. Build directly into NestJS + Admin Panel.</p>
+<h3 id="architecture">Architecture</h3>
+<pre class="highlight"><code>┌─────────────────────────────────────────────────────┐
+│                  Error Sources                       │
+│                                                     │
+│  NestJS Global Exception Filter (all API errors)    │
+│  React Error Boundary (all frontend crashes)        │
+│  Socket.io error handler (WebSocket errors)         │
+│  BullMQ failed job handler (background job errors)  │
+│  Unhandled rejections + uncaught exceptions         │
+└──────────────────────┬──────────────────────────────┘
+                       ▼
+┌─────────────────────────────────────────────────────┐
+│              ErrorLogService (NestJS)                │
+│                                                     │
+│  Captures:                                           │
+│  - Error message + stack trace                      │
+│  - HTTP method, URL, status code                    │
+│  - User ID + role (from session)                    │
+│  - Request body (sanitized — no passwords/tokens)   │
+│  - User agent, IP                                    │
+│  - Timestamp                                         │
+│  - Source: api | frontend | websocket | job          │
+│  - Severity: error | warn | fatal                   │
+│                                                     │
+│  Actions:                                            │
+│  1. Store in MongoDB (error_logs collection)        │
+│  2. If severity=fatal → push notification to admin  │
+│  3. TTL index: auto-delete after 90 days            │
+│  4. Rate limit: max 100 logs/minute (prevent flood) │
+└─────────────────────────────────────────────────────┘
+                       ▼
+┌─────────────────────────────────────────────────────┐
+│           Admin Panel → Error Dashboard              │
+│                                                     │
+│  - Error list with filters (severity, source, date) │
+│  - Error count chart (errors/hour, errors/day)      │
+│  - Stack trace viewer                                │
+│  - Group by error message (similar errors collapsed) │
+│  - Mark as resolved / ignored                        │
+│  - Top 10 most frequent errors                       │
+└─────────────────────────────────────────────────────┘
+</code></pre>
+
+<h3 id="mongodb-schema-error_logs">MongoDB Schema: error_logs</h3>
+<pre class="highlight"><code class="language-typescript">@Schema({ timestamps: true })
+export class ErrorLog {
+  @Prop({ required: true })
+  message: string;
+
+  @Prop()
+  stack: string;
+
+  @Prop({ enum: ['error', 'warn', 'fatal'], default: 'error' })
+  severity: string;
+
+  @Prop({ enum: ['api', 'frontend', 'websocket', 'job'] })
+  source: string;
+
+  @Prop()
+  method: string;           // GET, POST, etc.
+
+  @Prop()
+  url: string;              // /api/bookings/123
+
+  @Prop()
+  statusCode: number;       // 500, 400, etc.
+
+  @Prop({ type: Types.ObjectId, ref: 'User' })
+  userId: Types.ObjectId;
+
+  @Prop()
+  userRole: string;
+
+  @Prop()
+  userAgent: string;
+
+  @Prop()
+  ip: string;
+
+  @Prop({ type: Object })
+  metadata: Record&lt;string, any&gt;;  // extra context
+
+  @Prop({ default: false })
+  resolved: boolean;
+
+  @Prop()
+  resolvedAt: Date;
+}
+
+// TTL: auto-delete after 90 days
+ErrorLogSchema.index({ createdAt: 1 }, { expireAfterSeconds: 90 * 24 * 3600 });
+// Query indexes
+ErrorLogSchema.index({ severity: 1, createdAt: -1 });
+ErrorLogSchema.index({ source: 1, createdAt: -1 });
+ErrorLogSchema.index({ message: 1 }); // group by error
+</code></pre>
+
+<h3 id="nestjs-global-exception-filter">NestJS Global Exception Filter</h3>
+<pre class="highlight"><code class="language-typescript">@Catch()
+export class GlobalExceptionFilter implements ExceptionFilter {
+  constructor(private errorLogService: ErrorLogService) {}
+
+  async catch(exception: any, host: ArgumentsHost) {
+    const ctx = host.switchToHttp();
+    const req = ctx.getRequest();
+    const res = ctx.getResponse();
+
+    const status = exception?.getStatus?.() || 500;
+    const message = exception?.message || 'Internal server error';
+
+    // Log to MongoDB
+    await this.errorLogService.log({
+      message,
+      stack: exception?.stack,
+      severity: status &gt;= 500 ? 'error' : 'warn',
+      source: 'api',
+      method: req.method,
+      url: req.url,
+      statusCode: status,
+      userId: req.user?._id,
+      userRole: req.user?.role,
+      userAgent: req.headers['user-agent'],
+      ip: req.ip,
+    });
+
+    // Alert admin on fatal errors
+    if (status &gt;= 500) {
+      await this.errorLogService.alertAdmin(message, req.url);
+    }
+
+    res.status(status).json({
+      statusCode: status,
+      message: status &gt;= 500 ? 'Something went wrong' : message,
+    });
+  }
+}
+</code></pre>
+
+<h3 id="react-error-boundary-report-to-backend">React Error Boundary → Report to Backend</h3>
+<pre class="highlight"><code class="language-typescript">// components/ErrorBoundary.tsx
+class ErrorBoundary extends React.Component {
+  componentDidCatch(error: Error, info: React.ErrorInfo) {
+    api.post('/api/errors/frontend', {
+      message: error.message,
+      stack: error.stack,
+      componentStack: info.componentStack,
+      url: window.location.href,
+      userAgent: navigator.userAgent,
+    });
+  }
+}
+
+// Also catch unhandled errors globally:
+window.addEventListener('unhandledrejection', (event) =&gt; {
+  api.post('/api/errors/frontend', {
+    message: event.reason?.message || String(event.reason),
+    stack: event.reason?.stack,
+    source: 'unhandled_rejection',
+    url: window.location.href,
+  });
+});
+</code></pre>
+
+<p><strong>Cost: ₹0</strong> — MongoDB storage, built-in admin dashboard.</p>
+<hr />
+<h2 id="9-uptime-monitoring-built-in-no-uptimerobot">9. Uptime Monitoring — Built-In (No UptimeRobot)</h2>
+<p>Self-monitoring via NestJS cron + push alerts.</p>
+<h3 id="architecture_1">Architecture</h3>
+<pre class="highlight"><code>┌─────────────────────────────────────────────────────┐
+│         NestJS HealthCheckService (@Cron)            │
+│                                                     │
+│  Every 5 minutes:                                    │
+│  1. Check MongoDB connection                         │
+│  2. Check Redis connection                           │
+│  3. Check Traccar server                             │
+│  4. Check S3 accessibility                           │
+│  5. Check Razorpay API reachable                     │
+│  6. Check available disk space                       │
+│  7. Check memory usage                               │
+│  8. Record result in MongoDB (health_logs)           │
+│                                                     │
+│  If ANY check fails:                                 │
+│  → Push notification to admin (FCM)                  │
+│  → SMS to admin phone (MSG91)                        │
+│  → Log to error_logs (severity: fatal)               │
+│                                                     │
+│  External ping (backup):                             │
+│  → NestJS exposes GET /api/health (public endpoint)  │
+│  → Set up free cron-job.org to ping every 5 min     │
+│  → If no response → cron-job.org emails you          │
+└─────────────────────────────────────────────────────┘
+</code></pre>
+
+<h3 id="health-check-implementation">Health Check Implementation</h3>
+<pre class="highlight"><code class="language-typescript">@Injectable()
+export class HealthCheckService {
+  constructor(
+    @InjectConnection() private mongoConnection: Connection,
+    private redis: RedisService,
+    private notificationService: NotificationService,
+  ) {}
+
+  @Cron('*/5 * * * *') // Every 5 minutes
+  async checkHealth() {
+    const checks = {
+      mongodb: await this.checkMongo(),
+      redis: await this.checkRedis(),
+      traccar: await this.checkTraccar(),
+      memory: this.checkMemory(),
+      disk: await this.checkDisk(),
+    };
+
+    const failed = Object.entries(checks)
+      .filter(([, ok]) =&gt; !ok)
+      .map(([name]) =&gt; name);
+
+    if (failed.length &gt; 0) {
+      await this.notificationService.alertAdmin(
+        'System Health Alert',
+        `Services DOWN: ${failed.join(', ')}`,
+      );
+    }
+
+    // Store health log
+    await this.healthLogModel.create({
+      checks,
+      allHealthy: failed.length === 0,
+      timestamp: new Date(),
+    });
+  }
+
+  private async checkMongo(): Promise&lt;boolean&gt; {
+    try {
+      return this.mongoConnection.readyState === 1;
+    } catch { return false; }
+  }
+
+  private async checkRedis(): Promise&lt;boolean&gt; {
+    try {
+      const pong = await this.redis.ping();
+      return pong === 'PONG';
+    } catch { return false; }
+  }
+
+  private async checkTraccar(): Promise&lt;boolean&gt; {
+    try {
+      const res = await fetch('http://traccar:8082/api/server');
+      return res.ok;
+    } catch { return false; }
+  }
+
+  private checkMemory(): boolean {
+    const used = process.memoryUsage();
+    const heapUsedMB = used.heapUsed / 1024 / 1024;
+    return heapUsedMB &lt; 450; // Alert if &gt; 450MB on 512MB container
+  }
+}
+</code></pre>
+
+<h3 id="health-api-endpoint">Health API Endpoint</h3>
+<pre class="highlight"><code class="language-typescript">@Controller('health')
+export class HealthController {
+  @Get()
+  async check() {
+    const mongoOk = mongoose.connection.readyState === 1;
+    return {
+      status: mongoOk ? 'ok' : 'degraded',
+      uptime: process.uptime(),
+      timestamp: new Date(),
+      services: { mongodb: mongoOk },
+    };
+  }
+}
+</code></pre>
+
+<h3 id="admin-dashboard-uptime-view">Admin Dashboard — Uptime View</h3>
+<ul>
+<li>Uptime percentage (last 24h, 7d, 30d)</li>
+<li>Health check history timeline (green/red dots)</li>
+<li>Current service status (all green = healthy)</li>
+<li>Response time chart (API latency over time)</li>
+<li>Alert history (when was admin notified)</li>
+</ul>
+<h3 id="external-backup-free">External Backup (Free)</h3>
+<p>Use <strong>cron-job.org</strong> (free, no signup needed) to ping <code>https://yourdomain.in/api/health</code> every 5 minutes. If response fails → sends email notification. Backup to your own built-in monitoring.</p>
+<p><strong>Cost: ₹0</strong> — NestJS cron, MongoDB storage, FCM push (free).</p>
+<hr />
+<h2 id="10-analytics-event-tracking-built-in-no-posthog">10. Analytics &amp; Event Tracking — Built-In (No PostHog)</h2>
+<p>No third-party analytics. Track user behavior directly in MongoDB.</p>
+<h3 id="architecture_2">Architecture</h3>
+<pre class="highlight"><code>┌─────────────────────────────────────────────────────┐
+│                  Event Sources                       │
+│                                                     │
+│  React:                                              │
+│  - Page views (React Router listener)               │
+│  - Button clicks (booking, cancel, pay)             │
+│  - Feature usage (share ride, install PWA)           │
+│  - Funnel steps (search → select → pay → confirm)  │
+│                                                     │
+│  NestJS:                                             │
+│  - API calls (auto-logged via interceptor)           │
+│  - Booking created / completed / cancelled           │
+│  - Payment success / failure                         │
+│  - Driver ride completed                             │
+│  - User registered / logged in                       │
+└──────────────────────┬──────────────────────────────┘
+                       ▼
+┌─────────────────────────────────────────────────────┐
+│            AnalyticsService (NestJS)                 │
+│                                                     │
+│  POST /api/analytics/events (from React)             │
+│  + server-side events (interceptor)                  │
+│                                                     │
+│  Stores in MongoDB: analytics_events collection      │
+│  Fields:                                             │
+│  - event: 'booking_created', 'page_view', etc.      │
+│  - userId (optional — guest events allowed)          │
+│  - properties: { page, bookingId, carType, ... }    │
+│  - sessionId (from cookie)                           │
+│  - userAgent, ip, referrer                           │
+│  - timestamp                                         │
+│                                                     │
+│  TTL: auto-delete after 180 days                     │
+│  Aggregation pipeline → dashboard charts             │
+└─────────────────────────────────────────────────────┘
+                       ▼
+┌─────────────────────────────────────────────────────┐
+│          Admin Panel → Analytics Dashboard           │
+│                                                     │
+│  Overview:                                           │
+│  - Daily active users                                │
+│  - Bookings today / this week / this month          │
+│  - Revenue today / this week / this month           │
+│  - Conversion funnel (visit → search → book → pay)  │
+│                                                     │
+│  Charts:                                             │
+│  - Bookings per day (bar chart)                      │
+│  - Revenue per day (line chart)                      │
+│  - Popular routes (pie chart)                        │
+│  - Peak booking hours (heatmap)                      │
+│  - User registrations over time                      │
+│  - Car utilization % per vehicle                     │
+│  - Cancellation rate trend                           │
+│  - Average rating trend                              │
+│                                                     │
+│  Tables:                                             │
+│  - Top routes by bookings                            │
+│  - Top users by spend                                │
+│  - Driver performance (rides, rating, on-time %)    │
+└─────────────────────────────────────────────────────┘
+</code></pre>
+
+<h3 id="mongodb-schema-analytics_events">MongoDB Schema: analytics_events</h3>
+<pre class="highlight"><code class="language-typescript">@Schema({ timestamps: true })
+export class AnalyticsEvent {
+  @Prop({ required: true, index: true })
+  event: string;              // 'page_view', 'booking_created', etc.
+
+  @Prop({ type: Types.ObjectId, ref: 'User' })
+  userId: Types.ObjectId;
+
+  @Prop()
+  sessionId: string;
+
+  @Prop({ type: Object })
+  properties: Record&lt;string, any&gt;;
+
+  @Prop()
+  userAgent: string;
+
+  @Prop()
+  ip: string;
+
+  @Prop()
+  referrer: string;
+}
+
+// TTL: 180 days
+AnalyticsEventSchema.index({ createdAt: 1 }, { expireAfterSeconds: 180 * 24 * 3600 });
+// Query indexes
+AnalyticsEventSchema.index({ event: 1, createdAt: -1 });
+AnalyticsEventSchema.index({ userId: 1, createdAt: -1 });
+</code></pre>
+
+<h3 id="react-event-tracker">React Event Tracker</h3>
+<pre class="highlight"><code class="language-typescript">// services/analytics.ts
+class Analytics {
+  track(event: string, properties?: Record&lt;string, any&gt;) {
+    // Fire and forget — don't block UI
+    api.post('/api/analytics/events', {
+      event,
+      properties,
+      referrer: document.referrer,
+      url: window.location.pathname,
+    }).catch(() =&gt; {}); // Silently fail — analytics should never break the app
+  }
+
+  pageView(page: string) {
+    this.track('page_view', { page });
+  }
+}
+
+export const analytics = new Analytics();
+
+// Usage:
+analytics.track('booking_created', { route: 'Indore→Bhopal', carType: 'sedan' });
+analytics.track('payment_success', { amount: 2825, method: 'upi' });
+analytics.track('ride_shared', { medium: 'whatsapp' });
+analytics.pageView('/book');
+</code></pre>
+
+<h3 id="react-router-auto-page-view">React Router Auto Page View</h3>
+<pre class="highlight"><code class="language-typescript">// In App.tsx or router.tsx
+const location = useLocation();
+useEffect(() =&gt; {
+  analytics.pageView(location.pathname);
+}, [location.pathname]);
+</code></pre>
+
+<h3 id="nestjs-api-interceptor-auto-log-api-calls">NestJS API Interceptor (Auto-log API calls)</h3>
+<pre class="highlight"><code class="language-typescript">@Injectable()
+export class AnalyticsInterceptor implements NestInterceptor {
+  constructor(private analyticsService: AnalyticsService) {}
+
+  intercept(context: ExecutionContext, next: CallHandler) {
+    const req = context.switchToHttp().getRequest();
+    const start = Date.now();
+
+    return next.handle().pipe(
+      tap(() =&gt; {
+        const duration = Date.now() - start;
+        this.analyticsService.trackServerEvent({
+          event: 'api_call',
+          properties: {
+            method: req.method,
+            url: req.url,
+            statusCode: context.switchToHttp().getResponse().statusCode,
+            duration,
+          },
+          userId: req.user?._id,
+        });
+      }),
+    );
+  }
+}
+</code></pre>
+
+<h3 id="admin-dashboard-aggregation-queries">Admin Dashboard Aggregation Queries</h3>
+<pre class="highlight"><code class="language-typescript">// Bookings per day (last 30 days)
+await this.bookingModel.aggregate([
+  { $match: { createdAt: { $gte: thirtyDaysAgo } } },
+  { $group: {
+    _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+    count: { $sum: 1 },
+    revenue: { $sum: '$pricing.totalAmount' },
+  }},
+  { $sort: { _id: 1 } },
+]);
+
+// Conversion funnel
+const pageViews = await this.analyticsModel.countDocuments({
+  event: 'page_view', properties: { page: '/book' }, createdAt: { $gte: period }
+});
+const searches = await this.analyticsModel.countDocuments({
+  event: 'route_searched', createdAt: { $gte: period }
+});
+const bookings = await this.bookingModel.countDocuments({ createdAt: { $gte: period } });
+const payments = await this.paymentModel.countDocuments({
+  status: 'captured', createdAt: { $gte: period }
+});
+// funnel: [pageViews, searches, bookings, payments]
+</code></pre>
+
+<p><strong>Cost: ₹0</strong> — MongoDB storage, NestJS interceptor, admin dashboard.</p>
+<hr />
+<h2 id="summary-zero-third-party-for-errormonitoringanalytics">Summary: Zero Third-Party for Error/Monitoring/Analytics</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Old (3rd Party)</th>
+<th>New (Built-In)</th>
+<th>Savings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Error Tracking</strong></td>
+<td>Sentry ($26/mo)</td>
+<td>NestJS ExceptionFilter → MongoDB → Admin Panel</td>
+<td>$26/mo</td>
+</tr>
+<tr>
+<td><strong>Uptime Monitoring</strong></td>
+<td>UptimeRobot (free but external)</td>
+<td>NestJS @Cron health checks → FCM/SMS alerts</td>
+<td>Full control</td>
+</tr>
+<tr>
+<td><strong>Analytics</strong></td>
+<td>PostHog (self-hosted)</td>
+<td>NestJS AnalyticsService → MongoDB → Admin Dashboard</td>
+<td>No extra infra</td>
+</tr>
+</tbody>
+</table>
+<p>All three stored in MongoDB with TTL indexes (auto-cleanup). All three viewable in Admin Panel. All three generate alerts via existing FCM + MSG91 (already integrated for booking notifications).</p>
+<h3 id="new-mongodb-collections">New MongoDB Collections</h3>
+<table>
+<thead>
+<tr>
+<th>Collection</th>
+<th>TTL</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_logs</code></td>
+<td>90 days</td>
+<td>API errors, frontend crashes, job failures</td>
+</tr>
+<tr>
+<td><code>health_logs</code></td>
+<td>30 days</td>
+<td>Service health check results</td>
+</tr>
+<tr>
+<td><code>analytics_events</code></td>
+<td>180 days</td>
+<td>Page views, user actions, API metrics</td>
+</tr>
+</tbody>
+</table>
+<h3 id="admin-panel-new-pages">Admin Panel — New Pages</h3>
+<table>
+<thead>
+<tr>
+<th>Page</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/admin/errors</code></td>
+<td>Error list, filters, stack traces, resolve button</td>
+</tr>
+<tr>
+<td><code>/admin/health</code></td>
+<td>Service status, uptime %, health history</td>
+</tr>
+<tr>
+<td><code>/admin/analytics</code></td>
+<td>Charts: bookings, revenue, users, funnels, routes</td>
+</tr>
+</tbody>
+</table>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#1f6feb',
+                primaryTextColor: '#e6edf3',
+                primaryBorderColor: '#58a6ff',
+                lineColor: '#8b949e',
+                secondaryColor: '#161b22',
+                tertiaryColor: '#0d1117',
+                background: '#0d1117',
+                mainBkg: '#161b22',
+                nodeBorder: '#30363d',
+                clusterBkg: '#161b22',
+                titleColor: '#58a6ff',
+                edgeLabelBackground: '#161b22',
+            }
+        });
+    </script>
+</body>
+</html>

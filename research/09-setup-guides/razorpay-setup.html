@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Razorpay Setup Guide</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --green: #3fb950;
+            --red: #f85149;
+            --yellow: #d29922;
+            --purple: #bc8cff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        h1 {
+            font-size: 2rem;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-hover);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.3rem;
+        }
+        h3 {
+            font-size: 1.2rem;
+            margin-top: 1.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--purple);
+        }
+        h4 {
+            font-size: 1rem;
+            margin-top: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        p {
+            margin-bottom: 1rem;
+        }
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+            color: var(--accent-hover);
+        }
+        code {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.15rem 0.4rem;
+            font-size: 0.9em;
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            color: var(--accent-hover);
+        }
+        pre {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+        }
+        pre code {
+            background: none;
+            border: none;
+            padding: 0;
+            color: var(--text);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background: #1c2333;
+            color: var(--accent);
+            font-weight: 600;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+        td {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover td {
+            background: rgba(88, 166, 255, 0.05);
+        }
+        blockquote {
+            border-left: 4px solid var(--accent);
+            background: var(--card);
+            padding: 0.8rem 1.2rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-muted);
+        }
+        blockquote strong {
+            color: var(--yellow);
+        }
+        ul, ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        li {
+            margin-bottom: 0.3rem;
+        }
+        li ul, li ol {
+            margin-bottom: 0;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+        strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+        em {
+            color: var(--text-muted);
+        }
+        .mermaid {
+            background: #1a1f2e;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        .nav {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .nav a {
+            font-size: 0.85rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            background: rgba(88, 166, 255, 0.1);
+        }
+        .nav a:hover {
+            background: rgba(88, 166, 255, 0.2);
+            text-decoration: none;
+        }
+        .nav-label {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        input[type="checkbox"] {
+            accent-color: var(--green);
+            transform: scale(1.2);
+            margin-right: 0.3rem;
+        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.5rem; }
+            table { font-size: 0.85rem; }
+            th, td { padding: 0.4rem 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <span class="nav-label">Navigation:</span>
+        <a href="../index.html" style="background:rgba(63,185,80,0.2);color:#3fb950;font-weight:600;">Home</a>
+        <a href="../00-executive-summary.html">Summary</a>
+        <a href="../01-product-identity.html">Identity</a>
+        <a href="../02-competitive-analysis.html">Competitors</a>
+        <a href="../03-target-market.html">Market</a>
+        <a href="../04-user-flow.html">UX Flow</a>
+        <a href="../05-mvp-definition.html">MVP</a>
+        <a href="../06-architecture.html">Architecture</a>
+        <a href="../07-tech-stack.html">Tech Stack</a>
+        <a href="../08-integrations.html">Integrations</a>
+        <a href="../10-database-design.html">Database</a>
+        <a href="../11-sequence-diagrams.html">Sequences</a>
+        <a href="../12-project-flow.html">Project Flow</a>
+        <a href="../13-security.html">Security</a>
+        <a href="../14-legal-compliance.html">Legal</a>
+        <a href="../15-implementation-phases.html">Phases</a>
+        <a href="../16-production-checklist.html">Checklist</a>
+        <a href="../17-devops.html">DevOps</a>
+        <a href="../18-monetization.html">Revenue</a>
+        <a href="../19-cost-management.html">Costs</a>
+        <a href="../20-marketing.html">Marketing</a>
+        <a href="../21-analytics-kpis.html">KPIs</a>
+        <a href="../22-accessibility-i18n.html">A11y</a>
+        <a href="../23-support-docs.html">Support</a>
+        <a href="../24-team-hiring.html">Team</a>
+        <a href="../25-risk-assessment.html">Risks</a>
+        <a href="../26-future-roadmap.html">Roadmap</a>
+    </nav>
+    <h1 id="razorpay-setup-guide">Razorpay Setup Guide</h1>
+<h2 id="1-create-merchant-account">1. Create Merchant Account</h2>
+<ol>
+<li>Go to https://razorpay.com</li>
+<li>Click "Sign Up"</li>
+<li>Enter email, phone, business name</li>
+<li>Verify email and phone</li>
+</ol>
+<h2 id="2-complete-kyc">2. Complete KYC</h2>
+<h3 id="documents-needed">Documents Needed</h3>
+<ul>
+<li>PAN card (individual or business)</li>
+<li>Bank account details (account number, IFSC)</li>
+<li>Business address proof</li>
+<li>GST certificate (optional but recommended)</li>
+</ul>
+<h3 id="important">Important</h3>
+<blockquote>
+<p>PAN name, bank account name, and GST legal name must match exactly.</p>
+</blockquote>
+<h3 id="steps">Steps</h3>
+<ol>
+<li>Dashboard → Account &amp; Settings → Business Details</li>
+<li>Fill business type: "Individual" or "Sole Proprietorship"</li>
+<li>Upload PAN card</li>
+<li>Enter bank account details</li>
+<li>Submit for verification (usually approved in hours)</li>
+</ol>
+<h2 id="3-get-api-keys">3. Get API Keys</h2>
+<h3 id="test-mode-development">Test Mode (Development)</h3>
+<ol>
+<li>Dashboard → Account &amp; Settings → API Keys</li>
+<li>Generate Test Key</li>
+<li>Save Key ID and Key Secret</li>
+</ol>
+<h3 id="live-mode-production">Live Mode (Production)</h3>
+<ol>
+<li>Toggle "Live Mode" in dashboard</li>
+<li>Generate Live Key</li>
+<li>Save securely — Key Secret shown only once</li>
+</ol>
+<h2 id="4-environment-variables">4. Environment Variables</h2>
+<pre class="highlight"><code class="language-env">RAZORPAY_KEY_ID=rzp_test_xxxxxxxxxxxxx
+RAZORPAY_KEY_SECRET=xxxxxxxxxxxxxxxxxxxxxxxx
+RAZORPAY_WEBHOOK_SECRET=xxxxxxxxxxxxxxxxxxxxxxxx
+</code></pre>
+
+<h2 id="5-install-sdk">5. Install SDK</h2>
+<pre class="highlight"><code class="language-bash">npm install razorpay
+</code></pre>
+
+<h2 id="6-server-side-integration">6. Server-Side Integration</h2>
+<pre class="highlight"><code class="language-typescript">// lib/razorpay.ts
+import Razorpay from 'razorpay';
+
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID!,
+  key_secret: process.env.RAZORPAY_KEY_SECRET!,
+});
+
+// Create Order
+export async function createOrder(amount: number, bookingId: string) {
+  const order = await razorpay.orders.create({
+    amount: amount * 100, // Convert to paise
+    currency: 'INR',
+    receipt: bookingId,
+    notes: { bookingId },
+  });
+  return order;
+}
+
+// Verify Payment
+import crypto from 'crypto';
+
+export function verifyPayment(
+  orderId: string,
+  paymentId: string,
+  signature: string
+): boolean {
+  const body = orderId + '|' + paymentId;
+  const expected = crypto
+    .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET!)
+    .update(body)
+    .digest('hex');
+  return expected === signature;
+}
+
+// Create Refund
+export async function createRefund(paymentId: string, amount?: number) {
+  const refund = await razorpay.payments.refund(paymentId, {
+    amount: amount ? amount * 100 : undefined, // undefined = full refund
+  });
+  return refund;
+}
+</code></pre>
+
+<h2 id="7-client-side-checkout">7. Client-Side Checkout</h2>
+<pre class="highlight"><code class="language-typescript">// Load Razorpay script in layout.tsx or _app.tsx
+// &lt;Script src=&quot;https://checkout.razorpay.com/v1/checkout.js&quot; /&gt;
+
+const initiatePayment = async (orderId: string, amount: number) =&gt; {
+  const options = {
+    key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+    amount: amount * 100,
+    currency: 'INR',
+    name: 'Your Cab Company',
+    description: 'Ride Booking Payment',
+    order_id: orderId,
+    handler: async (response: any) =&gt; {
+      // Send to server for verification
+      await fetch('/api/payments/verify', {
+        method: 'POST',
+        body: JSON.stringify({
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_signature: response.razorpay_signature,
+        }),
+      });
+    },
+    prefill: { contact: userPhone, email: userEmail },
+    theme: { color: '#3B82F6' },
+    method: { upi: true, card: true, netbanking: true, wallet: false },
+  };
+
+  const rzp = new (window as any).Razorpay(options);
+  rzp.open();
+};
+</code></pre>
+
+<h2 id="8-webhook-setup">8. Webhook Setup</h2>
+<ol>
+<li>Dashboard → Account &amp; Settings → Webhooks</li>
+<li>Add webhook URL: <code>https://yourdomain.in/api/webhooks/razorpay</code></li>
+<li>Select events: <code>payment.captured</code>, <code>payment.failed</code>, <code>refund.processed</code></li>
+<li>Copy webhook secret → save in env</li>
+</ol>
+<pre class="highlight"><code class="language-typescript">// app/api/webhooks/razorpay/route.ts
+import crypto from 'crypto';
+
+export async function POST(req: Request) {
+  const body = await req.text();
+  const signature = req.headers.get('x-razorpay-signature')!;
+
+  const expected = crypto
+    .createHmac('sha256', process.env.RAZORPAY_WEBHOOK_SECRET!)
+    .update(body)
+    .digest('hex');
+
+  if (expected !== signature) {
+    return Response.json({ error: 'Invalid signature' }, { status: 400 });
+  }
+
+  const event = JSON.parse(body);
+
+  switch (event.event) {
+    case 'payment.captured':
+      // Update booking status to confirmed
+      break;
+    case 'payment.failed':
+      // Update booking status to payment_failed
+      break;
+    case 'refund.processed':
+      // Update refund status
+      break;
+  }
+
+  return Response.json({ status: 'ok' });
+}
+</code></pre>
+
+<h2 id="9-upi-qr-code-2026-update">9. UPI QR Code (2026 Update)</h2>
+<blockquote>
+<p>UPI Collect flow deprecated Feb 28, 2026. Use QR or Intent.</p>
+</blockquote>
+<p>Razorpay handles QR generation automatically in their checkout widget.</p>
+<h2 id="10-testing">10. Testing</h2>
+<ul>
+<li>Use test card: 4111 1111 1111 1111</li>
+<li>Use test UPI: success@razorpay</li>
+<li>Test refund: works in test mode</li>
+<li>Webhook: use Razorpay Dashboard → Test Webhooks</li>
+</ul>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#1f6feb',
+                primaryTextColor: '#e6edf3',
+                primaryBorderColor: '#58a6ff',
+                lineColor: '#8b949e',
+                secondaryColor: '#161b22',
+                tertiaryColor: '#0d1117',
+                background: '#0d1117',
+                mainBkg: '#161b22',
+                nodeBorder: '#30363d',
+                clusterBkg: '#161b22',
+                titleColor: '#58a6ff',
+                edgeLabelBackground: '#161b22',
+            }
+        });
+    </script>
+</body>
+</html>

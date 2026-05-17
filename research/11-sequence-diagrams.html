@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sequence Diagrams</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --green: #3fb950;
+            --red: #f85149;
+            --yellow: #d29922;
+            --purple: #bc8cff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        h1 {
+            font-size: 2rem;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-hover);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.3rem;
+        }
+        h3 {
+            font-size: 1.2rem;
+            margin-top: 1.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--purple);
+        }
+        h4 {
+            font-size: 1rem;
+            margin-top: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        p {
+            margin-bottom: 1rem;
+        }
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+            color: var(--accent-hover);
+        }
+        code {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.15rem 0.4rem;
+            font-size: 0.9em;
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            color: var(--accent-hover);
+        }
+        pre {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+        }
+        pre code {
+            background: none;
+            border: none;
+            padding: 0;
+            color: var(--text);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background: #1c2333;
+            color: var(--accent);
+            font-weight: 600;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+        td {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover td {
+            background: rgba(88, 166, 255, 0.05);
+        }
+        blockquote {
+            border-left: 4px solid var(--accent);
+            background: var(--card);
+            padding: 0.8rem 1.2rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-muted);
+        }
+        blockquote strong {
+            color: var(--yellow);
+        }
+        ul, ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        li {
+            margin-bottom: 0.3rem;
+        }
+        li ul, li ol {
+            margin-bottom: 0;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+        strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+        em {
+            color: var(--text-muted);
+        }
+        .mermaid {
+            background: #1a1f2e;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        .nav {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .nav a {
+            font-size: 0.85rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            background: rgba(88, 166, 255, 0.1);
+        }
+        .nav a:hover {
+            background: rgba(88, 166, 255, 0.2);
+            text-decoration: none;
+        }
+        .nav-label {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        input[type="checkbox"] {
+            accent-color: var(--green);
+            transform: scale(1.2);
+            margin-right: 0.3rem;
+        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.5rem; }
+            table { font-size: 0.85rem; }
+            th, td { padding: 0.4rem 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <span class="nav-label">Navigation:</span>
+        <a href="index.html" style="background:rgba(63,185,80,0.2);color:#3fb950;font-weight:600;">Home</a>
+        <a href="00-executive-summary.html">Summary</a>
+        <a href="01-product-identity.html">Identity</a>
+        <a href="02-competitive-analysis.html">Competitors</a>
+        <a href="03-target-market.html">Market</a>
+        <a href="04-user-flow.html">UX Flow</a>
+        <a href="05-mvp-definition.html">MVP</a>
+        <a href="06-architecture.html">Architecture</a>
+        <a href="07-tech-stack.html">Tech Stack</a>
+        <a href="08-integrations.html">Integrations</a>
+        <a href="10-database-design.html">Database</a>
+        <a href="11-sequence-diagrams.html">Sequences</a>
+        <a href="12-project-flow.html">Project Flow</a>
+        <a href="13-security.html">Security</a>
+        <a href="14-legal-compliance.html">Legal</a>
+        <a href="15-implementation-phases.html">Phases</a>
+        <a href="16-production-checklist.html">Checklist</a>
+        <a href="17-devops.html">DevOps</a>
+        <a href="18-monetization.html">Revenue</a>
+        <a href="19-cost-management.html">Costs</a>
+        <a href="20-marketing.html">Marketing</a>
+        <a href="21-analytics-kpis.html">KPIs</a>
+        <a href="22-accessibility-i18n.html">A11y</a>
+        <a href="23-support-docs.html">Support</a>
+        <a href="24-team-hiring.html">Team</a>
+        <a href="25-risk-assessment.html">Risks</a>
+        <a href="26-future-roadmap.html">Roadmap</a>
+    </nav>
+    <h1 id="sequence-diagrams">Sequence Diagrams</h1>
+<h2 id="1-user-registration-phone-otp">1. User Registration (Phone OTP)</h2>
+<div class="mermaid">
+sequenceDiagram
+    actor User
+    participant App as React PWA
+    participant API as NestJS API
+    participant MSG91
+    participant DB as MongoDB
+
+    User->>App: Enter phone number
+    App->>API: POST /api/auth/send-otp
+    API->>MSG91: Send OTP to phone
+    MSG91-->>User: SMS with OTP
+    User->>App: Enter OTP
+    App->>API: POST /api/auth/verify-otp
+    API->>MSG91: Verify OTP
+    MSG91-->>API: OTP valid
+    API->>DB: Find or create user
+    DB-->>API: User document
+    API->>DB: Create session (30-day expiry)
+    API-->>App: Set-Cookie: sid (httpOnly, Secure, SameSite=Strict)
+    App-->>User: Redirect to dashboard
+
+</div>
+
+<h2 id="2-booking-flow">2. Booking Flow</h2>
+<div class="mermaid">
+sequenceDiagram
+    actor User
+    participant App as React PWA
+    participant API as NestJS API
+    participant Maps as Google Maps
+    participant DB as MongoDB
+    participant RZP as Razorpay
+    participant Notify as FCM + SMS
+
+    User->>App: Enter pickup, drop, date
+    App->>Maps: Get directions + distance
+    Maps-->>App: Route, distance, duration
+
+    User->>App: Add intermediate stops
+    App->>Maps: Recalculate with stops
+    Maps-->>App: Updated route + distance
+
+    App->>API: GET /api/cars/available?date=X
+    Note right of App: Cookie sent automatically
+    API->>DB: Query cars not booked on date
+    DB-->>API: Available cars
+    API-->>App: Car list with driver info
+
+    User->>App: Select car
+    App->>API: POST /api/bookings/calculate-price
+    API-->>App: Price breakdown
+
+    User->>App: Confirm booking
+    App->>API: POST /api/bookings
+    API->>DB: Create booking (status: pending)
+    API->>RZP: Create Razorpay order
+    RZP-->>API: Order ID
+    API-->>App: Order ID + booking ID
+
+    App->>RZP: Open Razorpay checkout (UPI)
+    User->>RZP: Pay via UPI
+    RZP-->>App: Payment success
+
+    App->>API: POST /api/payments/verify
+    API->>RZP: Verify signature
+    RZP-->>API: Valid
+    API->>DB: Update booking (confirmed) + save payment
+    API->>Notify: Queue booking confirmation (BullMQ)
+    Notify-->>User: Push + SMS notification
+    Notify-->>Admin: Push notification
+    API-->>App: Booking confirmed
+
+</div>
+
+<h2 id="3-ride-day-flow">3. Ride Day Flow</h2>
+<div class="mermaid">
+sequenceDiagram
+    actor Driver
+    actor User
+    participant App as React PWA
+    participant WS as NestJS WebSocket Gateway
+    participant DB as MongoDB
+    participant Notify as FCM + SMS
+
+    Note over Notify: 1 day before: Reminder sent to User + Driver
+    Note over Notify: 2 hours before: Reminder sent
+
+    Driver->>App: Start ride
+    App->>WS: Connect (cookie auth) + join booking room
+    WS->>DB: Update status: driver_en_route
+    WS->>Notify: Notify user: "Driver on the way"
+    Notify-->>User: Push notification + vibration
+
+    loop Every 5 seconds
+        Driver->>WS: emit location:update (phone GPS)
+        WS->>DB: Store location log
+        WS-->>User: Broadcast fused position
+        User->>App: See live map update
+    end
+
+    Driver->>App: Reached pickup
+    App->>WS: Status: picked_up
+    WS->>Notify: "Driver arrived at pickup"
+    Notify-->>User: Push notification + vibration
+
+    Driver->>App: Start trip (Wake Lock activates)
+    App->>WS: Status: in_progress
+
+    Note over Driver,User: Intermediate stops
+    Driver->>App: Reached Stop 1
+    App->>WS: Update stop status
+    WS->>Notify: "Reached stop: Ujjain"
+    Notify-->>User: Push notification
+
+    Driver->>App: Complete ride (Wake Lock released)
+    App->>WS: Status: completed
+    WS->>DB: Update booking, calculate actual distance
+    WS->>Notify: "Ride completed. Amount: 2,500"
+    Notify-->>User: Push + SMS + Email
+    Notify-->>Admin: Push notification
+
+    User->>App: Rate driver (1-5 stars + review)
+    App->>API: POST /api/ratings
+    API->>DB: Save rating, update driver avgRating
+
+    Driver->>App: Rate user (1-5 stars)
+    App->>API: POST /api/ratings
+    API->>DB: Save rating
+
+</div>
+
+<h2 id="4-cancellation-refund-flow">4. Cancellation + Refund Flow</h2>
+<div class="mermaid">
+sequenceDiagram
+    actor User
+    participant App as React PWA
+    participant API as NestJS API
+    participant DB as MongoDB
+    participant RZP as Razorpay
+    participant Notify as FCM + SMS
+
+    User->>App: Cancel booking
+    App->>API: POST /api/bookings/:id/cancel
+    API->>DB: Get booking + refund policy
+
+    alt Full refund (>24h before ride)
+        API->>RZP: Create full refund
+        RZP-->>API: Refund initiated
+        API->>DB: Update booking (cancelled, refund: full)
+    else Partial refund (12-24h before)
+        API->>RZP: Create partial refund (50%)
+        RZP-->>API: Refund initiated
+        API->>DB: Update booking (cancelled, refund: partial)
+    else No refund (<12h before)
+        API->>DB: Update booking (cancelled, refund: none)
+    end
+
+    API->>Notify: Queue cancellation notification (BullMQ)
+    Notify-->>User: "Booking cancelled. Refund: X in 5-7 days"
+    Notify-->>Driver: "Booking cancelled by user"
+    Notify-->>Admin: "Booking #123 cancelled"
+    API-->>App: Cancellation confirmed
+
+</div>
+
+<h2 id="5-admin-add-car-flow">5. Admin: Add Car Flow</h2>
+<div class="mermaid">
+sequenceDiagram
+    actor Admin
+    participant App as React Admin Panel
+    participant API as NestJS API
+    participant S3 as AWS S3
+    participant DB as MongoDB
+
+    Admin->>App: Fill car details form
+    Admin->>App: Upload photos + documents
+
+    App->>API: GET /api/upload/presigned-url
+    Note right of App: Session cookie validates admin role
+    API->>S3: Generate presigned upload URLs
+    S3-->>API: Signed URLs
+    API-->>App: Upload URLs
+
+    App->>S3: Upload files directly to S3
+    S3-->>App: File URLs
+
+    App->>API: POST /api/admin/cars
+    API->>DB: Validate + save car
+    DB-->>API: Car created
+    API-->>App: Success
+
+    Admin->>App: Assign driver to car
+    App->>API: PATCH /api/admin/cars/:id/assign-driver
+    API->>DB: Update car.assignedDriver
+    API-->>App: Driver assigned
+
+</div>
+
+<h2 id="6-payment-webhook-flow">6. Payment Webhook Flow</h2>
+<div class="mermaid">
+sequenceDiagram
+    participant RZP as Razorpay
+    participant API as NestJS WebhookController
+    participant DB as MongoDB
+    participant Notify as BullMQ Notification Worker
+
+    RZP->>API: POST /api/webhooks/razorpay
+    API->>API: Verify webhook signature (HMAC SHA256)
+
+    alt payment.captured
+        API->>DB: Update payment status: captured
+        API->>DB: Update booking status: confirmed
+        API->>Notify: Queue confirmation notification
+    else payment.failed
+        API->>DB: Update payment status: failed
+        API->>DB: Update booking status: payment_failed
+        API->>Notify: Queue failure notification
+        API->>DB: Log error to error_logs
+    else refund.processed
+        API->>DB: Update refund status: processed
+        API->>Notify: Queue refund confirmation
+    end
+
+    API-->>RZP: 200 OK
+
+</div>
+
+<h2 id="7-session-auth-flow-bff-cookie">7. Session Auth Flow (BFF Cookie)</h2>
+<div class="mermaid">
+sequenceDiagram
+    actor User
+    participant Browser as React PWA
+    participant API as NestJS API
+    participant MW as SessionMiddleware
+    participant DB as MongoDB
+
+    Note over User,DB: Login
+    User->>Browser: Enter phone + OTP
+    Browser->>API: POST /api/auth/verify-otp
+    API->>DB: Create session (30-day expiry)
+    API-->>Browser: Set-Cookie: sid=abc123 (httpOnly)
+
+    Note over User,DB: Subsequent API Calls
+    Browser->>API: GET /api/bookings (cookie auto-sent)
+    API->>MW: Read sid from cookie
+    MW->>DB: sessions.findById(sid)
+    DB-->>MW: Session valid, userId
+    MW->>DB: users.findById(userId)
+    DB-->>MW: User document
+    MW->>MW: Attach user to req
+    MW->>MW: Update lastActiveAt (sliding window)
+    API-->>Browser: Bookings data
+
+    Note over User,DB: Session Auto-Refresh
+    Note right of MW: Every request resets 30-day window
+    Note right of MW: 30 days of zero activity = expired
+
+    Note over User,DB: Logout
+    Browser->>API: POST /api/auth/logout
+    API->>DB: Delete session document
+    API-->>Browser: Set-Cookie: sid= (clear cookie)
+
+    Note over User,DB: Force Logout (Admin blocks user)
+    API->>DB: Delete ALL sessions for userId
+    Note right of DB: Next request from any device = 401
+
+</div>
+
+<h2 id="8-dual-gps-tracking-flow">8. Dual GPS Tracking Flow</h2>
+<div class="mermaid">
+sequenceDiagram
+    actor Driver
+    participant Phone as Driver Phone (PWA)
+    participant GPS as Car GPS Device
+    participant TC as Traccar Server
+    participant WS as NestJS WebSocket Gateway
+    participant FS as FusionService
+    participant DB as MongoDB
+    participant User as User Browser
+
+    Note over Driver,User: Ride starts - both trackers active
+
+    par Phone GPS Stream
+        loop Every 3-5 seconds
+            Phone->>Phone: watchPosition() fix
+            Phone->>WS: emit location:update (source: phone)
+            WS->>FS: Phone position received
+        end
+    and Car GPS Stream
+        loop Every 10-30 seconds
+            GPS->>TC: TCP packet (GT06 protocol)
+            TC->>WS: WebSocket position event
+            WS->>FS: Car GPS position received
+        end
+    end
+
+    FS->>FS: Compare both sources
+    Note right of FS: Pick car GPS if both available (more accurate)
+    Note right of FS: Fall back to phone if car GPS stale
+    Note right of FS: Alert if sources 500m+ apart
+
+    FS->>DB: Store in location_logs (both sources tagged)
+    FS->>WS: Broadcast fused position to booking room
+    WS-->>User: driver:location event
+    User->>User: Update marker on map
+
+</div>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#1f6feb',
+                primaryTextColor: '#e6edf3',
+                primaryBorderColor: '#58a6ff',
+                lineColor: '#8b949e',
+                secondaryColor: '#161b22',
+                tertiaryColor: '#0d1117',
+                background: '#0d1117',
+                mainBkg: '#161b22',
+                nodeBorder: '#30363d',
+                clusterBkg: '#161b22',
+                titleColor: '#58a6ff',
+                edgeLabelBackground: '#161b22',
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Architecture</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --green: #3fb950;
+            --red: #f85149;
+            --yellow: #d29922;
+            --purple: #bc8cff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        h1 {
+            font-size: 2rem;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-hover);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.3rem;
+        }
+        h3 {
+            font-size: 1.2rem;
+            margin-top: 1.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--purple);
+        }
+        h4 {
+            font-size: 1rem;
+            margin-top: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        p {
+            margin-bottom: 1rem;
+        }
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+            color: var(--accent-hover);
+        }
+        code {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.15rem 0.4rem;
+            font-size: 0.9em;
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            color: var(--accent-hover);
+        }
+        pre {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+        }
+        pre code {
+            background: none;
+            border: none;
+            padding: 0;
+            color: var(--text);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background: #1c2333;
+            color: var(--accent);
+            font-weight: 600;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+        td {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover td {
+            background: rgba(88, 166, 255, 0.05);
+        }
+        blockquote {
+            border-left: 4px solid var(--accent);
+            background: var(--card);
+            padding: 0.8rem 1.2rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-muted);
+        }
+        blockquote strong {
+            color: var(--yellow);
+        }
+        ul, ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        li {
+            margin-bottom: 0.3rem;
+        }
+        li ul, li ol {
+            margin-bottom: 0;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+        strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+        em {
+            color: var(--text-muted);
+        }
+        .mermaid {
+            background: #1a1f2e;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        .nav {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .nav a {
+            font-size: 0.85rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            background: rgba(88, 166, 255, 0.1);
+        }
+        .nav a:hover {
+            background: rgba(88, 166, 255, 0.2);
+            text-decoration: none;
+        }
+        .nav-label {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        input[type="checkbox"] {
+            accent-color: var(--green);
+            transform: scale(1.2);
+            margin-right: 0.3rem;
+        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.5rem; }
+            table { font-size: 0.85rem; }
+            th, td { padding: 0.4rem 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <span class="nav-label">Navigation:</span>
+        <a href="index.html" style="background:rgba(63,185,80,0.2);color:#3fb950;font-weight:600;">Home</a>
+        <a href="00-executive-summary.html">Summary</a>
+        <a href="01-product-identity.html">Identity</a>
+        <a href="02-competitive-analysis.html">Competitors</a>
+        <a href="03-target-market.html">Market</a>
+        <a href="04-user-flow.html">UX Flow</a>
+        <a href="05-mvp-definition.html">MVP</a>
+        <a href="06-architecture.html">Architecture</a>
+        <a href="07-tech-stack.html">Tech Stack</a>
+        <a href="08-integrations.html">Integrations</a>
+        <a href="10-database-design.html">Database</a>
+        <a href="11-sequence-diagrams.html">Sequences</a>
+        <a href="12-project-flow.html">Project Flow</a>
+        <a href="13-security.html">Security</a>
+        <a href="14-legal-compliance.html">Legal</a>
+        <a href="15-implementation-phases.html">Phases</a>
+        <a href="16-production-checklist.html">Checklist</a>
+        <a href="17-devops.html">DevOps</a>
+        <a href="18-monetization.html">Revenue</a>
+        <a href="19-cost-management.html">Costs</a>
+        <a href="20-marketing.html">Marketing</a>
+        <a href="21-analytics-kpis.html">KPIs</a>
+        <a href="22-accessibility-i18n.html">A11y</a>
+        <a href="23-support-docs.html">Support</a>
+        <a href="24-team-hiring.html">Team</a>
+        <a href="25-risk-assessment.html">Risks</a>
+        <a href="26-future-roadmap.html">Roadmap</a>
+    </nav>
+    <h1 id="security-architecture">Security Architecture</h1>
+<h2 id="authentication-strategy">Authentication Strategy</h2>
+<h3 id="httponly-cookie-sessions-bff-pattern-no-jwt-in-browser">httpOnly Cookie Sessions (BFF Pattern — No JWT in Browser)</h3>
+<ul>
+<li>Server-side sessions stored in MongoDB (<code>sessions</code> collection)</li>
+<li>Session ID in httpOnly, Secure, SameSite=Strict cookie</li>
+<li>30-day sliding window auto-refresh (resets on each request)</li>
+<li>Phone OTP via MSG91 (primary login)</li>
+<li>Email + password (secondary)</li>
+<li>No tokens exposed to JavaScript — immune to XSS token theft</li>
+<li>Instant revocation: delete session from MongoDB = immediate logout</li>
+<li>WebSocket auth: cookie sent automatically on Socket.io handshake</li>
+</ul>
+<h3 id="role-based-access-control-rbac">Role-Based Access Control (RBAC)</h3>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Access Level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>guest</code></td>
+<td>Public pages, search, pricing</td>
+</tr>
+<tr>
+<td><code>user</code></td>
+<td>Book rides, track, pay, rate, profile</td>
+</tr>
+<tr>
+<td><code>driver</code></td>
+<td>Assigned rides, navigation, status updates</td>
+</tr>
+<tr>
+<td><code>admin</code></td>
+<td>Full access: CRUD all entities, settings</td>
+</tr>
+</tbody>
+</table>
+<h3 id="middleware-implementation">Middleware Implementation</h3>
+<pre class="highlight"><code class="language-typescript">// middleware.ts — protect routes by role
+const roleRoutes = {
+  '/dashboard': ['user', 'driver', 'admin'],
+  '/admin': ['admin'],
+  '/driver': ['driver', 'admin'],
+  '/book': ['user'],
+  '/api/admin': ['admin'],
+  '/api/driver': ['driver', 'admin'],
+};
+</code></pre>
+
+<h2 id="data-encryption">Data Encryption</h2>
+<h3 id="at-rest">At Rest</h3>
+<ul>
+<li>MongoDB Atlas: Encrypted at rest by default (AES-256)</li>
+<li>AWS S3: Server-side encryption (SSE-S3)</li>
+<li>Sensitive fields (Aadhaar number): Encrypt with AES-256 before storing</li>
+<li>Passwords: bcrypt with salt rounds = 12</li>
+</ul>
+<h3 id="in-transit">In Transit</h3>
+<ul>
+<li>HTTPS everywhere (Let's Encrypt / Cloudflare)</li>
+<li>WSS for WebSocket connections</li>
+<li>TLS 1.2+ minimum</li>
+</ul>
+<h2 id="api-security">API Security</h2>
+<h3 id="rate-limiting">Rate Limiting</h3>
+<pre class="highlight"><code>| Endpoint | Limit |
+|----------|-------|
+| POST /api/auth/send-otp | 3 requests/phone/10 min |
+| POST /api/auth/verify-otp | 5 attempts/phone/10 min |
+| POST /api/bookings | 10/user/hour |
+| GET /api/* (authenticated) | 100/user/minute |
+| POST /api/webhooks/* | No limit (IP whitelist) |
+</code></pre>
+
+<h3 id="cors-configuration">CORS Configuration</h3>
+<pre class="highlight"><code class="language-typescript">// Only allow your domain
+const corsOptions = {
+  origin: ['https://yourdomain.in'],
+  methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+  credentials: true,
+};
+</code></pre>
+
+<h3 id="input-validation">Input Validation</h3>
+<ul>
+<li>Zod schemas on ALL API routes</li>
+<li>Sanitize HTML in user inputs (DOMPurify)</li>
+<li>Validate file uploads (type, size, dimensions)</li>
+<li>Parameterized MongoDB queries (Mongoose handles this)</li>
+</ul>
+<h3 id="razorpay-webhook-security">Razorpay Webhook Security</h3>
+<ul>
+<li>Verify HMAC SHA256 signature on every webhook</li>
+<li>Use webhook secret (never expose)</li>
+<li>Idempotency: check if payment already processed</li>
+</ul>
+<h2 id="owasp-top-10-mitigation">OWASP Top 10 Mitigation</h2>
+<table>
+<thead>
+<tr>
+<th>Risk</th>
+<th>Mitigation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>A01: Broken Access Control</strong></td>
+<td>RBAC middleware, route guards, API auth checks</td>
+</tr>
+<tr>
+<td><strong>A02: Cryptographic Failures</strong></td>
+<td>HTTPS, bcrypt passwords, AES for PII</td>
+</tr>
+<tr>
+<td><strong>A03: Injection</strong></td>
+<td>Mongoose parameterized queries, Zod validation</td>
+</tr>
+<tr>
+<td><strong>A04: Insecure Design</strong></td>
+<td>Threat modeling, refund policy checks, booking validation</td>
+</tr>
+<tr>
+<td><strong>A05: Security Misconfiguration</strong></td>
+<td>Env vars not in code, no debug in prod, security headers</td>
+</tr>
+<tr>
+<td><strong>A06: Vulnerable Components</strong></td>
+<td>npm audit, Dependabot, lock file</td>
+</tr>
+<tr>
+<td><strong>A07: Auth Failures</strong></td>
+<td>OTP rate limiting, server-side sessions, 30-day sliding expiry, force logout</td>
+</tr>
+<tr>
+<td><strong>A08: Software Integrity</strong></td>
+<td>Docker image signing, npm lockfile, webhook verification</td>
+</tr>
+<tr>
+<td><strong>A09: Logging Failures</strong></td>
+<td>Built-in error tracking (NestJS → MongoDB error_logs), audit log for admin actions</td>
+</tr>
+<tr>
+<td><strong>A10: SSRF</strong></td>
+<td>No user-controlled URLs in server requests</td>
+</tr>
+</tbody>
+</table>
+<h2 id="security-headers-nginx">Security Headers (Nginx)</h2>
+<pre class="highlight"><code class="language-nginx">add_header X-Frame-Options &quot;DENY&quot;;
+add_header X-Content-Type-Options &quot;nosniff&quot;;
+add_header X-XSS-Protection &quot;1; mode=block&quot;;
+add_header Strict-Transport-Security &quot;max-age=31536000; includeSubDomains&quot;;
+add_header Content-Security-Policy &quot;default-src 'self'; script-src 'self' 'unsafe-inline' https://checkout.razorpay.com https://maps.googleapis.com; img-src 'self' https://*.s3.amazonaws.com https://maps.googleapis.com data:; connect-src 'self' wss://yourdomain.in https://api.razorpay.com;&quot;;
+add_header Referrer-Policy &quot;strict-origin-when-cross-origin&quot;;
+</code></pre>
+
+<h2 id="secret-management">Secret Management</h2>
+<h3 id="environment-variables-never-in-code">Environment Variables (Never in Code)</h3>
+<pre class="highlight"><code class="language-env"># .env.local (NEVER commit)
+MONGODB_URI=
+NEXTAUTH_SECRET=
+NEXTAUTH_URL=
+RAZORPAY_KEY_ID=
+RAZORPAY_KEY_SECRET=
+RAZORPAY_WEBHOOK_SECRET=
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+AWS_S3_BUCKET=
+GOOGLE_MAPS_API_KEY=
+FIREBASE_CONFIG=
+MSG91_AUTH_KEY=
+MSG91_SENDER_ID=
+RESEND_API_KEY=
+</code></pre>
+
+<h3 id="production-secrets">Production Secrets</h3>
+<ul>
+<li>Use AWS Parameter Store or Secrets Manager</li>
+<li>Or Docker secrets in swarm mode</li>
+<li>Rotate keys quarterly</li>
+<li>Different keys for dev/staging/prod</li>
+</ul>
+<h2 id="file-upload-security">File Upload Security</h2>
+<ul>
+<li>Max file size: 5MB (images), 10MB (documents)</li>
+<li>Allowed types: jpg, jpeg, png, pdf</li>
+<li>Validate MIME type server-side (not just extension)</li>
+<li>Generate unique filenames (UUID)</li>
+<li>S3 presigned URLs (expire in 5 min for upload)</li>
+<li>Virus scanning (future, with ClamAV)</li>
+</ul>
+<h2 id="audit-trail">Audit Trail</h2>
+<p>Log admin actions to MongoDB:<br />
+- User blocked/unblocked<br />
+- Driver verified/deactivated<br />
+- Car added/removed<br />
+- Booking manually cancelled<br />
+- Settings changed<br />
+- Refund initiated</p>
+<h2 id="incident-response">Incident Response</h2>
+<ol>
+<li>Built-in error alert (push notification to admin) → investigate in admin panel</li>
+<li>Built-in health check cron → push + SMS alert if service down</li>
+<li>If breach suspected: rotate all API keys, delete all sessions from MongoDB (instant force-logout all users)</li>
+<li>MongoDB Atlas has IP whitelist — restrict to EC2 IP only</li>
+</ol>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#1f6feb',
+                primaryTextColor: '#e6edf3',
+                primaryBorderColor: '#58a6ff',
+                lineColor: '#8b949e',
+                secondaryColor: '#161b22',
+                tertiaryColor: '#0d1117',
+                background: '#0d1117',
+                mainBkg: '#161b22',
+                nodeBorder: '#30363d',
+                clusterBkg: '#161b22',
+                titleColor: '#58a6ff',
+                edgeLabelBackground: '#161b22',
+            }
+        });
+    </script>
+</body>
+</html>

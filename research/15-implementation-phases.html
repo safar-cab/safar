@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implementation Phases (4-Week MVP)</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --green: #3fb950;
+            --red: #f85149;
+            --yellow: #d29922;
+            --purple: #bc8cff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        h1 {
+            font-size: 2rem;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-hover);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.3rem;
+        }
+        h3 {
+            font-size: 1.2rem;
+            margin-top: 1.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--purple);
+        }
+        h4 {
+            font-size: 1rem;
+            margin-top: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        p {
+            margin-bottom: 1rem;
+        }
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+            color: var(--accent-hover);
+        }
+        code {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.15rem 0.4rem;
+            font-size: 0.9em;
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            color: var(--accent-hover);
+        }
+        pre {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+        }
+        pre code {
+            background: none;
+            border: none;
+            padding: 0;
+            color: var(--text);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background: #1c2333;
+            color: var(--accent);
+            font-weight: 600;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+        td {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover td {
+            background: rgba(88, 166, 255, 0.05);
+        }
+        blockquote {
+            border-left: 4px solid var(--accent);
+            background: var(--card);
+            padding: 0.8rem 1.2rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-muted);
+        }
+        blockquote strong {
+            color: var(--yellow);
+        }
+        ul, ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        li {
+            margin-bottom: 0.3rem;
+        }
+        li ul, li ol {
+            margin-bottom: 0;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+        strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+        em {
+            color: var(--text-muted);
+        }
+        .mermaid {
+            background: #1a1f2e;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        .nav {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .nav a {
+            font-size: 0.85rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            background: rgba(88, 166, 255, 0.1);
+        }
+        .nav a:hover {
+            background: rgba(88, 166, 255, 0.2);
+            text-decoration: none;
+        }
+        .nav-label {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        input[type="checkbox"] {
+            accent-color: var(--green);
+            transform: scale(1.2);
+            margin-right: 0.3rem;
+        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.5rem; }
+            table { font-size: 0.85rem; }
+            th, td { padding: 0.4rem 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <span class="nav-label">Navigation:</span>
+        <a href="index.html" style="background:rgba(63,185,80,0.2);color:#3fb950;font-weight:600;">Home</a>
+        <a href="00-executive-summary.html">Summary</a>
+        <a href="01-product-identity.html">Identity</a>
+        <a href="02-competitive-analysis.html">Competitors</a>
+        <a href="03-target-market.html">Market</a>
+        <a href="04-user-flow.html">UX Flow</a>
+        <a href="05-mvp-definition.html">MVP</a>
+        <a href="06-architecture.html">Architecture</a>
+        <a href="07-tech-stack.html">Tech Stack</a>
+        <a href="08-integrations.html">Integrations</a>
+        <a href="10-database-design.html">Database</a>
+        <a href="11-sequence-diagrams.html">Sequences</a>
+        <a href="12-project-flow.html">Project Flow</a>
+        <a href="13-security.html">Security</a>
+        <a href="14-legal-compliance.html">Legal</a>
+        <a href="15-implementation-phases.html">Phases</a>
+        <a href="16-production-checklist.html">Checklist</a>
+        <a href="17-devops.html">DevOps</a>
+        <a href="18-monetization.html">Revenue</a>
+        <a href="19-cost-management.html">Costs</a>
+        <a href="20-marketing.html">Marketing</a>
+        <a href="21-analytics-kpis.html">KPIs</a>
+        <a href="22-accessibility-i18n.html">A11y</a>
+        <a href="23-support-docs.html">Support</a>
+        <a href="24-team-hiring.html">Team</a>
+        <a href="25-risk-assessment.html">Risks</a>
+        <a href="26-future-roadmap.html">Roadmap</a>
+    </nav>
+    <h1 id="implementation-phases-4-week-mvp">Implementation Phases (4-Week MVP)</h1>
+<h2 id="week-1-foundation">Week 1: Foundation</h2>
+<h3 id="day-1-2-project-setup">Day 1-2: Project Setup</h3>
+<ul>
+<li><input type="checkbox" disabled> Initialize React + Vite project with TypeScript (react-app/)</li>
+<li><input type="checkbox" disabled> Initialize NestJS project with TypeScript (nestjs-api/)</li>
+<li><input type="checkbox" disabled> Setup Tailwind CSS 4 + shadcn/ui in React app</li>
+<li><input type="checkbox" disabled> Configure ESLint + Prettier (both projects)</li>
+<li><input type="checkbox" disabled> Setup MongoDB connection (@nestjs/mongoose)</li>
+<li><input type="checkbox" disabled> Create all Mongoose schemas (User, Driver, Car, Booking, Payment, Rating, Session, Notification)</li>
+<li><input type="checkbox" disabled> Setup cookie-based session auth (SessionMiddleware, SessionAuthGuard, RolesGuard)</li>
+<li><input type="checkbox" disabled> Docker + docker-compose.yml (react-app + nestjs-api + redis + nginx)</li>
+<li><input type="checkbox" disabled> GitHub repo + branch strategy (main + dev)</li>
+<li><input type="checkbox" disabled> Environment variables setup (.env files)</li>
+<li><input type="checkbox" disabled> Setup Redux Toolkit + Redux-Saga store structure</li>
+</ul>
+<h3 id="day-3-4-auth-user-management">Day 3-4: Auth + User Management</h3>
+<ul>
+<li><input type="checkbox" disabled> Phone OTP login (MSG91 integration in NestJS)</li>
+<li><input type="checkbox" disabled> Email + password registration/login</li>
+<li><input type="checkbox" disabled> Session middleware (cookie read → MongoDB lookup → attach user)</li>
+<li><input type="checkbox" disabled> 30-day sliding window auto-refresh</li>
+<li><input type="checkbox" disabled> Force logout (delete all user sessions)</li>
+<li><input type="checkbox" disabled> User profile page (view + edit) in React</li>
+<li><input type="checkbox" disabled> Admin: User list with search, block/unblock</li>
+<li><input type="checkbox" disabled> Protected route guard in React (redirect to login if 401)</li>
+<li><input type="checkbox" disabled> Landing page (hero, features, search preview)</li>
+</ul>
+<h3 id="day-5-7-admin-panel-cars-drivers">Day 5-7: Admin Panel - Cars &amp; Drivers</h3>
+<ul>
+<li><input type="checkbox" disabled> AWS S3 setup + presigned URL upload API (NestJS UploadController)</li>
+<li><input type="checkbox" disabled> Admin: Add car form (details + photos + documents)</li>
+<li><input type="checkbox" disabled> Admin: Car list, edit, deactivate</li>
+<li><input type="checkbox" disabled> Admin: Add driver form (details + documents)</li>
+<li><input type="checkbox" disabled> Admin: Driver list, verify, deactivate</li>
+<li><input type="checkbox" disabled> Admin: Assign driver to car</li>
+<li><input type="checkbox" disabled> Admin: Company settings (name, logo, contact, pricing)</li>
+<li><input type="checkbox" disabled> Admin: Route/pricing configuration</li>
+</ul>
+<h2 id="week-2-booking-system">Week 2: Booking System</h2>
+<h3 id="day-8-9-search-availability">Day 8-9: Search &amp; Availability</h3>
+<ul>
+<li><input type="checkbox" disabled> Google Maps integration (API key, SDK — @vis.gl/react-google-maps)</li>
+<li><input type="checkbox" disabled> Place autocomplete for pickup/drop</li>
+<li><input type="checkbox" disabled> Multi-stop route builder (add/remove/reorder stops)</li>
+<li><input type="checkbox" disabled> Distance + duration calculation (Directions API via NestJS)</li>
+<li><input type="checkbox" disabled> Calendar availability query (which cars free on date)</li>
+<li><input type="checkbox" disabled> Available cars display with details and ratings</li>
+</ul>
+<h3 id="day-10-11-booking-flow">Day 10-11: Booking Flow</h3>
+<ul>
+<li><input type="checkbox" disabled> Price calculator in NestJS (per-km × distance + base + tolls)</li>
+<li><input type="checkbox" disabled> Booking creation API (NestJS BookingController)</li>
+<li><input type="checkbox" disabled> Booking saga in Redux (create → pay → confirm orchestration)</li>
+<li><input type="checkbox" disabled> Booking confirmation page</li>
+<li><input type="checkbox" disabled> User: My bookings list with status filters</li>
+<li><input type="checkbox" disabled> User: Booking detail page</li>
+<li><input type="checkbox" disabled> Admin: All bookings view with filters</li>
+</ul>
+<h3 id="day-12-14-payments">Day 12-14: Payments</h3>
+<ul>
+<li><input type="checkbox" disabled> Razorpay merchant account setup</li>
+<li><input type="checkbox" disabled> Create Razorpay order API (NestJS PaymentController)</li>
+<li><input type="checkbox" disabled> Razorpay checkout integration (UPI focus) — payment saga</li>
+<li><input type="checkbox" disabled> Payment verification API</li>
+<li><input type="checkbox" disabled> Razorpay webhook handler (NestJS WebhookController — payment.captured, payment.failed)</li>
+<li><input type="checkbox" disabled> Cancellation API with refund policy logic</li>
+<li><input type="checkbox" disabled> Refund initiation via Razorpay API</li>
+<li><input type="checkbox" disabled> Payment history page</li>
+<li><input type="checkbox" disabled> Admin: Payment/transaction log</li>
+</ul>
+<h2 id="week-3-tracking-notifications">Week 3: Tracking &amp; Notifications</h2>
+<h3 id="day-15-17-real-time-gps-tracking">Day 15-17: Real-Time GPS Tracking</h3>
+<ul>
+<li><input type="checkbox" disabled> NestJS WebSocket gateway setup (@nestjs/websockets + Socket.io)</li>
+<li><input type="checkbox" disabled> Driver: Geolocation API integration (useGeolocation hook)</li>
+<li><input type="checkbox" disabled> Driver: Send location via WebSocket (tracking saga with eventChannel)</li>
+<li><input type="checkbox" disabled> NestJS: Broadcast to booking room</li>
+<li><input type="checkbox" disabled> User: Live map with driver marker</li>
+<li><input type="checkbox" disabled> Driver: Status update buttons (en route, arrived, picked up, completed)</li>
+<li><input type="checkbox" disabled> Wake Lock API — keep screen on during active ride</li>
+<li><input type="checkbox" disabled> Status change triggers notification (BullMQ queue)</li>
+<li><input type="checkbox" disabled> Location history logging to MongoDB</li>
+</ul>
+<h3 id="day-18-19-notifications">Day 18-19: Notifications</h3>
+<ul>
+<li><input type="checkbox" disabled> Firebase project setup</li>
+<li><input type="checkbox" disabled> FCM web push implementation (service worker via vite-plugin-pwa)</li>
+<li><input type="checkbox" disabled> Push notification for: booking, pickup, drop, stops, payment, cancel</li>
+<li><input type="checkbox" disabled> MSG91 SMS integration (NestJS SmsService)</li>
+<li><input type="checkbox" disabled> SMS for: OTP, booking confirmation, ride started, completed</li>
+<li><input type="checkbox" disabled> Vibration API on key events (booking confirm, driver arrived)</li>
+<li><input type="checkbox" disabled> Notification bell icon with unread count (Redux notificationSlice)</li>
+<li><input type="checkbox" disabled> Admin: Notification center (view all notifications)</li>
+</ul>
+<h3 id="day-20-21-driver-panel-rating">Day 20-21: Driver Panel + Rating</h3>
+<ul>
+<li><input type="checkbox" disabled> Driver: Dashboard (today's rides, upcoming)</li>
+<li><input type="checkbox" disabled> Driver: Ride detail with route map</li>
+<li><input type="checkbox" disabled> Driver: Navigation link (open in Google Maps)</li>
+<li><input type="checkbox" disabled> Driver: Status flow (accept → en route → picked up → stops → completed)</li>
+<li><input type="checkbox" disabled> Rating: User rates driver after ride (1-5 stars + review)</li>
+<li><input type="checkbox" disabled> Rating: Driver rates user after ride</li>
+<li><input type="checkbox" disabled> Average rating calculation + display</li>
+</ul>
+<h2 id="week-4-polish-deploy">Week 4: Polish &amp; Deploy</h2>
+<h3 id="day-22-23-pwa-web-apis-ux">Day 22-23: PWA + Web APIs + UX</h3>
+<ul>
+<li><input type="checkbox" disabled> vite-plugin-pwa setup: manifest.json, service worker</li>
+<li><input type="checkbox" disabled> Offline fallback page</li>
+<li><input type="checkbox" disabled> Install prompt (custom banner)</li>
+<li><input type="checkbox" disabled> App icons (all sizes)</li>
+<li><input type="checkbox" disabled> Web Share API — share ride tracking link with family</li>
+<li><input type="checkbox" disabled> Screen Orientation API — lock portrait on tracking map</li>
+<li><input type="checkbox" disabled> Loading states and skeletons</li>
+<li><input type="checkbox" disabled> Error boundaries (React ErrorBoundary → report to backend)</li>
+<li><input type="checkbox" disabled> Empty states for lists</li>
+<li><input type="checkbox" disabled> Responsive design check (mobile + desktop)</li>
+<li><input type="checkbox" disabled> Form validation UX (Zod error messages)</li>
+</ul>
+<h3 id="day-24-25-admin-dashboard-built-in-monitoring">Day 24-25: Admin Dashboard + Built-In Monitoring</h3>
+<ul>
+<li><input type="checkbox" disabled> Admin dashboard: today's stats (bookings, revenue, active rides)</li>
+<li><input type="checkbox" disabled> Charts: bookings per day/week/month</li>
+<li><input type="checkbox" disabled> Revenue summary</li>
+<li><input type="checkbox" disabled> Driver performance (rides, rating)</li>
+<li><input type="checkbox" disabled> Car utilization report</li>
+<li><input type="checkbox" disabled> Built-in error tracking: NestJS GlobalExceptionFilter → MongoDB error_logs → admin error dashboard</li>
+<li><input type="checkbox" disabled> Built-in health checks: NestJS @Cron every 5 min → push/SMS alert on failure</li>
+<li><input type="checkbox" disabled> Built-in analytics: event tracking → MongoDB analytics_events → admin charts</li>
+<li><input type="checkbox" disabled> Ride extension flow (user requests, admin/driver approves)</li>
+</ul>
+<h3 id="day-26-27-testing-security">Day 26-27: Testing + Security</h3>
+<ul>
+<li><input type="checkbox" disabled> API endpoint testing (Jest + NestJS testing module)</li>
+<li><input type="checkbox" disabled> Booking flow end-to-end test</li>
+<li><input type="checkbox" disabled> Payment test (Razorpay test mode)</li>
+<li><input type="checkbox" disabled> Rate limiting on auth endpoints (NestJS ThrottlerGuard)</li>
+<li><input type="checkbox" disabled> Security headers (Nginx — X-Frame-Options, HSTS, CSP)</li>
+<li><input type="checkbox" disabled> Input validation audit (class-validator on all DTOs)</li>
+<li><input type="checkbox" disabled> CORS configuration (NestJS — allow only your domain)</li>
+<li><input type="checkbox" disabled> Cookie security audit (httpOnly, Secure, SameSite)</li>
+<li><input type="checkbox" disabled> Environment variable audit (no secrets in code)</li>
+</ul>
+<h3 id="day-28-deployment">Day 28: Deployment</h3>
+<ul>
+<li><input type="checkbox" disabled> Docker production build (react-app + nestjs-api)</li>
+<li><input type="checkbox" disabled> AWS EC2 instance launch</li>
+<li><input type="checkbox" disabled> Nginx configuration + SSL (Let's Encrypt)</li>
+<li><input type="checkbox" disabled> docker-compose up in production</li>
+<li><input type="checkbox" disabled> Domain DNS setup (Cloudflare)</li>
+<li><input type="checkbox" disabled> MongoDB Atlas IP whitelist</li>
+<li><input type="checkbox" disabled> Razorpay live mode activation</li>
+<li><input type="checkbox" disabled> MSG91 DLT templates approved</li>
+<li><input type="checkbox" disabled> Smoke test all flows</li>
+<li><input type="checkbox" disabled> Verify built-in health checks running</li>
+<li><input type="checkbox" disabled> Verify error tracking capturing</li>
+<li><input type="checkbox" disabled> First real booking!</li>
+</ul>
+<h2 id="post-mvp-month-2">Post-MVP (Month 2+)</h2>
+<h3 id="v11-enhancements">v1.1 Enhancements</h3>
+<ul>
+<li>Traccar GPS device integration (car hardware tracker)</li>
+<li>Email notifications (Resend)</li>
+<li>Ride extension during trip</li>
+<li>Web Share API — share ride link</li>
+<li>Payment Request API — native UPI payment sheet</li>
+<li>Background Sync API — offline booking queue</li>
+<li>Dark mode</li>
+<li>SEO pre-rendering for landing page</li>
+</ul>
+<h3 id="v12-growth">v1.2 Growth</h3>
+<ul>
+<li>Multiple car categories</li>
+<li>Corporate accounts</li>
+<li>Scheduled recurring rides</li>
+<li>Driver payroll tracking</li>
+<li>Vehicle maintenance reminders</li>
+<li>WhatsApp notifications</li>
+</ul>
+<h3 id="v20-scale">v2.0 Scale</h3>
+<ul>
+<li>Mobile app (React Native)</li>
+<li>Multi-company white-label</li>
+<li>WebRTC in-app voice calls (user ↔ driver)</li>
+<li>Dynamic pricing engine</li>
+<li>AI demand prediction</li>
+<li>Extract monitoring tools as standalone product</li>
+<li>Franchise model</li>
+</ul>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#1f6feb',
+                primaryTextColor: '#e6edf3',
+                primaryBorderColor: '#58a6ff',
+                lineColor: '#8b949e',
+                secondaryColor: '#161b22',
+                tertiaryColor: '#0d1117',
+                background: '#0d1117',
+                mainBkg: '#161b22',
+                nodeBorder: '#30363d',
+                clusterBkg: '#161b22',
+                titleColor: '#58a6ff',
+                edgeLabelBackground: '#161b22',
+            }
+        });
+    </script>
+</body>
+</html>
