@@ -132,29 +132,45 @@ export function RouteForm() {
     }
   }, [dispatch, originAddress, destAddress]);
 
-  // Auto-fill toll from Google Routes API (only when empty)
+  // Auto-fill distance and toll from Google Routes API on first load
   useEffect(() => {
     if (!googleRouteInfo) return;
-    if (!form.tollEstimate && googleRouteInfo.tollEstimateINR) {
-      setForm((prev) => ({ ...prev, tollEstimate: String(googleRouteInfo.tollEstimateINR) }));
-    }
+    setForm((prev) => ({
+      ...prev,
+      distanceKm: prev.distanceKm || String(googleRouteInfo.distanceKm || ''),
+      tollEstimate: String(googleRouteInfo.tollEstimateINR || 0),
+    }));
   }, [googleRouteInfo]);
 
-  // When map route is selected (including alternatives), update distance
+  // When map route is selected (including alternatives), update distance + toll
   const handleMapRouteSelect = useCallback(
-    (route: { distance: string; distanceValue: number; duration: string; summary: string }) => {
+    (route: { distance: string; distanceValue: number; duration: string; summary: string }, index: number) => {
       setMapRouteInfo({
         distance: route.distance,
         duration: route.duration,
         summary: route.summary,
       });
-      // Update distance input from map selection (meters → km)
+
+      // Update distance input (meters → km)
       const km = Math.round(route.distanceValue / 1000);
+      const updates: Partial<RouteFormData> = {};
       if (km > 0) {
-        setForm((prev) => ({ ...prev, distanceKm: String(km) }));
+        updates.distanceKm = String(km);
+      }
+
+      // Match toll from Google Routes API by closest distance
+      if (googleRouteInfo?.routes?.length) {
+        const matched = googleRouteInfo.routes.reduce((best, r) =>
+          Math.abs(r.distanceKm - km) < Math.abs(best.distanceKm - km) ? r : best,
+        );
+        updates.tollEstimate = String(matched.tollEstimateINR || 0);
+      }
+
+      if (Object.keys(updates).length > 0) {
+        setForm((prev) => ({ ...prev, ...updates }));
       }
     },
-    [],
+    [googleRouteInfo],
   );
 
   // Auto-calculated values
