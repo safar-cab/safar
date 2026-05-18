@@ -17,7 +17,7 @@ import { UserRole } from '../schemas/user.schema';
 
 // Public endpoint for customer booking form
 @ApiTags('Locations - Public')
-@Controller('api/locations')
+@Controller('locations')
 export class PublicLocationsController {
   constructor(private locationsService: LocationsService) {}
 

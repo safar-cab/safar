@@ -15,7 +15,7 @@ import { UserRole } from '../schemas/user.schema';
 @ApiTags('Tracking')
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
-@Controller('api/tracking')
+@Controller('tracking')
 export class TrackingController {
   constructor(
     private trackingService: TrackingService,

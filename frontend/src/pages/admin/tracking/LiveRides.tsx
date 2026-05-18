@@ -47,7 +47,7 @@ export function LiveRides() {
 
     (async () => {
       try {
-        const res = (await api.get('/api/tracking/admin/active')) as any;
+        const res = (await api.get('/tracking/admin/active')) as any;
         setRides(res.bookings || []);
         setPositions(res.positions || {});
       } catch {
@@ -88,7 +88,7 @@ export function LiveRides() {
     (async () => {
       try {
         const res = (await api.get(
-          `/api/tracking/route-info?origin=${encodeURIComponent(selectedRide.pickup.address)}&destination=${encodeURIComponent(selectedRide.drop.address)}`,
+          `/tracking/route-info?origin=${encodeURIComponent(selectedRide.pickup.address)}&destination=${encodeURIComponent(selectedRide.drop.address)}`,
         )) as any;
         setTollInfo(res);
       } catch {

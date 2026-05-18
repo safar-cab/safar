@@ -37,7 +37,7 @@ function* handleFetchRouteDetail(action: ReturnType<typeof fetchRouteDetail>) {
 
 function* handleFetchStates() {
   try {
-    const data: unknown = yield call(api.get, '/api/locations/states');
+    const data: unknown = yield call(api.get, '/locations/states');
     yield put(fetchStatesSuccess(data as any[]));
   } catch {
     // silent
@@ -47,7 +47,7 @@ function* handleFetchStates() {
 function* handleFetchCities(action: ReturnType<typeof fetchCities>) {
   try {
     const stateId = action.payload;
-    const data: unknown = yield call(api.get, `/api/locations/states/${stateId}/cities`);
+    const data: unknown = yield call(api.get, `/locations/states/${stateId}/cities`);
     yield put(fetchCitiesSuccess({ stateId, cities: data as any[] }));
   } catch {
     // silent
@@ -60,7 +60,7 @@ function* handleFetchRouteInfo(action: ReturnType<typeof fetchRouteInfo>) {
     const { origin, destination } = action.payload;
     const data: unknown = yield call(
       api.get,
-      `/api/tracking/route-info?origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destination)}`,
+      `/tracking/route-info?origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destination)}`,
     );
     yield put(fetchRouteInfoSuccess(data as any));
   } catch {

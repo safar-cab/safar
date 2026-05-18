@@ -28,7 +28,7 @@ export function useNotifications(isAuthenticated: boolean) {
       const token = await requestNotificationPermission();
       if (token) {
         try {
-          await api.post('/api/notifications/fcm-token', {
+          await api.post('/notifications/fcm-token', {
             token,
             platform: 'web',
           });

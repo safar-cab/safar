@@ -19,7 +19,7 @@ import { User, UserDocument } from '../schemas/user.schema';
 @ApiTags('Notifications')
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
-@Controller('api/notifications')
+@Controller('notifications')
 export class NotificationsController {
   constructor(
     private notificationsService: NotificationsService,
