@@ -51,10 +51,16 @@ export class TrackingController {
   })
   @ApiQuery({ name: 'origin', required: true, example: 'Indore, MP' })
   @ApiQuery({ name: 'destination', required: true, example: 'Bhopal, MP' })
+  @ApiQuery({ name: 'waypoints', required: false, example: 'Ujjain|Dewas' })
   async getRouteInfo(
     @Query('origin') origin: string,
     @Query('destination') destination: string,
+    @Query('waypoints') waypoints?: string,
   ) {
-    return this.routesApiService.getRouteTollEstimate(origin, destination);
+    return this.routesApiService.getRouteTollEstimate(
+      origin,
+      destination,
+      waypoints ? waypoints.split('|').filter(Boolean) : undefined,
+    );
   }
 }

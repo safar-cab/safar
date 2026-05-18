@@ -38,7 +38,11 @@ export class RoutesApiService {
   async computeRoutes(
     origin: string,
     destination: string,
-    options?: { computeAlternatives?: boolean; includeTolls?: boolean },
+    options?: {
+      computeAlternatives?: boolean;
+      includeTolls?: boolean;
+      waypoints?: string[];
+    },
   ): Promise<RouteResult[]> {
     if (!this.enabled) return [];
 
@@ -48,6 +52,7 @@ export class RoutesApiService {
         {
           origin: { address: origin },
           destination: { address: destination },
+          intermediates: options?.waypoints?.map((wp) => ({ address: wp })) || [],
           travelMode: 'DRIVE',
           routingPreference: 'TRAFFIC_AWARE',
           computeAlternativeRoutes: options?.computeAlternatives ?? true,
@@ -93,6 +98,7 @@ export class RoutesApiService {
   async getRouteTollEstimate(
     origin: string,
     destination: string,
+    waypoints?: string[],
   ): Promise<{
     distanceKm: number;
     durationMinutes: number;
@@ -105,6 +111,7 @@ export class RoutesApiService {
     }>;
   }> {
     const routes = await this.computeRoutes(origin, destination, {
+      waypoints,
       computeAlternatives: true,
       includeTolls: true,
     });
