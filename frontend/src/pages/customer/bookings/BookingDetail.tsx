@@ -105,47 +105,55 @@ export function BookingDetail() {
         </div>
       </motion.div>
 
-      {/* Route Card */}
+      {/* Route Card with labels */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.05 }}
         className="bg-white rounded-xl p-5 shadow-sm border border-neutral-100 mb-4"
       >
-        <div className="flex items-start gap-3">
-          <div className="flex flex-col items-center mt-1">
-            <div className="w-3 h-3 rounded-full bg-success-500" />
-            {(booking.stops || []).map((_, i) => (
-              <div key={i} className="flex flex-col items-center">
-                <div className="w-0.5 h-6 bg-neutral-200 my-0.5" />
-                <div
-                  className={cn(
-                    'w-2.5 h-2.5 rounded-full',
-                    _.status === 'reached' ? 'bg-success-500' : 'bg-amber-400',
-                  )}
-                />
-              </div>
-            ))}
-            <div className="w-0.5 h-6 bg-neutral-200 my-0.5" />
-            <div className="w-3 h-3 rounded-full bg-error-500" />
-          </div>
-          <div className="flex-1 space-y-3">
-            <div>
+        <div className="space-y-0">
+          {/* Pickup */}
+          <div className="flex items-start gap-3">
+            <div className="flex flex-col items-center pt-1">
+              <div className="w-3 h-3 rounded-full bg-success-500 shrink-0" />
+              <div className="w-0.5 flex-1 bg-neutral-200 my-1" />
+            </div>
+            <div className="flex-1 pb-3">
+              <p className="text-[10px] text-success-600 font-semibold uppercase tracking-wider">Pickup</p>
               <p className="text-sm font-medium text-neutral-900">{booking.pickup?.address}</p>
               {booking.pickup?.landmark && (
                 <p className="text-xs text-neutral-400 mt-0.5">{booking.pickup.landmark}</p>
               )}
             </div>
-            {(booking.stops || []).map((stop: any, i: number) => (
-              <div key={i}>
-                <p className="text-xs text-amber-600 font-medium">
-                  Stop {stop.order || i + 1}
-                  {stop.status === 'reached' && ' ✓'}
+          </div>
+
+          {/* Stops */}
+          {(booking.stops || []).map((stop: any, i: number) => (
+            <div key={i} className="flex items-start gap-3">
+              <div className="flex flex-col items-center pt-1">
+                <div className={cn(
+                  'w-2.5 h-2.5 rounded-full shrink-0',
+                  stop.status === 'reached' ? 'bg-success-500' : 'bg-amber-400',
+                )} />
+                <div className="w-0.5 flex-1 bg-neutral-200 my-1" />
+              </div>
+              <div className="flex-1 pb-3">
+                <p className="text-[10px] text-amber-600 font-semibold uppercase tracking-wider">
+                  Stop {stop.order || i + 1}{stop.status === 'reached' ? ' ✓' : ''}
                 </p>
                 <p className="text-sm text-neutral-700">{stop.address}</p>
               </div>
-            ))}
-            <div>
+            </div>
+          ))}
+
+          {/* Drop */}
+          <div className="flex items-start gap-3">
+            <div className="flex flex-col items-center pt-1">
+              <div className="w-3 h-3 rounded-full bg-error-500 shrink-0" />
+            </div>
+            <div className="flex-1">
+              <p className="text-[10px] text-error-600 font-semibold uppercase tracking-wider">Drop</p>
               <p className="text-sm font-medium text-neutral-900">{booking.drop?.address}</p>
               {booking.drop?.landmark && (
                 <p className="text-xs text-neutral-400 mt-0.5">{booking.drop.landmark}</p>
@@ -154,6 +162,43 @@ export function BookingDetail() {
           </div>
         </div>
       </motion.div>
+
+      {/* Driver Info (when assigned) */}
+      {booking.driver && typeof booking.driver === 'object' && (booking.driver as any).userId && (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.08 }}
+          className="bg-white rounded-xl p-5 shadow-sm border border-neutral-100 mb-4"
+        >
+          <p className="text-xs text-neutral-400 font-semibold uppercase tracking-wider mb-3">Driver</p>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center">
+                <span className="text-sm font-bold text-primary-600">
+                  {((booking.driver as any).userId?.name || '?')[0].toUpperCase()}
+                </span>
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-neutral-900">
+                  {(booking.driver as any).userId?.name || 'Driver'}
+                </p>
+                <p className="text-xs text-neutral-500">
+                  {(booking.driver as any).userId?.phone || ''}
+                </p>
+              </div>
+            </div>
+            {(booking.driver as any).userId?.phone && (
+              <a
+                href={`tel:${(booking.driver as any).userId.phone}`}
+                className="w-10 h-10 rounded-full bg-success-50 flex items-center justify-center"
+              >
+                <Navigation className="w-4 h-4 text-success-600" />
+              </a>
+            )}
+          </div>
+        </motion.div>
+      )}
 
       {/* Schedule & Car Info */}
       <motion.div
