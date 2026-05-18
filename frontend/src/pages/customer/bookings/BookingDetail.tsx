@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { MapPin, Clock, Car, Navigation, AlertTriangle, Share2 } from 'lucide-react';
+import { MapPin, Clock, Car, Navigation, AlertTriangle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { fetchBookingDetail, cancelBooking } from '@/store/slices/bookingsSlice';
-import { useShare } from '@/hooks/useShare';
 import { PriceBreakdown } from '@/components/core/PriceBreakdown';
+import { BookingRouteCard } from '@/components/core/BookingRouteCard';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
@@ -40,7 +40,6 @@ export function BookingDetail() {
 
   const [cancelModal, setCancelModal] = useState(false);
   const [cancelReason, setCancelReason] = useState('');
-  const { share } = useShare();
 
   useEffect(() => {
     if (id) dispatch(fetchBookingDetail(id));
@@ -79,89 +78,16 @@ export function BookingDetail() {
     <div className="pb-28">
       <PageHeader title="Booking Detail" showBack showHome={booking.status === 'pending'} />
 
-      {/* Booking ID and Status */}
-      <motion.div
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="flex items-center justify-between mb-6"
-      >
-        <span className="text-sm font-mono text-neutral-400">{booking.bookingId}</span>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={async () => {
-              const result = await share({
-                title: `Safar Ride ${booking.bookingId}`,
-                text: `Track my ride from ${booking.pickup?.address} to ${booking.drop?.address}`,
-                url: window.location.href,
-              });
-              if (result === 'copied') toast.success('Link copied!');
-            }}
-            className="p-1.5 text-neutral-400 hover:text-primary-500 transition-colors"
-            aria-label="Share booking"
-          >
-            <Share2 className="w-4 h-4" />
-          </button>
-          <Badge status={booking.status} />
-        </div>
-      </motion.div>
-
-      {/* Route Card with labels */}
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.05 }}
-        className="bg-white rounded-xl p-5 shadow-sm border border-neutral-100 mb-4"
-      >
-        <div className="space-y-0">
-          {/* Pickup */}
-          <div className="flex items-start gap-3">
-            <div className="flex flex-col items-center pt-1">
-              <div className="w-3 h-3 rounded-full bg-success-500 shrink-0" />
-              <div className="w-0.5 flex-1 bg-neutral-200 my-1" />
-            </div>
-            <div className="flex-1 pb-3">
-              <p className="text-[10px] text-success-600 font-semibold uppercase tracking-wider">Pickup</p>
-              <p className="text-sm font-medium text-neutral-900">{booking.pickup?.address}</p>
-              {booking.pickup?.landmark && (
-                <p className="text-xs text-neutral-400 mt-0.5">{booking.pickup.landmark}</p>
-              )}
-            </div>
-          </div>
-
-          {/* Stops */}
-          {(booking.stops || []).map((stop: any, i: number) => (
-            <div key={i} className="flex items-start gap-3">
-              <div className="flex flex-col items-center pt-1">
-                <div className={cn(
-                  'w-2.5 h-2.5 rounded-full shrink-0',
-                  stop.status === 'reached' ? 'bg-success-500' : 'bg-amber-400',
-                )} />
-                <div className="w-0.5 flex-1 bg-neutral-200 my-1" />
-              </div>
-              <div className="flex-1 pb-3">
-                <p className="text-[10px] text-amber-600 font-semibold uppercase tracking-wider">
-                  Stop {stop.order || i + 1}{stop.status === 'reached' ? ' ✓' : ''}
-                </p>
-                <p className="text-sm text-neutral-700">{stop.address}</p>
-              </div>
-            </div>
-          ))}
-
-          {/* Drop */}
-          <div className="flex items-start gap-3">
-            <div className="flex flex-col items-center pt-1">
-              <div className="w-3 h-3 rounded-full bg-error-500 shrink-0" />
-            </div>
-            <div className="flex-1">
-              <p className="text-[10px] text-error-600 font-semibold uppercase tracking-wider">Drop</p>
-              <p className="text-sm font-medium text-neutral-900">{booking.drop?.address}</p>
-              {booking.drop?.landmark && (
-                <p className="text-xs text-neutral-400 mt-0.5">{booking.drop.landmark}</p>
-              )}
-            </div>
-          </div>
-        </div>
-      </motion.div>
+      {/* Booking ID + Status + Route */}
+      <div className="mb-4">
+        <BookingRouteCard
+          bookingId={booking.bookingId}
+          status={booking.status}
+          pickup={booking.pickup}
+          drop={booking.drop}
+          stops={booking.stops}
+        />
+      </div>
 
       {/* Driver Info (when assigned) */}
       {booking.driver && typeof booking.driver === 'object' && (booking.driver as any).userId && (

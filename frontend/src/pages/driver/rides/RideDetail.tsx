@@ -13,6 +13,7 @@ import {
   AlertCircle,
 } from 'lucide-react';
 import api from '@/lib/api';
+import { BookingRouteCard } from '@/components/core/BookingRouteCard';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Skeleton } from '@/components/ui/Skeleton';
@@ -111,44 +112,14 @@ export function RideDetail() {
         <ChevronLeft className="w-4 h-4" /> Back
       </button>
 
-      {/* Status */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="bg-white rounded-xl p-4 shadow-sm border border-neutral-100"
-      >
-        <div className="flex items-center justify-between mb-3">
-          <span className="text-sm font-mono text-neutral-400">{ride.bookingId}</span>
-          <Badge status={ride.status} />
-        </div>
-
-        {/* Route */}
-        <div className="space-y-2">
-          <div className="flex items-start gap-3">
-            <div className="flex flex-col items-center mt-1">
-              <div className="w-3 h-3 rounded-full border-2 border-success-500 bg-success-100" />
-              <div className="w-0.5 h-8 bg-neutral-200" />
-              <div className="w-3 h-3 rounded-full border-2 border-error-500 bg-error-100" />
-            </div>
-            <div className="flex-1 space-y-4">
-              <div>
-                <p className="text-xs text-neutral-400 font-medium">PICKUP</p>
-                <p className="text-sm text-neutral-800 font-medium">{ride.pickup?.address}</p>
-                {ride.pickup?.landmark && (
-                  <p className="text-xs text-neutral-500">{ride.pickup.landmark}</p>
-                )}
-              </div>
-              <div>
-                <p className="text-xs text-neutral-400 font-medium">DROP</p>
-                <p className="text-sm text-neutral-800 font-medium">{ride.drop?.address}</p>
-                {ride.drop?.landmark && (
-                  <p className="text-xs text-neutral-500">{ride.drop.landmark}</p>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </motion.div>
+      {/* Booking ID + Status + Route */}
+      <BookingRouteCard
+        bookingId={ride.bookingId}
+        status={ride.status}
+        pickup={ride.pickup}
+        drop={ride.drop}
+        stops={ride.stops}
+      />
 
       {/* Customer Info */}
       {customer && (
