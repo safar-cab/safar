@@ -34,6 +34,7 @@ interface FormData {
   time: string;
   selectedCarId: string;
   estimatedDistance: number;
+  tollEstimate: number;
 }
 
 const INITIAL_FORM: FormData = {
@@ -46,6 +47,7 @@ const INITIAL_FORM: FormData = {
   time: '',
   selectedCarId: '',
   estimatedDistance: 50,
+  tollEstimate: 0,
 };
 
 export function BookingForm() {
@@ -405,9 +407,12 @@ function DropStep({
           `/api/tracking/route-info?origin=${encodeURIComponent(form.pickupAddress)}&destination=${encodeURIComponent(form.dropAddress)}${waypointsParam}`,
         )
         .then((res: unknown) => {
-          const data = res as { distanceKm?: number };
+          const data = res as { distanceKm?: number; tollEstimateINR?: number };
           if (data?.distanceKm) {
             updateField('estimatedDistance', data.distanceKm);
+          }
+          if (data?.tollEstimateINR !== undefined) {
+            updateField('tollEstimate', data.tollEstimateINR);
           }
         })
         .catch(() => {});
@@ -702,7 +707,7 @@ function ReviewStep({
   const pricePerKm = pricingConfig.pricePerKm;
   const baseFare = pricingConfig.baseFare;
   const distanceCharge = form.estimatedDistance * pricePerKm;
-  const tollEstimate = 0; // Tolls calculated on server from Google Routes API
+  const tollEstimate = form.tollEstimate || 0;
   const stopCharge = validStops.length * pricingConfig.stopWaitingChargePerInterval;
   const taxableAmount = baseFare + distanceCharge + stopCharge; // Tolls exempt from GST
   const cgst = Math.round(taxableAmount * 0.025);

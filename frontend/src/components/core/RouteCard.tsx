@@ -10,7 +10,11 @@ interface RouteCardProps {
 }
 
 export const RouteCard = memo(function RouteCard({ route, onClick, index = 0 }: RouteCardProps) {
-  const total = route.baseFare + route.distanceKm * route.pricePerKm + route.tollEstimate;
+  // Match backend pricing: taxable = baseFare + distanceCharge (tolls exempt from GST)
+  const distanceCharge = route.distanceKm * route.pricePerKm;
+  const taxableAmount = route.baseFare + distanceCharge;
+  const gst = Math.round(taxableAmount * 0.05);
+  const total = taxableAmount + route.tollEstimate + gst;
 
   return (
     <motion.div
@@ -30,9 +34,12 @@ export const RouteCard = memo(function RouteCard({ route, onClick, index = 0 }: 
         {route.tollEstimate > 0 && <span>Tolls ₹{route.tollEstimate}</span>}
       </div>
       <div className="flex items-center justify-between mt-3 pt-3 border-t border-neutral-100">
-        <span className="text-base font-bold text-primary-700">
-          ₹{total.toLocaleString('en-IN')}
-        </span>
+        <div>
+          <span className="text-base font-bold text-primary-700">
+            ₹{total.toLocaleString('en-IN')}
+          </span>
+          <span className="text-[10px] text-neutral-400 ml-1">incl. GST</span>
+        </div>
         <ArrowRight className="w-4 h-4 text-neutral-400" />
       </div>
     </motion.div>

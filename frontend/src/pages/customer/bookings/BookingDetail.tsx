@@ -77,7 +77,7 @@ export function BookingDetail() {
 
   return (
     <div className="pb-28">
-      <PageHeader title="Booking Detail" showBack />
+      <PageHeader title="Booking Detail" showBack showHome={booking.status === 'pending'} />
 
       {/* Booking ID and Status */}
       <motion.div
@@ -281,6 +281,8 @@ export function BookingDetail() {
             stopCount={booking.pricing.stopCount}
             stopChargePerStop={booking.pricing.stopChargePerStop}
             totalStopCharge={booking.pricing.totalStopCharge}
+            cgst={booking.pricing.cgst}
+            sgst={booking.pricing.sgst}
             gstAmount={booking.pricing.gstAmount}
             totalAmount={booking.pricing.totalAmount}
           />
