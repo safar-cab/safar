@@ -3,23 +3,20 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Save, MapPin, ArrowRight } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '@/lib/api';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import {
+  fetchStates,
+  fetchCities,
+  fetchRouteInfo,
+  clearRouteInfo,
+} from '@/store/slices/routesSlice';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { DirectionsMap } from '@/components/core/DirectionsMap';
 import { formatCurrency } from '@/utils/format';
-
-interface StateOption {
-  _id: string;
-  name: string;
-  code: string;
-}
-
-interface CityOption {
-  _id: string;
-  name: string;
-}
 
 interface RouteFormData {
   fromCityId: string;
@@ -46,64 +43,41 @@ const initialData: RouteFormData = {
 export function RouteForm() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const isEdit = Boolean(id);
 
   const [form, setForm] = useState<RouteFormData>(initialData);
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(isEdit);
+  const [mapRouteInfo, setMapRouteInfo] = useState<{
+    distance: string;
+    duration: string;
+    summary: string;
+  } | null>(null);
 
-  // States & cities from API
-  const [states, setStates] = useState<StateOption[]>([]);
-  const [fromCities, setFromCities] = useState<CityOption[]>([]);
-  const [toCities, setToCities] = useState<CityOption[]>([]);
+  // Redux state
+  const {
+    states,
+    cities,
+    googleRouteInfo,
+  } = useAppSelector((s) => s.routes);
+
+  const fromCities = cities[form.fromStateId] || [];
+  const toCities = cities[form.toStateId] || [];
 
   // Fetch states on mount
   useEffect(() => {
-    (async () => {
-      try {
-        const res = (await api.get('/api/locations/states')) as StateOption[];
-        setStates(res);
-      } catch {
-        toast.error('Failed to load states');
-      }
-    })();
-  }, []);
+    dispatch(fetchStates());
+  }, [dispatch]);
 
-  // Fetch cities when fromState changes
+  // Fetch cities when state changes
   useEffect(() => {
-    if (!form.fromStateId) {
-      setFromCities([]);
-      return;
-    }
-    (async () => {
-      try {
-        const res = (await api.get(
-          `/api/locations/states/${form.fromStateId}/cities`,
-        )) as CityOption[];
-        setFromCities(res);
-      } catch {
-        setFromCities([]);
-      }
-    })();
-  }, [form.fromStateId]);
+    if (form.fromStateId) dispatch(fetchCities(form.fromStateId));
+  }, [dispatch, form.fromStateId]);
 
-  // Fetch cities when toState changes
   useEffect(() => {
-    if (!form.toStateId) {
-      setToCities([]);
-      return;
-    }
-    (async () => {
-      try {
-        const res = (await api.get(
-          `/api/locations/states/${form.toStateId}/cities`,
-        )) as CityOption[];
-        setToCities(res);
-      } catch {
-        setToCities([]);
-      }
-    })();
-  }, [form.toStateId]);
+    if (form.toStateId) dispatch(fetchCities(form.toStateId));
+  }, [dispatch, form.toStateId]);
 
   // Load existing route for edit
   useEffect(() => {
@@ -138,19 +112,40 @@ export function RouteForm() {
   const handleSelect = useCallback((field: string, value: string) => {
     setForm((prev) => {
       const next = { ...prev, [field]: value };
-      // Reset city when state changes
       if (field === 'fromStateId') next.fromCityId = '';
       if (field === 'toStateId') next.toCityId = '';
       return next;
     });
   }, []);
 
-  // Derive names for display
+  // Derive names
   const fromCityName = fromCities.find((c) => c._id === form.fromCityId)?.name || '';
   const toCityName = toCities.find((c) => c._id === form.toCityId)?.name || '';
   const fromStateName = states.find((s) => s._id === form.fromStateId)?.name || '';
   const toStateName = states.find((s) => s._id === form.toStateId)?.name || '';
   const routeName = fromCityName && toCityName ? `${fromCityName} to ${toCityName}` : '';
+  const originAddress = fromCityName && fromStateName ? `${fromCityName}, ${fromStateName}` : '';
+  const destAddress = toCityName && toStateName ? `${toCityName}, ${toStateName}` : '';
+
+  // Fetch route info from Google via saga
+  useEffect(() => {
+    if (originAddress && destAddress) {
+      dispatch(fetchRouteInfo({ origin: originAddress, destination: destAddress }));
+    } else {
+      dispatch(clearRouteInfo());
+    }
+  }, [dispatch, originAddress, destAddress]);
+
+  // Auto-fill distance and toll from Google
+  useEffect(() => {
+    if (!googleRouteInfo) return;
+    if (!form.distanceKm && googleRouteInfo.distanceKm) {
+      setForm((prev) => ({ ...prev, distanceKm: String(googleRouteInfo.distanceKm) }));
+    }
+    if (!form.tollEstimate && googleRouteInfo.tollEstimateINR) {
+      setForm((prev) => ({ ...prev, tollEstimate: String(googleRouteInfo.tollEstimateINR) }));
+    }
+  }, [googleRouteInfo]);
 
   // Auto-calculated values
   const distanceKm = useMemo(() => Number(form.distanceKm) || 0, [form.distanceKm]);
@@ -210,19 +205,8 @@ export function RouteForm() {
       }
     },
     [
-      form,
-      routeName,
-      fromCityName,
-      toCityName,
-      fromStateName,
-      toStateName,
-      distanceKm,
-      pricePerKm,
-      baseFare,
-      tollEstimate,
-      isEdit,
-      id,
-      navigate,
+      form, routeName, fromCityName, toCityName, fromStateName, toStateName,
+      distanceKm, pricePerKm, baseFare, tollEstimate, isEdit, id, navigate,
     ],
   );
 
@@ -308,6 +292,90 @@ export function RouteForm() {
               />
             </div>
           </div>
+
+          {/* Map Preview + Route Info */}
+          {originAddress && destAddress && (
+            <div>
+              <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-3">
+                Route Preview
+              </p>
+              <div className="rounded-xl overflow-hidden border border-neutral-200">
+                <div className="h-72">
+                  <DirectionsMap
+                    mapKey={`${originAddress}-${destAddress}`}
+                    origin={originAddress}
+                    destination={destAddress}
+                    className="h-full"
+                    showTraffic
+                    showAlternatives
+                    onRouteSelect={(route) =>
+                      setMapRouteInfo({
+                        distance: route.distance,
+                        duration: route.duration,
+                        summary: route.summary,
+                      })
+                    }
+                  />
+                </div>
+                <div className="bg-neutral-50 p-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+                    {mapRouteInfo && (
+                      <>
+                        <div>
+                          <p className="text-[10px] text-neutral-400 uppercase">Distance</p>
+                          <p className="text-sm font-bold text-neutral-900">{mapRouteInfo.distance}</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] text-neutral-400 uppercase">Duration</p>
+                          <p className="text-sm font-bold text-neutral-900">{mapRouteInfo.duration}</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] text-neutral-400 uppercase">Via</p>
+                          <p className="text-sm font-bold text-neutral-900">{mapRouteInfo.summary || '-'}</p>
+                        </div>
+                      </>
+                    )}
+                    <div>
+                      <p className="text-[10px] text-neutral-400 uppercase">Tolls (est.)</p>
+                      <p className="text-sm font-bold text-neutral-900">
+                        {googleRouteInfo?.tollEstimateINR
+                          ? `₹${googleRouteInfo.tollEstimateINR}`
+                          : mapRouteInfo
+                            ? 'Free'
+                            : '...'}
+                      </p>
+                    </div>
+                  </div>
+                  {googleRouteInfo && googleRouteInfo.routes.length > 1 && (
+                    <div className="mt-2 pt-2 border-t border-neutral-200">
+                      <p className="text-[10px] text-neutral-400 uppercase tracking-wider mb-1">
+                        All routes from Google
+                      </p>
+                      {googleRouteInfo.routes.map((r, i) => (
+                        <div key={i} className="flex items-center justify-between text-xs py-0.5">
+                          <span className="text-neutral-600">
+                            {r.distanceKm} km · {r.durationMinutes} min
+                          </span>
+                          <span
+                            className={
+                              r.tollEstimateINR > 0 ? 'text-amber-600 font-medium' : 'text-green-600'
+                            }
+                          >
+                            {r.tollEstimateINR > 0 ? `₹${r.tollEstimateINR}` : 'Free'}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+              {googleRouteInfo && (
+                <p className="text-xs text-neutral-400 mt-2">
+                  Distance and toll auto-filled from Google. You can adjust below.
+                </p>
+              )}
+            </div>
+          )}
 
           {/* Pricing */}
           <div>
