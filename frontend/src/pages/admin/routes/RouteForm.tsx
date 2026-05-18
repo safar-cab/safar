@@ -61,7 +61,7 @@ export function RouteForm() {
   useEffect(() => {
     (async () => {
       try {
-        const res = (await api.get('/admin/locations/states')) as StateOption[];
+        const res = (await api.get('/api/locations/states')) as StateOption[];
         setStates(res);
       } catch {
         toast.error('Failed to load states');
@@ -78,7 +78,7 @@ export function RouteForm() {
     (async () => {
       try {
         const res = (await api.get(
-          `/admin/locations/states/${form.fromStateId}/cities`,
+          `/api/locations/states/${form.fromStateId}/cities`,
         )) as CityOption[];
         setFromCities(res);
       } catch {
@@ -96,7 +96,7 @@ export function RouteForm() {
     (async () => {
       try {
         const res = (await api.get(
-          `/admin/locations/states/${form.toStateId}/cities`,
+          `/api/locations/states/${form.toStateId}/cities`,
         )) as CityOption[];
         setToCities(res);
       } catch {
