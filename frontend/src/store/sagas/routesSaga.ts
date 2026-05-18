@@ -1,4 +1,4 @@
-import { call, put, takeLatest } from 'redux-saga/effects';
+import { call, put, takeLatest, takeEvery } from 'redux-saga/effects';
 import api from '@/lib/api';
 import {
   fetchRoutes,
@@ -72,6 +72,6 @@ export function* routesSaga() {
   yield takeLatest(fetchRoutes.type, handleFetchRoutes);
   yield takeLatest(fetchRouteDetail.type, handleFetchRouteDetail);
   yield takeLatest(fetchStates.type, handleFetchStates);
-  yield takeLatest(fetchCities.type, handleFetchCities);
+  yield takeEvery(fetchCities.type, handleFetchCities);
   yield takeLatest(fetchRouteInfo.type, handleFetchRouteInfo);
 }
