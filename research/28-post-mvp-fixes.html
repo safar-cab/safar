@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post-MVP Fixes & Enhancements — Safar Cab</title>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --card-hover: #1c2333;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --green: #3fb950;
+            --red: #f85149;
+            --yellow: #d29922;
+            --purple: #bc8cff;
+            --orange: #f0883e;
+            --cyan: #39d2c0;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        .back-link {
+            display: inline-block;
+            padding: 1rem 1.5rem;
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .back-link:hover { text-decoration: underline; }
+        .header {
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #1c2333 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 2.5rem 2rem 2rem;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.2rem; color: var(--accent); margin-bottom: 0.5rem; }
+        .header p { color: var(--text-muted); font-size: 1rem; max-width: 650px; margin: 0 auto; }
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+        .fix-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+        .fix-header {
+            padding: 1.2rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .fix-num {
+            font-size: 1.4rem;
+            font-weight: 800;
+            min-width: 2rem;
+            text-align: center;
+        }
+        .fix-num.n1 { color: var(--green); }
+        .fix-num.n2 { color: var(--cyan); }
+        .fix-num.n3 { color: var(--orange); }
+        .fix-num.n4 { color: var(--accent); }
+        .fix-num.n5 { color: var(--purple); }
+        .fix-title { font-size: 1.1rem; font-weight: 600; }
+        .fix-tag {
+            font-size: 0.7rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            margin-left: auto;
+        }
+        .fix-tag-fix { background: rgba(63,185,80,0.15); color: var(--green); }
+        .fix-tag-seed { background: rgba(57,210,192,0.15); color: var(--cyan); }
+        .fix-tag-enhance { background: rgba(88,166,255,0.15); color: var(--accent); }
+        .fix-tag-new { background: rgba(188,140,255,0.15); color: var(--purple); }
+
+        .fix-body { padding: 1.2rem 1.5rem; }
+        .fix-body p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 0.8rem; }
+        .fix-body ul { list-style: none; padding: 0; }
+        .fix-body li {
+            display: flex; align-items: flex-start; gap: 0.6rem;
+            padding: 0.3rem 0; font-size: 0.88rem; color: var(--text-muted);
+        }
+        .fix-body li::before {
+            content: ''; display: inline-block; width: 6px; height: 6px;
+            min-width: 6px; border-radius: 50%; margin-top: 7px;
+            background: var(--accent);
+        }
+
+        .files-section {
+            margin-top: 2rem;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+        .files-section h3 { font-size: 1rem; color: var(--purple); margin-bottom: 1rem; }
+        .file-list { font-family: monospace; font-size: 0.8rem; color: var(--text-muted); }
+        .file-list div { padding: 0.25rem 0; }
+        .file-new { color: var(--green); }
+        .file-mod { color: var(--yellow); }
+
+        .footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            font-size: 0.85rem; border-top: 1px solid var(--border); margin-top: 2rem;
+        }
+        .footer a { color: var(--accent); text-decoration: none; }
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.6rem; }
+            .container { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<a href="index.html" class="back-link">&larr; Back to Research Hub</a>
+
+<div class="header">
+    <h1>Post-MVP Fixes & Enhancements</h1>
+    <p>UI fixes, seed data, map integration, and States & Cities management — applied after completing all 5 MVP phases.</p>
+</div>
+
+<div class="container">
+
+    <!-- Fix 1 -->
+    <div class="fix-card">
+        <div class="fix-header">
+            <div class="fix-num n1">1</div>
+            <div class="fix-title">Document Queue Filter UI</div>
+            <span class="fix-tag fix-tag-fix">FIX</span>
+        </div>
+        <div class="fix-body">
+            <p>Replaced plain &lt;select&gt; with app's custom &lt;Select&gt; component for consistent dropdown styling across admin panel.</p>
+        </div>
+    </div>
+
+    <!-- Fix 2 -->
+    <div class="fix-card">
+        <div class="fix-header">
+            <div class="fix-num n2">2</div>
+            <div class="fix-title">Seed Data — Documents (30 records)</div>
+            <span class="fix-tag fix-tag-seed">SEED</span>
+        </div>
+        <div class="fix-body">
+            <ul>
+                <li>18 driver documents (6 drivers &times; 3 doc types each)</li>
+                <li>12 car documents (4 cars &times; 3 doc types each)</li>
+                <li>Mixed statuses: pending, verified, rejected, expired</li>
+                <li>Realistic document numbers and expiry dates</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Fix 3 -->
+    <div class="fix-card">
+        <div class="fix-header">
+            <div class="fix-num n3">3</div>
+            <div class="fix-title">Seed Data — Notifications (40 records)</div>
+            <span class="fix-tag fix-tag-seed">SEED</span>
+        </div>
+        <div class="fix-body">
+            <ul>
+                <li>15 customer notifications — booking confirmations, ride updates, cancellations</li>
+                <li>15 driver notifications — ride assignments, document status, ratings</li>
+                <li>10 admin notifications — new bookings, payments, document alerts, revenue</li>
+                <li>Mix of read/unread states for realistic bell icon display</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Fix 4 -->
+    <div class="fix-card">
+        <div class="fix-header">
+            <div class="fix-num n4">4</div>
+            <div class="fix-title">Admin Live Rides — Map & Details</div>
+            <span class="fix-tag fix-tag-enhance">ENHANCE</span>
+        </div>
+        <div class="fix-body">
+            <ul>
+                <li>Click ride card &rarr; side panel with map + full details</li>
+                <li>Google Maps Static API integration (with VITE_GOOGLE_MAPS_KEY)</li>
+                <li>Fallback: coordinate display + "Open in Google Maps" link</li>
+                <li>Split layout: ride list (left) + map panel (right)</li>
+                <li>Driver + customer contact info with phone call links</li>
+                <li>Real-time position updates via WebSocket</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Fix 5 -->
+    <div class="fix-card">
+        <div class="fix-header">
+            <div class="fix-num n5">5</div>
+            <div class="fix-title">States & Cities Management</div>
+            <span class="fix-tag fix-tag-new">NEW FEATURE</span>
+        </div>
+        <div class="fix-body">
+            <p><strong>Backend:</strong></p>
+            <ul>
+                <li>geo.schema.ts — State (name, code, isActive) + City (name, state ref, isActive)</li>
+                <li>LocationsModule — service, controllers (public + admin)</li>
+                <li>Enable/disable state cascades to all its cities</li>
+                <li>Delete state blocked if cities exist</li>
+                <li>Route enable/disable endpoint</li>
+                <li>Public API for customer booking form city selection</li>
+            </ul>
+            <p style="margin-top: 1rem;"><strong>Frontend:</strong></p>
+            <ul>
+                <li>StatesAndCities.tsx — full admin management page</li>
+                <li>Expandable state cards with nested city list</li>
+                <li>Add/delete states with state code</li>
+                <li>Add/delete cities per state</li>
+                <li>Toggle enable/disable for states and cities</li>
+                <li>Stats cards (total/active counts)</li>
+                <li>Admin sidebar: "States & Cities" nav item</li>
+            </ul>
+            <p style="margin-top: 1rem;"><strong>Seed Data:</strong></p>
+            <ul>
+                <li>5 states: MP, RJ, GJ, MH, UP (UP disabled)</li>
+                <li>27 cities across all states</li>
+                <li>UP cities auto-disabled with state</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Files -->
+    <div class="files-section">
+        <h3>Files Changed</h3>
+        <div class="file-list">
+            <div class="file-new">+ backend/src/schemas/geo.schema.ts</div>
+            <div class="file-new">+ backend/src/locations/locations.module.ts</div>
+            <div class="file-new">+ backend/src/locations/locations.service.ts</div>
+            <div class="file-new">+ backend/src/locations/locations.controller.ts</div>
+            <div class="file-new">+ frontend/src/pages/admin/locations/StatesAndCities.tsx</div>
+            <div class="file-new">+ research/28-post-mvp-fixes.md</div>
+            <div class="file-mod">~ backend/src/app.module.ts</div>
+            <div class="file-mod">~ backend/src/seed.ts</div>
+            <div class="file-mod">~ frontend/src/pages/admin/documents/DocumentQueue.tsx</div>
+            <div class="file-mod">~ frontend/src/pages/admin/tracking/LiveRides.tsx</div>
+            <div class="file-mod">~ frontend/src/layouts/AdminLayout.tsx</div>
+            <div class="file-mod">~ frontend/src/router.tsx</div>
+        </div>
+    </div>
+
+</div>
+
+<div class="footer">
+    <p><a href="index.html">&larr; Research Hub</a> | <a href="27-remaining-phases.html">MVP Phases</a></p>
+</div>
+
+</body>
+</html>
