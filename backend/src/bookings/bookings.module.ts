@@ -9,6 +9,10 @@ import {
 import { Booking, BookingSchema } from '../schemas/booking.schema';
 import { User, UserSchema } from '../schemas/user.schema';
 import { Driver, DriverSchema } from '../schemas/driver.schema';
+import {
+  CompanySettings,
+  CompanySettingsSchema,
+} from '../schemas/company-settings.schema';
 
 @Module({
   imports: [
@@ -16,6 +20,7 @@ import { Driver, DriverSchema } from '../schemas/driver.schema';
       { name: Booking.name, schema: BookingSchema },
       { name: User.name, schema: UserSchema },
       { name: Driver.name, schema: DriverSchema },
+      { name: CompanySettings.name, schema: CompanySettingsSchema },
     ]),
   ],
   controllers: [
