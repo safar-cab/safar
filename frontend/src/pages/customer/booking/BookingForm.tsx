@@ -49,7 +49,7 @@ const INITIAL_FORM: FormData = {
   date: '',
   time: '',
   selectedCarId: '',
-  estimatedDistance: 50,
+  estimatedDistance: 0,
   tollEstimate: 0,
 };
 
@@ -419,7 +419,7 @@ function DropStep({
   // Update form when preview result arrives
   useEffect(() => {
     if (!pricingPreview) return;
-    if (pricingPreview.distanceKm) {
+    if (pricingPreview.distanceKm && !form.estimatedDistance) {
       updateField('estimatedDistance', pricingPreview.distanceKm);
     }
     if (pricingPreview.tollEstimate !== undefined) {

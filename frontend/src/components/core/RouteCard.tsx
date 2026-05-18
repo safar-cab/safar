@@ -10,10 +10,12 @@ interface RouteCardProps {
 }
 
 export const RouteCard = memo(function RouteCard({ route, onClick, index = 0 }: RouteCardProps) {
-  // Match backend pricing: taxable = baseFare + distanceCharge (tolls exempt from GST)
-  const distanceCharge = route.distanceKm * route.pricePerKm;
+  // Exact match of backend calculatePricing() formula
+  const distanceCharge = Math.round(route.distanceKm * route.pricePerKm * 10) / 10;
   const taxableAmount = route.baseFare + distanceCharge;
-  const gst = Math.round(taxableAmount * 0.05);
+  const cgst = Math.round(taxableAmount * 0.025);
+  const sgst = Math.round(taxableAmount * 0.025);
+  const gst = cgst + sgst;
   const total = taxableAmount + route.tollEstimate + gst;
 
   return (
