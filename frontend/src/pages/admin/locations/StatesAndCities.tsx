@@ -63,9 +63,7 @@ export function StatesAndCities() {
 
   const fetchCities = async (stateId: string) => {
     try {
-      const res = (await api.get(
-        `/admin/locations/states/${stateId}/cities`,
-      )) as CityItem[];
+      const res = (await api.get(`/admin/locations/states/${stateId}/cities`)) as CityItem[];
       setCities((prev) => ({ ...prev, [stateId]: res }));
     } catch {
       toast.error('Failed to load cities');
@@ -301,7 +299,9 @@ export function StatesAndCities() {
                             <span
                               className={cn(
                                 'text-sm flex-1',
-                                city.isActive ? 'text-neutral-700' : 'text-neutral-400 line-through',
+                                city.isActive
+                                  ? 'text-neutral-700'
+                                  : 'text-neutral-400 line-through',
                               )}
                             >
                               {city.name}
@@ -395,15 +395,7 @@ export function StatesAndCities() {
   );
 }
 
-function StatCard({
-  label,
-  value,
-  active,
-}: {
-  label: string;
-  value: number;
-  active: number;
-}) {
+function StatCard({ label, value, active }: { label: string; value: number; active: number }) {
   return (
     <div className="bg-white rounded-xl p-4 border border-neutral-100">
       <p className="text-xs text-neutral-500 mb-1">{label}</p>

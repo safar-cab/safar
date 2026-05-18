@@ -207,7 +207,10 @@ export function DocumentQueue() {
                   <p className="text-xs text-neutral-600 mt-0.5 font-medium">
                     {doc.entityType === 'driver' ? '👤' : '🚗'} {doc.entityInfo.name}
                     {doc.entityInfo.phone && (
-                      <span className="text-neutral-400 font-normal"> · {doc.entityInfo.phone}</span>
+                      <span className="text-neutral-400 font-normal">
+                        {' '}
+                        · {doc.entityInfo.phone}
+                      </span>
                     )}
                   </p>
                 ) : (
