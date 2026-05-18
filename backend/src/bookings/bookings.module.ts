@@ -13,6 +13,10 @@ import {
   CompanySettings,
   CompanySettingsSchema,
 } from '../schemas/company-settings.schema';
+import {
+  RoutePricing,
+  RoutePricingSchema,
+} from '../schemas/route-pricing.schema';
 
 @Module({
   imports: [
@@ -21,6 +25,7 @@ import {
       { name: User.name, schema: UserSchema },
       { name: Driver.name, schema: DriverSchema },
       { name: CompanySettings.name, schema: CompanySettingsSchema },
+      { name: RoutePricing.name, schema: RoutePricingSchema },
     ]),
   ],
   controllers: [

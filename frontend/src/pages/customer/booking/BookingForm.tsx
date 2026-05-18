@@ -3,12 +3,15 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { MapPin, Calendar, Clock, Plus, X, GripVertical, Navigation, LocateFixed } from 'lucide-react';
 import toast from 'react-hot-toast';
-import api from '@/lib/api';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setBookingStep } from '@/store/slices/uiSlice';
 import { fetchAvailableCars } from '@/store/slices/carsSlice';
 import type { Car } from '@/types';
-import { createBooking, fetchPricingConfig } from '@/store/slices/bookingsSlice';
+import {
+  createBooking,
+  fetchPricingConfig,
+  fetchPricingPreview,
+} from '@/store/slices/bookingsSlice';
 import { StepIndicator } from '@/components/core/StepIndicator';
 import { CarCard } from '@/components/core/CarCard';
 import { PriceBreakdown } from '@/components/core/PriceBreakdown';
@@ -213,7 +216,7 @@ export function BookingForm() {
               onSelect={(id) => updateField('selectedCarId', id)}
             />
           )}
-          {bookingStep === 6 && <ReviewStep form={form} selectedCar={selectedCar || null} pricingConfig={pricing} />}
+          {bookingStep === 6 && <ReviewStep form={form} selectedCar={selectedCar || null} />}
         </motion.div>
       </div>
 
@@ -392,37 +395,37 @@ function DropStep({
   form: FormData;
   updateField: <K extends keyof FormData>(key: K, val: FormData[K]) => void;
 }) {
-  // Auto-fill distance (including waypoints/stops)
+  // Auto-fill distance + toll via pricing preview (single source of truth)
+  const dispatch = useAppDispatch();
+  const pricingPreview = useAppSelector((s) => s.bookings.pricingPreview);
   const stopsKey = form.stops.map((s) => s.address).join('|');
+
   useEffect(() => {
     if (!form.pickupAddress || !form.dropAddress || form.pickupAddress.length < 3 || form.dropAddress.length < 3) return;
 
     const timer = setTimeout(() => {
-      const validStops = form.stops
-        .filter((s) => s.address.trim().length >= 3)
-        .map((s) => s.address.trim());
-      const waypointsParam = validStops.length > 0
-        ? `&waypoints=${validStops.map(encodeURIComponent).join('|')}`
-        : '';
-
-      api
-        .get(
-          `/api/tracking/route-info?origin=${encodeURIComponent(form.pickupAddress)}&destination=${encodeURIComponent(form.dropAddress)}${waypointsParam}`,
-        )
-        .then((res: unknown) => {
-          const data = res as { distanceKm?: number; tollEstimateINR?: number };
-          if (data?.distanceKm) {
-            updateField('estimatedDistance', data.distanceKm);
-          }
-          if (data?.tollEstimateINR !== undefined) {
-            updateField('tollEstimate', data.tollEstimateINR);
-          }
-        })
-        .catch(() => {});
+      dispatch(
+        fetchPricingPreview({
+          pickupAddress: form.pickupAddress,
+          dropAddress: form.dropAddress,
+          stopCount: form.stops.filter((s) => s.address.trim().length >= 3).length,
+        }),
+      );
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [form.pickupAddress, form.dropAddress, stopsKey, updateField]);
+  }, [form.pickupAddress, form.dropAddress, stopsKey, dispatch]);
+
+  // Update form when preview result arrives
+  useEffect(() => {
+    if (!pricingPreview) return;
+    if (pricingPreview.distanceKm) {
+      updateField('estimatedDistance', pricingPreview.distanceKm);
+    }
+    if (pricingPreview.tollEstimate !== undefined) {
+      updateField('tollEstimate', pricingPreview.tollEstimate);
+    }
+  }, [pricingPreview, updateField]);
 
   return (
     <div className="flex flex-col gap-3" style={{ minHeight: '400px' }}>
@@ -700,23 +703,32 @@ function CarStep({
 function ReviewStep({
   form,
   selectedCar,
-  pricingConfig,
 }: {
   form: FormData;
   selectedCar: { make: string; model: string; category: string } | null;
-  pricingConfig: { pricePerKm: number; baseFare: number; stopWaitingChargePerInterval: number; stopWaitingIntervalMinutes: number };
 }) {
+  const dispatch = useAppDispatch();
   const validStops = form.stops.filter((s) => s.address.trim());
-  const pricePerKm = pricingConfig.pricePerKm;
-  const baseFare = pricingConfig.baseFare;
-  const distanceCharge = form.estimatedDistance * pricePerKm;
-  const tollEstimate = form.tollEstimate || 0;
-  const stopCharge = validStops.length * pricingConfig.stopWaitingChargePerInterval;
-  const taxableAmount = baseFare + distanceCharge + stopCharge; // Tolls exempt from GST
-  const cgst = Math.round(taxableAmount * 0.025);
-  const sgst = Math.round(taxableAmount * 0.025);
-  const gstAmount = cgst + sgst;
-  const totalAmount = taxableAmount + tollEstimate + gstAmount;
+  const serverPricing = useAppSelector((s) => s.bookings.pricingPreview);
+
+  // Fetch pricing preview from backend via saga (single source of truth)
+  useEffect(() => {
+    dispatch(
+      fetchPricingPreview({
+        pickupAddress: form.pickupAddress,
+        dropAddress: form.dropAddress,
+        estimatedDistanceKm: form.estimatedDistance,
+        tollEstimate: form.tollEstimate,
+        stopCount: validStops.length,
+      }),
+    );
+  }, [dispatch]);
+
+  const p = serverPricing || {
+    pricePerKm: 0, baseFare: 0, distanceKm: form.estimatedDistance, distanceCharge: 0,
+    tollEstimate: form.tollEstimate || 0, stopChargePerStop: 0, stopCount: validStops.length,
+    totalStopCharge: 0, cgst: 0, sgst: 0, gstAmount: 0, totalAmount: 0,
+  };
 
   return (
     <div className="space-y-4">
@@ -800,20 +812,33 @@ function ReviewStep({
         </div>
       </div>
 
-      {/* Price */}
-      <PriceBreakdown
-        baseFare={baseFare}
-        distanceKm={form.estimatedDistance}
-        pricePerKm={pricePerKm}
-        tollEstimate={tollEstimate}
-        stopCount={validStops.length}
-        stopChargePerStop={pricingConfig.stopWaitingChargePerInterval}
-        totalStopCharge={stopCharge}
-        cgst={cgst}
-        sgst={sgst}
-        gstAmount={gstAmount}
-        totalAmount={totalAmount}
-      />
+      {/* Price — from backend (single source of truth) */}
+      {!serverPricing ? (
+        <div className="bg-neutral-50 rounded-lg p-4 text-center text-sm text-neutral-400">
+          Calculating price...
+        </div>
+      ) : (
+        <>
+          {p.routeMatched && p.routeName && (
+            <p className="text-xs text-primary-600 font-medium">
+              Route: {p.routeName}
+            </p>
+          )}
+          <PriceBreakdown
+            baseFare={p.baseFare}
+            distanceKm={p.distanceKm}
+            pricePerKm={p.pricePerKm}
+            tollEstimate={p.tollEstimate}
+            stopCount={p.stopCount}
+            stopChargePerStop={p.stopChargePerStop}
+            totalStopCharge={p.totalStopCharge}
+            cgst={p.cgst}
+            sgst={p.sgst}
+            gstAmount={p.gstAmount}
+            totalAmount={p.totalAmount}
+          />
+        </>
+      )}
     </div>
   );
 }
