@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { ImageGallery } from '@/components/ui/ImageGallery';
+import { DocumentsPanel } from '@/components/core/DocumentsPanel';
 import type { Driver, User } from '@/types';
 
 export function DriverDetail() {
@@ -194,6 +195,13 @@ export function DriverDetail() {
             </div>
           ) : null;
         })()}
+
+        {/* Verification Documents */}
+        <DocumentsPanel
+          entityType="driver"
+          entityId={id!}
+          isAdmin
+        />
       </div>
     </div>
   );

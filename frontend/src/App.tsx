@@ -1,15 +1,28 @@
+import { useContext } from 'react';
 import { Provider } from 'react-redux';
 import { RouterProvider } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { store } from '@/store/store';
-import { AuthProvider } from '@/contexts/AuthContext';
+import { AuthProvider, AuthContext } from '@/contexts/AuthContext';
+import { OfflineBanner } from '@/components/ui/OfflineBanner';
+import { InstallBanner } from '@/components/ui/InstallBanner';
+import { useNotifications } from '@/hooks/useNotifications';
 import { router } from '@/router';
+
+function NotificationInit() {
+  const { user } = useContext(AuthContext);
+  useNotifications(!!user);
+  return null;
+}
 
 function App() {
   return (
     <Provider store={store}>
       <AuthProvider>
+        <NotificationInit />
+        <OfflineBanner />
         <RouterProvider router={router} />
+        <InstallBanner />
         <Toaster
           position="top-center"
           toastOptions={{

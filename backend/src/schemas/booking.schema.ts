@@ -112,6 +112,9 @@ export class Booking {
       baseFare: Number,
       distanceCharge: Number,
       tollEstimate: Number,
+      stopChargePerStop: Number,
+      stopCount: Number,
+      totalStopCharge: Number,
       cgst: Number,
       sgst: Number,
       gstAmount: Number,
@@ -123,6 +126,9 @@ export class Booking {
     baseFare: number;
     distanceCharge: number;
     tollEstimate: number;
+    stopChargePerStop: number;
+    stopCount: number;
+    totalStopCharge: number;
     cgst: number;
     sgst: number;
     gstAmount: number;

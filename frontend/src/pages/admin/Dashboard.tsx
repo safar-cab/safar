@@ -8,7 +8,10 @@ import {
   Activity,
   CheckCircle,
   IndianRupee,
+  FileWarning,
+  Clock,
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import {
   LineChart,
   Line,
@@ -35,18 +38,27 @@ export function Dashboard() {
     [],
   );
   const [bookingStats, setBookingStats] = useState<{ _id: string; count: number }[]>([]);
+  const [docStats, setDocStats] = useState<{ pending: number; expiring: number }>({ pending: 0, expiring: 0 });
+  const [expiringDocs, setExpiringDocs] = useState<{ _id: string; docType: string; entityType: string; expiryDate: string }[]>([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     Promise.all([
       api.get('/admin/dashboard/stats'),
       api.get('/admin/dashboard/revenue-chart?days=30'),
       api.get('/admin/dashboard/booking-stats?days=30'),
+      api.get('/admin/documents/stats').catch(() => ({ pending: 0 })),
+      api.get('/admin/documents/expiring?days=30').catch(() => []),
     ])
-      .then(([s, r, b]) => {
+      .then(([s, r, b, ds, ed]) => {
         setStats(s as unknown as DashboardStats);
         setRevenueData(r as unknown as typeof revenueData);
         setBookingStats(b as unknown as typeof bookingStats);
+        const docStatsData = ds as any;
+        const expiringData = ed as any;
+        setDocStats({ pending: docStatsData.pending || 0, expiring: Array.isArray(expiringData) ? expiringData.length : 0 });
+        setExpiringDocs(Array.isArray(expiringData) ? expiringData.slice(0, 5) : []);
       })
       .finally(() => setLoading(false));
   }, []);
@@ -223,6 +235,54 @@ export function Dashboard() {
           )}
         </div>
       </div>
+
+      {/* Documents Widget */}
+      {(docStats.pending > 0 || docStats.expiring > 0) && (
+        <div className="mt-6 grid lg:grid-cols-2 gap-6">
+          {/* Pending docs */}
+          {docStats.pending > 0 && (
+            <div
+              className="bg-white rounded-xl p-5 shadow-sm border border-amber-100 cursor-pointer hover:border-amber-200 transition-colors"
+              onClick={() => navigate('/admin/documents')}
+            >
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2 rounded-lg bg-amber-50">
+                  <Clock className="w-5 h-5 text-amber-500" />
+                </div>
+                <div>
+                  <h3 className="text-base font-semibold text-neutral-900">Pending Documents</h3>
+                  <p className="text-xs text-neutral-400">{docStats.pending} documents need review</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Expiring docs */}
+          {expiringDocs.length > 0 && (
+            <div className="bg-white rounded-xl p-5 shadow-sm border border-orange-100">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2 rounded-lg bg-orange-50">
+                  <FileWarning className="w-5 h-5 text-orange-500" />
+                </div>
+                <div>
+                  <h3 className="text-base font-semibold text-neutral-900">Expiring Soon</h3>
+                  <p className="text-xs text-neutral-400">{docStats.expiring} documents expiring in 30 days</p>
+                </div>
+              </div>
+              <div className="space-y-2 mt-3">
+                {expiringDocs.map((doc) => (
+                  <div key={doc._id} className="flex items-center justify-between text-sm">
+                    <span className="text-neutral-600 capitalize">{doc.docType.replace(/_/g, ' ')}</span>
+                    <span className="text-orange-600 font-medium">
+                      {new Date(doc.expiryDate).toLocaleDateString('en-IN')}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

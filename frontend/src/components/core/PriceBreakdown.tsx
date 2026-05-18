@@ -5,6 +5,9 @@ interface PriceBreakdownProps {
   distanceKm: number;
   pricePerKm: number;
   tollEstimate: number;
+  stopCount?: number;
+  stopChargePerStop?: number;
+  totalStopCharge?: number;
   cgst?: number;
   sgst?: number;
   gstAmount: number;
@@ -16,6 +19,9 @@ export function PriceBreakdown({
   distanceKm,
   pricePerKm,
   tollEstimate,
+  stopCount,
+  stopChargePerStop,
+  totalStopCharge,
   cgst,
   sgst,
   gstAmount,
@@ -38,6 +44,14 @@ export function PriceBreakdown({
         <div className="flex justify-between text-sm">
           <span className="text-neutral-600">Tolls (GST exempt)</span>
           <span className="text-neutral-800">{formatCurrency(tollEstimate)}</span>
+        </div>
+      )}
+      {(totalStopCharge || 0) > 0 && (
+        <div className="flex justify-between text-sm">
+          <span className="text-neutral-600">
+            Stops ({stopCount} x {formatCurrency(stopChargePerStop || 100)})
+          </span>
+          <span className="text-neutral-800">{formatCurrency(totalStopCharge || 0)}</span>
         </div>
       )}
       <div className="border-t border-neutral-200 pt-2 mt-2">

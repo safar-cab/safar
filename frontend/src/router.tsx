@@ -24,6 +24,10 @@ import { RoutesList } from '@/pages/admin/routes/RoutesList';
 import { RouteForm } from '@/pages/admin/routes/RouteForm';
 import { Settings } from '@/pages/admin/settings/Settings';
 import { PaymentDetail } from '@/pages/admin/payments/PaymentDetail';
+import { DocumentQueue } from '@/pages/admin/documents/DocumentQueue';
+import { LiveRides } from '@/pages/admin/tracking/LiveRides';
+import { LiveTracking } from '@/pages/customer/tracking/LiveTracking';
+import { ActiveRide } from '@/pages/driver/rides/ActiveRide';
 
 // Driver pages
 import { DriverDashboard } from '@/pages/driver/Dashboard';
@@ -88,6 +92,8 @@ export const router = createBrowserRouter([
       { path: 'routes', element: <RoutesList /> },
       { path: 'routes/new', element: <RouteForm /> },
       { path: 'routes/:id/edit', element: <RouteForm /> },
+      { path: 'documents', element: <DocumentQueue /> },
+      { path: 'live-rides', element: <LiveRides /> },
       { path: 'settings', element: <Settings /> },
     ],
   },
@@ -104,6 +110,7 @@ export const router = createBrowserRouter([
       { index: true, element: <DriverDashboard /> },
       { path: 'rides', element: <RideList /> },
       { path: 'rides/:id', element: <RideDetail /> },
+      { path: 'rides/:id/active', element: <ActiveRide /> },
       { path: 'ratings', element: <MyRatings /> },
       { path: 'profile', element: <DriverProfile /> },
     ],
@@ -122,7 +129,7 @@ export const router = createBrowserRouter([
       { path: 'bookings', element: <MyBookings /> },
       { path: 'bookings/:id', element: <CustomerBookingDetail /> },
       { path: 'track', element: <Placeholder title="Track" /> },
-      { path: 'track/:bookingId', element: <Placeholder title="Live Tracking" /> },
+      { path: 'track/:bookingId', element: <LiveTracking /> },
       { path: 'book', element: <BookingForm /> },
       { path: 'cars', element: <Placeholder title="Cars" /> },
       { path: 'payment/:bookingId', element: <Placeholder title="Payment" /> },

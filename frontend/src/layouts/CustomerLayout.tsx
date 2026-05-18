@@ -1,6 +1,7 @@
 import { Outlet, NavLink } from 'react-router-dom';
 import { Home, CalendarCheck, MapPin, User } from 'lucide-react';
 import { cn } from '@/lib/cn';
+import { NotificationBell } from '@/components/core/NotificationBell';
 
 const tabs = [
   { to: '/customer', icon: Home, label: 'Home', end: true },
@@ -12,6 +13,17 @@ const tabs = [
 export function CustomerLayout() {
   return (
     <div className="min-h-screen bg-neutral-50 pb-16 sm:pb-18">
+      {/* Top bar */}
+      <header className="sticky top-0 z-30 bg-white border-b border-neutral-100">
+        <div className="max-w-lg mx-auto flex items-center justify-between h-14 px-4">
+          <div className="flex items-center gap-2">
+            <img src="/logo.svg" alt="Safar" className="w-7 h-7 rounded-lg" />
+            <span className="font-semibold text-neutral-800 text-lg">Safar</span>
+          </div>
+          <NotificationBell />
+        </div>
+      </header>
+
       <main className="max-w-lg mx-auto">
         <Outlet />
       </main>
