@@ -219,22 +219,24 @@ export function BookingForm() {
 
 const MAPS_KEY = import.meta.env.VITE_GOOGLE_MAPS_KEY || '';
 
-function MapEmbed({ src, className }: { src: string; className?: string }) {
+function MapEmbed({ src }: { src: string }) {
   return (
-    <iframe
-      src={src}
-      className={`w-full h-full border-0 ${className || ''}`}
-      allowFullScreen
-      loading="lazy"
-      referrerPolicy="no-referrer-when-downgrade"
-    />
+    <div className="relative w-full h-full">
+      <iframe
+        src={src}
+        className="absolute inset-0 w-full h-full border-0"
+        allowFullScreen
+        loading="lazy"
+        referrerPolicy="no-referrer-when-downgrade"
+      />
+    </div>
   );
 }
 
 function LocationMapPreview({ address }: { address: string }) {
   const hasAddress = MAPS_KEY && address && address.length >= 3;
   return (
-    <div className="flex-1 min-h-48 rounded-xl overflow-hidden border border-neutral-100 bg-neutral-50">
+    <div className="flex-1 min-h-0 rounded-xl overflow-hidden border border-neutral-100 bg-neutral-50 relative">
       {hasAddress ? (
         <MapEmbed
           src={`https://www.google.com/maps/embed/v1/place?key=${MAPS_KEY}&q=${encodeURIComponent(address)}&zoom=14`}
@@ -255,7 +257,7 @@ function RouteMapPreview({ pickup, drop }: { pickup: string; drop: string }) {
   const hasRoute = MAPS_KEY && pickup && drop && pickup.length >= 3 && drop.length >= 3;
   if (!hasRoute) return null;
   return (
-    <div className="flex-1 min-h-48 rounded-xl overflow-hidden border border-neutral-100">
+    <div className="flex-1 min-h-0 rounded-xl overflow-hidden border border-neutral-100 relative">
       <MapEmbed
         src={`https://www.google.com/maps/embed/v1/directions?key=${MAPS_KEY}&origin=${encodeURIComponent(pickup)}&destination=${encodeURIComponent(drop)}&mode=driving`}
       />
@@ -504,7 +506,7 @@ function StopsStep({
 
       {/* Route map — shows pickup → stops → drop with waypoints */}
       {form.pickupAddress && form.dropAddress && MAPS_KEY && (
-        <div className="flex-1 min-h-48 rounded-xl overflow-hidden border border-neutral-100">
+        <div className="flex-1 min-h-0 rounded-xl overflow-hidden border border-neutral-100 relative">
           {(() => {
             const validStopAddrs = form.stops
               .filter((s) => s.address.trim().length >= 3)
