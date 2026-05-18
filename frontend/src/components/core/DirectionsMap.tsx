@@ -132,7 +132,6 @@ function DirectionsLayer({
     Array<{ summary: string; distance: string; duration: string; durationTraffic?: string }>
   >([]);
   const [selectedIdx, setSelectedIdx] = useState(0);
-  const [directionsError, setDirectionsError] = useState(false);
   const rendererRef = useRef<any>(null);
   const altRenderersRef = useRef<any[]>([]);
   const trafficRef = useRef<any>(null);
@@ -148,7 +147,7 @@ function DirectionsLayer({
     altRenderersRef.current = [];
     setSelectedIdx(0);
     setRoutesSummary([]);
-    setDirectionsError(false);
+
 
     const service = new routesLib.DirectionsService();
     service.route(
@@ -161,7 +160,7 @@ function DirectionsLayer({
       (result: any, status: any) => {
         if (status !== 'OK' || !result) {
           console.error('[DirectionsMap] Directions failed:', status, '— origin:', origin, 'dest:', destination);
-          setDirectionsError(true);
+
           onError?.();
           return;
         }
