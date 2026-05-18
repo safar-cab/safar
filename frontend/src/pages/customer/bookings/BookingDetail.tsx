@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { fetchBookingDetail, cancelBooking } from '@/store/slices/bookingsSlice';
 import { PriceBreakdown } from '@/components/core/PriceBreakdown';
 import { BookingRouteCard } from '@/components/core/BookingRouteCard';
+import { LiveTrackingMap } from '@/components/core/LiveTrackingMap';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
@@ -210,6 +211,18 @@ export function BookingDetail() {
               );
             })}
           </div>
+
+          {/* Live Map inside timeline card */}
+          {['driver_en_route', 'picked_up', 'in_progress'].includes(booking.status) && (
+            <div className="mt-4">
+              <LiveTrackingMap
+                bookingId={booking._id}
+                status={booking.status}
+                pickupAddress={booking.pickup?.address}
+                dropAddress={booking.drop?.address}
+              />
+            </div>
+          )}
         </motion.div>
       )}
 

@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import api from '@/lib/api';
 import { BookingRouteCard } from '@/components/core/BookingRouteCard';
+import { LiveTrackingMap } from '@/components/core/LiveTrackingMap';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Skeleton } from '@/components/ui/Skeleton';
@@ -240,6 +241,14 @@ export function RideDetail() {
           })}
         </div>
       </motion.div>
+
+      {/* Live Tracking Map */}
+      <LiveTrackingMap
+        bookingId={ride._id}
+        status={ride.status}
+        pickupAddress={ride.pickup?.address}
+        dropAddress={ride.drop?.address}
+      />
 
       {/* Status Action */}
       {action && (
