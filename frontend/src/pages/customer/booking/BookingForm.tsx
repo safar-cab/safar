@@ -540,19 +540,44 @@ function StopsStep({
         </p>
       )}
 
-      {/* Route map — shows pickup → stops → drop with waypoints */}
-      {form.pickupAddress && form.dropAddress && MAPS_KEY && (
+      {/* Route map — shows pickup + stops (+ drop if available) */}
+      {form.pickupAddress && MAPS_KEY && (
         <div className="rounded-xl overflow-hidden border border-neutral-100 relative" style={{ height: 'calc(100vh - 32rem)' }}>
           {(() => {
             const validStopAddrs = form.stops
               .filter((s) => s.address.trim().length >= 3)
               .map((s) => s.address.trim());
-            const waypoints = validStopAddrs.length > 0
-              ? `&waypoints=${validStopAddrs.map(encodeURIComponent).join('|')}`
-              : '';
+
+            // If drop exists, show full route with waypoints
+            if (form.dropAddress) {
+              const waypoints = validStopAddrs.length > 0
+                ? `&waypoints=${validStopAddrs.map(encodeURIComponent).join('|')}`
+                : '';
+              return (
+                <MapEmbed
+                  src={`https://www.google.com/maps/embed/v1/directions?key=${MAPS_KEY}&origin=${encodeURIComponent(form.pickupAddress)}&destination=${encodeURIComponent(form.dropAddress)}${waypoints}&mode=driving`}
+                />
+              );
+            }
+
+            // If stops exist but no drop, show directions from pickup to last stop
+            if (validStopAddrs.length > 0) {
+              const lastStop = validStopAddrs[validStopAddrs.length - 1];
+              const midStops = validStopAddrs.slice(0, -1);
+              const waypoints = midStops.length > 0
+                ? `&waypoints=${midStops.map(encodeURIComponent).join('|')}`
+                : '';
+              return (
+                <MapEmbed
+                  src={`https://www.google.com/maps/embed/v1/directions?key=${MAPS_KEY}&origin=${encodeURIComponent(form.pickupAddress)}&destination=${encodeURIComponent(lastStop)}${waypoints}&mode=driving`}
+                />
+              );
+            }
+
+            // Just pickup location
             return (
               <MapEmbed
-                src={`https://www.google.com/maps/embed/v1/directions?key=${MAPS_KEY}&origin=${encodeURIComponent(form.pickupAddress)}&destination=${encodeURIComponent(form.dropAddress)}${waypoints}&mode=driving`}
+                src={`https://www.google.com/maps/embed/v1/place?key=${MAPS_KEY}&q=${encodeURIComponent(form.pickupAddress)}&zoom=13`}
               />
             );
           })()}
