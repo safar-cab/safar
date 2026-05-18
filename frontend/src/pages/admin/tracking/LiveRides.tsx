@@ -1,7 +1,7 @@
 import { useEffect, useContext, useState } from 'react';
-import { Navigation, MapPin, Users, Clock } from 'lucide-react';
+import { Navigation, MapPin, Clock } from 'lucide-react';
 import { AuthContext } from '@/contexts/AuthContext';
-import { connectSocket, disconnectSocket, getSocket } from '@/lib/socket';
+import { connectSocket, disconnectSocket } from '@/lib/socket';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Badge } from '@/components/ui/Badge';
 import api from '@/lib/api';
@@ -35,7 +35,7 @@ export function LiveRides() {
     // Fetch initial data via REST
     (async () => {
       try {
-        const res = await api.get('/api/tracking/admin/active') as any;
+        const res = (await api.get('/api/tracking/admin/active')) as any;
         setRides(res.bookings || []);
         setPositions(res.positions || {});
       } catch {
@@ -69,10 +69,7 @@ export function LiveRides() {
 
   return (
     <div>
-      <PageHeader
-        title="Live Rides"
-        subtitle={`${rides.length} active rides`}
-      />
+      <PageHeader title="Live Rides" subtitle={`${rides.length} active rides`} />
 
       {loading ? (
         <div className="space-y-3">
@@ -84,7 +81,9 @@ export function LiveRides() {
         <div className="text-center py-16">
           <MapPin className="w-12 h-12 text-neutral-200 mx-auto mb-3" />
           <p className="text-neutral-500 font-medium">No active rides</p>
-          <p className="text-sm text-neutral-400">Rides will appear here when drivers are en route</p>
+          <p className="text-sm text-neutral-400">
+            Rides will appear here when drivers are en route
+          </p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -103,7 +102,9 @@ export function LiveRides() {
                 <div className="flex items-start justify-between mb-3">
                   <div>
                     <p className="text-sm font-semibold text-neutral-800">{ride.bookingId}</p>
-                    <p className="text-xs text-neutral-400">{driverName} → {ride.user.name}</p>
+                    <p className="text-xs text-neutral-400">
+                      {driverName} → {ride.user.name}
+                    </p>
                   </div>
                   <Badge status={ride.status} />
                 </div>
@@ -133,9 +134,7 @@ export function LiveRides() {
                       <span>
                         {pos.latitude.toFixed(4)}, {pos.longitude.toFixed(4)}
                       </span>
-                      <span className="ml-auto">
-                        {(pos.speed * 3.6).toFixed(0)} km/h
-                      </span>
+                      <span className="ml-auto">{(pos.speed * 3.6).toFixed(0)} km/h</span>
                     </>
                   ) : (
                     <>

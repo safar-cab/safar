@@ -1,6 +1,6 @@
 import { useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
-import { Navigation, Phone, Clock, MapPin } from 'lucide-react';
+import { Navigation, Phone, MapPin } from 'lucide-react';
 import { AuthContext } from '@/contexts/AuthContext';
 import { connectSocket, disconnectSocket } from '@/lib/socket';
 import { useLiveTracking } from '@/hooks/useLiveTracking';
@@ -43,9 +43,7 @@ export function LiveTracking() {
             <Navigation className="w-5 h-5 text-primary-600" />
           </div>
           <div>
-            <p className={cn('text-sm font-semibold', statusInfo.color)}>
-              {statusInfo.label}
-            </p>
+            <p className={cn('text-sm font-semibold', statusInfo.color)}>{statusInfo.label}</p>
             <p className="text-xs text-neutral-400">
               {position
                 ? `Last update: ${new Date(position.updatedAt).toLocaleTimeString()}`
@@ -61,7 +59,10 @@ export function LiveTracking() {
           {position ? (
             <div className="text-center">
               <div className="w-12 h-12 rounded-full bg-primary-500 flex items-center justify-center mx-auto mb-3 shadow-lg">
-                <Navigation className="w-6 h-6 text-white" style={{ transform: `rotate(${position.heading}deg)` }} />
+                <Navigation
+                  className="w-6 h-6 text-white"
+                  style={{ transform: `rotate(${position.heading}deg)` }}
+                />
               </div>
               <p className="text-sm font-medium text-neutral-700">
                 {position.latitude.toFixed(5)}, {position.longitude.toFixed(5)}
