@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { MapPin, Calendar, Clock, Plus, X, GripVertical, Navigation } from 'lucide-react';
+import { MapPin, Calendar, Clock, Plus, X, GripVertical, Navigation, LocateFixed } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setBookingStep } from '@/store/slices/uiSlice';
@@ -219,47 +219,91 @@ export function BookingForm() {
 
 const MAPS_KEY = import.meta.env.VITE_GOOGLE_MAPS_KEY || '';
 
-function LocationMapPreview({ address }: { address: string }) {
-  if (!MAPS_KEY || !address || address.length < 3) {
-    return (
-      <div className="h-64 rounded-xl bg-neutral-50 border border-neutral-100 flex items-center justify-center">
-        <div className="text-center">
-          <Navigation className="w-8 h-8 text-neutral-200 mx-auto mb-1.5" />
-          <p className="text-xs text-neutral-300">Map preview appears as you type</p>
-        </div>
-      </div>
-    );
-  }
-
-  const embedUrl = `https://www.google.com/maps/embed/v1/place?key=${MAPS_KEY}&q=${encodeURIComponent(address)}&zoom=14`;
+function MapEmbed({ src, className }: { src: string; className?: string }) {
   return (
-    <div className="h-64 rounded-xl overflow-hidden border border-neutral-100">
-      <iframe
-        src={embedUrl}
-        className="w-full h-full border-0"
-        allowFullScreen
-        loading="lazy"
-        referrerPolicy="no-referrer-when-downgrade"
-      />
+    <iframe
+      src={src}
+      className={`w-full h-full border-0 ${className || ''}`}
+      allowFullScreen
+      loading="lazy"
+      referrerPolicy="no-referrer-when-downgrade"
+    />
+  );
+}
+
+function LocationMapPreview({ address }: { address: string }) {
+  const hasAddress = MAPS_KEY && address && address.length >= 3;
+  return (
+    <div className="flex-1 min-h-48 rounded-xl overflow-hidden border border-neutral-100 bg-neutral-50">
+      {hasAddress ? (
+        <MapEmbed
+          src={`https://www.google.com/maps/embed/v1/place?key=${MAPS_KEY}&q=${encodeURIComponent(address)}&zoom=14`}
+        />
+      ) : (
+        <div className="w-full h-full flex items-center justify-center">
+          <div className="text-center">
+            <Navigation className="w-8 h-8 text-neutral-200 mx-auto mb-1.5" />
+            <p className="text-xs text-neutral-300">Map preview appears as you type</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
 function RouteMapPreview({ pickup, drop }: { pickup: string; drop: string }) {
-  if (!MAPS_KEY || !pickup || !drop || pickup.length < 3 || drop.length < 3) return null;
-
-  const embedUrl = `https://www.google.com/maps/embed/v1/directions?key=${MAPS_KEY}&origin=${encodeURIComponent(pickup)}&destination=${encodeURIComponent(drop)}&mode=driving`;
+  const hasRoute = MAPS_KEY && pickup && drop && pickup.length >= 3 && drop.length >= 3;
+  if (!hasRoute) return null;
   return (
-    <div className="h-44 rounded-xl overflow-hidden border border-neutral-100 mt-4">
-      <iframe
-        src={embedUrl}
-        className="w-full h-full border-0"
-        allowFullScreen
-        loading="lazy"
-        referrerPolicy="no-referrer-when-downgrade"
+    <div className="flex-1 min-h-48 rounded-xl overflow-hidden border border-neutral-100">
+      <MapEmbed
+        src={`https://www.google.com/maps/embed/v1/directions?key=${MAPS_KEY}&origin=${encodeURIComponent(pickup)}&destination=${encodeURIComponent(drop)}&mode=driving`}
       />
     </div>
   );
+}
+
+function useCurrentLocation(onAddress: (address: string) => void) {
+  const [loading, setLoading] = useState(false);
+
+  const getLocation = useCallback(() => {
+    if (!navigator.geolocation) {
+      toast.error('Geolocation not supported');
+      return;
+    }
+    setLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        try {
+          if (MAPS_KEY) {
+            const res = await fetch(
+              `https://maps.googleapis.com/maps/api/geocode/json?latlng=${pos.coords.latitude},${pos.coords.longitude}&key=${MAPS_KEY}`,
+            );
+            const data = await res.json();
+            const address = data.results?.[0]?.formatted_address;
+            if (address) {
+              onAddress(address);
+            } else {
+              onAddress(`${pos.coords.latitude}, ${pos.coords.longitude}`);
+            }
+          } else {
+            onAddress(`${pos.coords.latitude}, ${pos.coords.longitude}`);
+          }
+        } catch {
+          onAddress(`${pos.coords.latitude}, ${pos.coords.longitude}`);
+        } finally {
+          setLoading(false);
+        }
+      },
+      () => {
+        toast.error('Location access denied');
+        setLoading(false);
+      },
+      { enableHighAccuracy: true, timeout: 10000 },
+    );
+  }, [onAddress]);
+
+  return { getLocation, loading };
 }
 
 function PickupStep({
@@ -269,11 +313,25 @@ function PickupStep({
   form: FormData;
   updateField: <K extends keyof FormData>(key: K, val: FormData[K]) => void;
 }) {
+  const { getLocation, loading: locating } = useCurrentLocation(
+    useCallback((address: string) => updateField('pickupAddress', address), [updateField]),
+  );
+
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-2 mb-2">
-        <div className="w-3 h-3 rounded-full bg-success-500" />
-        <h2 className="text-base font-semibold text-neutral-800">Pickup Location</h2>
+    <div className="flex flex-col gap-3" style={{ minHeight: 'calc(100vh - 14rem)' }}>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded-full bg-success-500" />
+          <h2 className="text-base font-semibold text-neutral-800">Pickup Location</h2>
+        </div>
+        <button
+          onClick={getLocation}
+          disabled={locating}
+          className="flex items-center gap-1.5 text-xs font-medium text-primary-600 hover:text-primary-700 disabled:opacity-50 bg-primary-50 px-3 py-1.5 rounded-lg"
+        >
+          <LocateFixed className={`w-3.5 h-3.5 ${locating ? 'animate-spin' : ''}`} />
+          {locating ? 'Locating...' : 'Use my location'}
+        </button>
       </div>
       <LocationMapPreview address={form.pickupAddress} />
       <Input
@@ -301,13 +359,13 @@ function DropStep({
   updateField: <K extends keyof FormData>(key: K, val: FormData[K]) => void;
 }) {
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-2 mb-2">
+    <div className="flex flex-col gap-3" style={{ minHeight: 'calc(100vh - 14rem)' }}>
+      <div className="flex items-center gap-2">
         <div className="w-3 h-3 rounded-full bg-error-500" />
         <h2 className="text-base font-semibold text-neutral-800">Drop Location</h2>
       </div>
       <RouteMapPreview pickup={form.pickupAddress} drop={form.dropAddress} />
-      {!form.pickupAddress && <LocationMapPreview address={form.dropAddress} />}
+      {!(form.pickupAddress && form.dropAddress) && <LocationMapPreview address={form.dropAddress} />}
       <Input
         label="Drop Address"
         placeholder="Enter drop address"
