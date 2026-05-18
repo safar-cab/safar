@@ -319,34 +319,42 @@ function PickupStep({
 
   return (
     <div className="flex flex-col gap-3" style={{ minHeight: 'calc(100vh - 14rem)' }}>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-success-500" />
-          <h2 className="text-base font-semibold text-neutral-800">Pickup Location</h2>
-        </div>
-        <button
-          onClick={getLocation}
-          disabled={locating}
-          className="flex items-center gap-1.5 text-xs font-medium text-primary-600 hover:text-primary-700 disabled:opacity-50 bg-primary-50 px-3 py-1.5 rounded-lg"
-        >
-          <LocateFixed className={`w-3.5 h-3.5 ${locating ? 'animate-spin' : ''}`} />
-          {locating ? 'Locating...' : 'Use my location'}
-        </button>
+      <div className="flex items-center gap-2">
+        <div className="w-3 h-3 rounded-full bg-success-500" />
+        <h2 className="text-base font-semibold text-neutral-800">Pickup Location</h2>
       </div>
-      <LocationMapPreview address={form.pickupAddress} />
-      <Input
-        label="Pickup Address"
-        placeholder="Enter pickup address"
-        icon={<MapPin className="w-4 h-4" />}
-        value={form.pickupAddress}
-        onChange={(e) => updateField('pickupAddress', e.target.value)}
-      />
+      {/* Address input with locate icon inside */}
+      <div>
+        <label className="block text-sm font-medium text-neutral-700 mb-1.5">Pickup Address</label>
+        <div className="relative">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400">
+            <MapPin className="w-4 h-4" />
+          </span>
+          <input
+            placeholder="Enter pickup address"
+            value={form.pickupAddress}
+            onChange={(e) => updateField('pickupAddress', e.target.value)}
+            className="w-full h-12 bg-neutral-50 border border-neutral-200 rounded-lg text-neutral-900 placeholder:text-neutral-400 outline-none pl-10 pr-11 focus:bg-white focus:border-primary-500 focus:ring-2 focus:ring-primary-100 transition-all"
+          />
+          <button
+            type="button"
+            onClick={getLocation}
+            disabled={locating}
+            className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-primary-500 hover:text-primary-600 hover:bg-primary-50 rounded-lg disabled:opacity-50 transition-colors"
+            title="Use current location"
+          >
+            <LocateFixed className={`w-5 h-5 ${locating ? 'animate-spin' : ''}`} />
+          </button>
+        </div>
+      </div>
       <Input
         label="Landmark (optional)"
         placeholder="Near a famous place, building, etc."
         value={form.pickupLandmark}
         onChange={(e) => updateField('pickupLandmark', e.target.value)}
       />
+      {/* Map fills remaining space */}
+      <LocationMapPreview address={form.pickupAddress} />
     </div>
   );
 }
@@ -364,8 +372,6 @@ function DropStep({
         <div className="w-3 h-3 rounded-full bg-error-500" />
         <h2 className="text-base font-semibold text-neutral-800">Drop Location</h2>
       </div>
-      <RouteMapPreview pickup={form.pickupAddress} drop={form.dropAddress} />
-      {!(form.pickupAddress && form.dropAddress) && <LocationMapPreview address={form.dropAddress} />}
       <Input
         label="Drop Address"
         placeholder="Enter drop address"
@@ -386,6 +392,12 @@ function DropStep({
         value={String(form.estimatedDistance)}
         onChange={(e) => updateField('estimatedDistance', Number(e.target.value) || 0)}
       />
+      {/* Map fills remaining space — route if both, single location otherwise */}
+      {form.pickupAddress && form.dropAddress ? (
+        <RouteMapPreview pickup={form.pickupAddress} drop={form.dropAddress} />
+      ) : (
+        <LocationMapPreview address={form.dropAddress} />
+      )}
     </div>
   );
 }
@@ -425,8 +437,8 @@ function StopsStep({
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between mb-2">
+    <div className="flex flex-col gap-3" style={{ minHeight: 'calc(100vh - 14rem)' }}>
+      <div className="flex items-center justify-between">
         <div>
           <h2 className="text-base font-semibold text-neutral-800">Intermediate Stops</h2>
           <p className="text-xs text-neutral-400">Optional — add stops along the way (₹100/stop)</p>
@@ -488,6 +500,25 @@ function StopsStep({
         <p className="text-xs text-neutral-400 text-right">
           Stop charge: ₹{form.stops.filter((s) => s.address.trim()).length * 100}
         </p>
+      )}
+
+      {/* Route map — shows pickup → stops → drop with waypoints */}
+      {form.pickupAddress && form.dropAddress && MAPS_KEY && (
+        <div className="flex-1 min-h-48 rounded-xl overflow-hidden border border-neutral-100">
+          {(() => {
+            const validStopAddrs = form.stops
+              .filter((s) => s.address.trim().length >= 3)
+              .map((s) => s.address.trim());
+            const waypoints = validStopAddrs.length > 0
+              ? `&waypoints=${validStopAddrs.map(encodeURIComponent).join('|')}`
+              : '';
+            return (
+              <MapEmbed
+                src={`https://www.google.com/maps/embed/v1/directions?key=${MAPS_KEY}&origin=${encodeURIComponent(form.pickupAddress)}&destination=${encodeURIComponent(form.dropAddress)}${waypoints}&mode=driving`}
+              />
+            );
+          })()}
+        </div>
       )}
     </div>
   );
