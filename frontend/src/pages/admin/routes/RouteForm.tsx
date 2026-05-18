@@ -144,7 +144,7 @@ export function RouteForm() {
 
   // When map route is selected (including alternatives), update distance + toll
   const handleMapRouteSelect = useCallback(
-    (route: { distance: string; distanceValue: number; duration: string; summary: string }, index: number) => {
+    (route: { distance: string; distanceValue: number; duration: string; summary: string }) => {
       setMapRouteInfo({
         distance: route.distance,
         duration: route.duration,
