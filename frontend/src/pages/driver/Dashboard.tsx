@@ -46,8 +46,9 @@ export function DriverDashboard() {
       })) as unknown as Driver;
       setDriver(updated);
       toast.success(updated.isAvailable ? 'You are now online' : 'You are now offline');
-    } catch {
-      toast.error('Failed to update availability');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to update availability';
+      toast.error(msg);
     } finally {
       setToggling(false);
     }

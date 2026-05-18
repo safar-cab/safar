@@ -6,10 +6,16 @@ import {
   AdminDriversController,
 } from './drivers.controller';
 import { Driver, DriverSchema } from '../schemas/driver.schema';
+import { Booking, BookingSchema } from '../schemas/booking.schema';
+import { User, UserSchema } from '../schemas/user.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Driver.name, schema: DriverSchema }]),
+    MongooseModule.forFeature([
+      { name: Driver.name, schema: DriverSchema },
+      { name: Booking.name, schema: BookingSchema },
+      { name: User.name, schema: UserSchema },
+    ]),
   ],
   controllers: [DriverSelfController, AdminDriversController],
   providers: [DriversService],

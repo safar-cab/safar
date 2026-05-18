@@ -2,11 +2,20 @@ import {
   Injectable,
   NotFoundException,
   ConflictException,
+  BadRequestException,
   Logger,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Driver, DriverDocument } from '../schemas/driver.schema';
+import {
+  Booking,
+  BookingDocument,
+  BookingStatus,
+} from '../schemas/booking.schema';
+import { User, UserDocument, UserRole } from '../schemas/user.schema';
+import { NotificationsService } from '../notifications/notifications.service';
+import { NotificationType } from '../schemas/notification.schema';
 import { CreateDriverDto } from './dto/create-driver.dto';
 import { UpdateDriverDto } from './dto/update-driver.dto';
 
@@ -14,8 +23,14 @@ import { UpdateDriverDto } from './dto/update-driver.dto';
 export class DriversService {
   private readonly logger = new Logger(DriversService.name);
 
+  // Track deactivation attempts per driver (in-memory, resets on restart)
+  private deactivateAttempts = new Map<string, number>();
+
   constructor(
     @InjectModel(Driver.name) private driverModel: Model<DriverDocument>,
+    @InjectModel(Booking.name) private bookingModel: Model<BookingDocument>,
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    private notificationsService: NotificationsService,
   ) {}
 
   async create(dto: CreateDriverDto) {
@@ -110,7 +125,7 @@ export class DriversService {
     );
     // Try both string and ObjectId match
     const driver = await this.driverModel
-      .findOne({ userId: userId.toString() })
+      .findOne({ userId })
       .populate('userId', 'name phone email')
       .lean();
     if (!driver) {
@@ -146,21 +161,76 @@ export class DriversService {
   }
 
   async updateAvailability(userId: string, isAvailable: boolean) {
-    const driver = await this.driverModel
-      .findOneAndUpdate(
-        { userId: userId.toString() },
-        { isAvailable },
-        { new: true },
-      )
-      .lean();
+    const driver = await this.driverModel.findOne({ userId }).lean();
     if (!driver) throw new NotFoundException('Driver profile not found');
-    return driver;
+
+    // Going offline — check for active rides
+    if (!isAvailable) {
+      const activeRideCount = await this.bookingModel.countDocuments({
+        driver: driver._id,
+        status: {
+          $in: [
+            BookingStatus.DRIVER_ASSIGNED,
+            BookingStatus.DRIVER_EN_ROUTE,
+            BookingStatus.PICKED_UP,
+            BookingStatus.IN_PROGRESS,
+          ],
+        },
+      });
+
+      if (activeRideCount > 0) {
+        // Track attempts
+        const key = userId.toString();
+        const attempts = (this.deactivateAttempts.get(key) || 0) + 1;
+        this.deactivateAttempts.set(key, attempts);
+
+        this.logger.warn(
+          `Driver ${userId} tried to go offline with ${activeRideCount} active rides (attempt ${attempts})`,
+        );
+
+        // On 3rd+ attempt, notify admin
+        if (attempts >= 3) {
+          this.deactivateAttempts.set(key, 0); // reset after notifying
+
+          const driverUser = await this.userModel
+            .findById(userId)
+            .select('name phone')
+            .lean();
+          const adminUsers = await this.userModel
+            .find({ role: UserRole.ADMIN })
+            .select('_id')
+            .lean();
+
+          for (const admin of adminUsers) {
+            void this.notificationsService.notify({
+              userId: admin._id.toString(),
+              title: 'Driver Wants to Go Offline',
+              body: `${driverUser?.name || 'A driver'} (${driverUser?.phone || ''}) has tried to go offline ${attempts} times but has ${activeRideCount} active ride(s).`,
+              type: NotificationType.GENERAL,
+              data: { url: '/admin/drivers' },
+            });
+          }
+        }
+
+        throw new BadRequestException(
+          `Cannot go offline — you have ${activeRideCount} active ride(s). Complete or hand over your rides first.`,
+        );
+      }
+
+      // No active rides — reset attempts and allow
+      this.deactivateAttempts.delete(userId.toString());
+    }
+
+    const updated = await this.driverModel
+      .findOneAndUpdate({ userId }, { isAvailable }, { new: true })
+      .lean();
+    return updated;
   }
 
   async updateLocation(userId: string, latitude: number, longitude: number) {
     const driver = await this.driverModel
       .findOneAndUpdate(
-        { userId: userId.toString() },
+        { userId },
         {
           currentLocation: {
             type: 'Point',
