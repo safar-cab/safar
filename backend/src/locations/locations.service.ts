@@ -16,6 +16,11 @@ import {
   RoutePricing,
   RoutePricingDocument,
 } from '../schemas/route-pricing.schema';
+import {
+  Booking,
+  BookingDocument,
+  BookingStatus,
+} from '../schemas/booking.schema';
 
 @Injectable()
 export class LocationsService {
@@ -26,6 +31,8 @@ export class LocationsService {
     @InjectModel(City.name) private cityModel: Model<CityDocument>,
     @InjectModel(RoutePricing.name)
     private routeModel: Model<RoutePricingDocument>,
+    @InjectModel(Booking.name)
+    private bookingModel: Model<BookingDocument>,
   ) {}
 
   // ---- States ----
@@ -45,6 +52,22 @@ export class LocationsService {
   }
 
   async toggleState(id: string, isActive: boolean) {
+    // Block disable if routes reference this state
+    if (!isActive) {
+      const routeCount = await this.routeModel.countDocuments({
+        $or: [
+          { fromStateId: new Types.ObjectId(id) },
+          { toStateId: new Types.ObjectId(id) },
+        ],
+        isActive: true,
+      });
+      if (routeCount > 0) {
+        throw new BadRequestException(
+          `Cannot disable state — ${routeCount} active route(s) reference it. Disable those routes first.`,
+        );
+      }
+    }
+
     const state = await this.stateModel.findByIdAndUpdate(
       id,
       { isActive },
@@ -73,6 +96,17 @@ export class LocationsService {
     if (cityCount > 0) {
       throw new BadRequestException(
         `Cannot delete state with ${cityCount} cities. Remove cities first.`,
+      );
+    }
+    const routeCount = await this.routeModel.countDocuments({
+      $or: [
+        { fromStateId: new Types.ObjectId(id) },
+        { toStateId: new Types.ObjectId(id) },
+      ],
+    });
+    if (routeCount > 0) {
+      throw new BadRequestException(
+        `Cannot delete state — ${routeCount} route(s) reference it.`,
       );
     }
     const state = await this.stateModel.findByIdAndDelete(id);
@@ -117,6 +151,22 @@ export class LocationsService {
   }
 
   async toggleCity(id: string, isActive: boolean) {
+    // Block disable if routes reference this city
+    if (!isActive) {
+      const routeCount = await this.routeModel.countDocuments({
+        $or: [
+          { fromCityId: new Types.ObjectId(id) },
+          { toCityId: new Types.ObjectId(id) },
+        ],
+        isActive: true,
+      });
+      if (routeCount > 0) {
+        throw new BadRequestException(
+          `Cannot disable city — ${routeCount} active route(s) reference it. Disable those routes first.`,
+        );
+      }
+    }
+
     const city = await this.cityModel.findByIdAndUpdate(
       id,
       { isActive },
@@ -127,6 +177,17 @@ export class LocationsService {
   }
 
   async deleteCity(id: string) {
+    const routeCount = await this.routeModel.countDocuments({
+      $or: [
+        { fromCityId: new Types.ObjectId(id) },
+        { toCityId: new Types.ObjectId(id) },
+      ],
+    });
+    if (routeCount > 0) {
+      throw new BadRequestException(
+        `Cannot delete city — ${routeCount} route(s) reference it.`,
+      );
+    }
     const city = await this.cityModel.findByIdAndDelete(id);
     if (!city) throw new NotFoundException('City not found');
     return { deleted: true };
@@ -135,15 +196,36 @@ export class LocationsService {
   // ---- Route enable/disable ----
 
   async toggleRoute(routeId: string, isActive: boolean) {
-    // Check no active bookings on this route before disabling
-    // (caller should verify — this just updates the flag)
+    if (!isActive) {
+      // Check no active/in-progress bookings on this route
+      const activeBookings = await this.bookingModel.countDocuments({
+        status: {
+          $in: [
+            BookingStatus.PENDING,
+            BookingStatus.CONFIRMED,
+            BookingStatus.DRIVER_ASSIGNED,
+            BookingStatus.DRIVER_EN_ROUTE,
+            BookingStatus.PICKED_UP,
+            BookingStatus.IN_PROGRESS,
+          ],
+        },
+      } as any);
+      if (activeBookings > 0) {
+        throw new BadRequestException(
+          `Cannot disable route — ${activeBookings} active booking(s) exist. Wait until they complete.`,
+        );
+      }
+    }
+
     const route = await this.routeModel.findByIdAndUpdate(
       routeId,
       { isActive },
       { new: true },
     );
     if (!route) throw new NotFoundException('Route not found');
-    this.logger.log(`Route ${route.name} ${isActive ? 'enabled' : 'disabled'}`);
+    this.logger.log(
+      `Route ${route.name} ${isActive ? 'enabled' : 'disabled'}`,
+    );
     return route;
   }
 

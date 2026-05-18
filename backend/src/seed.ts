@@ -313,116 +313,98 @@ async function seed() {
   }
   logger.log(`${cars.length} cars created`);
 
-  // ============ ROUTES (15+) ============
-  const routes = [
+  // ============ STATES & CITIES (before routes — routes reference city/state IDs) ============
+  const statesData = [
     {
-      name: 'Indore to Bhopal',
-      distanceKm: 195,
-      pricePerKm: 12,
-      baseFare: 500,
-      tollEstimate: 200,
+      name: 'Madhya Pradesh',
+      code: 'MP',
+      cities: ['Indore', 'Bhopal', 'Ujjain', 'Dewas', 'Ratlam', 'Jabalpur', 'Gwalior', 'Omkareshwar', 'Mhow', 'Pithampur', 'Dhar', 'Khandwa', 'Burhanpur'],
     },
     {
-      name: 'Indore to Ujjain',
-      distanceKm: 55,
-      pricePerKm: 14,
-      baseFare: 300,
-      tollEstimate: 0,
+      name: 'Rajasthan',
+      code: 'RJ',
+      cities: ['Jaipur', 'Udaipur', 'Jodhpur', 'Kota', 'Ajmer', 'Chittorgarh'],
     },
     {
-      name: 'Indore to Dewas',
-      distanceKm: 35,
-      pricePerKm: 15,
-      baseFare: 200,
-      tollEstimate: 0,
+      name: 'Gujarat',
+      code: 'GJ',
+      cities: ['Ahmedabad', 'Vadodara', 'Surat', 'Rajkot', 'Gandhinagar'],
     },
     {
-      name: 'Indore to Omkareshwar',
-      distanceKm: 85,
-      pricePerKm: 13,
-      baseFare: 400,
-      tollEstimate: 100,
+      name: 'Maharashtra',
+      code: 'MH',
+      cities: ['Mumbai', 'Pune', 'Nagpur', 'Nashik', 'Aurangabad'],
     },
     {
-      name: 'Indore to Airport',
-      distanceKm: 10,
-      pricePerKm: 20,
-      baseFare: 200,
-      tollEstimate: 0,
-    },
-    {
-      name: 'Indore to Mhow',
-      distanceKm: 22,
-      pricePerKm: 16,
-      baseFare: 200,
-      tollEstimate: 0,
-    },
-    {
-      name: 'Indore to Pithampur',
-      distanceKm: 30,
-      pricePerKm: 15,
-      baseFare: 200,
-      tollEstimate: 0,
-    },
-    {
-      name: 'Indore to Dhar',
-      distanceKm: 60,
-      pricePerKm: 13,
-      baseFare: 300,
-      tollEstimate: 50,
-    },
-    {
-      name: 'Indore to Ratlam',
-      distanceKm: 130,
-      pricePerKm: 12,
-      baseFare: 400,
-      tollEstimate: 150,
-    },
-    {
-      name: 'Indore to Khandwa',
-      distanceKm: 140,
-      pricePerKm: 12,
-      baseFare: 450,
-      tollEstimate: 100,
-    },
-    {
-      name: 'Indore to Burhanpur',
-      distanceKm: 175,
-      pricePerKm: 11,
-      baseFare: 500,
-      tollEstimate: 200,
-    },
-    {
-      name: 'Indore to Jabalpur',
-      distanceKm: 340,
-      pricePerKm: 11,
-      baseFare: 800,
-      tollEstimate: 400,
-    },
-    {
-      name: 'Indore to Nagpur',
-      distanceKm: 520,
-      pricePerKm: 10,
-      baseFare: 1000,
-      tollEstimate: 600,
-    },
-    {
-      name: 'Indore to Mumbai',
-      distanceKm: 585,
-      pricePerKm: 10,
-      baseFare: 1200,
-      tollEstimate: 800,
-    },
-    {
-      name: 'Indore to Ahmedabad',
-      distanceKm: 400,
-      pricePerKm: 11,
-      baseFare: 900,
-      tollEstimate: 500,
+      name: 'Uttar Pradesh',
+      code: 'UP',
+      isActive: false,
+      cities: ['Lucknow', 'Agra', 'Varanasi', 'Kanpur'],
     },
   ];
-  await routeModel.insertMany(routes.map((r) => ({ ...r, isActive: true })));
-  logger.log(`${routes.length} routes created`);
+
+  // Build lookup maps: cityName → { cityId, stateId }
+  const cityLookup: Record<string, { cityId: any; stateId: any; stateName: string }> = {};
+
+  for (const sd of statesData) {
+    const state = await stateModel.create({
+      name: sd.name,
+      code: sd.code,
+      isActive: sd.isActive !== false,
+    });
+    const cityDocs = sd.cities.map((name) => ({
+      name,
+      state: state._id,
+      isActive: sd.isActive !== false,
+    }));
+    const createdCities = await cityModel.insertMany(cityDocs);
+    for (const c of createdCities) {
+      cityLookup[c.name] = { cityId: c._id, stateId: state._id, stateName: sd.name };
+    }
+  }
+  const totalStates = await stateModel.countDocuments();
+  const totalCities = await cityModel.countDocuments();
+  logger.log(`${totalStates} states, ${totalCities} cities created`);
+
+  // ============ ROUTES (15+) — linked to city/state IDs ============
+  const routeDefs = [
+    { from: 'Indore', to: 'Bhopal', distanceKm: 195, pricePerKm: 12, baseFare: 500, tollEstimate: 200 },
+    { from: 'Indore', to: 'Ujjain', distanceKm: 55, pricePerKm: 14, baseFare: 300, tollEstimate: 0 },
+    { from: 'Indore', to: 'Dewas', distanceKm: 35, pricePerKm: 15, baseFare: 200, tollEstimate: 0 },
+    { from: 'Indore', to: 'Omkareshwar', distanceKm: 85, pricePerKm: 13, baseFare: 400, tollEstimate: 100 },
+    { from: 'Indore', to: 'Mhow', distanceKm: 22, pricePerKm: 16, baseFare: 200, tollEstimate: 0 },
+    { from: 'Indore', to: 'Pithampur', distanceKm: 30, pricePerKm: 15, baseFare: 200, tollEstimate: 0 },
+    { from: 'Indore', to: 'Dhar', distanceKm: 60, pricePerKm: 13, baseFare: 300, tollEstimate: 50 },
+    { from: 'Indore', to: 'Ratlam', distanceKm: 130, pricePerKm: 12, baseFare: 400, tollEstimate: 150 },
+    { from: 'Indore', to: 'Khandwa', distanceKm: 140, pricePerKm: 12, baseFare: 450, tollEstimate: 100 },
+    { from: 'Indore', to: 'Burhanpur', distanceKm: 175, pricePerKm: 11, baseFare: 500, tollEstimate: 200 },
+    { from: 'Indore', to: 'Jabalpur', distanceKm: 340, pricePerKm: 11, baseFare: 800, tollEstimate: 400 },
+    { from: 'Indore', to: 'Nagpur', distanceKm: 520, pricePerKm: 10, baseFare: 1000, tollEstimate: 600 },
+    { from: 'Indore', to: 'Mumbai', distanceKm: 585, pricePerKm: 10, baseFare: 1200, tollEstimate: 800 },
+    { from: 'Indore', to: 'Ahmedabad', distanceKm: 400, pricePerKm: 11, baseFare: 900, tollEstimate: 500 },
+    { from: 'Indore', to: 'Jaipur', distanceKm: 570, pricePerKm: 10, baseFare: 1100, tollEstimate: 700 },
+  ];
+
+  const routes = routeDefs.map((r) => {
+    const fromInfo = cityLookup[r.from];
+    const toInfo = cityLookup[r.to];
+    return {
+      name: `${r.from} to ${r.to}`,
+      fromCity: { name: r.from, state: fromInfo?.stateName || 'Madhya Pradesh' },
+      toCity: { name: r.to, state: toInfo?.stateName || 'Madhya Pradesh' },
+      fromCityId: fromInfo?.cityId,
+      fromStateId: fromInfo?.stateId,
+      toCityId: toInfo?.cityId,
+      toStateId: toInfo?.stateId,
+      distanceKm: r.distanceKm,
+      pricePerKm: r.pricePerKm,
+      baseFare: r.baseFare,
+      tollEstimate: r.tollEstimate,
+      isActive: true,
+    };
+  });
+  await routeModel.insertMany(routes);
+  logger.log(`${routes.length} routes created (linked to city/state IDs)`);
 
   // ============ BOOKINGS (35+) ============
   const pickups = [
@@ -852,53 +834,6 @@ async function seed() {
   }
   await notificationModel.insertMany(notifications);
   logger.log(`${notifications.length} notifications created`);
-
-  // ============ STATES & CITIES ============
-  const statesData = [
-    {
-      name: 'Madhya Pradesh',
-      code: 'MP',
-      cities: ['Indore', 'Bhopal', 'Ujjain', 'Dewas', 'Ratlam', 'Jabalpur', 'Gwalior'],
-    },
-    {
-      name: 'Rajasthan',
-      code: 'RJ',
-      cities: ['Jaipur', 'Udaipur', 'Jodhpur', 'Kota', 'Ajmer', 'Chittorgarh'],
-    },
-    {
-      name: 'Gujarat',
-      code: 'GJ',
-      cities: ['Ahmedabad', 'Vadodara', 'Surat', 'Rajkot', 'Gandhinagar'],
-    },
-    {
-      name: 'Maharashtra',
-      code: 'MH',
-      cities: ['Mumbai', 'Pune', 'Nagpur', 'Nashik', 'Aurangabad'],
-    },
-    {
-      name: 'Uttar Pradesh',
-      code: 'UP',
-      isActive: false,
-      cities: ['Lucknow', 'Agra', 'Varanasi', 'Kanpur'],
-    },
-  ];
-
-  for (const sd of statesData) {
-    const state = await stateModel.create({
-      name: sd.name,
-      code: sd.code,
-      isActive: sd.isActive !== false,
-    });
-    const cityDocs = sd.cities.map((name) => ({
-      name,
-      state: state._id,
-      isActive: sd.isActive !== false,
-    }));
-    await cityModel.insertMany(cityDocs);
-  }
-  const totalStates = await stateModel.countDocuments();
-  const totalCities = await cityModel.countDocuments();
-  logger.log(`${totalStates} states, ${totalCities} cities created`);
 
   // ============ SUMMARY ============
   const counts = await Promise.all([
