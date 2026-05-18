@@ -28,6 +28,14 @@ export class CompanySettings {
   @Prop({ default: 12 })
   defaultPricePerKm: number;
 
+  @ApiProperty()
+  @Prop({ default: 100 })
+  stopChargePerStop: number;
+
+  @ApiProperty()
+  @Prop({ default: 500 })
+  defaultBaseFare: number;
+
   @Prop({ type: Object })
   defaultRefundPolicy: Record<string, unknown>;
 

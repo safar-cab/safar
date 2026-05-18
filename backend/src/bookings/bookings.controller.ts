@@ -31,6 +31,12 @@ import { BookingStatus } from '../schemas/booking.schema';
 export class CustomerBookingsController {
   constructor(private bookingsService: BookingsService) {}
 
+  @Get('pricing-config')
+  @ApiOperation({ summary: 'Get pricing config (stopCharge, pricePerKm, baseFare)' })
+  getPricingConfig() {
+    return this.bookingsService.getPricingConfig();
+  }
+
   @Post()
   @ApiOperation({ summary: 'Create a new booking' })
   create(@CurrentUser('_id') userId: string, @Body() dto: CreateBookingDto) {

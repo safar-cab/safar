@@ -15,6 +15,10 @@ import { CreateBookingDto } from './dto/create-booking.dto';
 import { NotificationsService } from '../notifications/notifications.service';
 import { User, UserDocument } from '../schemas/user.schema';
 import { Driver, DriverDocument } from '../schemas/driver.schema';
+import {
+  CompanySettings,
+  CompanySettingsDocument,
+} from '../schemas/company-settings.schema';
 
 @Injectable()
 export class BookingsService {
@@ -24,8 +28,23 @@ export class BookingsService {
     @InjectModel(Booking.name) private bookingModel: Model<BookingDocument>,
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     @InjectModel(Driver.name) private driverModel: Model<DriverDocument>,
+    @InjectModel(CompanySettings.name)
+    private settingsModel: Model<CompanySettingsDocument>,
     private notificationsService: NotificationsService,
   ) {}
+
+  private async getSettings() {
+    const settings = await this.settingsModel.findOne().lean();
+    return {
+      pricePerKm: settings?.defaultPricePerKm || 12,
+      baseFare: settings?.defaultBaseFare || 500,
+      stopChargePerStop: settings?.stopChargePerStop || 100,
+    };
+  }
+
+  async getPricingConfig() {
+    return this.getSettings();
+  }
 
   private async generateBookingId(): Promise<string> {
     const today = new Date();
@@ -40,12 +59,13 @@ export class BookingsService {
     const bookingId = await this.generateBookingId();
 
     // Calculate pricing — GST as per Indian rules (5% on fare, tolls exempt)
-    const pricePerKm = 12;
-    const baseFare = 500;
+    const config = await this.getSettings();
+    const pricePerKm = config.pricePerKm;
+    const baseFare = config.baseFare;
     const distanceKm = dto.estimatedDistanceKm || 100;
     const distanceCharge = distanceKm * pricePerKm;
     const tollEstimate = 0;
-    const stopChargePerStop = 100; // ₹100 per intermediate stop (waiting charge)
+    const stopChargePerStop = config.stopChargePerStop;
     const stopCount = dto.stops?.length || 0;
     const totalStopCharge = stopCount * stopChargePerStop;
     const taxableAmount = baseFare + distanceCharge + totalStopCharge; // Tolls exempt from GST
