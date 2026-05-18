@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { FileText, CheckCircle, XCircle, Clock, AlertTriangle, Filter } from 'lucide-react';
+import { FileText, CheckCircle, XCircle, Clock, AlertTriangle } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import toast from 'react-hot-toast';
 import api from '@/lib/api';
@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Pagination } from '@/components/ui/Pagination';
+import { Select } from '@/components/ui/Select';
 import { cn } from '@/lib/cn';
 
 interface Document {
@@ -144,20 +145,21 @@ export function DocumentQueue() {
       )}
 
       {/* Filter */}
-      <div className="flex items-center gap-2 mb-4">
-        <Filter className="w-4 h-4 text-neutral-400" />
-        <select
+      <div className="mb-4 max-w-xs">
+        <Select
+          label="Filter by type"
+          placeholder="All types"
           value={entityFilter}
-          onChange={(e) => {
-            setEntityFilter(e.target.value);
+          onChange={(val) => {
+            setEntityFilter(val);
             setPage(1);
           }}
-          className="border border-neutral-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary-500"
-        >
-          <option value="">All types</option>
-          <option value="driver">Driver</option>
-          <option value="car">Car</option>
-        </select>
+          clearable
+          options={[
+            { value: 'driver', label: 'Driver' },
+            { value: 'car', label: 'Car' },
+          ]}
+        />
       </div>
 
       {/* Document list */}

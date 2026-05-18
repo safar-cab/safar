@@ -19,6 +19,7 @@ import { LookupModule } from './lookup/lookup.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { DocumentsModule } from './documents/documents.module';
 import { TrackingModule } from './tracking/tracking.module';
+import { LocationsModule } from './locations/locations.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { TrackingModule } from './tracking/tracking.module';
     NotificationsModule,
     DocumentsModule,
     TrackingModule,
+    LocationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
