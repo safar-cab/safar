@@ -26,6 +26,7 @@ import { Settings } from '@/pages/admin/settings/Settings';
 import { PaymentDetail } from '@/pages/admin/payments/PaymentDetail';
 import { DocumentQueue } from '@/pages/admin/documents/DocumentQueue';
 import { LiveRides } from '@/pages/admin/tracking/LiveRides';
+import { StatesAndCities } from '@/pages/admin/locations/StatesAndCities';
 import { LiveTracking } from '@/pages/customer/tracking/LiveTracking';
 import { ActiveRide } from '@/pages/driver/rides/ActiveRide';
 
@@ -94,6 +95,7 @@ export const router = createBrowserRouter([
       { path: 'routes/:id/edit', element: <RouteForm /> },
       { path: 'documents', element: <DocumentQueue /> },
       { path: 'live-rides', element: <LiveRides /> },
+      { path: 'locations', element: <StatesAndCities /> },
       { path: 'settings', element: <Settings /> },
     ],
   },

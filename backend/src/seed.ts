@@ -12,6 +12,17 @@ import { PaymentDocument, PaymentStatus } from './schemas/payment.schema';
 import { RatingDocument } from './schemas/rating.schema';
 import { RoutePricingDocument } from './schemas/route-pricing.schema';
 import { CompanySettingsDocument } from './schemas/company-settings.schema';
+import {
+  DocumentDocument,
+  DocEntityType,
+  DocType,
+  DocStatus,
+} from './schemas/document.schema';
+import { StateDocument, CityDocument } from './schemas/geo.schema';
+import {
+  NotificationDocument,
+  NotificationType,
+} from './schemas/notification.schema';
 
 async function seed() {
   const logger = new Logger('Seeder');
@@ -33,6 +44,14 @@ async function seed() {
   const settingsModel = app.get<Model<CompanySettingsDocument>>(
     getModelToken('CompanySettings'),
   );
+  const documentModel = app.get<Model<DocumentDocument>>(
+    getModelToken('VerificationDocument'),
+  );
+  const notificationModel = app.get<Model<NotificationDocument>>(
+    getModelToken('Notification'),
+  );
+  const stateModel = app.get<Model<StateDocument>>(getModelToken('State'));
+  const cityModel = app.get<Model<CityDocument>>(getModelToken('City'));
 
   // Clear existing data
   await Promise.all([
@@ -44,6 +63,10 @@ async function seed() {
     ratingModel.deleteMany({}),
     routeModel.deleteMany({}),
     settingsModel.deleteMany({}),
+    documentModel.deleteMany({}),
+    notificationModel.deleteMany({}),
+    stateModel.deleteMany({}),
+    cityModel.deleteMany({}),
   ]);
   logger.log('Cleared all collections');
 
@@ -621,6 +644,262 @@ async function seed() {
   });
   logger.log('Company settings created');
 
+  // ============ DOCUMENTS (30) ============
+  const driverDocTypes = [
+    DocType.DRIVING_LICENSE,
+    DocType.AADHAAR,
+    DocType.PAN,
+    DocType.PHOTO,
+  ];
+  const carDocTypes = [
+    DocType.CAR_RC,
+    DocType.INSURANCE,
+    DocType.PERMIT,
+    DocType.FITNESS_CERTIFICATE,
+    DocType.POLLUTION_CERTIFICATE,
+  ];
+  const docStatuses = [
+    DocStatus.PENDING,
+    DocStatus.VERIFIED,
+    DocStatus.REJECTED,
+    DocStatus.EXPIRED,
+  ];
+  const docs: any[] = [];
+
+  // 18 driver documents (across first 6 drivers, 3 docs each)
+  for (let i = 0; i < 6; i++) {
+    const driver = driverProfiles[i];
+    for (let j = 0; j < 3; j++) {
+      const docIdx = i * 3 + j;
+      const docType = driverDocTypes[j % driverDocTypes.length];
+      const status = docStatuses[docIdx % docStatuses.length];
+      docs.push({
+        entityType: DocEntityType.DRIVER,
+        entityId: driver._id,
+        docType,
+        fileUrl: `https://placehold.co/600x400?text=${docType.replace(/_/g, '+')}`,
+        fileName: `${docType}_${i}.jpg`,
+        status,
+        documentNumber: `DOC-${String(docIdx + 1).padStart(4, '0')}`,
+        expiryDate:
+          status === DocStatus.EXPIRED
+            ? new Date('2025-01-15')
+            : new Date('2028-06-30'),
+        rejectionReason:
+          status === DocStatus.REJECTED ? 'Document is blurry, please re-upload' : undefined,
+        verifiedAt:
+          status === DocStatus.VERIFIED || status === DocStatus.REJECTED
+            ? new Date()
+            : undefined,
+        createdAt: new Date(Date.now() - docIdx * 86400000),
+      });
+    }
+  }
+
+  // 12 car documents (across first 4 cars, 3 docs each)
+  const allCars = await carModel.find().lean();
+  for (let i = 0; i < 4; i++) {
+    const car = allCars[i];
+    if (!car) continue;
+    for (let j = 0; j < 3; j++) {
+      const docIdx = 18 + i * 3 + j;
+      const docType = carDocTypes[j % carDocTypes.length];
+      const status = docStatuses[docIdx % docStatuses.length];
+      docs.push({
+        entityType: DocEntityType.CAR,
+        entityId: car._id,
+        docType,
+        fileUrl: `https://placehold.co/600x400?text=${docType.replace(/_/g, '+')}`,
+        fileName: `${docType}_car_${i}.jpg`,
+        status,
+        documentNumber: `CAR-DOC-${String(docIdx + 1).padStart(4, '0')}`,
+        expiryDate:
+          status === DocStatus.EXPIRED
+            ? new Date('2025-03-01')
+            : new Date('2027-12-31'),
+        rejectionReason:
+          status === DocStatus.REJECTED ? 'Expired document uploaded' : undefined,
+        verifiedAt:
+          status === DocStatus.VERIFIED || status === DocStatus.REJECTED
+            ? new Date()
+            : undefined,
+        createdAt: new Date(Date.now() - docIdx * 86400000),
+      });
+    }
+  }
+  await documentModel.insertMany(docs);
+  logger.log(`${docs.length} documents created`);
+
+  // ============ NOTIFICATIONS (40+) ============
+  const adminUser = await userModel.findOne({ role: UserRole.ADMIN }).lean();
+  const notifTemplates = [
+    {
+      type: NotificationType.BOOKING_CONFIRMED,
+      title: 'Booking Confirmed',
+      body: 'Your booking BK-20260515-001 is confirmed. Total: ₹2,500',
+    },
+    {
+      type: NotificationType.DRIVER_ASSIGNED,
+      title: 'Driver Assigned',
+      body: 'Ramesh Yadav has been assigned to your ride BK-20260515-001',
+    },
+    {
+      type: NotificationType.DRIVER_EN_ROUTE,
+      title: 'Driver En Route',
+      body: 'Your driver is on the way for ride BK-20260515-002',
+    },
+    {
+      type: NotificationType.DRIVER_ARRIVED,
+      title: 'Driver Arrived',
+      body: 'Your driver has arrived at the pickup location',
+    },
+    {
+      type: NotificationType.RIDE_STARTED,
+      title: 'Ride Started',
+      body: 'Your ride BK-20260514-003 has started. Have a safe journey!',
+    },
+    {
+      type: NotificationType.RIDE_COMPLETED,
+      title: 'Ride Completed',
+      body: 'Your ride is complete. Total: ₹3,150. Thank you for choosing Safar!',
+    },
+    {
+      type: NotificationType.BOOKING_CANCELLED,
+      title: 'Booking Cancelled',
+      body: 'Booking BK-20260513-005 cancelled. Refund: ₹1,800 will be processed.',
+    },
+    {
+      type: NotificationType.PAYMENT_RECEIVED,
+      title: 'Payment Received',
+      body: 'Payment of ₹2,500 received for BK-20260515-001',
+    },
+    {
+      type: NotificationType.GENERAL,
+      title: 'Document Verified',
+      body: 'Your driving license has been verified successfully',
+    },
+    {
+      type: NotificationType.GENERAL,
+      title: 'Document Expiring Soon',
+      body: 'Your Aadhaar card expires in 7 days. Please renew it.',
+    },
+  ];
+
+  const notifications: any[] = [];
+  // Customer notifications (15)
+  for (let i = 0; i < 15; i++) {
+    const tmpl = notifTemplates[i % notifTemplates.length];
+    const customer = customers[i % customers.length];
+    notifications.push({
+      user: customer._id,
+      title: tmpl.title,
+      body: tmpl.body,
+      type: tmpl.type,
+      read: i < 5,
+      readAt: i < 5 ? new Date() : undefined,
+      data: { bookingId: bookings[i % bookings.length]?._id?.toString(), url: '/customer/bookings' },
+      createdAt: new Date(Date.now() - i * 3600000),
+    });
+  }
+  // Driver notifications (15)
+  for (let i = 0; i < 15; i++) {
+    const driverUser = allDriverUsers[i % allDriverUsers.length];
+    const driverTemplates = [
+      { type: NotificationType.DRIVER_ASSIGNED, title: 'New Ride Assigned', body: `You have been assigned ride BK-2026051${i}-00${i + 1}` },
+      { type: NotificationType.GENERAL, title: 'Document Verified', body: 'Your driving license has been verified' },
+      { type: NotificationType.BOOKING_CANCELLED, title: 'Ride Cancelled', body: `Ride BK-2026051${i}-00${i + 1} has been cancelled by the customer` },
+      { type: NotificationType.GENERAL, title: 'Rating Received', body: `You received a 5-star rating for your recent ride` },
+      { type: NotificationType.GENERAL, title: 'Document Expiring', body: 'Your permit expires in 14 days' },
+    ];
+    const tmpl = driverTemplates[i % driverTemplates.length];
+    notifications.push({
+      user: driverUser._id,
+      title: tmpl.title,
+      body: tmpl.body,
+      type: tmpl.type,
+      read: i < 3,
+      readAt: i < 3 ? new Date() : undefined,
+      data: { url: '/driver/rides' },
+      createdAt: new Date(Date.now() - i * 7200000),
+    });
+  }
+  // Admin notifications (10)
+  if (adminUser) {
+    const adminTemplates = [
+      { title: 'New Booking', body: 'New booking BK-20260518-001 created by Rahul Sharma' },
+      { title: 'Payment Received', body: 'Payment of ₹4,200 received for BK-20260517-003' },
+      { title: 'Document Pending', body: '5 documents are awaiting verification' },
+      { title: 'Driver Registered', body: 'New driver Santosh Chouhan registered and needs verification' },
+      { title: 'Ride Completed', body: 'Ride BK-20260516-002 completed successfully' },
+      { title: 'Cancellation', body: 'Booking BK-20260515-004 cancelled by customer' },
+      { title: 'Document Expired', body: '2 driver documents have expired today' },
+      { title: 'Revenue Alert', body: "Today's revenue: ₹12,500 from 5 rides" },
+      { title: 'Low Availability', body: 'Only 2 cars available for tomorrow' },
+      { title: 'Rating Alert', body: 'Driver Gopal Jat received a 1-star rating' },
+    ];
+    for (let i = 0; i < 10; i++) {
+      notifications.push({
+        user: adminUser._id,
+        title: adminTemplates[i].title,
+        body: adminTemplates[i].body,
+        type: NotificationType.GENERAL,
+        read: i < 2,
+        readAt: i < 2 ? new Date() : undefined,
+        data: { url: '/admin' },
+        createdAt: new Date(Date.now() - i * 5400000),
+      });
+    }
+  }
+  await notificationModel.insertMany(notifications);
+  logger.log(`${notifications.length} notifications created`);
+
+  // ============ STATES & CITIES ============
+  const statesData = [
+    {
+      name: 'Madhya Pradesh',
+      code: 'MP',
+      cities: ['Indore', 'Bhopal', 'Ujjain', 'Dewas', 'Ratlam', 'Jabalpur', 'Gwalior'],
+    },
+    {
+      name: 'Rajasthan',
+      code: 'RJ',
+      cities: ['Jaipur', 'Udaipur', 'Jodhpur', 'Kota', 'Ajmer', 'Chittorgarh'],
+    },
+    {
+      name: 'Gujarat',
+      code: 'GJ',
+      cities: ['Ahmedabad', 'Vadodara', 'Surat', 'Rajkot', 'Gandhinagar'],
+    },
+    {
+      name: 'Maharashtra',
+      code: 'MH',
+      cities: ['Mumbai', 'Pune', 'Nagpur', 'Nashik', 'Aurangabad'],
+    },
+    {
+      name: 'Uttar Pradesh',
+      code: 'UP',
+      isActive: false,
+      cities: ['Lucknow', 'Agra', 'Varanasi', 'Kanpur'],
+    },
+  ];
+
+  for (const sd of statesData) {
+    const state = await stateModel.create({
+      name: sd.name,
+      code: sd.code,
+      isActive: sd.isActive !== false,
+    });
+    const cityDocs = sd.cities.map((name) => ({
+      name,
+      state: state._id,
+      isActive: sd.isActive !== false,
+    }));
+    await cityModel.insertMany(cityDocs);
+  }
+  const totalStates = await stateModel.countDocuments();
+  const totalCities = await cityModel.countDocuments();
+  logger.log(`${totalStates} states, ${totalCities} cities created`);
+
   // ============ SUMMARY ============
   const counts = await Promise.all([
     userModel.countDocuments(),
@@ -630,16 +909,24 @@ async function seed() {
     paymentModel.countDocuments(),
     ratingModel.countDocuments(),
     routeModel.countDocuments(),
+    documentModel.countDocuments(),
+    notificationModel.countDocuments(),
+    stateModel.countDocuments(),
+    cityModel.countDocuments(),
   ]);
   logger.log('');
   logger.log('=== SEED SUMMARY ===');
-  logger.log(`Users:    ${counts[0]}`);
-  logger.log(`Drivers:  ${counts[1]}`);
-  logger.log(`Cars:     ${counts[2]}`);
-  logger.log(`Bookings: ${counts[3]}`);
-  logger.log(`Payments: ${counts[4]}`);
-  logger.log(`Ratings:  ${counts[5]}`);
-  logger.log(`Routes:   ${counts[6]}`);
+  logger.log(`Users:         ${counts[0]}`);
+  logger.log(`Drivers:       ${counts[1]}`);
+  logger.log(`Cars:          ${counts[2]}`);
+  logger.log(`Bookings:      ${counts[3]}`);
+  logger.log(`Payments:      ${counts[4]}`);
+  logger.log(`Ratings:       ${counts[5]}`);
+  logger.log(`Routes:        ${counts[6]}`);
+  logger.log(`Documents:     ${counts[7]}`);
+  logger.log(`Notifications: ${counts[8]}`);
+  logger.log(`States:        ${counts[9]}`);
+  logger.log(`Cities:        ${counts[10]}`);
   logger.log('');
   logger.log('Login credentials:');
   logger.log('  Admin:    9999999999 / Admin@123');
