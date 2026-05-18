@@ -5,6 +5,7 @@ import { connectSocket, disconnectSocket } from '@/lib/socket';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
+import { DirectionsMap } from '@/components/core/DirectionsMap';
 import api from '@/lib/api';
 import { cn } from '@/lib/cn';
 
@@ -24,14 +25,12 @@ interface Position {
   speed: number;
 }
 
-const MAPS_KEY = import.meta.env.VITE_GOOGLE_MAPS_KEY || '';
-
-function getStaticMapUrl(lat: number, lng: number, pickup?: string, drop?: string): string {
-  if (!MAPS_KEY) return '';
-  const markers = `markers=color:blue|${lat},${lng}`;
-  const pickupMarker = pickup ? `&markers=color:green|label:P|${encodeURIComponent(pickup)}` : '';
-  const dropMarker = drop ? `&markers=color:red|label:D|${encodeURIComponent(drop)}` : '';
-  return `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lng}&zoom=13&size=800x400&scale=2&${markers}${pickupMarker}${dropMarker}&key=${MAPS_KEY}`;
+interface RouteData {
+  distance: string;
+  distanceValue: number;
+  duration: string;
+  durationValue: number;
+  summary: string;
 }
 
 export function LiveRides() {
@@ -40,6 +39,8 @@ export function LiveRides() {
   const [positions, setPositions] = useState<Record<string, Position>>({});
   const [loading, setLoading] = useState(true);
   const [selectedRide, setSelectedRide] = useState<ActiveRide | null>(null);
+  const [routeInfo, setRouteInfo] = useState<RouteData | null>(null);
+  const [tollInfo, setTollInfo] = useState<{ tollEstimateINR: number; routes: any[] } | null>(null);
 
   useEffect(() => {
     if (!token) return;
@@ -76,6 +77,25 @@ export function LiveRides() {
 
     return () => disconnectSocket();
   }, [token]);
+
+  // Fetch toll info when ride selected
+  useEffect(() => {
+    if (!selectedRide) {
+      setTollInfo(null);
+      setRouteInfo(null);
+      return;
+    }
+    (async () => {
+      try {
+        const res = (await api.get(
+          `/api/tracking/route-info?origin=${encodeURIComponent(selectedRide.pickup.address)}&destination=${encodeURIComponent(selectedRide.drop.address)}`,
+        )) as any;
+        setTollInfo(res);
+      } catch {
+        // silent — toll info optional
+      }
+    })();
+  }, [selectedRide?._id]);
 
   const selectedPos = selectedRide ? positions[selectedRide._id] : null;
   const driverNameOf = (ride: ActiveRide) =>
@@ -176,53 +196,29 @@ export function LiveRides() {
           <div className="lg:sticky lg:top-20 h-fit">
             {selectedRide ? (
               <div className="bg-white rounded-xl border border-neutral-100 shadow-sm overflow-hidden">
-                {/* Map */}
-                <div className="h-72 bg-neutral-100 relative">
-                  {selectedPos && MAPS_KEY ? (
-                    <img
-                      src={getStaticMapUrl(
-                        selectedPos.latitude,
-                        selectedPos.longitude,
-                        selectedRide.pickup.address,
-                        selectedRide.drop.address,
-                      )}
-                      alt="Map"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : selectedPos ? (
-                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50">
-                      <div className="text-center">
-                        <div className="w-14 h-14 rounded-full bg-primary-500 flex items-center justify-center mx-auto mb-3 shadow-lg">
-                          <Navigation
-                            className="w-7 h-7 text-white"
-                            style={{ transform: `rotate(${0}deg)` }}
-                          />
-                        </div>
-                        <p className="text-sm font-medium text-neutral-700">
-                          {selectedPos.latitude.toFixed(5)}, {selectedPos.longitude.toFixed(5)}
-                        </p>
-                        <p className="text-xs text-neutral-400 mt-1">
-                          Speed: {(selectedPos.speed * 3.6).toFixed(0)} km/h
-                        </p>
-                        <a
-                          href={`https://www.google.com/maps?q=${selectedPos.latitude},${selectedPos.longitude}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 mt-3 text-xs text-primary-600 hover:underline"
-                        >
-                          <ExternalLink className="w-3 h-3" />
-                          Open in Google Maps
-                        </a>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <div className="text-center">
-                        <MapPin className="w-10 h-10 text-neutral-200 mx-auto mb-2" />
-                        <p className="text-sm text-neutral-400">No location data yet</p>
-                      </div>
-                    </div>
-                  )}
+                {/* Map — interactive with traffic + alternatives */}
+                <div className="h-96 lg:h-[32rem] bg-neutral-100 relative">
+                  <DirectionsMap
+                    origin={selectedRide.pickup.address}
+                    destination={selectedRide.drop.address}
+                    className="h-full"
+                    showTraffic
+                    showAlternatives
+                    driverPosition={
+                      selectedPos
+                        ? { lat: selectedPos.latitude, lng: selectedPos.longitude }
+                        : null
+                    }
+                    onRouteSelect={(route) =>
+                      setRouteInfo({
+                        distance: route.distance,
+                        distanceValue: route.distanceValue,
+                        duration: route.duration,
+                        durationValue: route.durationValue,
+                        summary: route.summary,
+                      })
+                    }
+                  />
 
                   <button
                     onClick={() => setSelectedRide(null)}
@@ -297,6 +293,53 @@ export function LiveRides() {
                       </a>
                     </div>
                   </div>
+
+                  {/* Route info — distance, duration, tolls */}
+                  {(routeInfo || tollInfo) && (
+                    <div className="bg-neutral-50 rounded-lg p-3">
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+                        {routeInfo && (
+                          <>
+                            <div>
+                              <p className="text-xs text-neutral-400">Distance</p>
+                              <p className="text-sm font-bold text-neutral-900">{routeInfo.distance}</p>
+                            </div>
+                            <div>
+                              <p className="text-xs text-neutral-400">Duration</p>
+                              <p className="text-sm font-bold text-neutral-900">{routeInfo.duration}</p>
+                            </div>
+                            <div>
+                              <p className="text-xs text-neutral-400">Via</p>
+                              <p className="text-sm font-bold text-neutral-900">{routeInfo.summary || '-'}</p>
+                            </div>
+                          </>
+                        )}
+                        <div>
+                          <p className="text-xs text-neutral-400">Tolls (est.)</p>
+                          <p className="text-sm font-bold text-neutral-900">
+                            {tollInfo?.tollEstimateINR
+                              ? `₹${tollInfo.tollEstimateINR}`
+                              : routeInfo ? 'Free' : '...'}
+                          </p>
+                        </div>
+                      </div>
+                      {tollInfo && tollInfo.routes.length > 1 && (
+                        <div className="mt-2 pt-2 border-t border-neutral-200">
+                          <p className="text-[10px] text-neutral-400 uppercase tracking-wider mb-1">All routes</p>
+                          {tollInfo.routes.map((r: any, i: number) => (
+                            <div key={i} className="flex items-center justify-between text-xs py-0.5">
+                              <span className="text-neutral-600">
+                                {r.distanceKm} km · {r.durationMinutes} min
+                              </span>
+                              <span className={r.tollEstimateINR > 0 ? 'text-amber-600 font-medium' : 'text-green-600'}>
+                                {r.tollEstimateINR > 0 ? `₹${r.tollEstimateINR}` : 'Free'}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                   {/* Actions */}
                   {selectedPos && (
