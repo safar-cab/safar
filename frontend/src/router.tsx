@@ -28,6 +28,7 @@ import { DocumentQueue } from '@/pages/admin/documents/DocumentQueue';
 import { LiveRides } from '@/pages/admin/tracking/LiveRides';
 import { StatesAndCities } from '@/pages/admin/locations/StatesAndCities';
 import { LiveTracking } from '@/pages/customer/tracking/LiveTracking';
+import { TrackRides } from '@/pages/customer/tracking/TrackRides';
 import { ActiveRide } from '@/pages/driver/rides/ActiveRide';
 
 // Driver pages
@@ -130,7 +131,7 @@ export const router = createBrowserRouter([
       { index: true, element: <CustomerHome /> },
       { path: 'bookings', element: <MyBookings /> },
       { path: 'bookings/:id', element: <CustomerBookingDetail /> },
-      { path: 'track', element: <Placeholder title="Track" /> },
+      { path: 'track', element: <TrackRides /> },
       { path: 'track/:bookingId', element: <LiveTracking /> },
       { path: 'book', element: <BookingForm /> },
       { path: 'cars', element: <Placeholder title="Cars" /> },
