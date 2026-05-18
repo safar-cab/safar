@@ -179,7 +179,7 @@ export function RideDetail() {
         </motion.div>
       )}
 
-      {/* Car + Schedule */}
+      {/* Schedule & Car Info */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -187,28 +187,86 @@ export function RideDetail() {
         className="bg-white rounded-xl p-4 shadow-sm border border-neutral-100"
       >
         <div className="grid grid-cols-2 gap-4">
-          <div>
-            <p className="text-xs text-neutral-400 font-medium mb-1">CAR</p>
-            <div className="flex items-center gap-2">
-              <Car className="w-4 h-4 text-neutral-500" />
-              <p className="text-sm text-neutral-800">{car ? `${car.make} ${car.model}` : '—'}</p>
-            </div>
-          </div>
-          <div>
-            <p className="text-xs text-neutral-400 font-medium mb-1">SCHEDULE</p>
-            <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4 text-neutral-500" />
-              <p className="text-sm text-neutral-800">
+          <div className="flex items-start gap-2">
+            <Clock className="w-4 h-4 text-primary-500 mt-0.5" />
+            <div>
+              <p className="text-xs text-neutral-400">Date</p>
+              <p className="text-sm font-medium text-neutral-800">
                 {ride.schedule?.startDate
                   ? new Date(ride.schedule.startDate).toLocaleDateString('en-IN', {
                       day: 'numeric',
                       month: 'short',
+                      year: 'numeric',
                     })
-                  : ''}{' '}
-                {ride.schedule?.startTime}
+                  : '--'}
               </p>
             </div>
           </div>
+          <div className="flex items-start gap-2">
+            <Clock className="w-4 h-4 text-primary-500 mt-0.5" />
+            <div>
+              <p className="text-xs text-neutral-400">Time</p>
+              <p className="text-sm font-medium text-neutral-800">{ride.schedule?.startTime || '--'}</p>
+            </div>
+          </div>
+          {car && (
+            <div className="flex items-start gap-2">
+              <Car className="w-4 h-4 text-primary-500 mt-0.5" />
+              <div>
+                <p className="text-xs text-neutral-400">Car</p>
+                <p className="text-sm font-medium text-neutral-800">{car.make} {car.model}</p>
+              </div>
+            </div>
+          )}
+          <div className="flex items-start gap-2">
+            <MapPin className="w-4 h-4 text-primary-500 mt-0.5" />
+            <div>
+              <p className="text-xs text-neutral-400">Distance</p>
+              <p className="text-sm font-medium text-neutral-800">{ride.distance?.estimated || 0} km</p>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Ride Status Timeline */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="bg-white rounded-xl p-4 shadow-sm border border-neutral-100"
+      >
+        <h3 className="text-sm font-semibold text-neutral-800 mb-4">Ride Status</h3>
+        <div className="space-y-0">
+          {[
+            { key: 'pending', label: 'Booking Placed' },
+            { key: 'confirmed', label: 'Confirmed' },
+            { key: 'driver_assigned', label: 'Driver Assigned' },
+            { key: 'driver_en_route', label: 'Driver En Route' },
+            { key: 'picked_up', label: 'Picked Up' },
+            { key: 'in_progress', label: 'In Progress' },
+            { key: 'completed', label: 'Completed' },
+          ].map((step, i, arr) => {
+            const stepIdx = arr.findIndex((s) => s.key === ride.status);
+            const isDone = i <= stepIdx;
+            const isLast = i === arr.length - 1;
+            return (
+              <div key={step.key} className="flex items-start gap-3">
+                <div className="flex flex-col items-center">
+                  <div
+                    className={`w-3 h-3 rounded-full border-2 shrink-0 ${
+                      isDone ? 'bg-success-500 border-success-500' : 'bg-white border-neutral-300'
+                    }`}
+                  />
+                  {!isLast && (
+                    <div className={`w-0.5 h-6 ${isDone ? 'bg-success-500' : 'bg-neutral-200'}`} />
+                  )}
+                </div>
+                <p className={`text-sm -mt-0.5 ${isDone ? 'text-neutral-800 font-medium' : 'text-neutral-400'}`}>
+                  {step.label}
+                </p>
+              </div>
+            );
+          })}
         </div>
       </motion.div>
 
