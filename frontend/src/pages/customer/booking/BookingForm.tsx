@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { MapPin, Calendar, Clock, Plus, X, GripVertical, Navigation, LocateFixed } from 'lucide-react';
 import toast from 'react-hot-toast';
+import api from '@/lib/api';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setBookingStep } from '@/store/slices/uiSlice';
 import { fetchAvailableCars } from '@/store/slices/carsSlice';
@@ -236,7 +237,7 @@ function MapEmbed({ src }: { src: string }) {
 function LocationMapPreview({ address }: { address: string }) {
   const hasAddress = MAPS_KEY && address && address.length >= 3;
   return (
-    <div className="rounded-xl overflow-hidden border border-neutral-100 bg-neutral-50 relative" style={{ height: 'calc(100vh - 28rem)' }}>
+    <div className="rounded-xl overflow-hidden border border-neutral-100 bg-neutral-50 relative" style={{ height: 'calc(100vh - 32rem)' }}>
       {hasAddress ? (
         <MapEmbed
           src={`https://www.google.com/maps/embed/v1/place?key=${MAPS_KEY}&q=${encodeURIComponent(address)}&zoom=14`}
@@ -257,7 +258,7 @@ function RouteMapPreview({ pickup, drop }: { pickup: string; drop: string }) {
   const hasRoute = MAPS_KEY && pickup && drop && pickup.length >= 3 && drop.length >= 3;
   if (!hasRoute) return null;
   return (
-    <div className="rounded-xl overflow-hidden border border-neutral-100 relative" style={{ height: 'calc(100vh - 28rem)' }}>
+    <div className="rounded-xl overflow-hidden border border-neutral-100 relative" style={{ height: 'calc(100vh - 32rem)' }}>
       <MapEmbed
         src={`https://www.google.com/maps/embed/v1/directions?key=${MAPS_KEY}&origin=${encodeURIComponent(pickup)}&destination=${encodeURIComponent(drop)}&mode=driving`}
       />
@@ -320,7 +321,7 @@ function PickupStep({
   );
 
   return (
-    <div className="flex flex-col gap-3" style={{ minHeight: '500px' }}>
+    <div className="flex flex-col gap-3" style={{ minHeight: '400px' }}>
       <div className="flex items-center gap-2">
         <div className="w-3 h-3 rounded-full bg-success-500" />
         <h2 className="text-base font-semibold text-neutral-800">Pickup Location</h2>
@@ -368,8 +369,29 @@ function DropStep({
   form: FormData;
   updateField: <K extends keyof FormData>(key: K, val: FormData[K]) => void;
 }) {
+  // Auto-fill distance when both addresses are set
+  useEffect(() => {
+    if (!form.pickupAddress || !form.dropAddress || form.pickupAddress.length < 3 || form.dropAddress.length < 3) return;
+
+    const timer = setTimeout(() => {
+      api
+        .get(
+          `/api/tracking/route-info?origin=${encodeURIComponent(form.pickupAddress)}&destination=${encodeURIComponent(form.dropAddress)}`,
+        )
+        .then((res: unknown) => {
+          const data = res as { distanceKm?: number };
+          if (data?.distanceKm) {
+            updateField('estimatedDistance', data.distanceKm);
+          }
+        })
+        .catch(() => {});
+    }, 1000); // debounce
+
+    return () => clearTimeout(timer);
+  }, [form.pickupAddress, form.dropAddress, updateField]);
+
   return (
-    <div className="flex flex-col gap-3" style={{ minHeight: '500px' }}>
+    <div className="flex flex-col gap-3" style={{ minHeight: '400px' }}>
       <div className="flex items-center gap-2">
         <div className="w-3 h-3 rounded-full bg-error-500" />
         <h2 className="text-base font-semibold text-neutral-800">Drop Location</h2>
@@ -390,9 +412,10 @@ function DropStep({
       <Input
         label="Estimated Distance (km)"
         type="number"
-        placeholder="50"
-        value={String(form.estimatedDistance)}
-        onChange={(e) => updateField('estimatedDistance', Number(e.target.value) || 0)}
+        placeholder="Calculating..."
+        value={form.estimatedDistance ? String(form.estimatedDistance) : ''}
+        readOnly
+        className="bg-neutral-100 cursor-not-allowed"
       />
       {/* Map fills remaining space — route if both, single location otherwise */}
       {form.pickupAddress && form.dropAddress ? (
@@ -439,7 +462,7 @@ function StopsStep({
   };
 
   return (
-    <div className="flex flex-col gap-3" style={{ minHeight: '500px' }}>
+    <div className="flex flex-col gap-3" style={{ minHeight: '400px' }}>
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-base font-semibold text-neutral-800">Intermediate Stops</h2>
@@ -506,7 +529,7 @@ function StopsStep({
 
       {/* Route map — shows pickup → stops → drop with waypoints */}
       {form.pickupAddress && form.dropAddress && MAPS_KEY && (
-        <div className="rounded-xl overflow-hidden border border-neutral-100 relative" style={{ height: 'calc(100vh - 28rem)' }}>
+        <div className="rounded-xl overflow-hidden border border-neutral-100 relative" style={{ height: 'calc(100vh - 32rem)' }}>
           {(() => {
             const validStopAddrs = form.stops
               .filter((s) => s.address.trim().length >= 3)
