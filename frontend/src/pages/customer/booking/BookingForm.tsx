@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { MapPin, Calendar, Clock, Plus, X, GripVertical, Navigation } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
@@ -170,13 +170,12 @@ export function BookingForm() {
 
       <StepIndicator steps={STEPS} current={bookingStep} />
 
-      <AnimatePresence mode="wait">
+      <div className="px-4">
         <motion.div
           key={bookingStep}
-          initial={{ opacity: 0, x: 30 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -30 }}
-          transition={{ duration: 0.2 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.15 }}
         >
           {bookingStep === 1 && <PickupStep form={form} updateField={updateField} />}
           {bookingStep === 2 && <DropStep form={form} updateField={updateField} />}
@@ -192,7 +191,7 @@ export function BookingForm() {
           )}
           {bookingStep === 6 && <ReviewStep form={form} selectedCar={selectedCar || null} />}
         </motion.div>
-      </AnimatePresence>
+      </div>
 
       {/* Sticky Bottom Actions — above bottom nav (h-16) */}
       <div className="fixed bottom-16 left-0 right-0 bg-white border-t border-neutral-100 p-4 flex gap-3 z-40">
@@ -223,7 +222,7 @@ const MAPS_KEY = import.meta.env.VITE_GOOGLE_MAPS_KEY || '';
 function LocationMapPreview({ address }: { address: string }) {
   if (!MAPS_KEY || !address || address.length < 3) {
     return (
-      <div className="h-44 rounded-xl bg-neutral-50 border border-neutral-100 flex items-center justify-center">
+      <div className="h-64 rounded-xl bg-neutral-50 border border-neutral-100 flex items-center justify-center">
         <div className="text-center">
           <Navigation className="w-8 h-8 text-neutral-200 mx-auto mb-1.5" />
           <p className="text-xs text-neutral-300">Map preview appears as you type</p>
@@ -234,7 +233,7 @@ function LocationMapPreview({ address }: { address: string }) {
 
   const embedUrl = `https://www.google.com/maps/embed/v1/place?key=${MAPS_KEY}&q=${encodeURIComponent(address)}&zoom=14`;
   return (
-    <div className="h-44 rounded-xl overflow-hidden border border-neutral-100">
+    <div className="h-64 rounded-xl overflow-hidden border border-neutral-100">
       <iframe
         src={embedUrl}
         className="w-full h-full border-0"
@@ -530,32 +529,43 @@ function ReviewStep({
 
       {/* Route Summary */}
       <div className="bg-white rounded-xl p-4 border border-neutral-100 shadow-sm">
-        <div className="flex items-start gap-3">
-          <div className="flex flex-col items-center mt-1">
-            <div className="w-2.5 h-2.5 rounded-full bg-success-500" />
-            {validStops.map((_, i) => (
-              <div key={i} className="flex flex-col items-center">
-                <div className="w-0.5 h-5 bg-neutral-200 my-0.5" />
-                <div className="w-2 h-2 rounded-full bg-amber-400" />
-              </div>
-            ))}
-            <div className="w-0.5 h-5 bg-neutral-200 my-0.5" />
-            <div className="w-2.5 h-2.5 rounded-full bg-error-500" />
-          </div>
-          <div className="flex-1 space-y-3">
-            <div>
+        <div className="space-y-0">
+          {/* Pickup */}
+          <div className="flex items-start gap-3">
+            <div className="flex flex-col items-center pt-1">
+              <div className="w-3 h-3 rounded-full bg-success-500 shrink-0" />
+              <div className="w-0.5 flex-1 bg-neutral-200 my-1" />
+            </div>
+            <div className="flex-1 pb-3">
+              <p className="text-[10px] text-success-600 font-semibold uppercase tracking-wider">Pickup</p>
               <p className="text-sm font-medium text-neutral-900">{form.pickupAddress}</p>
               {form.pickupLandmark && (
                 <p className="text-xs text-neutral-400">{form.pickupLandmark}</p>
               )}
             </div>
-            {validStops.map((stop, i) => (
-              <div key={stop.id}>
-                <p className="text-xs text-amber-600 font-medium">Stop {i + 1}</p>
+          </div>
+
+          {/* Stops */}
+          {validStops.map((stop, i) => (
+            <div key={stop.id} className="flex items-start gap-3">
+              <div className="flex flex-col items-center pt-1">
+                <div className="w-2.5 h-2.5 rounded-full bg-amber-400 shrink-0" />
+                <div className="w-0.5 flex-1 bg-neutral-200 my-1" />
+              </div>
+              <div className="flex-1 pb-3">
+                <p className="text-[10px] text-amber-600 font-semibold uppercase tracking-wider">Stop {i + 1}</p>
                 <p className="text-sm text-neutral-700">{stop.address}</p>
               </div>
-            ))}
-            <div>
+            </div>
+          ))}
+
+          {/* Drop */}
+          <div className="flex items-start gap-3">
+            <div className="flex flex-col items-center pt-1">
+              <div className="w-3 h-3 rounded-full bg-error-500 shrink-0" />
+            </div>
+            <div className="flex-1">
+              <p className="text-[10px] text-error-600 font-semibold uppercase tracking-wider">Drop</p>
               <p className="text-sm font-medium text-neutral-900">{form.dropAddress}</p>
               {form.dropLandmark && <p className="text-xs text-neutral-400">{form.dropLandmark}</p>}
             </div>
