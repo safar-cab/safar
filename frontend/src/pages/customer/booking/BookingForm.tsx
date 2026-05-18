@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { MapPin, Calendar, Clock, Plus, X, GripVertical, Navigation, LocateFixed } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -51,6 +51,12 @@ const INITIAL_FORM: FormData = {
 export function BookingForm() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const routeState = location.state as {
+    pickupAddress?: string;
+    dropAddress?: string;
+    estimatedDistance?: number;
+  } | null;
 
   const { bookingStep } = useAppSelector((s) => s.ui);
   const { available: cars, loading: carsLoading, error: carsError } = useAppSelector((s) => s.cars);
@@ -60,7 +66,12 @@ export function BookingForm() {
     error: bookingError,
   } = useAppSelector((s) => s.bookings);
 
-  const [form, setForm] = useState<FormData>(INITIAL_FORM);
+  const [form, setForm] = useState<FormData>({
+    ...INITIAL_FORM,
+    ...(routeState?.pickupAddress && { pickupAddress: routeState.pickupAddress }),
+    ...(routeState?.dropAddress && { dropAddress: routeState.dropAddress }),
+    ...(routeState?.estimatedDistance && { estimatedDistance: routeState.estimatedDistance }),
+  });
   const [submitted, setSubmitted] = useState(false);
   const [pricingConfig, setPricingConfig] = useState({
     pricePerKm: 12,
