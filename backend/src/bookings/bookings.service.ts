@@ -5,7 +5,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import {
   Booking,
   BookingDocument,
@@ -377,7 +377,7 @@ export class BookingsService {
     const booking = await this.bookingModel
       .findByIdAndUpdate(
         bookingId,
-        { driver: driverId, status: BookingStatus.DRIVER_ASSIGNED },
+        { driver: new Types.ObjectId(driverId), status: BookingStatus.DRIVER_ASSIGNED },
         { new: true },
       )
       .populate('car')
@@ -478,7 +478,10 @@ export class BookingsService {
     const driver = await this.driverModel.findOne({ userId }).select('_id').lean();
     if (!driver) return [];
 
-    const filter: any = { driver: driver._id };
+    // Match both ObjectId and string (some bookings may have string driver ID)
+    const filter: any = {
+      $or: [{ driver: driver._id }, { driver: driver._id.toString() }],
+    };
     if (query.status) filter.status = query.status;
 
     return this.bookingModel
