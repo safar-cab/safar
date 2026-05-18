@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remaining Implementation Phases — Safar Cab</title>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --card-hover: #1c2333;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --green: #3fb950;
+            --red: #f85149;
+            --yellow: #d29922;
+            --purple: #bc8cff;
+            --orange: #f0883e;
+            --cyan: #39d2c0;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .back-link {
+            display: inline-block;
+            padding: 1rem 1.5rem;
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .back-link:hover { text-decoration: underline; }
+
+        .header {
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #1c2333 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 2.5rem 2rem 2rem;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 2.2rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+        .header p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .stat { text-align: center; }
+        .stat-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+        .stat-value.green { color: var(--green); }
+        .stat-value.accent { color: var(--accent); }
+        .stat-value.orange { color: var(--orange); }
+        .stat-value.purple { color: var(--purple); }
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        /* Already Done Section */
+        .done-section {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .done-section h2 {
+            font-size: 1.1rem;
+            color: var(--green);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .done-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .done-tag {
+            font-size: 0.8rem;
+            padding: 0.3rem 0.7rem;
+            border-radius: 6px;
+            background: rgba(63,185,80,0.1);
+            color: var(--green);
+            border: 1px solid rgba(63,185,80,0.2);
+        }
+
+        /* Phase Cards */
+        .phase {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+        .phase:hover {
+            border-color: var(--accent);
+        }
+        .phase-header {
+            padding: 1.2rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            user-select: none;
+        }
+        .phase-header:hover {
+            background: var(--card-hover);
+        }
+        .phase-num {
+            font-size: 1.8rem;
+            font-weight: 800;
+            min-width: 2.5rem;
+            text-align: center;
+            line-height: 1;
+        }
+        .phase-num.p1 { color: var(--cyan); }
+        .phase-num.p2 { color: var(--orange); }
+        .phase-num.p3 { color: var(--purple); }
+        .phase-num.p4 { color: var(--accent); }
+        .phase-num.p5 { color: var(--yellow); }
+        .phase-info { flex: 1; }
+        .phase-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+        .phase-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .phase-meta {
+            text-align: right;
+        }
+        .phase-days {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .phase-dep {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        .phase-toggle {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            transition: transform 0.3s;
+        }
+        .phase.open .phase-toggle {
+            transform: rotate(180deg);
+        }
+
+        .phase-body {
+            display: none;
+            padding: 0 1.5rem 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+        .phase.open .phase-body {
+            display: block;
+        }
+
+        .task-group {
+            margin-top: 1.2rem;
+        }
+        .task-group-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.6rem;
+            padding-bottom: 0.3rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .task-group-title.c1 { color: var(--cyan); }
+        .task-group-title.c2 { color: var(--orange); }
+        .task-group-title.c3 { color: var(--purple); }
+        .task-group-title.c4 { color: var(--accent); }
+        .task-group-title.c5 { color: var(--yellow); }
+
+        .task-list {
+            list-style: none;
+            padding: 0;
+        }
+        .task-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            padding: 0.35rem 0;
+            font-size: 0.88rem;
+            color: var(--text-muted);
+        }
+        .task-list li::before {
+            content: '';
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            min-width: 14px;
+            border: 2px solid var(--border);
+            border-radius: 3px;
+            margin-top: 3px;
+        }
+
+        /* Timeline */
+        .timeline-section {
+            margin-top: 2rem;
+        }
+        .timeline-section h2 {
+            font-size: 1.2rem;
+            color: var(--purple);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .timeline-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .timeline-table th {
+            text-align: left;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .timeline-table td {
+            padding: 0.7rem 1rem;
+            border-bottom: 1px solid rgba(48,54,61,0.5);
+            font-size: 0.9rem;
+        }
+        .timeline-table tr:hover td {
+            background: var(--card);
+        }
+        .timeline-bar {
+            height: 8px;
+            border-radius: 4px;
+            min-width: 20px;
+        }
+        .timeline-bar.b1 { background: var(--cyan); width: 40%; }
+        .timeline-bar.b2 { background: var(--orange); width: 55%; }
+        .timeline-bar.b3 { background: var(--purple); width: 40%; }
+        .timeline-bar.b4 { background: var(--accent); width: 70%; }
+        .timeline-bar.b5 { background: var(--yellow); width: 40%; }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border);
+            margin-top: 2rem;
+        }
+        .footer a { color: var(--accent); text-decoration: none; }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.6rem; }
+            .header { padding: 1.5rem 1rem; }
+            .container { padding: 1rem; }
+            .phase-header { flex-wrap: wrap; }
+            .phase-meta { text-align: left; }
+            .stats { gap: 1rem; }
+            .done-grid { gap: 0.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+<a href="index.html" class="back-link">&larr; Back to Research Hub</a>
+
+<div class="header">
+    <h1>Remaining Implementation Phases</h1>
+    <p>5 phases to complete the MVP. From PWA setup to multi-stop routes — everything that's left to build.</p>
+    <div class="stats">
+        <div class="stat">
+            <div class="stat-value green">5</div>
+            <div class="stat-label">Phases</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value accent">14-18</div>
+            <div class="stat-label">Est. Days</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value orange">~50</div>
+            <div class="stat-label">Tasks</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value purple">0%</div>
+            <div class="stat-label">Complete</div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+
+    <!-- Already Done -->
+    <div class="done-section">
+        <h2>&#10003; Already Built</h2>
+        <div class="done-grid">
+            <span class="done-tag">Auth & Sessions</span>
+            <span class="done-tag">User Management</span>
+            <span class="done-tag">Cars CRUD</span>
+            <span class="done-tag">Driver Onboarding (4-tab)</span>
+            <span class="done-tag">Bookings</span>
+            <span class="done-tag">Razorpay Payments</span>
+            <span class="done-tag">Route Pricing + GST</span>
+            <span class="done-tag">Ratings</span>
+            <span class="done-tag">Email (Resend)</span>
+            <span class="done-tag">S3 Upload</span>
+            <span class="done-tag">Admin Dashboard</span>
+            <span class="done-tag">Driver Panel</span>
+            <span class="done-tag">Customer Flow</span>
+        </div>
+    </div>
+
+    <!-- Phase 1: PWA -->
+    <div class="phase open" onclick="this.classList.toggle('open')">
+        <div class="phase-header">
+            <div class="phase-num p1">1</div>
+            <div class="phase-info">
+                <div class="phase-title">PWA Setup</div>
+                <div class="phase-subtitle">Installable app, offline shell, web APIs</div>
+            </div>
+            <div class="phase-meta">
+                <div class="phase-days">2-3 days</div>
+                <div class="phase-dep">No dependencies</div>
+            </div>
+            <div class="phase-toggle">&#9660;</div>
+        </div>
+        <div class="phase-body" onclick="event.stopPropagation()">
+            <div class="task-group">
+                <div class="task-group-title c1">1.1 PWA Core Setup</div>
+                <ul class="task-list">
+                    <li>Install vite-plugin-pwa</li>
+                    <li>Configure manifest.json (name, icons, theme color, display: standalone)</li>
+                    <li>Generate app icons (all sizes: 72, 96, 128, 144, 152, 192, 384, 512)</li>
+                    <li>Configure service worker (Workbox — precache app shell)</li>
+                </ul>
+            </div>
+            <div class="task-group">
+                <div class="task-group-title c1">1.2 Offline Support</div>
+                <ul class="task-list">
+                    <li>Offline fallback page (friendly "no connection" UI)</li>
+                    <li>Cache-first strategy for static assets (JS, CSS, images)</li>
+                    <li>Network-first strategy for API calls</li>
+                    <li>Show cached data when offline (last known bookings, profile)</li>
+                </ul>
+            </div>
+            <div class="task-group">
+                <div class="task-group-title c1">1.3 Install Experience</div>
+                <ul class="task-list">
+                    <li>Custom install prompt banner (beforeinstallprompt event)</li>
+                    <li>"Add to Home Screen" button in header/settings</li>
+                    <li>Dismiss + remind later logic</li>
+                </ul>
+            </div>
+            <div class="task-group">
+                <div class="task-group-title c1">1.4 Web APIs</div>
+                <ul class="task-list">
+                    <li>Screen Orientation API — lock portrait on tracking pages</li>
+                    <li>Web Share API — share ride tracking link</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Phase 2: Notifications -->
+    <div class="phase" onclick="this.classList.toggle('open')">
+        <div class="phase-header">
+            <div class="phase-num p2">2</div>
+            <div class="phase-info">
+                <div class="phase-title">Notifications</div>
+                <div class="phase-subtitle">FCM push + MSG91 SMS for booking lifecycle</div>
+            </div>
+            <div class="phase-meta">
+                <div class="phase-days">3-4 days</div>
+                <div class="phase-dep">No dependencies</div>
+            </div>
+            <div class="phase-toggle">&#9660;</div>
+        </div>
+        <div class="phase-body" onclick="event.stopPropagation()">
+            <div class="task-group">
+                <div class="task-group-title c2">2.1 FCM Push Setup</div>
+                <ul class="task-list">
+                    <li>Create Firebase project + web app config</li>
+                    <li>Install firebase SDK in frontend</li>
+                    <li>FCM service worker (firebase-messaging-sw.js)</li>
+                    <li>Permission request flow (ask at right moment, not on page load)</li>
+                    <li>Store FCM token in user document (backend API)</li>
+                    <li>Handle token refresh</li>
+                </ul>
+            </div>
+            <div class="task-group">
+                <div class="task-group-title c2">2.2 Backend Notification Service</div>
+                <ul class="task-list">
+                    <li>NotificationModule in NestJS</li>
+                    <li>NotificationService — send push via FCM Admin SDK</li>
+                    <li>SmsService — send SMS via MSG91 API</li>
+                    <li>Notification schema (MongoDB) — type, userId, title, body, read, createdAt</li>
+                    <li>BullMQ queue for async notification dispatch</li>
+                    <li>Notification preferences per user (push on/off, SMS on/off)</li>
+                </ul>
+            </div>
+            <div class="task-group">
+                <div class="task-group-title c2">2.3 Notification Triggers</div>
+                <ul class="task-list">
+                    <li>Booking confirmed — push + SMS to customer</li>
+                    <li>Driver assigned — push to driver + customer</li>
+                    <li>Driver en route — push to customer</li>
+                    <li>Driver arrived — push + vibration to customer</li>
+                    <li>Ride started — push to customer</li>
+                    <li>Ride completed — push + SMS to customer</li>
+                    <li>Payment received — push to customer</li>
+                    <li>Booking cancelled — push + SMS to affected parties</li>
+                    <li>Admin: manual notification broadcast</li>
+                </ul>
+            </div>
+            <div class="task-group">
+                <div class="task-group-title c2">2.4 Notification UI</div>
+                <ul class="task-list">
+                    <li>Notification bell icon with unread count (header)</li>
+                    <li>Notification dropdown/page — list all notifications</li>
+                    <li>Mark as read (single + all)</li>
+                    <li>Vibration API on key events (driver arrived, booking confirmed)</li>
+                    <li>Admin: notification log/center</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Phase 3: Document Management -->
+    <div class="phase" onclick="this.classList.toggle('open')">
+        <div class="phase-header">
+            <div class="phase-num p3">3</div>
+            <div class="phase-info">
+                <div class="phase-title">Document Management</div>
+                <div class="phase-subtitle">Upload, verify, track expiry for driver/car docs</div>
+            </div>
+            <div class="phase-meta">
+                <div class="phase-days">2-3 days</div>
+                <div class="phase-dep">After Phase 1</div>
+            </div>
+            <div class="phase-toggle">&#9660;</div>
+        </div>
+        <div class="phase-body" onclick="event.stopPropagation()">
+            <div class="task-group">
+                <div class="task-group-title c3">3.1 Document Schema + API</div>
+                <ul class="task-list">
+                    <li>Document schema — type, entityType (car/driver), entityId, fileUrl, status (pending/verified/rejected), expiryDate, verifiedBy, notes</li>
+                    <li>Document types: driving license, Aadhaar, PAN, car RC, insurance, permit, fitness cert, pollution cert</li>
+                    <li>CRUD API for documents</li>
+                    <li>Upload endpoint (reuse S3 upload)</li>
+                </ul>
+            </div>
+            <div class="task-group">
+                <div class="task-group-title c3">3.2 Verification Workflow</div>
+                <ul class="task-list">
+                    <li>Admin: document review page (pending documents queue)</li>
+                    <li>Approve/reject with notes</li>
+                    <li>Auto-flag expired documents (NestJS @Cron daily check)</li>
+                    <li>Block driver/car if required document missing or expired</li>
+                    <li>Email/push notification on document status change</li>
+                </ul>
+            </div>
+            <div class="task-group">
+                <div class="task-group-title c3">3.3 Driver/Car Integration</div>
+                <ul class="task-list">
+                    <li>Driver detail page — documents tab (add 5th tab to existing form)</li>
+                    <li>Car detail page — documents section</li>
+                    <li>Document status badges (pending/verified/expired/rejected)</li>
+                    <li>Bulk document status overview for admin</li>
+                </ul>
+            </div>
+            <div class="task-group">
+                <div class="task-group-title c3">3.4 Document Expiry Tracking</div>
+                <ul class="task-list">
+                    <li>Dashboard widget: expiring documents (next 30 days)</li>
+                    <li>Admin alert: documents expiring soon</li>
+                    <li>Driver notification: "Your license expires in X days"</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Phase 4: GPS Tracking -->
+    <div class="phase" onclick="this.classList.toggle('open')">
+        <div class="phase-header">
+            <div class="phase-num p4">4</div>
+            <div class="phase-info">
+                <div class="phase-title">GPS Tracking</div>
+                <div class="phase-subtitle">Real-time driver location, live map, ride status flow</div>
+            </div>
+            <div class="phase-meta">
+                <div class="phase-days">4-5 days</div>
+                <div class="phase-dep">After Phase 2</div>
+            </div>
+            <div class="phase-toggle">&#9660;</div>
+        </div>
+        <div class="phase-body" onclick="event.stopPropagation()">
+            <div class="task-group">
+                <div class="task-group-title c4">4.1 WebSocket Gateway</div>
+                <ul class="task-list">
+                    <li>Install @nestjs/websockets + socket.io</li>
+                    <li>TrackingGateway — WebSocket gateway in NestJS</li>
+                    <li>Room-based architecture: each active booking = 1 room</li>
+                    <li>Auth middleware for WebSocket (validate session cookie)</li>
+                    <li>Connection/disconnection handling</li>
+                </ul>
+            </div>
+            <div class="task-group">
+                <div class="task-group-title c4">4.2 Driver Location Sending</div>
+                <ul class="task-list">
+                    <li>useGeolocation hook — watch position with high accuracy</li>
+                    <li>Send location via WebSocket every 5-10 seconds (configurable)</li>
+                    <li>Battery-aware frequency (reduce when battery low)</li>
+                    <li>Wake Lock API — keep screen on during active ride</li>
+                    <li>Fallback: periodic HTTP POST if WebSocket disconnects</li>
+                    <li>Background location (limited on web — document limitations)</li>
+                </ul>
+            </div>
+            <div class="task-group">
+                <div class="task-group-title c4">4.3 Location Broadcasting</div>
+                <ul class="task-list">
+                    <li>NestJS receives driver location — broadcast to booking room</li>
+                    <li>Store location history in MongoDB (for route replay)</li>
+                    <li>Calculate ETA based on current location + destination</li>
+                    <li>Update booking with last known location</li>
+                </ul>
+            </div>
+            <div class="task-group">
+                <div class="task-group-title c4">4.4 Customer Live Map</div>
+                <ul class="task-list">
+                    <li>Google Maps component with driver marker (real-time)</li>
+                    <li>Smooth marker animation between position updates</li>
+                    <li>Show route line (pickup &rarr; stops &rarr; drop)</li>
+                    <li>ETA display (updating in real-time)</li>
+                    <li>Driver status overlay (en route / arrived / trip in progress)</li>
+                </ul>
+            </div>
+            <div class="task-group">
+                <div class="task-group-title c4">4.5 Ride Status Flow</div>
+                <ul class="task-list">
+                    <li>Driver status buttons: Accept &rarr; En Route &rarr; Arrived &rarr; Picked Up &rarr; [Stops] &rarr; Completed</li>
+                    <li>Each status change &rarr; notification to customer</li>
+                    <li>Each status change &rarr; update booking status</li>
+                    <li>Navigation link: open Google Maps with directions</li>
+                    <li>Admin: live view of all active rides on map</li>
+                </ul>
+            </div>
+            <div class="task-group">
+                <div class="task-group-title c4">4.6 Traccar Integration (Post-MVP)</div>
+                <ul class="task-list">
+                    <li>Traccar server setup (Docker)</li>
+                    <li>Fusion service: pick best source (phone GPS vs car GPS)</li>
+                    <li>Fallback logic when phone GPS unavailable</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Phase 5: Multi-Stop Routes -->
+    <div class="phase" onclick="this.classList.toggle('open')">
+        <div class="phase-header">
+            <div class="phase-num p5">5</div>
+            <div class="phase-info">
+                <div class="phase-title">Multi-Stop Routes</div>
+                <div class="phase-subtitle">Waypoint builder, stop pricing, navigation</div>
+            </div>
+            <div class="phase-meta">
+                <div class="phase-days">2-3 days</div>
+                <div class="phase-dep">After Phase 4</div>
+            </div>
+            <div class="phase-toggle">&#9660;</div>
+        </div>
+        <div class="phase-body" onclick="event.stopPropagation()">
+            <div class="task-group">
+                <div class="task-group-title c5">5.1 Route Builder UI</div>
+                <ul class="task-list">
+                    <li>Multi-stop input (add/remove/reorder stops via drag)</li>
+                    <li>Google Places autocomplete for each stop</li>
+                    <li>Visual route preview on map (all waypoints)</li>
+                    <li>Distance + duration calculation with stops</li>
+                </ul>
+            </div>
+            <div class="task-group">
+                <div class="task-group-title c5">5.2 Pricing with Stops</div>
+                <ul class="task-list">
+                    <li>Calculate total distance including all stops</li>
+                    <li>Per-stop waiting charge (configurable)</li>
+                    <li>Price breakdown: base + per-km + stop charges + tolls + GST</li>
+                    <li>Update route pricing API to handle waypoints</li>
+                </ul>
+            </div>
+            <div class="task-group">
+                <div class="task-group-title c5">5.3 Booking Flow Updates</div>
+                <ul class="task-list">
+                    <li>Store stops array in booking document</li>
+                    <li>Driver view: ordered stop list with navigation</li>
+                    <li>Driver: mark each stop as reached</li>
+                    <li>Customer: see progress through stops</li>
+                    <li>Admin: view stops in booking detail</li>
+                </ul>
+            </div>
+            <div class="task-group">
+                <div class="task-group-title c5">5.4 Navigation Integration</div>
+                <ul class="task-list">
+                    <li>Generate Google Maps navigation URL with all waypoints</li>
+                    <li>Open native navigation with all stops pre-loaded</li>
+                    <li>Re-route handling (stop order changes)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Timeline Summary -->
+    <div class="timeline-section">
+        <h2>Timeline Summary</h2>
+        <table class="timeline-table">
+            <thead>
+                <tr>
+                    <th>Phase</th>
+                    <th>Scope</th>
+                    <th>Days</th>
+                    <th>Dependency</th>
+                    <th>Progress</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong style="color:var(--cyan)">1</strong></td>
+                    <td>PWA Setup</td>
+                    <td>2-3</td>
+                    <td style="color:var(--text-muted)">None</td>
+                    <td><div class="timeline-bar b1"></div></td>
+                </tr>
+                <tr>
+                    <td><strong style="color:var(--orange)">2</strong></td>
+                    <td>Notifications</td>
+                    <td>3-4</td>
+                    <td style="color:var(--text-muted)">None</td>
+                    <td><div class="timeline-bar b2"></div></td>
+                </tr>
+                <tr>
+                    <td><strong style="color:var(--purple)">3</strong></td>
+                    <td>Document Management</td>
+                    <td>2-3</td>
+                    <td style="color:var(--text-muted)">Phase 1</td>
+                    <td><div class="timeline-bar b3"></div></td>
+                </tr>
+                <tr>
+                    <td><strong style="color:var(--accent)">4</strong></td>
+                    <td>GPS Tracking</td>
+                    <td>4-5</td>
+                    <td style="color:var(--text-muted)">Phase 2</td>
+                    <td><div class="timeline-bar b4"></div></td>
+                </tr>
+                <tr>
+                    <td><strong style="color:var(--yellow)">5</strong></td>
+                    <td>Multi-Stop Routes</td>
+                    <td>2-3</td>
+                    <td style="color:var(--text-muted)">Phase 4</td>
+                    <td><div class="timeline-bar b5"></div></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<div class="footer">
+    <p><a href="index.html">&larr; Research Hub</a> | <a href="15-implementation-phases.html">Original Build Plan</a></p>
+    <p style="margin-top:0.5rem">Total estimate: <strong>14-18 days</strong> | Phase 1 starts next</p>
+</div>
+
+</body>
+</html>

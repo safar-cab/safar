@@ -95,6 +95,15 @@ export class DriverBookingsController {
   updateStatus(@Param('id') id: string, @Body('status') status: BookingStatus) {
     return this.bookingsService.updateStatus(id, status);
   }
+
+  @Put(':id/stops/:order/reached')
+  @ApiOperation({ summary: 'Mark a stop as reached' })
+  markStopReached(
+    @Param('id') id: string,
+    @Param('order') order: string,
+  ) {
+    return this.bookingsService.markStopReached(id, parseInt(order));
+  }
 }
 
 @ApiTags('Admin - Bookings')

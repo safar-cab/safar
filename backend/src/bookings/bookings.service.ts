@@ -12,6 +12,9 @@ import {
   BookingStatus,
 } from '../schemas/booking.schema';
 import { CreateBookingDto } from './dto/create-booking.dto';
+import { NotificationsService } from '../notifications/notifications.service';
+import { User, UserDocument } from '../schemas/user.schema';
+import { Driver, DriverDocument } from '../schemas/driver.schema';
 
 @Injectable()
 export class BookingsService {
@@ -19,6 +22,9 @@ export class BookingsService {
 
   constructor(
     @InjectModel(Booking.name) private bookingModel: Model<BookingDocument>,
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @InjectModel(Driver.name) private driverModel: Model<DriverDocument>,
+    private notificationsService: NotificationsService,
   ) {}
 
   private async generateBookingId(): Promise<string> {
@@ -39,7 +45,10 @@ export class BookingsService {
     const distanceKm = dto.estimatedDistanceKm || 100;
     const distanceCharge = distanceKm * pricePerKm;
     const tollEstimate = 0;
-    const taxableAmount = baseFare + distanceCharge; // Tolls exempt from GST
+    const stopChargePerStop = 100; // ₹100 per intermediate stop (waiting charge)
+    const stopCount = dto.stops?.length || 0;
+    const totalStopCharge = stopCount * stopChargePerStop;
+    const taxableAmount = baseFare + distanceCharge + totalStopCharge; // Tolls exempt from GST
     const cgst = Math.round(taxableAmount * 0.025); // 2.5% CGST
     const sgst = Math.round(taxableAmount * 0.025); // 2.5% SGST
     const gstAmount = cgst + sgst; // 5% total GST
@@ -86,6 +95,9 @@ export class BookingsService {
         baseFare,
         distanceCharge,
         tollEstimate,
+        stopChargePerStop,
+        stopCount,
+        totalStopCharge,
         cgst,
         sgst,
         gstAmount,
@@ -169,6 +181,22 @@ export class BookingsService {
     await booking.save();
 
     this.logger.log(`Booking ${booking.bookingId} cancelled by ${cancelledBy}`);
+
+    // Notify customer + driver
+    const user = await this.userModel.findById(booking.user).select('phone').lean();
+    let driverUserId: string | undefined;
+    if (booking.driver) {
+      const driver = await this.driverModel.findById(booking.driver).select('userId').lean();
+      driverUserId = driver?.userId?.toString();
+    }
+    this.notificationsService.onBookingCancelled(
+      booking.user.toString(),
+      booking.bookingId,
+      booking.pricing.totalAmount,
+      user?.phone,
+      driverUserId,
+    );
+
     return booking;
   }
 
@@ -237,6 +265,19 @@ export class BookingsService {
     this.logger.log(
       `Driver ${driverId} assigned to booking ${booking.bookingId}`,
     );
+
+    // Notify customer + driver
+    const driver = await this.driverModel.findById(driverId).select('userId').lean();
+    const driverUser = driver
+      ? await this.userModel.findById(driver.userId).select('name').lean()
+      : null;
+    this.notificationsService.onDriverAssigned(
+      booking.user.toString(),
+      booking.bookingId,
+      driverUser?.name || 'Your driver',
+      driver?.userId?.toString(),
+    );
+
     return booking;
   }
 
@@ -265,6 +306,38 @@ export class BookingsService {
 
     await booking.save();
     this.logger.log(`Booking ${booking.bookingId} status → ${status}`);
+
+    // Send notifications based on status
+    const userId = booking.user.toString();
+    const user = await this.userModel.findById(booking.user).select('phone').lean();
+    const phone = user?.phone;
+
+    if (status === BookingStatus.DRIVER_EN_ROUTE) {
+      this.notificationsService.onDriverEnRoute(userId, booking.bookingId);
+    } else if (status === BookingStatus.PICKED_UP) {
+      this.notificationsService.onDriverArrived(userId, booking.bookingId);
+    } else if (status === BookingStatus.IN_PROGRESS) {
+      const driver = booking.driver
+        ? await this.driverModel.findById(booking.driver).select('userId').lean()
+        : null;
+      const driverUser = driver
+        ? await this.userModel.findById(driver.userId).select('name').lean()
+        : null;
+      this.notificationsService.onRideStarted(
+        userId,
+        booking.bookingId,
+        driverUser?.name || 'Driver',
+        phone,
+      );
+    } else if (status === BookingStatus.COMPLETED) {
+      this.notificationsService.onRideCompleted(
+        userId,
+        booking.bookingId,
+        booking.pricing.totalAmount,
+        phone,
+      );
+    }
+
     return booking;
   }
 
@@ -281,13 +354,58 @@ export class BookingsService {
       .lean();
   }
 
+  async markStopReached(bookingId: string, stopOrder: number) {
+    const booking = await this.bookingModel.findById(bookingId);
+    if (!booking) throw new NotFoundException('Booking not found');
+
+    const stop = booking.stops.find((s) => s.order === stopOrder);
+    if (!stop) throw new BadRequestException(`Stop ${stopOrder} not found`);
+
+    stop.status = 'reached';
+    stop.reachedAt = new Date();
+    await booking.save();
+
+    this.logger.log(
+      `Stop ${stopOrder} reached for booking ${booking.bookingId}`,
+    );
+
+    // Notify customer
+    const userId = booking.user.toString();
+    this.notificationsService.notify({
+      userId,
+      title: 'Stop Reached',
+      body: `Driver reached stop ${stopOrder}: ${stop.address}`,
+      type: 'general' as any,
+      data: { bookingId: booking._id.toString(), url: `/customer/track/${booking._id}` },
+    });
+
+    return booking;
+  }
+
   async confirmPayment(bookingId: string) {
-    return this.bookingModel
+    const booking = await this.bookingModel
       .findByIdAndUpdate(
         bookingId,
         { status: BookingStatus.CONFIRMED },
         { new: true },
       )
       .lean();
+
+    if (booking) {
+      const user = await this.userModel.findById(booking.user).select('phone').lean();
+      this.notificationsService.onBookingConfirmed(
+        booking.user.toString(),
+        booking.bookingId,
+        booking.pricing.totalAmount,
+        user?.phone,
+      );
+      this.notificationsService.onPaymentReceived(
+        booking.user.toString(),
+        booking.bookingId,
+        booking.pricing.totalAmount,
+      );
+    }
+
+    return booking;
   }
 }

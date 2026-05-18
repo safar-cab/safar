@@ -16,6 +16,9 @@ import { AdminModule } from './admin/admin.module';
 import { UploadModule } from './upload/upload.module';
 import { EmailModule } from './email/email.module';
 import { LookupModule } from './lookup/lookup.module';
+import { NotificationsModule } from './notifications/notifications.module';
+import { DocumentsModule } from './documents/documents.module';
+import { TrackingModule } from './tracking/tracking.module';
 
 @Module({
   imports: [
@@ -43,6 +46,9 @@ import { LookupModule } from './lookup/lookup.module';
     UploadModule,
     EmailModule,
     LookupModule,
+    NotificationsModule,
+    DocumentsModule,
+    TrackingModule,
   ],
   controllers: [AppController],
   providers: [AppService],

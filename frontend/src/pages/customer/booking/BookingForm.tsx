@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Calendar, Clock } from 'lucide-react';
+import { MapPin, Calendar, Clock, Plus, X, GripVertical } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setBookingStep } from '@/store/slices/uiSlice';
@@ -16,13 +16,19 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Skeleton } from '@/components/ui/Skeleton';
 
-const STEPS = ['Pickup', 'Drop', 'Schedule', 'Car', 'Review'];
+const STEPS = ['Pickup', 'Drop', 'Stops', 'Schedule', 'Car', 'Review'];
+
+interface StopItem {
+  id: string;
+  address: string;
+}
 
 interface FormData {
   pickupAddress: string;
   pickupLandmark: string;
   dropAddress: string;
   dropLandmark: string;
+  stops: StopItem[];
   date: string;
   time: string;
   selectedCarId: string;
@@ -34,6 +40,7 @@ const INITIAL_FORM: FormData = {
   pickupLandmark: '',
   dropAddress: '',
   dropLandmark: '',
+  stops: [],
   date: '',
   time: '',
   selectedCarId: '',
@@ -63,9 +70,9 @@ export function BookingForm() {
     };
   }, [dispatch]);
 
-  // Fetch cars when reaching step 4
+  // Fetch cars when reaching step 5
   useEffect(() => {
-    if (bookingStep === 4) {
+    if (bookingStep === 5) {
       dispatch(fetchAvailableCars(undefined));
     }
   }, [dispatch, bookingStep]);
@@ -98,10 +105,12 @@ export function BookingForm() {
       case 2:
         return form.dropAddress.trim().length > 0;
       case 3:
-        return form.date.length > 0 && form.time.length > 0;
+        return true; // stops are optional
       case 4:
-        return form.selectedCarId.length > 0;
+        return form.date.length > 0 && form.time.length > 0;
       case 5:
+        return form.selectedCarId.length > 0;
+      case 6:
         return true;
       default:
         return false;
@@ -109,7 +118,7 @@ export function BookingForm() {
   };
 
   const handleNext = () => {
-    if (bookingStep < 5) {
+    if (bookingStep < 6) {
       dispatch(setBookingStep(bookingStep + 1));
     } else {
       handleConfirm();
@@ -126,6 +135,10 @@ export function BookingForm() {
 
   const handleConfirm = () => {
     const selectedCar = cars.find((c) => c._id === form.selectedCarId);
+    const stops = form.stops
+      .filter((s) => s.address.trim())
+      .map((s, i) => ({ order: i + 1, address: s.address }));
+
     setSubmitted(true);
     dispatch(
       createBooking({
@@ -137,6 +150,7 @@ export function BookingForm() {
           address: form.dropAddress,
           landmark: form.dropLandmark || undefined,
         },
+        stops: stops.length > 0 ? stops : undefined,
         schedule: {
           startDate: form.date,
           startTime: form.time,
@@ -166,8 +180,9 @@ export function BookingForm() {
         >
           {bookingStep === 1 && <PickupStep form={form} updateField={updateField} />}
           {bookingStep === 2 && <DropStep form={form} updateField={updateField} />}
-          {bookingStep === 3 && <ScheduleStep form={form} updateField={updateField} />}
-          {bookingStep === 4 && (
+          {bookingStep === 3 && <StopsStep form={form} updateField={updateField} />}
+          {bookingStep === 4 && <ScheduleStep form={form} updateField={updateField} />}
+          {bookingStep === 5 && (
             <CarStep
               cars={cars}
               loading={carsLoading}
@@ -175,7 +190,7 @@ export function BookingForm() {
               onSelect={(id) => updateField('selectedCarId', id)}
             />
           )}
-          {bookingStep === 5 && <ReviewStep form={form} selectedCar={selectedCar || null} />}
+          {bookingStep === 6 && <ReviewStep form={form} selectedCar={selectedCar || null} />}
         </motion.div>
       </AnimatePresence>
 
@@ -194,7 +209,7 @@ export function BookingForm() {
           loading={creating}
           onClick={handleNext}
         >
-          {bookingStep === 5 ? 'Confirm Booking' : 'Next'}
+          {bookingStep === 6 ? 'Confirm Booking' : 'Next'}
         </Button>
       </div>
     </div>
@@ -266,6 +281,106 @@ function DropStep({
         value={String(form.estimatedDistance)}
         onChange={(e) => updateField('estimatedDistance', Number(e.target.value) || 0)}
       />
+    </div>
+  );
+}
+
+function StopsStep({
+  form,
+  updateField,
+}: {
+  form: FormData;
+  updateField: <K extends keyof FormData>(key: K, val: FormData[K]) => void;
+}) {
+  const addStop = () => {
+    if (form.stops.length >= 5) return;
+    updateField('stops', [...form.stops, { id: Date.now().toString(), address: '' }]);
+  };
+
+  const removeStop = (id: string) => {
+    updateField('stops', form.stops.filter((s) => s.id !== id));
+  };
+
+  const updateStop = (id: string, address: string) => {
+    updateField(
+      'stops',
+      form.stops.map((s) => (s.id === id ? { ...s, address } : s)),
+    );
+  };
+
+  const moveStop = (index: number, direction: 'up' | 'down') => {
+    const newStops = [...form.stops];
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= newStops.length) return;
+    [newStops[index], newStops[targetIndex]] = [newStops[targetIndex], newStops[index]];
+    updateField('stops', newStops);
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between mb-2">
+        <div>
+          <h2 className="text-base font-semibold text-neutral-800">Intermediate Stops</h2>
+          <p className="text-xs text-neutral-400">Optional — add stops along the way (₹100/stop)</p>
+        </div>
+        <button
+          onClick={addStop}
+          disabled={form.stops.length >= 5}
+          className="flex items-center gap-1 text-sm font-medium text-primary-600 hover:text-primary-700 disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          <Plus className="w-4 h-4" />
+          Add Stop
+        </button>
+      </div>
+
+      {form.stops.length === 0 ? (
+        <div className="text-center py-8 bg-neutral-50 rounded-xl border border-dashed border-neutral-200">
+          <MapPin className="w-8 h-8 text-neutral-200 mx-auto mb-2" />
+          <p className="text-sm text-neutral-400">No intermediate stops</p>
+          <p className="text-xs text-neutral-300 mt-1">Tap "Add Stop" to add waypoints</p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {form.stops.map((stop, index) => (
+            <div
+              key={stop.id}
+              className="flex items-center gap-2 bg-white rounded-lg border border-neutral-100 p-3"
+            >
+              <div className="flex flex-col gap-0.5">
+                <button
+                  onClick={() => moveStop(index, 'up')}
+                  disabled={index === 0}
+                  className="text-neutral-300 hover:text-neutral-500 disabled:opacity-30"
+                >
+                  <GripVertical className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="w-6 h-6 rounded-full bg-amber-100 flex items-center justify-center text-xs font-bold text-amber-600 shrink-0">
+                {index + 1}
+              </div>
+              <input
+                type="text"
+                placeholder={`Stop ${index + 1} address`}
+                value={stop.address}
+                onChange={(e) => updateStop(stop.id, e.target.value)}
+                className="flex-1 text-sm border-0 outline-none bg-transparent placeholder:text-neutral-300"
+              />
+              <button
+                onClick={() => removeStop(stop.id)}
+                className="p-1 text-neutral-300 hover:text-red-500 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {form.stops.length > 0 && (
+        <p className="text-xs text-neutral-400 text-right">
+          Stop charge: ₹{form.stops.filter((s) => s.address.trim()).length * 100}
+        </p>
+      )}
     </div>
   );
 }
@@ -348,12 +463,13 @@ function ReviewStep({
   form: FormData;
   selectedCar: { make: string; model: string; category: string } | null;
 }) {
-  // Estimated pricing
+  const validStops = form.stops.filter((s) => s.address.trim());
   const pricePerKm = 12;
   const baseFare = 300;
   const distanceCharge = form.estimatedDistance * pricePerKm;
   const tollEstimate = 150;
-  const subtotal = baseFare + distanceCharge + tollEstimate;
+  const stopCharge = validStops.length * 100;
+  const subtotal = baseFare + distanceCharge + tollEstimate + stopCharge;
   const gstAmount = Math.round(subtotal * 0.05);
   const totalAmount = subtotal + gstAmount;
 
@@ -366,7 +482,13 @@ function ReviewStep({
         <div className="flex items-start gap-3">
           <div className="flex flex-col items-center mt-1">
             <div className="w-2.5 h-2.5 rounded-full bg-success-500" />
-            <div className="w-0.5 h-8 bg-neutral-200 my-1" />
+            {validStops.map((_, i) => (
+              <div key={i} className="flex flex-col items-center">
+                <div className="w-0.5 h-5 bg-neutral-200 my-0.5" />
+                <div className="w-2 h-2 rounded-full bg-amber-400" />
+              </div>
+            ))}
+            <div className="w-0.5 h-5 bg-neutral-200 my-0.5" />
             <div className="w-2.5 h-2.5 rounded-full bg-error-500" />
           </div>
           <div className="flex-1 space-y-3">
@@ -376,6 +498,12 @@ function ReviewStep({
                 <p className="text-xs text-neutral-400">{form.pickupLandmark}</p>
               )}
             </div>
+            {validStops.map((stop, i) => (
+              <div key={stop.id}>
+                <p className="text-xs text-amber-600 font-medium">Stop {i + 1}</p>
+                <p className="text-sm text-neutral-700">{stop.address}</p>
+              </div>
+            ))}
             <div>
               <p className="text-sm font-medium text-neutral-900">{form.dropAddress}</p>
               {form.dropLandmark && <p className="text-xs text-neutral-400">{form.dropLandmark}</p>}
@@ -422,6 +550,9 @@ function ReviewStep({
         distanceKm={form.estimatedDistance}
         pricePerKm={pricePerKm}
         tollEstimate={tollEstimate}
+        stopCount={validStops.length}
+        stopChargePerStop={100}
+        totalStopCharge={stopCharge}
         gstAmount={gstAmount}
         totalAmount={totalAmount}
       />

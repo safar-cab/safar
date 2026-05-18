@@ -57,6 +57,20 @@ export class User {
   @Prop({ type: [String], default: [] })
   fcmTokens: string[];
 
+  @Prop({
+    type: {
+      pushEnabled: { type: Boolean, default: true },
+      smsEnabled: { type: Boolean, default: true },
+      emailEnabled: { type: Boolean, default: true },
+    },
+    default: { pushEnabled: true, smsEnabled: true, emailEnabled: true },
+  })
+  notificationPrefs: {
+    pushEnabled: boolean;
+    smsEnabled: boolean;
+    emailEnabled: boolean;
+  };
+
   @Prop()
   lastLogin: Date;
 }

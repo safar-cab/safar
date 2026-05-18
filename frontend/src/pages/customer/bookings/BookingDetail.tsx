@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { MapPin, Clock, Car, Navigation, AlertTriangle } from 'lucide-react';
+import { MapPin, Clock, Car, Navigation, AlertTriangle, Share2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { fetchBookingDetail, cancelBooking } from '@/store/slices/bookingsSlice';
+import { useShare } from '@/hooks/useShare';
 import { PriceBreakdown } from '@/components/core/PriceBreakdown';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Badge } from '@/components/ui/Badge';
@@ -39,6 +40,7 @@ export function BookingDetail() {
 
   const [cancelModal, setCancelModal] = useState(false);
   const [cancelReason, setCancelReason] = useState('');
+  const { share } = useShare();
 
   useEffect(() => {
     if (id) dispatch(fetchBookingDetail(id));
@@ -84,7 +86,23 @@ export function BookingDetail() {
         className="flex items-center justify-between mb-6"
       >
         <span className="text-sm font-mono text-neutral-400">{booking.bookingId}</span>
-        <Badge status={booking.status} />
+        <div className="flex items-center gap-2">
+          <button
+            onClick={async () => {
+              const result = await share({
+                title: `Safar Ride ${booking.bookingId}`,
+                text: `Track my ride from ${booking.pickup?.address} to ${booking.drop?.address}`,
+                url: window.location.href,
+              });
+              if (result === 'copied') toast.success('Link copied!');
+            }}
+            className="p-1.5 text-neutral-400 hover:text-primary-500 transition-colors"
+            aria-label="Share booking"
+          >
+            <Share2 className="w-4 h-4" />
+          </button>
+          <Badge status={booking.status} />
+        </div>
       </motion.div>
 
       {/* Route Card */}
@@ -97,16 +115,34 @@ export function BookingDetail() {
         <div className="flex items-start gap-3">
           <div className="flex flex-col items-center mt-1">
             <div className="w-3 h-3 rounded-full bg-success-500" />
-            <div className="w-0.5 h-10 bg-neutral-200 my-1" />
+            {(booking.stops || []).map((_, i) => (
+              <div key={i} className="flex flex-col items-center">
+                <div className="w-0.5 h-6 bg-neutral-200 my-0.5" />
+                <div className={cn(
+                  'w-2.5 h-2.5 rounded-full',
+                  _.status === 'reached' ? 'bg-success-500' : 'bg-amber-400',
+                )} />
+              </div>
+            ))}
+            <div className="w-0.5 h-6 bg-neutral-200 my-0.5" />
             <div className="w-3 h-3 rounded-full bg-error-500" />
           </div>
-          <div className="flex-1 space-y-4">
+          <div className="flex-1 space-y-3">
             <div>
               <p className="text-sm font-medium text-neutral-900">{booking.pickup?.address}</p>
               {booking.pickup?.landmark && (
                 <p className="text-xs text-neutral-400 mt-0.5">{booking.pickup.landmark}</p>
               )}
             </div>
+            {(booking.stops || []).map((stop: any, i: number) => (
+              <div key={i}>
+                <p className="text-xs text-amber-600 font-medium">
+                  Stop {stop.order || i + 1}
+                  {stop.status === 'reached' && ' ✓'}
+                </p>
+                <p className="text-sm text-neutral-700">{stop.address}</p>
+              </div>
+            ))}
             <div>
               <p className="text-sm font-medium text-neutral-900">{booking.drop?.address}</p>
               {booking.drop?.landmark && (
@@ -240,6 +276,9 @@ export function BookingDetail() {
             distanceKm={booking.distance?.estimated || 0}
             pricePerKm={booking.pricing.pricePerKm}
             tollEstimate={booking.pricing.tollEstimate}
+            stopCount={booking.pricing.stopCount}
+            stopChargePerStop={booking.pricing.stopChargePerStop}
+            totalStopCharge={booking.pricing.totalStopCharge}
             gstAmount={booking.pricing.gstAmount}
             totalAmount={booking.pricing.totalAmount}
           />

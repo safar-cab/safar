@@ -8,6 +8,8 @@ import {
   Users,
   IndianRupee,
   Map,
+  FileCheck,
+  Radio,
   Settings,
   LogOut,
   Menu,
@@ -15,6 +17,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/cn';
+import { NotificationBell } from '@/components/core/NotificationBell';
 
 const navItems = [
   { to: '/admin', icon: LayoutDashboard, label: 'Dashboard', end: true },
@@ -24,6 +27,8 @@ const navItems = [
   { to: '/admin/users', icon: Users, label: 'Users' },
   { to: '/admin/payments', icon: IndianRupee, label: 'Payments' },
   { to: '/admin/routes', icon: Map, label: 'Routes' },
+  { to: '/admin/documents', icon: FileCheck, label: 'Documents' },
+  { to: '/admin/live-rides', icon: Radio, label: 'Live Rides' },
   { to: '/admin/settings', icon: Settings, label: 'Settings' },
 ];
 
@@ -115,13 +120,16 @@ export function AdminLayout() {
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top bar */}
-        <header className="h-16 bg-white border-b border-neutral-200 flex items-center px-4 lg:px-6 sticky top-0 z-30">
+        <header className="h-16 bg-white border-b border-neutral-200 flex items-center justify-between px-4 lg:px-6 sticky top-0 z-30">
           <button
             onClick={() => setSidebarOpen(true)}
             className="lg:hidden p-2 -ml-2 text-neutral-600 hover:text-neutral-900"
           >
             <Menu className="w-5 h-5" />
           </button>
+          <div className="ml-auto">
+            <NotificationBell />
+          </div>
         </header>
 
         {/* Content */}

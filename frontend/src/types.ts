@@ -103,6 +103,9 @@ export interface Booking {
     baseFare: number;
     distanceCharge: number;
     tollEstimate: number;
+    stopChargePerStop?: number;
+    stopCount?: number;
+    totalStopCharge?: number;
     cgst: number;
     sgst: number;
     gstAmount: number;
