@@ -75,10 +75,7 @@ const routesSlice = createSlice({
       state.states = action.payload;
     },
     fetchCities(_state, _action: PayloadAction<string>) {},
-    fetchCitiesSuccess(
-      state,
-      action: PayloadAction<{ stateId: string; cities: CityOption[] }>,
-    ) {
+    fetchCitiesSuccess(state, action: PayloadAction<{ stateId: string; cities: CityOption[] }>) {
       state.cities[action.payload.stateId] = action.payload.cities;
     },
 

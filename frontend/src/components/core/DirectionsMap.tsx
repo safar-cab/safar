@@ -148,7 +148,6 @@ function DirectionsLayer({
     setSelectedIdx(0);
     setRoutesSummary([]);
 
-
     const service = new routesLib.DirectionsService();
     service.route(
       {
@@ -159,7 +158,14 @@ function DirectionsLayer({
       },
       (result: any, status: any) => {
         if (status !== 'OK' || !result) {
-          console.error('[DirectionsMap] Directions failed:', status, '— origin:', origin, 'dest:', destination);
+          console.error(
+            '[DirectionsMap] Directions failed:',
+            status,
+            '— origin:',
+            origin,
+            'dest:',
+            destination,
+          );
 
           onError?.();
           return;
@@ -288,7 +294,9 @@ function DirectionsLayer({
           map,
           position: driverPosition,
           icon: {
-            url: 'data:image/svg+xml,' + encodeURIComponent(`
+            url:
+              'data:image/svg+xml,' +
+              encodeURIComponent(`
               <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="20" cy="20" r="16" fill="#2563EB" stroke="white" stroke-width="3"/>
                 <text x="20" y="25" text-anchor="middle" fill="white" font-size="16">🚗</text>
