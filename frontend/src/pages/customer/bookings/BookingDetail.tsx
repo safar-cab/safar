@@ -212,19 +212,18 @@ export function BookingDetail() {
             })}
           </div>
 
-          {/* Live Map inside timeline card */}
-          {['driver_en_route', 'picked_up', 'in_progress'].includes(booking.status) && (
-            <div className="mt-4">
-              <LiveTrackingMap
-                bookingId={booking._id}
-                status={booking.status}
-                pickupAddress={booking.pickup?.address}
-                dropAddress={booking.drop?.address}
-              />
-            </div>
-          )}
         </motion.div>
       )}
+
+      {/* Live Tracking Map */}
+      <div className="mb-4">
+        <LiveTrackingMap
+          bookingId={booking._id}
+          status={booking.status}
+          pickupAddress={booking.pickup?.address}
+          dropAddress={booking.drop?.address}
+        />
+      </div>
 
       {/* Cancellation Info */}
       {isCancelled && booking.cancellation && (
