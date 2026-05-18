@@ -613,7 +613,13 @@ async function seed() {
     const totalAmount = baseFare + distanceCharge + tollEstimate;
     const gstAmount = Math.round(totalAmount * 0.05);
 
-    const daysAgo = 30 - i;
+    // Active rides (in_progress, en_route, picked_up) get today's date
+    const isActiveRide = [
+      BookingStatus.IN_PROGRESS,
+      BookingStatus.DRIVER_EN_ROUTE,
+      BookingStatus.PICKED_UP,
+    ].includes(statuses[i]);
+    const daysAgo = isActiveRide ? 0 : 30 - i;
     const bookingDate = new Date();
     bookingDate.setDate(bookingDate.getDate() - daysAgo);
 
@@ -662,7 +668,19 @@ async function seed() {
               pickedUp: bookingDate,
               completed: bookingDate,
             }
-          : undefined,
+          : statuses[i] === BookingStatus.IN_PROGRESS
+            ? {
+                driverStarted: new Date(Date.now() - 3600000),
+                pickedUp: new Date(Date.now() - 1800000),
+              }
+            : statuses[i] === BookingStatus.PICKED_UP
+              ? {
+                  driverStarted: new Date(Date.now() - 2400000),
+                  pickedUp: new Date(Date.now() - 600000),
+                }
+              : statuses[i] === BookingStatus.DRIVER_EN_ROUTE
+                ? { driverStarted: new Date(Date.now() - 900000) }
+                : undefined,
     });
     bookings.push(booking);
   }
