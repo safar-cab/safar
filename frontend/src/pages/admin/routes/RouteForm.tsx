@@ -10,34 +10,22 @@ import { Select } from '@/components/ui/Select';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { formatCurrency } from '@/utils/format';
 
-const INDIAN_STATES = [
-  'Madhya Pradesh',
-  'Maharashtra',
-  'Rajasthan',
-  'Gujarat',
-  'Uttar Pradesh',
-  'Karnataka',
-  'Tamil Nadu',
-  'Telangana',
-  'Kerala',
-  'Andhra Pradesh',
-  'West Bengal',
-  'Bihar',
-  'Punjab',
-  'Haryana',
-  'Chhattisgarh',
-  'Jharkhand',
-  'Uttarakhand',
-  'Himachal Pradesh',
-  'Goa',
-  'Delhi',
-].map((s) => ({ value: s, label: s }));
+interface StateOption {
+  _id: string;
+  name: string;
+  code: string;
+}
+
+interface CityOption {
+  _id: string;
+  name: string;
+}
 
 interface RouteFormData {
-  fromCity: string;
-  fromState: string;
-  toCity: string;
-  toState: string;
+  fromCityId: string;
+  fromStateId: string;
+  toCityId: string;
+  toStateId: string;
   distanceKm: string;
   pricePerKm: string;
   baseFare: string;
@@ -45,10 +33,10 @@ interface RouteFormData {
 }
 
 const initialData: RouteFormData = {
-  fromCity: '',
-  fromState: 'Madhya Pradesh',
-  toCity: '',
-  toState: 'Madhya Pradesh',
+  fromCityId: '',
+  fromStateId: '',
+  toCityId: '',
+  toStateId: '',
   distanceKm: '',
   pricePerKm: '',
   baseFare: '',
@@ -64,6 +52,60 @@ export function RouteForm() {
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(isEdit);
 
+  // States & cities from API
+  const [states, setStates] = useState<StateOption[]>([]);
+  const [fromCities, setFromCities] = useState<CityOption[]>([]);
+  const [toCities, setToCities] = useState<CityOption[]>([]);
+
+  // Fetch states on mount
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = (await api.get('/admin/locations/states')) as StateOption[];
+        setStates(res);
+      } catch {
+        toast.error('Failed to load states');
+      }
+    })();
+  }, []);
+
+  // Fetch cities when fromState changes
+  useEffect(() => {
+    if (!form.fromStateId) {
+      setFromCities([]);
+      return;
+    }
+    (async () => {
+      try {
+        const res = (await api.get(
+          `/admin/locations/states/${form.fromStateId}/cities`,
+        )) as CityOption[];
+        setFromCities(res);
+      } catch {
+        setFromCities([]);
+      }
+    })();
+  }, [form.fromStateId]);
+
+  // Fetch cities when toState changes
+  useEffect(() => {
+    if (!form.toStateId) {
+      setToCities([]);
+      return;
+    }
+    (async () => {
+      try {
+        const res = (await api.get(
+          `/admin/locations/states/${form.toStateId}/cities`,
+        )) as CityOption[];
+        setToCities(res);
+      } catch {
+        setToCities([]);
+      }
+    })();
+  }, [form.toStateId]);
+
+  // Load existing route for edit
   useEffect(() => {
     if (isEdit && id) {
       setFetching(true);
@@ -73,13 +115,11 @@ export function RouteForm() {
           const data = res as Record<string, unknown>;
           const from = data.fromCity as Record<string, string> | undefined;
           const to = data.toCity as Record<string, string> | undefined;
-          // Parse name "City1 to City2" as fallback
-          const nameParts = String(data.name || '').split(' to ');
           setForm({
-            fromCity: from?.name || nameParts[0] || '',
-            fromState: from?.state || 'Madhya Pradesh',
-            toCity: to?.name || nameParts[1] || '',
-            toState: to?.state || 'Madhya Pradesh',
+            fromCityId: (data.fromCityId as string) || '',
+            fromStateId: (data.fromStateId as string) || '',
+            toCityId: (data.toCityId as string) || '',
+            toStateId: (data.toStateId as string) || '',
             distanceKm: String(data.distanceKm || ''),
             pricePerKm: String(data.pricePerKm || ''),
             baseFare: String(data.baseFare || ''),
@@ -98,14 +138,21 @@ export function RouteForm() {
   }, []);
 
   const handleSelect = useCallback((field: string, value: string) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
+    setForm((prev) => {
+      const next = { ...prev, [field]: value };
+      // Reset city when state changes
+      if (field === 'fromStateId') next.fromCityId = '';
+      if (field === 'toStateId') next.toCityId = '';
+      return next;
+    });
   }, []);
 
-  // Auto-generate route name
-  const routeName = useMemo(() => {
-    if (form.fromCity && form.toCity) return `${form.fromCity} to ${form.toCity}`;
-    return '';
-  }, [form.fromCity, form.toCity]);
+  // Derive names for display
+  const fromCityName = fromCities.find((c) => c._id === form.fromCityId)?.name || '';
+  const toCityName = toCities.find((c) => c._id === form.toCityId)?.name || '';
+  const fromStateName = states.find((s) => s._id === form.fromStateId)?.name || '';
+  const toStateName = states.find((s) => s._id === form.toStateId)?.name || '';
+  const routeName = fromCityName && toCityName ? `${fromCityName} to ${toCityName}` : '';
 
   // Auto-calculated values
   const distanceKm = useMemo(() => Number(form.distanceKm) || 0, [form.distanceKm]);
@@ -122,17 +169,16 @@ export function RouteForm() {
     [taxableAmount, tollEstimate, gstTotal],
   );
   const showCalc = distanceKm > 0 && pricePerKm > 0;
+  const isInterState = fromStateName !== toStateName && fromStateName && toStateName;
 
-  // Check if inter-state (IGST vs CGST+SGST)
-  const isInterState = useMemo(
-    () => form.fromState !== form.toState,
-    [form.fromState, form.toState],
-  );
+  const stateOptions = states.map((s) => ({ value: s._id, label: `${s.name} (${s.code})` }));
+  const fromCityOptions = fromCities.map((c) => ({ value: c._id, label: c.name }));
+  const toCityOptions = toCities.map((c) => ({ value: c._id, label: c.name }));
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
-      if (!form.fromCity || !form.toCity || !form.distanceKm || !form.pricePerKm) {
+      if (!form.fromCityId || !form.toCityId || !form.distanceKm || !form.pricePerKm) {
         toast.error('Please fill required fields');
         return;
       }
@@ -140,8 +186,12 @@ export function RouteForm() {
       try {
         const payload = {
           name: routeName,
-          fromCity: { name: form.fromCity, state: form.fromState },
-          toCity: { name: form.toCity, state: form.toState },
+          fromCity: { name: fromCityName, state: fromStateName },
+          toCity: { name: toCityName, state: toStateName },
+          fromCityId: form.fromCityId,
+          fromStateId: form.fromStateId,
+          toCityId: form.toCityId,
+          toStateId: form.toStateId,
           distanceKm,
           pricePerKm,
           baseFare,
@@ -161,7 +211,10 @@ export function RouteForm() {
         setLoading(false);
       }
     },
-    [form, routeName, distanceKm, pricePerKm, baseFare, tollEstimate, isEdit, id, navigate],
+    [
+      form, routeName, fromCityName, toCityName, fromStateName, toStateName,
+      distanceKm, pricePerKm, baseFare, tollEstimate, isEdit, id, navigate,
+    ],
   );
 
   if (fetching) {
@@ -190,9 +243,9 @@ export function RouteForm() {
           {routeName && (
             <div className="flex items-center gap-2 px-4 py-3 bg-primary-50 rounded-lg">
               <MapPin className="w-4 h-4 text-primary-600" />
-              <span className="text-sm font-semibold text-primary-800">{form.fromCity}</span>
+              <span className="text-sm font-semibold text-primary-800">{fromCityName}</span>
               <ArrowRight className="w-4 h-4 text-primary-400" />
-              <span className="text-sm font-semibold text-primary-800">{form.toCity}</span>
+              <span className="text-sm font-semibold text-primary-800">{toCityName}</span>
               {isInterState && (
                 <span className="ml-auto text-xs bg-warning-100 text-warning-700 px-2 py-0.5 rounded-full">
                   Inter-State
@@ -207,18 +260,19 @@ export function RouteForm() {
               From
             </p>
             <div className="grid grid-cols-2 gap-4">
-              <Input
-                label="City *"
-                name="fromCity"
-                value={form.fromCity}
-                onChange={handleChange}
-                placeholder="Indore"
-              />
               <Select
                 label="State *"
-                options={INDIAN_STATES}
-                value={form.fromState}
-                onChange={(v) => handleSelect('fromState', v)}
+                placeholder="Select state"
+                options={stateOptions}
+                value={form.fromStateId}
+                onChange={(v) => handleSelect('fromStateId', v)}
+              />
+              <Select
+                label="City *"
+                placeholder={form.fromStateId ? 'Select city' : 'Select state first'}
+                options={fromCityOptions}
+                value={form.fromCityId}
+                onChange={(v) => handleSelect('fromCityId', v)}
               />
             </div>
           </div>
@@ -229,18 +283,19 @@ export function RouteForm() {
               To
             </p>
             <div className="grid grid-cols-2 gap-4">
-              <Input
-                label="City *"
-                name="toCity"
-                value={form.toCity}
-                onChange={handleChange}
-                placeholder="Bhopal"
-              />
               <Select
                 label="State *"
-                options={INDIAN_STATES}
-                value={form.toState}
-                onChange={(v) => handleSelect('toState', v)}
+                placeholder="Select state"
+                options={stateOptions}
+                value={form.toStateId}
+                onChange={(v) => handleSelect('toStateId', v)}
+              />
+              <Select
+                label="City *"
+                placeholder={form.toStateId ? 'Select city' : 'Select state first'}
+                options={toCityOptions}
+                value={form.toCityId}
+                onChange={(v) => handleSelect('toCityId', v)}
               />
             </div>
           </div>
@@ -260,7 +315,7 @@ export function RouteForm() {
                 placeholder="195"
               />
               <Input
-                label="Price per km (₹) *"
+                label="Price per km (Rs) *"
                 name="pricePerKm"
                 type="number"
                 value={form.pricePerKm}
@@ -268,7 +323,7 @@ export function RouteForm() {
                 placeholder="12"
               />
               <Input
-                label="Base Fare (₹)"
+                label="Base Fare (Rs)"
                 name="baseFare"
                 type="number"
                 value={form.baseFare}
@@ -276,7 +331,7 @@ export function RouteForm() {
                 placeholder="500"
               />
               <Input
-                label="Toll Estimate (₹)"
+                label="Toll Estimate (Rs)"
                 name="tollEstimate"
                 type="number"
                 value={form.tollEstimate}

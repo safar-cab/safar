@@ -5,6 +5,7 @@ import {
   RoutePricing,
   RoutePricingSchema,
 } from '../schemas/route-pricing.schema';
+import { Booking, BookingSchema } from '../schemas/booking.schema';
 import { LocationsService } from './locations.service';
 import {
   PublicLocationsController,
@@ -17,6 +18,7 @@ import {
       { name: State.name, schema: StateSchema },
       { name: City.name, schema: CitySchema },
       { name: RoutePricing.name, schema: RoutePricingSchema },
+      { name: Booking.name, schema: BookingSchema },
     ]),
   ],
   controllers: [PublicLocationsController, AdminLocationsController],

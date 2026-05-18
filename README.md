@@ -46,6 +46,17 @@ npm install
 npm run dev             # http://localhost:5173
 ```
 
+### Database Seed
+
+The seed command **drops all collections** and re-creates everything with valid associations:
+
+```bash
+cd backend
+npm run seed
+```
+
+This creates: 35+ users, 13 drivers, 30+ cars, 5 states, 27+ cities, 15 routes (linked by city/state IDs), 35+ bookings, payments, ratings, 30 documents, 40 notifications, and company settings.
+
 ### Seed Credentials
 | Role | Phone | Password |
 |------|-------|----------|
