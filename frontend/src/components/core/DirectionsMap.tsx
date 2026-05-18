@@ -157,10 +157,6 @@ function DirectionsLayer({
         destination,
         travelMode: 'DRIVING' as any,
         provideRouteAlternatives: showAlternatives,
-        drivingOptions: {
-          departureTime: new Date(),
-          trafficModel: 'BEST_GUESS' as any,
-        },
       },
       (result: any, status: any) => {
         if (status !== 'OK' || !result) {
