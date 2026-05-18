@@ -11,16 +11,18 @@ import { Skeleton } from '@/components/ui/Skeleton';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { cn } from '@/lib/cn';
 
-type TabKey = 'upcoming' | 'past' | 'cancelled';
+type TabKey = 'upcoming' | 'active' | 'past' | 'cancelled';
 
 const TABS: { key: TabKey; label: string }[] = [
   { key: 'upcoming', label: 'Upcoming' },
+  { key: 'active', label: 'Active' },
   { key: 'past', label: 'Past' },
   { key: 'cancelled', label: 'Cancelled' },
 ];
 
 const TAB_STATUS_MAP: Record<TabKey, string> = {
   upcoming: 'pending,confirmed,driver_assigned',
+  active: 'driver_en_route,picked_up,in_progress',
   past: 'completed',
   cancelled: 'cancelled',
 };
@@ -29,6 +31,10 @@ const EMPTY_STATE: Record<TabKey, { title: string; description: string }> = {
   upcoming: {
     title: 'No upcoming bookings',
     description: 'Your upcoming rides will appear here once you book.',
+  },
+  active: {
+    title: 'No active rides',
+    description: 'Rides in progress will appear here.',
   },
   past: { title: 'No past rides', description: 'Completed rides will show up here.' },
   cancelled: { title: 'No cancelled bookings', description: 'Cancelled rides will appear here.' },
