@@ -385,14 +385,22 @@ function DropStep({
   form: FormData;
   updateField: <K extends keyof FormData>(key: K, val: FormData[K]) => void;
 }) {
-  // Auto-fill distance when both addresses are set
+  // Auto-fill distance (including waypoints/stops)
+  const stopsKey = form.stops.map((s) => s.address).join('|');
   useEffect(() => {
     if (!form.pickupAddress || !form.dropAddress || form.pickupAddress.length < 3 || form.dropAddress.length < 3) return;
 
     const timer = setTimeout(() => {
+      const validStops = form.stops
+        .filter((s) => s.address.trim().length >= 3)
+        .map((s) => s.address.trim());
+      const waypointsParam = validStops.length > 0
+        ? `&waypoints=${validStops.map(encodeURIComponent).join('|')}`
+        : '';
+
       api
         .get(
-          `/api/tracking/route-info?origin=${encodeURIComponent(form.pickupAddress)}&destination=${encodeURIComponent(form.dropAddress)}`,
+          `/api/tracking/route-info?origin=${encodeURIComponent(form.pickupAddress)}&destination=${encodeURIComponent(form.dropAddress)}${waypointsParam}`,
         )
         .then((res: unknown) => {
           const data = res as { distanceKm?: number };
@@ -401,10 +409,10 @@ function DropStep({
           }
         })
         .catch(() => {});
-    }, 1000); // debounce
+    }, 1000);
 
     return () => clearTimeout(timer);
-  }, [form.pickupAddress, form.dropAddress, updateField]);
+  }, [form.pickupAddress, form.dropAddress, stopsKey, updateField]);
 
   return (
     <div className="flex flex-col gap-3" style={{ minHeight: '400px' }}>
@@ -433,9 +441,23 @@ function DropStep({
         readOnly
         className="bg-neutral-100 cursor-not-allowed"
       />
-      {/* Map fills remaining space — route if both, single location otherwise */}
-      {form.pickupAddress && form.dropAddress ? (
-        <RouteMapPreview pickup={form.pickupAddress} drop={form.dropAddress} />
+      {/* Map with full route including stops */}
+      {form.pickupAddress && form.dropAddress && MAPS_KEY ? (
+        <div className="rounded-xl overflow-hidden border border-neutral-100 relative" style={{ height: 'calc(100vh - 32rem)' }}>
+          {(() => {
+            const validStops = form.stops
+              .filter((s) => s.address.trim().length >= 3)
+              .map((s) => s.address.trim());
+            const waypoints = validStops.length > 0
+              ? `&waypoints=${validStops.map(encodeURIComponent).join('|')}`
+              : '';
+            return (
+              <MapEmbed
+                src={`https://www.google.com/maps/embed/v1/directions?key=${MAPS_KEY}&origin=${encodeURIComponent(form.pickupAddress)}&destination=${encodeURIComponent(form.dropAddress)}${waypoints}&mode=driving`}
+              />
+            );
+          })()}
+        </div>
       ) : (
         <LocationMapPreview address={form.dropAddress} />
       )}
