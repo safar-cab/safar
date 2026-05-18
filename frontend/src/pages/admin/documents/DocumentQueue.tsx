@@ -22,6 +22,11 @@ interface Document {
   documentNumber?: string;
   expiryDate?: string;
   createdAt: string;
+  entityInfo?: {
+    name: string;
+    phone?: string;
+    detail?: string;
+  };
 }
 
 interface Stats {
@@ -198,12 +203,24 @@ export function DocumentQueue() {
                 <p className="text-sm font-medium text-neutral-800">
                   {DOC_TYPE_LABELS[doc.docType] || doc.docType}
                 </p>
-                <p className="text-xs text-neutral-400 mt-0.5">
-                  {doc.entityType === 'driver' ? 'Driver' : 'Car'} ·{' '}
-                  {doc.documentNumber || 'No number'}
-                </p>
-                <p className="text-xs text-neutral-400">
-                  Uploaded {formatDistanceToNow(new Date(doc.createdAt), { addSuffix: true })}
+                {doc.entityInfo ? (
+                  <p className="text-xs text-neutral-600 mt-0.5 font-medium">
+                    {doc.entityType === 'driver' ? '👤' : '🚗'} {doc.entityInfo.name}
+                    {doc.entityInfo.phone && (
+                      <span className="text-neutral-400 font-normal"> · {doc.entityInfo.phone}</span>
+                    )}
+                  </p>
+                ) : (
+                  <p className="text-xs text-neutral-400 mt-0.5">
+                    {doc.entityType === 'driver' ? 'Driver' : 'Car'}
+                  </p>
+                )}
+                {doc.entityInfo?.detail && (
+                  <p className="text-xs text-neutral-400">{doc.entityInfo.detail}</p>
+                )}
+                <p className="text-xs text-neutral-300 mt-0.5">
+                  {doc.documentNumber && `${doc.documentNumber} · `}
+                  {formatDistanceToNow(new Date(doc.createdAt), { addSuffix: true })}
                 </p>
               </div>
 
@@ -272,14 +289,27 @@ export function DocumentQueue() {
                 />
               )}
             </div>
-            <div className="grid grid-cols-2 gap-3 text-sm">
-              <div>
-                <p className="text-neutral-400 text-xs">Entity</p>
-                <p className="font-medium capitalize">{selectedDoc.entityType}</p>
+            {/* Entity info */}
+            {selectedDoc.entityInfo && (
+              <div className="bg-neutral-50 rounded-lg p-3">
+                <p className="text-xs text-neutral-400 mb-1">
+                  {selectedDoc.entityType === 'driver' ? 'Driver' : 'Car'}
+                </p>
+                <p className="text-sm font-semibold text-neutral-800">
+                  {selectedDoc.entityInfo.name}
+                </p>
+                {selectedDoc.entityInfo.phone && (
+                  <p className="text-xs text-neutral-500">{selectedDoc.entityInfo.phone}</p>
+                )}
+                {selectedDoc.entityInfo.detail && (
+                  <p className="text-xs text-neutral-400 mt-0.5">{selectedDoc.entityInfo.detail}</p>
+                )}
               </div>
+            )}
+            <div className="grid grid-cols-2 gap-3 text-sm">
               {selectedDoc.documentNumber && (
                 <div>
-                  <p className="text-neutral-400 text-xs">Number</p>
+                  <p className="text-neutral-400 text-xs">Document Number</p>
                   <p className="font-medium">{selectedDoc.documentNumber}</p>
                 </div>
               )}
