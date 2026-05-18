@@ -5,6 +5,14 @@ import {
   fetchRoutesSuccess,
   fetchRouteDetail,
   fetchRouteDetailSuccess,
+  fetchStates,
+  fetchStatesSuccess,
+  fetchCities,
+  fetchCitiesSuccess,
+  fetchRouteInfo,
+  setGoogleRouteLoading,
+  fetchRouteInfoSuccess,
+  clearRouteInfo,
   routesError,
 } from '../slices/routesSlice';
 import type { RoutePricing } from '@/types';
@@ -27,7 +35,43 @@ function* handleFetchRouteDetail(action: ReturnType<typeof fetchRouteDetail>) {
   }
 }
 
+function* handleFetchStates() {
+  try {
+    const data: unknown = yield call(api.get, '/api/locations/states');
+    yield put(fetchStatesSuccess(data as any[]));
+  } catch {
+    // silent
+  }
+}
+
+function* handleFetchCities(action: ReturnType<typeof fetchCities>) {
+  try {
+    const stateId = action.payload;
+    const data: unknown = yield call(api.get, `/api/locations/states/${stateId}/cities`);
+    yield put(fetchCitiesSuccess({ stateId, cities: data as any[] }));
+  } catch {
+    // silent
+  }
+}
+
+function* handleFetchRouteInfo(action: ReturnType<typeof fetchRouteInfo>) {
+  try {
+    yield put(setGoogleRouteLoading());
+    const { origin, destination } = action.payload;
+    const data: unknown = yield call(
+      api.get,
+      `/api/tracking/route-info?origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destination)}`,
+    );
+    yield put(fetchRouteInfoSuccess(data as any));
+  } catch {
+    yield put(clearRouteInfo());
+  }
+}
+
 export function* routesSaga() {
   yield takeLatest(fetchRoutes.type, handleFetchRoutes);
   yield takeLatest(fetchRouteDetail.type, handleFetchRouteDetail);
+  yield takeLatest(fetchStates.type, handleFetchStates);
+  yield takeLatest(fetchCities.type, handleFetchCities);
+  yield takeLatest(fetchRouteInfo.type, handleFetchRouteInfo);
 }
