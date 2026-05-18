@@ -1,6 +1,13 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { Booking } from '@/types';
 
+export interface PricingConfig {
+  pricePerKm: number;
+  baseFare: number;
+  stopWaitingChargePerInterval: number;
+  stopWaitingIntervalMinutes: number;
+}
+
 interface BookingsState {
   list: Booking[];
   current: Booking | null;
@@ -11,6 +18,7 @@ interface BookingsState {
   creating: boolean;
   cancelling: boolean;
   error: string | null;
+  pricingConfig: PricingConfig | null;
 }
 
 const initialState: BookingsState = {
@@ -23,6 +31,7 @@ const initialState: BookingsState = {
   creating: false,
   cancelling: false,
   error: null,
+  pricingConfig: null,
 };
 
 const bookingsSlice = createSlice({
@@ -91,6 +100,10 @@ const bookingsSlice = createSlice({
     clearBookingError: (state) => {
       state.error = null;
     },
+    fetchPricingConfig() {},
+    fetchPricingConfigSuccess(state, action: PayloadAction<PricingConfig>) {
+      state.pricingConfig = action.payload;
+    },
   },
 });
 
@@ -107,5 +120,7 @@ export const {
   rateBookingSuccess,
   bookingsError,
   clearBookingError,
+  fetchPricingConfig,
+  fetchPricingConfigSuccess,
 } = bookingsSlice.actions;
 export default bookingsSlice.reducer;

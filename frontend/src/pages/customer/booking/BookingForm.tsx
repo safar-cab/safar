@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setBookingStep } from '@/store/slices/uiSlice';
 import { fetchAvailableCars } from '@/store/slices/carsSlice';
 import type { Car } from '@/types';
-import { createBooking } from '@/store/slices/bookingsSlice';
+import { createBooking, fetchPricingConfig } from '@/store/slices/bookingsSlice';
 import { StepIndicator } from '@/components/core/StepIndicator';
 import { CarCard } from '@/components/core/CarCard';
 import { PriceBreakdown } from '@/components/core/PriceBreakdown';
@@ -73,22 +73,14 @@ export function BookingForm() {
     ...(routeState?.estimatedDistance && { estimatedDistance: routeState.estimatedDistance }),
   });
   const [submitted, setSubmitted] = useState(false);
-  const [pricingConfig, setPricingConfig] = useState({
-    pricePerKm: 12,
-    baseFare: 500,
-    stopWaitingChargePerInterval: 10,
-    stopWaitingIntervalMinutes: 15,
-  });
 
-  // Fetch pricing config from backend
+  const pricingConfig = useAppSelector((s) => s.bookings.pricingConfig);
+  const pricing = pricingConfig || { pricePerKm: 0, baseFare: 0, stopWaitingChargePerInterval: 0, stopWaitingIntervalMinutes: 0 };
+
+  // Fetch pricing config via saga
   useEffect(() => {
-    api.get('/customer/bookings/pricing-config')
-      .then((res: unknown) => {
-        const data = res as typeof pricingConfig;
-        if (data) setPricingConfig(data);
-      })
-      .catch(() => {});
-  }, []);
+    dispatch(fetchPricingConfig());
+  }, [dispatch]);
 
   // Reset step on mount
   useEffect(() => {
@@ -205,7 +197,7 @@ export function BookingForm() {
           transition={{ duration: 0.15 }}
         >
           {bookingStep === 1 && <PickupStep form={form} updateField={updateField} />}
-          {bookingStep === 2 && <StopsStep form={form} updateField={updateField} chargePerInterval={pricingConfig.stopWaitingChargePerInterval} intervalMinutes={pricingConfig.stopWaitingIntervalMinutes} />}
+          {bookingStep === 2 && <StopsStep form={form} updateField={updateField} chargePerInterval={pricing.stopWaitingChargePerInterval} intervalMinutes={pricing.stopWaitingIntervalMinutes} />}
           {bookingStep === 3 && <DropStep form={form} updateField={updateField} />}
           {bookingStep === 4 && <ScheduleStep form={form} updateField={updateField} />}
           {bookingStep === 5 && (
@@ -216,7 +208,7 @@ export function BookingForm() {
               onSelect={(id) => updateField('selectedCarId', id)}
             />
           )}
-          {bookingStep === 6 && <ReviewStep form={form} selectedCar={selectedCar || null} pricingConfig={pricingConfig} />}
+          {bookingStep === 6 && <ReviewStep form={form} selectedCar={selectedCar || null} pricingConfig={pricing} />}
         </motion.div>
       </div>
 

@@ -12,6 +12,8 @@ import {
   rateBooking,
   rateBookingSuccess,
   bookingsError,
+  fetchPricingConfig,
+  fetchPricingConfigSuccess,
 } from '../slices/bookingsSlice';
 import type { Booking } from '@/types';
 
@@ -68,10 +70,20 @@ function* handleRateBooking(action: ReturnType<typeof rateBooking>) {
   }
 }
 
+function* handleFetchPricingConfig() {
+  try {
+    const data: unknown = yield call(api.get, '/customer/bookings/pricing-config');
+    yield put(fetchPricingConfigSuccess(data as any));
+  } catch {
+    // silent — use defaults
+  }
+}
+
 export function* bookingsSaga() {
   yield takeLatest(fetchBookings.type, handleFetchBookings);
   yield takeLatest(fetchBookingDetail.type, handleFetchBookingDetail);
   yield takeLatest(createBooking.type, handleCreateBooking);
   yield takeLatest(cancelBooking.type, handleCancelBooking);
   yield takeLatest(rateBooking.type, handleRateBooking);
+  yield takeLatest(fetchPricingConfig.type, handleFetchPricingConfig);
 }
