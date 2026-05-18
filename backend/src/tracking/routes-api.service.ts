@@ -25,7 +25,8 @@ export class RoutesApiService {
   private readonly enabled: boolean;
 
   constructor(private configService: ConfigService) {
-    this.apiKey = this.configService.get<string>('GOOGLE_ROUTES_API_KEY', '') ||
+    this.apiKey =
+      this.configService.get<string>('GOOGLE_ROUTES_API_KEY', '') ||
       this.configService.get<string>('GOOGLE_MAPS_API_KEY', '');
     this.enabled = !!this.apiKey;
 

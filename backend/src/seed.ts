@@ -318,7 +318,21 @@ async function seed() {
     {
       name: 'Madhya Pradesh',
       code: 'MP',
-      cities: ['Indore', 'Bhopal', 'Ujjain', 'Dewas', 'Ratlam', 'Jabalpur', 'Gwalior', 'Omkareshwar', 'Mhow', 'Pithampur', 'Dhar', 'Khandwa', 'Burhanpur'],
+      cities: [
+        'Indore',
+        'Bhopal',
+        'Ujjain',
+        'Dewas',
+        'Ratlam',
+        'Jabalpur',
+        'Gwalior',
+        'Omkareshwar',
+        'Mhow',
+        'Pithampur',
+        'Dhar',
+        'Khandwa',
+        'Burhanpur',
+      ],
     },
     {
       name: 'Rajasthan',
@@ -344,7 +358,10 @@ async function seed() {
   ];
 
   // Build lookup maps: cityName → { cityId, stateId }
-  const cityLookup: Record<string, { cityId: any; stateId: any; stateName: string }> = {};
+  const cityLookup: Record<
+    string,
+    { cityId: any; stateId: any; stateName: string }
+  > = {};
 
   for (const sd of statesData) {
     const state = await stateModel.create({
@@ -359,7 +376,11 @@ async function seed() {
     }));
     const createdCities = await cityModel.insertMany(cityDocs);
     for (const c of createdCities) {
-      cityLookup[c.name] = { cityId: c._id, stateId: state._id, stateName: sd.name };
+      cityLookup[c.name] = {
+        cityId: c._id,
+        stateId: state._id,
+        stateName: sd.name,
+      };
     }
   }
   const totalStates = await stateModel.countDocuments();
@@ -368,21 +389,126 @@ async function seed() {
 
   // ============ ROUTES (15+) — linked to city/state IDs ============
   const routeDefs = [
-    { from: 'Indore', to: 'Bhopal', distanceKm: 195, pricePerKm: 12, baseFare: 500, tollEstimate: 200 },
-    { from: 'Indore', to: 'Ujjain', distanceKm: 55, pricePerKm: 14, baseFare: 300, tollEstimate: 0 },
-    { from: 'Indore', to: 'Dewas', distanceKm: 35, pricePerKm: 15, baseFare: 200, tollEstimate: 0 },
-    { from: 'Indore', to: 'Omkareshwar', distanceKm: 85, pricePerKm: 13, baseFare: 400, tollEstimate: 100 },
-    { from: 'Indore', to: 'Mhow', distanceKm: 22, pricePerKm: 16, baseFare: 200, tollEstimate: 0 },
-    { from: 'Indore', to: 'Pithampur', distanceKm: 30, pricePerKm: 15, baseFare: 200, tollEstimate: 0 },
-    { from: 'Indore', to: 'Dhar', distanceKm: 60, pricePerKm: 13, baseFare: 300, tollEstimate: 50 },
-    { from: 'Indore', to: 'Ratlam', distanceKm: 130, pricePerKm: 12, baseFare: 400, tollEstimate: 150 },
-    { from: 'Indore', to: 'Khandwa', distanceKm: 140, pricePerKm: 12, baseFare: 450, tollEstimate: 100 },
-    { from: 'Indore', to: 'Burhanpur', distanceKm: 175, pricePerKm: 11, baseFare: 500, tollEstimate: 200 },
-    { from: 'Indore', to: 'Jabalpur', distanceKm: 340, pricePerKm: 11, baseFare: 800, tollEstimate: 400 },
-    { from: 'Indore', to: 'Nagpur', distanceKm: 520, pricePerKm: 10, baseFare: 1000, tollEstimate: 600 },
-    { from: 'Indore', to: 'Mumbai', distanceKm: 585, pricePerKm: 10, baseFare: 1200, tollEstimate: 800 },
-    { from: 'Indore', to: 'Ahmedabad', distanceKm: 400, pricePerKm: 11, baseFare: 900, tollEstimate: 500 },
-    { from: 'Indore', to: 'Jaipur', distanceKm: 570, pricePerKm: 10, baseFare: 1100, tollEstimate: 700 },
+    {
+      from: 'Indore',
+      to: 'Bhopal',
+      distanceKm: 195,
+      pricePerKm: 12,
+      baseFare: 500,
+      tollEstimate: 200,
+    },
+    {
+      from: 'Indore',
+      to: 'Ujjain',
+      distanceKm: 55,
+      pricePerKm: 14,
+      baseFare: 300,
+      tollEstimate: 0,
+    },
+    {
+      from: 'Indore',
+      to: 'Dewas',
+      distanceKm: 35,
+      pricePerKm: 15,
+      baseFare: 200,
+      tollEstimate: 0,
+    },
+    {
+      from: 'Indore',
+      to: 'Omkareshwar',
+      distanceKm: 85,
+      pricePerKm: 13,
+      baseFare: 400,
+      tollEstimate: 100,
+    },
+    {
+      from: 'Indore',
+      to: 'Mhow',
+      distanceKm: 22,
+      pricePerKm: 16,
+      baseFare: 200,
+      tollEstimate: 0,
+    },
+    {
+      from: 'Indore',
+      to: 'Pithampur',
+      distanceKm: 30,
+      pricePerKm: 15,
+      baseFare: 200,
+      tollEstimate: 0,
+    },
+    {
+      from: 'Indore',
+      to: 'Dhar',
+      distanceKm: 60,
+      pricePerKm: 13,
+      baseFare: 300,
+      tollEstimate: 50,
+    },
+    {
+      from: 'Indore',
+      to: 'Ratlam',
+      distanceKm: 130,
+      pricePerKm: 12,
+      baseFare: 400,
+      tollEstimate: 150,
+    },
+    {
+      from: 'Indore',
+      to: 'Khandwa',
+      distanceKm: 140,
+      pricePerKm: 12,
+      baseFare: 450,
+      tollEstimate: 100,
+    },
+    {
+      from: 'Indore',
+      to: 'Burhanpur',
+      distanceKm: 175,
+      pricePerKm: 11,
+      baseFare: 500,
+      tollEstimate: 200,
+    },
+    {
+      from: 'Indore',
+      to: 'Jabalpur',
+      distanceKm: 340,
+      pricePerKm: 11,
+      baseFare: 800,
+      tollEstimate: 400,
+    },
+    {
+      from: 'Indore',
+      to: 'Nagpur',
+      distanceKm: 520,
+      pricePerKm: 10,
+      baseFare: 1000,
+      tollEstimate: 600,
+    },
+    {
+      from: 'Indore',
+      to: 'Mumbai',
+      distanceKm: 585,
+      pricePerKm: 10,
+      baseFare: 1200,
+      tollEstimate: 800,
+    },
+    {
+      from: 'Indore',
+      to: 'Ahmedabad',
+      distanceKm: 400,
+      pricePerKm: 11,
+      baseFare: 900,
+      tollEstimate: 500,
+    },
+    {
+      from: 'Indore',
+      to: 'Jaipur',
+      distanceKm: 570,
+      pricePerKm: 10,
+      baseFare: 1100,
+      tollEstimate: 700,
+    },
   ];
 
   const routes = routeDefs.map((r) => {
@@ -390,7 +516,10 @@ async function seed() {
     const toInfo = cityLookup[r.to];
     return {
       name: `${r.from} to ${r.to}`,
-      fromCity: { name: r.from, state: fromInfo?.stateName || 'Madhya Pradesh' },
+      fromCity: {
+        name: r.from,
+        state: fromInfo?.stateName || 'Madhya Pradesh',
+      },
       toCity: { name: r.to, state: toInfo?.stateName || 'Madhya Pradesh' },
       fromCityId: fromInfo?.cityId,
       fromStateId: fromInfo?.stateId,
@@ -668,7 +797,9 @@ async function seed() {
             ? new Date('2025-01-15')
             : new Date('2028-06-30'),
         rejectionReason:
-          status === DocStatus.REJECTED ? 'Document is blurry, please re-upload' : undefined,
+          status === DocStatus.REJECTED
+            ? 'Document is blurry, please re-upload'
+            : undefined,
         verifiedAt:
           status === DocStatus.VERIFIED || status === DocStatus.REJECTED
             ? new Date()
@@ -700,7 +831,9 @@ async function seed() {
             ? new Date('2025-03-01')
             : new Date('2027-12-31'),
         rejectionReason:
-          status === DocStatus.REJECTED ? 'Expired document uploaded' : undefined,
+          status === DocStatus.REJECTED
+            ? 'Expired document uploaded'
+            : undefined,
         verifiedAt:
           status === DocStatus.VERIFIED || status === DocStatus.REJECTED
             ? new Date()
@@ -779,7 +912,10 @@ async function seed() {
       type: tmpl.type,
       read: i < 5,
       readAt: i < 5 ? new Date() : undefined,
-      data: { bookingId: bookings[i % bookings.length]?._id?.toString(), url: '/customer/bookings' },
+      data: {
+        bookingId: bookings[i % bookings.length]?._id?.toString(),
+        url: '/customer/bookings',
+      },
       createdAt: new Date(Date.now() - i * 3600000),
     });
   }
@@ -787,11 +923,31 @@ async function seed() {
   for (let i = 0; i < 15; i++) {
     const driverUser = allDriverUsers[i % allDriverUsers.length];
     const driverTemplates = [
-      { type: NotificationType.DRIVER_ASSIGNED, title: 'New Ride Assigned', body: `You have been assigned ride BK-2026051${i}-00${i + 1}` },
-      { type: NotificationType.GENERAL, title: 'Document Verified', body: 'Your driving license has been verified' },
-      { type: NotificationType.BOOKING_CANCELLED, title: 'Ride Cancelled', body: `Ride BK-2026051${i}-00${i + 1} has been cancelled by the customer` },
-      { type: NotificationType.GENERAL, title: 'Rating Received', body: `You received a 5-star rating for your recent ride` },
-      { type: NotificationType.GENERAL, title: 'Document Expiring', body: 'Your permit expires in 14 days' },
+      {
+        type: NotificationType.DRIVER_ASSIGNED,
+        title: 'New Ride Assigned',
+        body: `You have been assigned ride BK-2026051${i}-00${i + 1}`,
+      },
+      {
+        type: NotificationType.GENERAL,
+        title: 'Document Verified',
+        body: 'Your driving license has been verified',
+      },
+      {
+        type: NotificationType.BOOKING_CANCELLED,
+        title: 'Ride Cancelled',
+        body: `Ride BK-2026051${i}-00${i + 1} has been cancelled by the customer`,
+      },
+      {
+        type: NotificationType.GENERAL,
+        title: 'Rating Received',
+        body: `You received a 5-star rating for your recent ride`,
+      },
+      {
+        type: NotificationType.GENERAL,
+        title: 'Document Expiring',
+        body: 'Your permit expires in 14 days',
+      },
     ];
     const tmpl = driverTemplates[i % driverTemplates.length];
     notifications.push({
@@ -808,16 +964,40 @@ async function seed() {
   // Admin notifications (10)
   if (adminUser) {
     const adminTemplates = [
-      { title: 'New Booking', body: 'New booking BK-20260518-001 created by Rahul Sharma' },
-      { title: 'Payment Received', body: 'Payment of ₹4,200 received for BK-20260517-003' },
-      { title: 'Document Pending', body: '5 documents are awaiting verification' },
-      { title: 'Driver Registered', body: 'New driver Santosh Chouhan registered and needs verification' },
-      { title: 'Ride Completed', body: 'Ride BK-20260516-002 completed successfully' },
-      { title: 'Cancellation', body: 'Booking BK-20260515-004 cancelled by customer' },
-      { title: 'Document Expired', body: '2 driver documents have expired today' },
+      {
+        title: 'New Booking',
+        body: 'New booking BK-20260518-001 created by Rahul Sharma',
+      },
+      {
+        title: 'Payment Received',
+        body: 'Payment of ₹4,200 received for BK-20260517-003',
+      },
+      {
+        title: 'Document Pending',
+        body: '5 documents are awaiting verification',
+      },
+      {
+        title: 'Driver Registered',
+        body: 'New driver Santosh Chouhan registered and needs verification',
+      },
+      {
+        title: 'Ride Completed',
+        body: 'Ride BK-20260516-002 completed successfully',
+      },
+      {
+        title: 'Cancellation',
+        body: 'Booking BK-20260515-004 cancelled by customer',
+      },
+      {
+        title: 'Document Expired',
+        body: '2 driver documents have expired today',
+      },
       { title: 'Revenue Alert', body: "Today's revenue: ₹12,500 from 5 rides" },
       { title: 'Low Availability', body: 'Only 2 cars available for tomorrow' },
-      { title: 'Rating Alert', body: 'Driver Gopal Jat received a 1-star rating' },
+      {
+        title: 'Rating Alert',
+        body: 'Driver Gopal Jat received a 1-star rating',
+      },
     ];
     for (let i = 0; i < 10; i++) {
       notifications.push({

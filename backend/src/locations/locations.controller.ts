@@ -6,7 +6,6 @@ import {
   Delete,
   Param,
   Body,
-  Query,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -66,10 +65,7 @@ export class AdminLocationsController {
 
   @Put('states/:id/toggle')
   @ApiOperation({ summary: 'Enable/disable a state' })
-  toggleState(
-    @Param('id') id: string,
-    @Body('isActive') isActive: boolean,
-  ) {
+  toggleState(@Param('id') id: string, @Body('isActive') isActive: boolean) {
     return this.locationsService.toggleState(id, isActive);
   }
 
@@ -102,10 +98,7 @@ export class AdminLocationsController {
 
   @Put('cities/:id/toggle')
   @ApiOperation({ summary: 'Enable/disable a city' })
-  toggleCity(
-    @Param('id') id: string,
-    @Body('isActive') isActive: boolean,
-  ) {
+  toggleCity(@Param('id') id: string, @Body('isActive') isActive: boolean) {
     return this.locationsService.toggleCity(id, isActive);
   }
 
@@ -118,10 +111,7 @@ export class AdminLocationsController {
   // ---- Routes toggle ----
   @Put('routes/:id/toggle')
   @ApiOperation({ summary: 'Enable/disable a route' })
-  toggleRoute(
-    @Param('id') id: string,
-    @Body('isActive') isActive: boolean,
-  ) {
+  toggleRoute(@Param('id') id: string, @Body('isActive') isActive: boolean) {
     return this.locationsService.toggleRoute(id, isActive);
   }
 }

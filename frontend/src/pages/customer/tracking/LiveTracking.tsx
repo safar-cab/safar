@@ -5,7 +5,6 @@ import { AuthContext } from '@/contexts/AuthContext';
 import { connectSocket, disconnectSocket } from '@/lib/socket';
 import { useLiveTracking } from '@/hooks/useLiveTracking';
 import { PageHeader } from '@/components/ui/PageHeader';
-import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { DirectionsMap } from '@/components/core/DirectionsMap';
 import api from '@/lib/api';

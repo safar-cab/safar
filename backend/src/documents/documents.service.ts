@@ -172,7 +172,11 @@ export class DocumentsService {
     // Enrich with parent entity details
     const enriched = await Promise.all(
       documents.map(async (doc) => {
-        let entityInfo: { name: string; phone?: string; detail?: string } | null = null;
+        let entityInfo: {
+          name: string;
+          phone?: string;
+          detail?: string;
+        } | null = null;
         if (doc.entityType === DocEntityType.DRIVER) {
           const driver = await this.driverModel
             .findById(doc.entityId)
@@ -205,7 +209,12 @@ export class DocumentsService {
       }),
     );
 
-    return { documents: enriched, total, page, totalPages: Math.ceil(total / limit) };
+    return {
+      documents: enriched,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   async getDocumentStats() {
