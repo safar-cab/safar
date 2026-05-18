@@ -179,6 +179,7 @@ export function BookingForm() {
         },
         carId: form.selectedCarId,
         estimatedDistanceKm: form.estimatedDistance || undefined,
+        tollEstimate: form.tollEstimate || 0,
       }),
     );
   };
