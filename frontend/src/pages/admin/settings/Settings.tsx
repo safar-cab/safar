@@ -15,6 +15,8 @@ interface SettingsFormData {
   phone: string;
   email: string;
   defaultPricePerKm: string;
+  defaultBaseFare: string;
+  stopChargePerStop: string;
   // Payment
   razorpayKeyId: string;
   razorpayKeySecret: string;
@@ -37,6 +39,8 @@ const initialForm: SettingsFormData = {
   phone: '',
   email: '',
   defaultPricePerKm: '',
+  defaultBaseFare: '',
+  stopChargePerStop: '',
   razorpayKeyId: '',
   razorpayKeySecret: '',
   webhookSecret: '',
@@ -62,6 +66,8 @@ export function Settings() {
           phone: (data.phone as string) || '',
           email: (data.email as string) || '',
           defaultPricePerKm: data.defaultPricePerKm?.toString() || '',
+          defaultBaseFare: data.defaultBaseFare?.toString() || '',
+          stopChargePerStop: data.stopChargePerStop?.toString() || '',
           razorpayKeyId: (data.razorpayKeyId as string) || '',
           razorpayKeySecret: (data.razorpayKeySecret as string) || '',
           webhookSecret: (data.webhookSecret as string) || '',
@@ -92,6 +98,8 @@ export function Settings() {
           phone: form.phone,
           email: form.email,
           defaultPricePerKm: Number(form.defaultPricePerKm),
+          defaultBaseFare: Number(form.defaultBaseFare),
+          stopChargePerStop: Number(form.stopChargePerStop),
           razorpayKeyId: form.razorpayKeyId,
           razorpayKeySecret: form.razorpayKeySecret,
           webhookSecret: form.webhookSecret,
@@ -181,7 +189,23 @@ export function Settings() {
               type="number"
               value={form.defaultPricePerKm}
               onChange={handleChange}
-              placeholder="1200"
+              placeholder="12"
+            />
+            <Input
+              label="Default Base Fare (₹)"
+              name="defaultBaseFare"
+              type="number"
+              value={form.defaultBaseFare}
+              onChange={handleChange}
+              placeholder="500"
+            />
+            <Input
+              label="Stop Charge per Stop (₹)"
+              name="stopChargePerStop"
+              type="number"
+              value={form.stopChargePerStop}
+              onChange={handleChange}
+              placeholder="100"
             />
           </div>
         )}
