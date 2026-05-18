@@ -227,157 +227,75 @@ export function RouteForm() {
     <div>
       <PageHeader title={isEdit ? 'Edit Route' : 'Add New Route'} showBack />
 
-      <form
-        onSubmit={handleSubmit}
-        className="max-w-2xl bg-white rounded-xl shadow-sm border border-neutral-100 p-6"
-      >
-        <div className="space-y-5">
-          {/* Route Name (auto-generated) */}
-          {routeName && (
-            <div className="flex items-center gap-2 px-4 py-3 bg-primary-50 rounded-lg">
-              <MapPin className="w-4 h-4 text-primary-600" />
-              <span className="text-sm font-semibold text-primary-800">{fromCityName}</span>
-              <ArrowRight className="w-4 h-4 text-primary-400" />
-              <span className="text-sm font-semibold text-primary-800">{toCityName}</span>
-              {isInterState && (
-                <span className="ml-auto text-xs bg-warning-100 text-warning-700 px-2 py-0.5 rounded-full">
-                  Inter-State
-                </span>
-              )}
-            </div>
-          )}
+      <div className="grid lg:grid-cols-2 gap-6">
+        {/* Left — Form */}
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white rounded-xl shadow-sm border border-neutral-100 p-6"
+        >
+          <div className="space-y-5">
+            {/* Route Name (auto-generated) */}
+            {routeName && (
+              <div className="flex items-center gap-2 px-4 py-3 bg-primary-50 rounded-lg">
+                <MapPin className="w-4 h-4 text-primary-600" />
+                <span className="text-sm font-semibold text-primary-800">{fromCityName}</span>
+                <ArrowRight className="w-4 h-4 text-primary-400" />
+                <span className="text-sm font-semibold text-primary-800">{toCityName}</span>
+                {isInterState && (
+                  <span className="ml-auto text-xs bg-warning-100 text-warning-700 px-2 py-0.5 rounded-full">
+                    Inter-State
+                  </span>
+                )}
+              </div>
+            )}
 
-          {/* From */}
-          <div>
-            <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-3">
-              From
-            </p>
-            <div className="grid grid-cols-2 gap-4">
-              <Select
-                label="State *"
-                placeholder="Select state"
-                options={stateOptions}
-                value={form.fromStateId}
-                onChange={(v) => handleSelect('fromStateId', v)}
-              />
-              <Select
-                label="City *"
-                placeholder={form.fromStateId ? 'Select city' : 'Select state first'}
-                options={fromCityOptions}
-                value={form.fromCityId}
-                onChange={(v) => handleSelect('fromCityId', v)}
-              />
-            </div>
-          </div>
-
-          {/* To */}
-          <div>
-            <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-3">
-              To
-            </p>
-            <div className="grid grid-cols-2 gap-4">
-              <Select
-                label="State *"
-                placeholder="Select state"
-                options={stateOptions}
-                value={form.toStateId}
-                onChange={(v) => handleSelect('toStateId', v)}
-              />
-              <Select
-                label="City *"
-                placeholder={form.toStateId ? 'Select city' : 'Select state first'}
-                options={toCityOptions}
-                value={form.toCityId}
-                onChange={(v) => handleSelect('toCityId', v)}
-              />
-            </div>
-          </div>
-
-          {/* Map Preview + Route Info */}
-          {originAddress && destAddress && (
+            {/* From */}
             <div>
               <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-3">
-                Route Preview
+                From
               </p>
-              <div className="rounded-xl overflow-hidden border border-neutral-200">
-                <div className="h-72">
-                  <DirectionsMap
-                    mapKey={`${originAddress}-${destAddress}`}
-                    origin={originAddress}
-                    destination={destAddress}
-                    className="h-full"
-                    showTraffic
-                    showAlternatives
-                    onRouteSelect={(route) =>
-                      setMapRouteInfo({
-                        distance: route.distance,
-                        duration: route.duration,
-                        summary: route.summary,
-                      })
-                    }
-                  />
-                </div>
-                <div className="bg-neutral-50 p-3">
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-                    {mapRouteInfo && (
-                      <>
-                        <div>
-                          <p className="text-[10px] text-neutral-400 uppercase">Distance</p>
-                          <p className="text-sm font-bold text-neutral-900">{mapRouteInfo.distance}</p>
-                        </div>
-                        <div>
-                          <p className="text-[10px] text-neutral-400 uppercase">Duration</p>
-                          <p className="text-sm font-bold text-neutral-900">{mapRouteInfo.duration}</p>
-                        </div>
-                        <div>
-                          <p className="text-[10px] text-neutral-400 uppercase">Via</p>
-                          <p className="text-sm font-bold text-neutral-900">{mapRouteInfo.summary || '-'}</p>
-                        </div>
-                      </>
-                    )}
-                    <div>
-                      <p className="text-[10px] text-neutral-400 uppercase">Tolls (est.)</p>
-                      <p className="text-sm font-bold text-neutral-900">
-                        {googleRouteInfo?.tollEstimateINR
-                          ? `₹${googleRouteInfo.tollEstimateINR}`
-                          : mapRouteInfo
-                            ? 'Free'
-                            : '...'}
-                      </p>
-                    </div>
-                  </div>
-                  {googleRouteInfo && googleRouteInfo.routes.length > 1 && (
-                    <div className="mt-2 pt-2 border-t border-neutral-200">
-                      <p className="text-[10px] text-neutral-400 uppercase tracking-wider mb-1">
-                        All routes from Google
-                      </p>
-                      {googleRouteInfo.routes.map((r, i) => (
-                        <div key={i} className="flex items-center justify-between text-xs py-0.5">
-                          <span className="text-neutral-600">
-                            {r.distanceKm} km · {r.durationMinutes} min
-                          </span>
-                          <span
-                            className={
-                              r.tollEstimateINR > 0 ? 'text-amber-600 font-medium' : 'text-green-600'
-                            }
-                          >
-                            {r.tollEstimateINR > 0 ? `₹${r.tollEstimateINR}` : 'Free'}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+              <div className="grid grid-cols-2 gap-4">
+                <Select
+                  label="State *"
+                  placeholder="Select state"
+                  options={stateOptions}
+                  value={form.fromStateId}
+                  onChange={(v) => handleSelect('fromStateId', v)}
+                />
+                <Select
+                  label="City *"
+                  placeholder={form.fromStateId ? 'Select city' : 'Select state first'}
+                  options={fromCityOptions}
+                  value={form.fromCityId}
+                  onChange={(v) => handleSelect('fromCityId', v)}
+                />
               </div>
-              {googleRouteInfo && (
-                <p className="text-xs text-neutral-400 mt-2">
-                  Distance and toll auto-filled from Google. You can adjust below.
-                </p>
-              )}
             </div>
-          )}
 
-          {/* Pricing */}
+            {/* To */}
+            <div>
+              <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-3">
+                To
+              </p>
+              <div className="grid grid-cols-2 gap-4">
+                <Select
+                  label="State *"
+                  placeholder="Select state"
+                  options={stateOptions}
+                  value={form.toStateId}
+                  onChange={(v) => handleSelect('toStateId', v)}
+                />
+                <Select
+                  label="City *"
+                  placeholder={form.toStateId ? 'Select city' : 'Select state first'}
+                  options={toCityOptions}
+                  value={form.toCityId}
+                  onChange={(v) => handleSelect('toCityId', v)}
+                />
+              </div>
+            </div>
+
+            {/* Pricing */}
           <div>
             <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-3">
               Pricing
@@ -508,7 +426,104 @@ export function RouteForm() {
             {isEdit ? 'Update Route' : 'Create Route'}
           </Button>
         </div>
-      </form>
+        </form>
+
+        {/* Right — Map Panel (sticky) */}
+        <div className="lg:sticky lg:top-20 h-fit space-y-4">
+          <div className="bg-white rounded-xl border border-neutral-100 shadow-sm overflow-hidden">
+            <div className="h-80 lg:h-[28rem]">
+              {originAddress && destAddress ? (
+                <DirectionsMap
+                  mapKey={`${originAddress}-${destAddress}`}
+                  origin={originAddress}
+                  destination={destAddress}
+                  className="h-full"
+                  showTraffic
+                  showAlternatives
+                  onRouteSelect={(route) =>
+                    setMapRouteInfo({
+                      distance: route.distance,
+                      duration: route.duration,
+                      summary: route.summary,
+                    })
+                  }
+                />
+              ) : (
+                <div className="w-full h-full bg-neutral-50 flex items-center justify-center">
+                  <div className="text-center px-6">
+                    <MapPin className="w-12 h-12 text-neutral-200 mx-auto mb-3" />
+                    <p className="text-sm font-medium text-neutral-400">Route Preview</p>
+                    <p className="text-xs text-neutral-300 mt-1">
+                      Select source and destination cities to see the route on map
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Route info below map */}
+            {(mapRouteInfo || googleRouteInfo) && (
+              <div className="bg-neutral-50 p-3 border-t border-neutral-100">
+                <div className="grid grid-cols-2 gap-3 text-center">
+                  {mapRouteInfo && (
+                    <>
+                      <div>
+                        <p className="text-[10px] text-neutral-400 uppercase">Distance</p>
+                        <p className="text-sm font-bold text-neutral-900">{mapRouteInfo.distance}</p>
+                      </div>
+                      <div>
+                        <p className="text-[10px] text-neutral-400 uppercase">Duration</p>
+                        <p className="text-sm font-bold text-neutral-900">{mapRouteInfo.duration}</p>
+                      </div>
+                      <div>
+                        <p className="text-[10px] text-neutral-400 uppercase">Via</p>
+                        <p className="text-sm font-bold text-neutral-900">{mapRouteInfo.summary || '-'}</p>
+                      </div>
+                    </>
+                  )}
+                  <div>
+                    <p className="text-[10px] text-neutral-400 uppercase">Tolls (est.)</p>
+                    <p className="text-sm font-bold text-neutral-900">
+                      {googleRouteInfo?.tollEstimateINR
+                        ? `₹${googleRouteInfo.tollEstimateINR}`
+                        : mapRouteInfo
+                          ? 'Free'
+                          : '...'}
+                    </p>
+                  </div>
+                </div>
+                {googleRouteInfo && googleRouteInfo.routes.length > 1 && (
+                  <div className="mt-2 pt-2 border-t border-neutral-200">
+                    <p className="text-[10px] text-neutral-400 uppercase tracking-wider mb-1">
+                      All routes from Google
+                    </p>
+                    {googleRouteInfo.routes.map((r, i) => (
+                      <div key={i} className="flex items-center justify-between text-xs py-0.5">
+                        <span className="text-neutral-600">
+                          {r.distanceKm} km · {r.durationMinutes} min
+                        </span>
+                        <span
+                          className={
+                            r.tollEstimateINR > 0 ? 'text-amber-600 font-medium' : 'text-green-600'
+                          }
+                        >
+                          {r.tollEstimateINR > 0 ? `₹${r.tollEstimateINR}` : 'Free'}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {googleRouteInfo && (
+            <p className="text-xs text-neutral-400 text-center">
+              Distance and toll auto-filled from Google
+            </p>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
