@@ -8,6 +8,7 @@ import { Booking, BookingSchema } from '../schemas/booking.schema';
 import { TrackingService } from './tracking.service';
 import { TrackingGateway } from './tracking.gateway';
 import { TrackingController } from './tracking.controller';
+import { RoutesApiService } from './routes-api.service';
 import { BookingsModule } from '../bookings/bookings.module';
 
 @Module({
@@ -19,7 +20,7 @@ import { BookingsModule } from '../bookings/bookings.module';
     BookingsModule,
   ],
   controllers: [TrackingController],
-  providers: [TrackingService, TrackingGateway],
-  exports: [TrackingService],
+  providers: [TrackingService, TrackingGateway, RoutesApiService],
+  exports: [TrackingService, RoutesApiService],
 })
 export class TrackingModule {}
