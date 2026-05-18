@@ -103,9 +103,7 @@ export function LiveRides() {
       ? (ride.driver as any).userId?.name || 'Driver'
       : 'Unassigned';
   const driverPhoneOf = (ride: ActiveRide) =>
-    ride.driver && typeof ride.driver === 'object'
-      ? (ride.driver as any).userId?.phone || ''
-      : '';
+    ride.driver && typeof ride.driver === 'object' ? (ride.driver as any).userId?.phone || '' : '';
 
   return (
     <div>
@@ -199,15 +197,14 @@ export function LiveRides() {
                 {/* Map — interactive with traffic + alternatives */}
                 <div className="h-96 lg:h-[32rem] bg-neutral-100 relative">
                   <DirectionsMap
+                    mapKey={selectedRide._id}
                     origin={selectedRide.pickup.address}
                     destination={selectedRide.drop.address}
                     className="h-full"
                     showTraffic
                     showAlternatives
                     driverPosition={
-                      selectedPos
-                        ? { lat: selectedPos.latitude, lng: selectedPos.longitude }
-                        : null
+                      selectedPos ? { lat: selectedPos.latitude, lng: selectedPos.longitude } : null
                     }
                     onRouteSelect={(route) =>
                       setRouteInfo({
@@ -302,15 +299,21 @@ export function LiveRides() {
                           <>
                             <div>
                               <p className="text-xs text-neutral-400">Distance</p>
-                              <p className="text-sm font-bold text-neutral-900">{routeInfo.distance}</p>
+                              <p className="text-sm font-bold text-neutral-900">
+                                {routeInfo.distance}
+                              </p>
                             </div>
                             <div>
                               <p className="text-xs text-neutral-400">Duration</p>
-                              <p className="text-sm font-bold text-neutral-900">{routeInfo.duration}</p>
+                              <p className="text-sm font-bold text-neutral-900">
+                                {routeInfo.duration}
+                              </p>
                             </div>
                             <div>
                               <p className="text-xs text-neutral-400">Via</p>
-                              <p className="text-sm font-bold text-neutral-900">{routeInfo.summary || '-'}</p>
+                              <p className="text-sm font-bold text-neutral-900">
+                                {routeInfo.summary || '-'}
+                              </p>
                             </div>
                           </>
                         )}
@@ -319,19 +322,32 @@ export function LiveRides() {
                           <p className="text-sm font-bold text-neutral-900">
                             {tollInfo?.tollEstimateINR
                               ? `₹${tollInfo.tollEstimateINR}`
-                              : routeInfo ? 'Free' : '...'}
+                              : routeInfo
+                                ? 'Free'
+                                : '...'}
                           </p>
                         </div>
                       </div>
                       {tollInfo && tollInfo.routes.length > 1 && (
                         <div className="mt-2 pt-2 border-t border-neutral-200">
-                          <p className="text-[10px] text-neutral-400 uppercase tracking-wider mb-1">All routes</p>
+                          <p className="text-[10px] text-neutral-400 uppercase tracking-wider mb-1">
+                            All routes
+                          </p>
                           {tollInfo.routes.map((r: any, i: number) => (
-                            <div key={i} className="flex items-center justify-between text-xs py-0.5">
+                            <div
+                              key={i}
+                              className="flex items-center justify-between text-xs py-0.5"
+                            >
                               <span className="text-neutral-600">
                                 {r.distanceKm} km · {r.durationMinutes} min
                               </span>
-                              <span className={r.tollEstimateINR > 0 ? 'text-amber-600 font-medium' : 'text-green-600'}>
+                              <span
+                                className={
+                                  r.tollEstimateINR > 0
+                                    ? 'text-amber-600 font-medium'
+                                    : 'text-green-600'
+                                }
+                              >
                                 {r.tollEstimateINR > 0 ? `₹${r.tollEstimateINR}` : 'Free'}
                               </span>
                             </div>
@@ -362,9 +378,7 @@ export function LiveRides() {
             ) : (
               <div className="bg-neutral-50 rounded-xl border border-dashed border-neutral-200 p-12 text-center">
                 <MapPin className="w-10 h-10 text-neutral-200 mx-auto mb-3" />
-                <p className="text-sm text-neutral-400">
-                  Select a ride to view map and details
-                </p>
+                <p className="text-sm text-neutral-400">Select a ride to view map and details</p>
               </div>
             )}
           </div>
