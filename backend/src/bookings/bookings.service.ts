@@ -469,7 +469,13 @@ export class BookingsService {
       );
     }
 
-    return booking;
+    // Return populated booking
+    return this.bookingModel
+      .findById(bookingId)
+      .populate('car')
+      .populate({ path: 'driver', populate: { path: 'userId', select: 'name phone email' } })
+      .populate('user', 'name phone email')
+      .lean();
   }
 
   // Driver methods
