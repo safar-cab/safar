@@ -236,7 +236,7 @@ function MapEmbed({ src }: { src: string }) {
 function LocationMapPreview({ address }: { address: string }) {
   const hasAddress = MAPS_KEY && address && address.length >= 3;
   return (
-    <div className="flex-1 min-h-0 rounded-xl overflow-hidden border border-neutral-100 bg-neutral-50 relative">
+    <div className="rounded-xl overflow-hidden border border-neutral-100 bg-neutral-50 relative" style={{ height: 'calc(100vh - 28rem)' }}>
       {hasAddress ? (
         <MapEmbed
           src={`https://www.google.com/maps/embed/v1/place?key=${MAPS_KEY}&q=${encodeURIComponent(address)}&zoom=14`}
@@ -257,7 +257,7 @@ function RouteMapPreview({ pickup, drop }: { pickup: string; drop: string }) {
   const hasRoute = MAPS_KEY && pickup && drop && pickup.length >= 3 && drop.length >= 3;
   if (!hasRoute) return null;
   return (
-    <div className="flex-1 min-h-0 rounded-xl overflow-hidden border border-neutral-100 relative">
+    <div className="rounded-xl overflow-hidden border border-neutral-100 relative" style={{ height: 'calc(100vh - 28rem)' }}>
       <MapEmbed
         src={`https://www.google.com/maps/embed/v1/directions?key=${MAPS_KEY}&origin=${encodeURIComponent(pickup)}&destination=${encodeURIComponent(drop)}&mode=driving`}
       />
@@ -320,7 +320,7 @@ function PickupStep({
   );
 
   return (
-    <div className="flex flex-col gap-3" style={{ minHeight: 'calc(100vh - 14rem)' }}>
+    <div className="flex flex-col gap-3" style={{ minHeight: '500px' }}>
       <div className="flex items-center gap-2">
         <div className="w-3 h-3 rounded-full bg-success-500" />
         <h2 className="text-base font-semibold text-neutral-800">Pickup Location</h2>
@@ -369,7 +369,7 @@ function DropStep({
   updateField: <K extends keyof FormData>(key: K, val: FormData[K]) => void;
 }) {
   return (
-    <div className="flex flex-col gap-3" style={{ minHeight: 'calc(100vh - 14rem)' }}>
+    <div className="flex flex-col gap-3" style={{ minHeight: '500px' }}>
       <div className="flex items-center gap-2">
         <div className="w-3 h-3 rounded-full bg-error-500" />
         <h2 className="text-base font-semibold text-neutral-800">Drop Location</h2>
@@ -439,7 +439,7 @@ function StopsStep({
   };
 
   return (
-    <div className="flex flex-col gap-3" style={{ minHeight: 'calc(100vh - 14rem)' }}>
+    <div className="flex flex-col gap-3" style={{ minHeight: '500px' }}>
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-base font-semibold text-neutral-800">Intermediate Stops</h2>
@@ -506,7 +506,7 @@ function StopsStep({
 
       {/* Route map — shows pickup → stops → drop with waypoints */}
       {form.pickupAddress && form.dropAddress && MAPS_KEY && (
-        <div className="flex-1 min-h-0 rounded-xl overflow-hidden border border-neutral-100 relative">
+        <div className="rounded-xl overflow-hidden border border-neutral-100 relative" style={{ height: 'calc(100vh - 28rem)' }}>
           {(() => {
             const validStopAddrs = form.stops
               .filter((s) => s.address.trim().length >= 3)
