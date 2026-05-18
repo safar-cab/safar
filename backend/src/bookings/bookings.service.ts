@@ -357,8 +357,12 @@ export class BookingsService {
   }
 
   // Driver methods
-  async findByDriver(driverId: string, query: { status?: string }) {
-    const filter: any = { driver: driverId };
+  async findByDriver(userId: string, query: { status?: string }) {
+    // userId is the User _id from JWT, but bookings store Driver profile _id
+    const driver = await this.driverModel.findOne({ userId }).select('_id').lean();
+    if (!driver) return [];
+
+    const filter: any = { driver: driver._id };
     if (query.status) filter.status = query.status;
 
     return this.bookingModel
