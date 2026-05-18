@@ -110,7 +110,7 @@ export function BookingForm() {
   useEffect(() => {
     if (submitted && createdBooking && !creating) {
       toast.success('Booking created successfully!');
-      navigate(`/customer/bookings/${createdBooking._id}`);
+      navigate(`/customer/bookings/${createdBooking._id}`, { replace: true });
     }
   }, [submitted, createdBooking, creating, navigate]);
 
@@ -702,11 +702,13 @@ function ReviewStep({
   const pricePerKm = pricingConfig.pricePerKm;
   const baseFare = pricingConfig.baseFare;
   const distanceCharge = form.estimatedDistance * pricePerKm;
-  const tollEstimate = 150;
+  const tollEstimate = 0; // Tolls calculated on server from Google Routes API
   const stopCharge = validStops.length * pricingConfig.stopWaitingChargePerInterval;
-  const subtotal = baseFare + distanceCharge + tollEstimate + stopCharge;
-  const gstAmount = Math.round(subtotal * 0.05);
-  const totalAmount = subtotal + gstAmount;
+  const taxableAmount = baseFare + distanceCharge + stopCharge; // Tolls exempt from GST
+  const cgst = Math.round(taxableAmount * 0.025);
+  const sgst = Math.round(taxableAmount * 0.025);
+  const gstAmount = cgst + sgst;
+  const totalAmount = taxableAmount + tollEstimate + gstAmount;
 
   return (
     <div className="space-y-4">
@@ -799,6 +801,8 @@ function ReviewStep({
         stopCount={validStops.length}
         stopChargePerStop={pricingConfig.stopWaitingChargePerInterval}
         totalStopCharge={stopCharge}
+        cgst={cgst}
+        sgst={sgst}
         gstAmount={gstAmount}
         totalAmount={totalAmount}
       />
