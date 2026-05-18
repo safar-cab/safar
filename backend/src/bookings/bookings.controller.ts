@@ -37,6 +37,21 @@ export class CustomerBookingsController {
     return this.bookingsService.getPricingConfig();
   }
 
+  @Post('preview')
+  @ApiOperation({ summary: 'Preview booking pricing (single source of truth)' })
+  previewPricing(
+    @Body()
+    body: {
+      pickupAddress: string;
+      dropAddress: string;
+      estimatedDistanceKm?: number;
+      tollEstimate?: number;
+      stopCount?: number;
+    },
+  ) {
+    return this.bookingsService.calculatePricing(body);
+  }
+
   @Post()
   @ApiOperation({ summary: 'Create a new booking' })
   create(@CurrentUser('_id') userId: string, @Body() dto: CreateBookingDto) {

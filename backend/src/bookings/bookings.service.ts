@@ -19,6 +19,10 @@ import {
   CompanySettings,
   CompanySettingsDocument,
 } from '../schemas/company-settings.schema';
+import {
+  RoutePricing,
+  RoutePricingDocument,
+} from '../schemas/route-pricing.schema';
 
 @Injectable()
 export class BookingsService {
@@ -30,6 +34,8 @@ export class BookingsService {
     @InjectModel(Driver.name) private driverModel: Model<DriverDocument>,
     @InjectModel(CompanySettings.name)
     private settingsModel: Model<CompanySettingsDocument>,
+    @InjectModel(RoutePricing.name)
+    private routeModel: Model<RoutePricingDocument>,
     private notificationsService: NotificationsService,
   ) {}
 
@@ -47,6 +53,86 @@ export class BookingsService {
     return this.getSettings();
   }
 
+  /**
+   * Try to match a route by pickup+drop addresses → use route-specific pricing.
+   * Falls back to global config if no route matches.
+   */
+  private async findMatchingRoute(
+    pickupAddress: string,
+    dropAddress: string,
+  ) {
+    if (!pickupAddress || !dropAddress) return null;
+
+    // Try to match by city name in fromCity.name / toCity.name
+    const pickup = pickupAddress.split(',')[0].trim().toLowerCase();
+    const drop = dropAddress.split(',')[0].trim().toLowerCase();
+
+    const route = await this.routeModel.findOne({
+      isActive: true,
+      $or: [
+        {
+          'fromCity.name': { $regex: new RegExp(`^${pickup}$`, 'i') },
+          'toCity.name': { $regex: new RegExp(`^${drop}$`, 'i') },
+        },
+        {
+          'fromCity.name': { $regex: new RegExp(`^${drop}$`, 'i') },
+          'toCity.name': { $regex: new RegExp(`^${pickup}$`, 'i') },
+        },
+      ],
+    }).lean();
+
+    return route;
+  }
+
+  async calculatePricing(data: {
+    pickupAddress: string;
+    dropAddress: string;
+    estimatedDistanceKm?: number;
+    tollEstimate?: number;
+    stopCount?: number;
+  }) {
+    const config = await this.getSettings();
+    const route = await this.findMatchingRoute(
+      data.pickupAddress,
+      data.dropAddress,
+    );
+
+    // Use route-specific pricing if found, else global config
+    const pricePerKm = route?.pricePerKm || config.pricePerKm;
+    const baseFare = route?.baseFare || config.baseFare;
+    const distanceKm =
+      data.estimatedDistanceKm || route?.distanceKm || 100;
+    const tollEstimate =
+      data.tollEstimate ?? route?.tollEstimate ?? 0;
+
+    const distanceCharge = Math.round(distanceKm * pricePerKm * 10) / 10;
+    const stopChargePerStop = config.stopWaitingChargePerInterval;
+    const stopCount = data.stopCount || 0;
+    const totalStopCharge = stopCount * stopChargePerStop;
+    const taxableAmount = baseFare + distanceCharge + totalStopCharge;
+    const cgst = Math.round(taxableAmount * 0.025);
+    const sgst = Math.round(taxableAmount * 0.025);
+    const gstAmount = cgst + sgst;
+    const totalAmount = taxableAmount + tollEstimate + gstAmount;
+
+    return {
+      pricePerKm,
+      baseFare,
+      distanceKm,
+      distanceCharge,
+      tollEstimate,
+      stopChargePerStop,
+      stopCount,
+      totalStopCharge,
+      cgst,
+      sgst,
+      gstAmount,
+      totalAmount,
+      routeMatched: !!route,
+      routeName: route?.name,
+    };
+  }
+
   private async generateBookingId(): Promise<string> {
     const today = new Date();
     const dateStr = today.toISOString().slice(0, 10).replace(/-/g, '');
@@ -59,22 +145,28 @@ export class BookingsService {
   async create(userId: string, dto: CreateBookingDto) {
     const bookingId = await this.generateBookingId();
 
-    // Calculate pricing — GST as per Indian rules (5% on fare, tolls exempt)
-    const config = await this.getSettings();
-    const pricePerKm = config.pricePerKm;
-    const baseFare = config.baseFare;
-    const distanceKm = dto.estimatedDistanceKm || 100;
-    const distanceCharge = distanceKm * pricePerKm;
-    const tollEstimate = dto.tollEstimate || 0;
-    // Stop charge: estimated 1 waiting interval per stop
-    const stopChargePerStop = config.stopWaitingChargePerInterval;
-    const stopCount = dto.stops?.length || 0;
-    const totalStopCharge = stopCount * stopChargePerStop;
-    const taxableAmount = baseFare + distanceCharge + totalStopCharge; // Tolls exempt from GST
-    const cgst = Math.round(taxableAmount * 0.025); // 2.5% CGST
-    const sgst = Math.round(taxableAmount * 0.025); // 2.5% SGST
-    const gstAmount = cgst + sgst; // 5% total GST
-    const totalAmount = taxableAmount + tollEstimate + gstAmount;
+    // Calculate pricing — uses route-specific pricing if route matches
+    const pricing = await this.calculatePricing({
+      pickupAddress: dto.pickup.address,
+      dropAddress: dto.drop.address,
+      estimatedDistanceKm: dto.estimatedDistanceKm,
+      tollEstimate: dto.tollEstimate,
+      stopCount: dto.stops?.length || 0,
+    });
+    const {
+      pricePerKm,
+      baseFare,
+      distanceCharge,
+      tollEstimate,
+      stopChargePerStop,
+      stopCount,
+      totalStopCharge,
+      cgst,
+      sgst,
+      gstAmount,
+      totalAmount,
+    } = pricing;
+    const distanceKm = pricing.distanceKm;
 
     const booking = await this.bookingModel.create({
       bookingId,

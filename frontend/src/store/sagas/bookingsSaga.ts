@@ -14,6 +14,8 @@ import {
   bookingsError,
   fetchPricingConfig,
   fetchPricingConfigSuccess,
+  fetchPricingPreview,
+  fetchPricingPreviewSuccess,
 } from '../slices/bookingsSlice';
 import type { Booking } from '@/types';
 
@@ -79,6 +81,15 @@ function* handleFetchPricingConfig() {
   }
 }
 
+function* handleFetchPricingPreview(action: ReturnType<typeof fetchPricingPreview>) {
+  try {
+    const data: unknown = yield call(api.post, '/customer/bookings/preview', action.payload);
+    yield put(fetchPricingPreviewSuccess(data));
+  } catch {
+    // silent
+  }
+}
+
 export function* bookingsSaga() {
   yield takeLatest(fetchBookings.type, handleFetchBookings);
   yield takeLatest(fetchBookingDetail.type, handleFetchBookingDetail);
@@ -86,4 +97,5 @@ export function* bookingsSaga() {
   yield takeLatest(cancelBooking.type, handleCancelBooking);
   yield takeLatest(rateBooking.type, handleRateBooking);
   yield takeLatest(fetchPricingConfig.type, handleFetchPricingConfig);
+  yield takeLatest(fetchPricingPreview.type, handleFetchPricingPreview);
 }

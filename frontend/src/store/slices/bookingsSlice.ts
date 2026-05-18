@@ -19,6 +19,7 @@ interface BookingsState {
   cancelling: boolean;
   error: string | null;
   pricingConfig: PricingConfig | null;
+  pricingPreview: any | null;
 }
 
 const initialState: BookingsState = {
@@ -32,6 +33,7 @@ const initialState: BookingsState = {
   cancelling: false,
   error: null,
   pricingConfig: null,
+  pricingPreview: null,
 };
 
 const bookingsSlice = createSlice({
@@ -104,6 +106,22 @@ const bookingsSlice = createSlice({
     fetchPricingConfigSuccess(state, action: PayloadAction<PricingConfig>) {
       state.pricingConfig = action.payload;
     },
+    fetchPricingPreview(
+      _state,
+      _action: PayloadAction<{
+        pickupAddress: string;
+        dropAddress: string;
+        estimatedDistanceKm?: number;
+        tollEstimate?: number;
+        stopCount?: number;
+      }>,
+    ) {},
+    fetchPricingPreviewSuccess(state, action: PayloadAction<any>) {
+      state.pricingPreview = action.payload;
+    },
+    clearPricingPreview(state) {
+      state.pricingPreview = null;
+    },
   },
 });
 
@@ -122,5 +140,8 @@ export const {
   clearBookingError,
   fetchPricingConfig,
   fetchPricingConfigSuccess,
+  fetchPricingPreview,
+  fetchPricingPreviewSuccess,
+  clearPricingPreview,
 } = bookingsSlice.actions;
 export default bookingsSlice.reducer;
