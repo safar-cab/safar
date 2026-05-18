@@ -1,5 +1,5 @@
 import { useEffect, useContext, useState } from 'react';
-import { Navigation, MapPin, Clock, X, Phone, ExternalLink } from 'lucide-react';
+import { Navigation, MapPin, Clock, X, Phone, ExternalLink, Search, Car } from 'lucide-react';
 import { AuthContext } from '@/contexts/AuthContext';
 import { connectSocket, disconnectSocket } from '@/lib/socket';
 import { PageHeader } from '@/components/ui/PageHeader';
@@ -15,8 +15,11 @@ interface ActiveRide {
   status: string;
   pickup: { address: string };
   drop: { address: string };
-  driver: { userId: { name: string; phone: string } } | null;
+  driver: { userId: { name: string; phone: string }; licenseNumber?: string } | null;
   user: { name: string; phone: string };
+  car: { make: string; model: string; registrationNumber?: string } | null;
+  schedule?: { startDate: string; startTime: string };
+  distance?: { estimated: number };
 }
 
 interface Position {
@@ -41,6 +44,8 @@ export function LiveRides() {
   const [selectedRide, setSelectedRide] = useState<ActiveRide | null>(null);
   const [routeInfo, setRouteInfo] = useState<RouteData | null>(null);
   const [tollInfo, setTollInfo] = useState<{ tollEstimateINR: number; routes: any[] } | null>(null);
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
 
   useEffect(() => {
     if (!token) return;
@@ -109,27 +114,74 @@ export function LiveRides() {
     <div>
       <PageHeader title="Live Rides" subtitle={`${rides.length} active rides`} />
 
-      {loading ? (
+      {/* Search + Filter */}
+      {!loading && rides.length > 0 && (
+        <div className="flex gap-3 mb-4">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
+            <input
+              type="text"
+              placeholder="Search by ID, driver, customer, route..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full h-10 pl-10 pr-4 bg-white border border-neutral-200 rounded-lg text-sm outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
+            />
+          </div>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="h-10 px-3 bg-white border border-neutral-200 rounded-lg text-sm outline-none focus:border-primary-500"
+          >
+            <option value="">All statuses</option>
+            <option value="driver_en_route">En Route</option>
+            <option value="picked_up">Picked Up</option>
+            <option value="in_progress">In Progress</option>
+          </select>
+        </div>
+      )}
+
+      {(() => {
+        const filtered = rides.filter((ride) => {
+          if (statusFilter && ride.status !== statusFilter) return false;
+          if (search) {
+            const q = search.toLowerCase();
+            const dName = driverNameOf(ride).toLowerCase();
+            const cName = ride.user?.name?.toLowerCase() || '';
+            return (
+              ride.bookingId.toLowerCase().includes(q) ||
+              dName.includes(q) ||
+              cName.includes(q) ||
+              ride.pickup.address.toLowerCase().includes(q) ||
+              ride.drop.address.toLowerCase().includes(q)
+            );
+          }
+          return true;
+        });
+
+        return loading ? (
         <div className="space-y-3">
           {[1, 2, 3].map((i) => (
             <div key={i} className="h-24 bg-neutral-100 rounded-xl animate-pulse" />
           ))}
         </div>
-      ) : rides.length === 0 ? (
+      ) : filtered.length === 0 ? (
         <div className="text-center py-16">
           <MapPin className="w-12 h-12 text-neutral-200 mx-auto mb-3" />
-          <p className="text-neutral-500 font-medium">No active rides</p>
+          <p className="text-neutral-500 font-medium">
+            {rides.length === 0 ? 'No active rides' : 'No rides match your search'}
+          </p>
           <p className="text-sm text-neutral-400">
-            Rides will appear here when drivers are en route
+            {rides.length === 0 ? 'Rides will appear here when drivers are en route' : 'Try a different search term'}
           </p>
         </div>
       ) : (
         <div className="grid lg:grid-cols-2 gap-4">
           {/* Ride cards */}
           <div className="space-y-3">
-            {rides.map((ride) => {
+            {filtered.map((ride) => {
               const pos = positions[ride._id];
               const isSelected = selectedRide?._id === ride._id;
+              const carInfo = ride.car ? `${ride.car.make} ${ride.car.model}` : null;
 
               return (
                 <div
@@ -142,17 +194,36 @@ export function LiveRides() {
                       : 'border-neutral-100 hover:border-primary-200',
                   )}
                 >
-                  <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-start justify-between mb-2">
                     <div>
                       <p className="text-sm font-semibold text-neutral-800">{ride.bookingId}</p>
                       <p className="text-xs text-neutral-400">
-                        {driverNameOf(ride)} → {ride.user.name}
+                        {driverNameOf(ride)} → {ride.user?.name}
                       </p>
                     </div>
                     <Badge status={ride.status} />
                   </div>
 
-                  <div className="flex items-start gap-3 mb-3">
+                  {/* Driver + Car row */}
+                  <div className="flex items-center gap-4 mb-2 text-xs">
+                    {driverNameOf(ride) !== 'Unassigned' && (
+                      <span className="flex items-center gap-1 text-neutral-500">
+                        <Phone className="w-3 h-3" />
+                        {driverPhoneOf(ride)}
+                      </span>
+                    )}
+                    {carInfo && (
+                      <span className="flex items-center gap-1 text-neutral-500">
+                        <Car className="w-3 h-3" />
+                        {carInfo}
+                        {ride.car?.registrationNumber && (
+                          <span className="text-neutral-300">({ride.car.registrationNumber})</span>
+                        )}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex items-start gap-3 mb-2">
                     <div className="flex flex-col items-center mt-1">
                       <div className="w-2 h-2 rounded-full bg-green-500" />
                       <div className="w-0.5 h-5 bg-neutral-200 my-0.5" />
@@ -383,7 +454,8 @@ export function LiveRides() {
             )}
           </div>
         </div>
-      )}
+      );
+      })()}
     </div>
   );
 }
