@@ -1,18 +1,10 @@
 import { useState, useEffect } from 'react';
-import {
-  FileText,
-  CheckCircle,
-  XCircle,
-  Clock,
-  AlertTriangle,
-  Filter,
-} from 'lucide-react';
+import { FileText, CheckCircle, XCircle, Clock, AlertTriangle, Filter } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import toast from 'react-hot-toast';
 import api from '@/lib/api';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Button } from '@/components/ui/Button';
-import { Badge } from '@/components/ui/Badge';
 import { Modal } from '@/components/ui/Modal';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Pagination } from '@/components/ui/Pagination';
@@ -120,10 +112,34 @@ export function DocumentQueue() {
       {/* Stats */}
       {stats && (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-          <StatCard icon={Clock} label="Pending" value={stats.pending} color="text-amber-500" bg="bg-amber-50" />
-          <StatCard icon={CheckCircle} label="Verified" value={stats.verified} color="text-green-500" bg="bg-green-50" />
-          <StatCard icon={XCircle} label="Rejected" value={stats.rejected} color="text-red-500" bg="bg-red-50" />
-          <StatCard icon={AlertTriangle} label="Expired" value={stats.expired} color="text-orange-500" bg="bg-orange-50" />
+          <StatCard
+            icon={Clock}
+            label="Pending"
+            value={stats.pending}
+            color="text-amber-500"
+            bg="bg-amber-50"
+          />
+          <StatCard
+            icon={CheckCircle}
+            label="Verified"
+            value={stats.verified}
+            color="text-green-500"
+            bg="bg-green-50"
+          />
+          <StatCard
+            icon={XCircle}
+            label="Rejected"
+            value={stats.rejected}
+            color="text-red-500"
+            bg="bg-red-50"
+          />
+          <StatCard
+            icon={AlertTriangle}
+            label="Expired"
+            value={stats.expired}
+            color="text-orange-500"
+            bg="bg-orange-50"
+          />
         </div>
       )}
 
@@ -132,7 +148,10 @@ export function DocumentQueue() {
         <Filter className="w-4 h-4 text-neutral-400" />
         <select
           value={entityFilter}
-          onChange={(e) => { setEntityFilter(e.target.value); setPage(1); }}
+          onChange={(e) => {
+            setEntityFilter(e.target.value);
+            setPage(1);
+          }}
           className="border border-neutral-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary-500"
         >
           <option value="">All types</option>
@@ -144,7 +163,9 @@ export function DocumentQueue() {
       {/* Document list */}
       {loading ? (
         <div className="space-y-3">
-          {[1, 2, 3].map((i) => <Skeleton key={i} className="h-20 rounded-xl" />)}
+          {[1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-20 rounded-xl" />
+          ))}
         </div>
       ) : documents.length === 0 ? (
         <div className="text-center py-16">
@@ -176,7 +197,8 @@ export function DocumentQueue() {
                   {DOC_TYPE_LABELS[doc.docType] || doc.docType}
                 </p>
                 <p className="text-xs text-neutral-400 mt-0.5">
-                  {doc.entityType === 'driver' ? 'Driver' : 'Car'} · {doc.documentNumber || 'No number'}
+                  {doc.entityType === 'driver' ? 'Driver' : 'Car'} ·{' '}
+                  {doc.documentNumber || 'No number'}
                 </p>
                 <p className="text-xs text-neutral-400">
                   Uploaded {formatDistanceToNow(new Date(doc.createdAt), { addSuffix: true })}
@@ -185,14 +207,20 @@ export function DocumentQueue() {
 
               <div className="flex gap-2">
                 <button
-                  onClick={(e) => { e.stopPropagation(); handleVerify(doc._id); }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleVerify(doc._id);
+                  }}
                   className="p-2 rounded-lg bg-green-50 text-green-600 hover:bg-green-100 transition-colors"
                   title="Verify"
                 >
                   <CheckCircle className="w-4 h-4" />
                 </button>
                 <button
-                  onClick={(e) => { e.stopPropagation(); setRejectModal(doc._id); }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setRejectModal(doc._id);
+                  }}
                   className="p-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-colors"
                   title="Reject"
                 >
@@ -206,7 +234,12 @@ export function DocumentQueue() {
 
       {totalPages > 1 && (
         <div className="mt-6">
-          <Pagination page={page} totalPages={totalPages} total={documents.length} onPageChange={setPage} />
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            total={documents.length}
+            onPageChange={setPage}
+          />
         </div>
       )}
 
@@ -221,11 +254,20 @@ export function DocumentQueue() {
           <div className="space-y-4">
             <div className="rounded-lg overflow-hidden border border-neutral-100">
               {selectedDoc.fileUrl.endsWith('.pdf') ? (
-                <a href={selectedDoc.fileUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 p-4 text-primary-600 hover:underline">
+                <a
+                  href={selectedDoc.fileUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 p-4 text-primary-600 hover:underline"
+                >
                   <FileText className="w-5 h-5" /> View PDF
                 </a>
               ) : (
-                <img src={selectedDoc.fileUrl} alt="" className="w-full max-h-96 object-contain bg-neutral-50" />
+                <img
+                  src={selectedDoc.fileUrl}
+                  alt=""
+                  className="w-full max-h-96 object-contain bg-neutral-50"
+                />
               )}
             </div>
             <div className="grid grid-cols-2 gap-3 text-sm">
@@ -242,15 +284,29 @@ export function DocumentQueue() {
               {selectedDoc.expiryDate && (
                 <div>
                   <p className="text-neutral-400 text-xs">Expiry</p>
-                  <p className="font-medium">{new Date(selectedDoc.expiryDate).toLocaleDateString('en-IN')}</p>
+                  <p className="font-medium">
+                    {new Date(selectedDoc.expiryDate).toLocaleDateString('en-IN')}
+                  </p>
                 </div>
               )}
             </div>
             <div className="flex gap-3 pt-2 border-t border-neutral-100">
-              <Button className="flex-1" onClick={() => { handleVerify(selectedDoc._id); }}>
+              <Button
+                className="flex-1"
+                onClick={() => {
+                  handleVerify(selectedDoc._id);
+                }}
+              >
                 <CheckCircle className="w-4 h-4" /> Verify
               </Button>
-              <Button variant="danger" className="flex-1" onClick={() => { setRejectModal(selectedDoc._id); setSelectedDoc(null); }}>
+              <Button
+                variant="danger"
+                className="flex-1"
+                onClick={() => {
+                  setRejectModal(selectedDoc._id);
+                  setSelectedDoc(null);
+                }}
+              >
                 <XCircle className="w-4 h-4" /> Reject
               </Button>
             </div>
@@ -259,7 +315,15 @@ export function DocumentQueue() {
       </Modal>
 
       {/* Reject modal */}
-      <Modal open={!!rejectModal} onClose={() => { setRejectModal(null); setRejectReason(''); }} title="Reject Document" size="sm">
+      <Modal
+        open={!!rejectModal}
+        onClose={() => {
+          setRejectModal(null);
+          setRejectReason('');
+        }}
+        title="Reject Document"
+        size="sm"
+      >
         <div className="space-y-4">
           <textarea
             value={rejectReason}
@@ -269,8 +333,19 @@ export function DocumentQueue() {
             className="w-full border border-neutral-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100 resize-none"
           />
           <div className="flex gap-3">
-            <Button variant="outline" className="flex-1" onClick={() => { setRejectModal(null); setRejectReason(''); }}>Cancel</Button>
-            <Button variant="danger" className="flex-1" onClick={handleReject}>Reject</Button>
+            <Button
+              variant="outline"
+              className="flex-1"
+              onClick={() => {
+                setRejectModal(null);
+                setRejectReason('');
+              }}
+            >
+              Cancel
+            </Button>
+            <Button variant="danger" className="flex-1" onClick={handleReject}>
+              Reject
+            </Button>
           </div>
         </div>
       </Modal>
@@ -278,7 +353,13 @@ export function DocumentQueue() {
   );
 }
 
-function StatCard({ icon: Icon, label, value, color, bg }: {
+function StatCard({
+  icon: Icon,
+  label,
+  value,
+  color,
+  bg,
+}: {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
   value: number;

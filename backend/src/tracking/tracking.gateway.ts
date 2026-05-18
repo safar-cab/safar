@@ -47,7 +47,7 @@ export class TrackingGateway
     );
   }
 
-  async handleConnection(client: AuthSocket) {
+  handleConnection(client: AuthSocket) {
     try {
       const token =
         client.handshake.auth?.token ||
@@ -68,7 +68,9 @@ export class TrackingGateway
       client.userRole = payload.role;
       client.userName = payload.name;
 
-      this.logger.log(`Client connected: ${client.userId} (${client.userRole})`);
+      this.logger.log(
+        `Client connected: ${client.userId} (${client.userRole})`,
+      );
     } catch {
       client.disconnect();
     }
@@ -89,9 +91,9 @@ export class TrackingGateway
       client.userId!,
     );
     for (const booking of bookings) {
-      client.join(`booking:${booking._id}`);
+      client.join(`booking:${String(booking._id)}`);
       this.logger.log(
-        `Driver ${client.userId} joined room booking:${booking._id}`,
+        `Driver ${client.userId} joined room booking:${String(booking._id)}`,
       );
     }
 
@@ -100,7 +102,7 @@ export class TrackingGateway
 
   // Customer joins their booking room
   @SubscribeMessage('customer:join')
-  async handleCustomerJoin(
+  handleCustomerJoin(
     @ConnectedSocket() client: AuthSocket,
     @MessageBody() data: { bookingId: string },
   ) {
@@ -123,7 +125,7 @@ export class TrackingGateway
 
   // Admin joins all active rides
   @SubscribeMessage('admin:join')
-  async handleAdminJoin(@ConnectedSocket() client: AuthSocket) {
+  handleAdminJoin(@ConnectedSocket() client: AuthSocket) {
     if (client.userRole !== 'admin') return;
 
     client.join('admin:live');
@@ -221,7 +223,7 @@ export class TrackingGateway
     if (client.userRole !== 'driver' || !data?.bookingId) return;
 
     try {
-      const booking = await this.bookingsService.markStopReached(
+      await this.bookingsService.markStopReached(
         data.bookingId,
         data.stopOrder,
       );

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>;
@@ -8,12 +8,19 @@ interface BeforeInstallPromptEvent extends Event {
 const DISMISS_KEY = 'pwa-install-dismissed';
 const DISMISS_DAYS = 7;
 
+function checkDismissed(): boolean {
+  const dismissed = localStorage.getItem(DISMISS_KEY);
+  if (!dismissed) return false;
+  const dismissedAt = parseInt(dismissed, 10);
+  return Date.now() - dismissedAt < DISMISS_DAYS * 24 * 60 * 60 * 1000;
+}
+
 export function usePwaInstall() {
   const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isInstalled, setIsInstalled] = useState(false);
+  const [dismissed, setDismissed] = useState(() => checkDismissed());
 
   useEffect(() => {
-    // Check if already installed
     if (window.matchMedia('(display-mode: standalone)').matches) {
       setIsInstalled(true);
       return;
@@ -30,27 +37,21 @@ export function usePwaInstall() {
     return () => window.removeEventListener('beforeinstallprompt', handler);
   }, []);
 
-  const isDismissed = () => {
-    const dismissed = localStorage.getItem(DISMISS_KEY);
-    if (!dismissed) return false;
-    const dismissedAt = parseInt(dismissed, 10);
-    return Date.now() - dismissedAt < DISMISS_DAYS * 24 * 60 * 60 * 1000;
-  };
-
-  const install = async () => {
+  const install = useCallback(async () => {
     if (!installPrompt) return false;
     await installPrompt.prompt();
     const { outcome } = await installPrompt.userChoice;
     setInstallPrompt(null);
     return outcome === 'accepted';
-  };
+  }, [installPrompt]);
 
-  const dismiss = () => {
+  const dismiss = useCallback(() => {
     localStorage.setItem(DISMISS_KEY, Date.now().toString());
     setInstallPrompt(null);
-  };
+    setDismissed(true);
+  }, []);
 
-  const canInstall = !!installPrompt && !isInstalled && !isDismissed();
+  const canInstall = !!installPrompt && !isInstalled && !dismissed;
 
   return { canInstall, install, dismiss, isInstalled };
 }

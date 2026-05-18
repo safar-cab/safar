@@ -1,14 +1,6 @@
 import { useEffect, useContext, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import {
-  Navigation,
-  Play,
-  Square,
-  MapPin,
-  CheckCircle,
-  ArrowRight,
-  ExternalLink,
-} from 'lucide-react';
+import { Navigation, Play, Square, CheckCircle, ArrowRight, ExternalLink } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { AuthContext } from '@/contexts/AuthContext';
 import { connectSocket, disconnectSocket, getSocket } from '@/lib/socket';
@@ -120,9 +112,10 @@ export function ActiveRide() {
       const pendingStops = (booking.stops || [])
         .filter((s) => s.status !== 'reached')
         .map((s) => s.address);
-      const waypoints = pendingStops.length > 0
-        ? `&waypoints=${pendingStops.map(encodeURIComponent).join('|')}`
-        : '';
+      const waypoints =
+        pendingStops.length > 0
+          ? `&waypoints=${pendingStops.map(encodeURIComponent).join('|')}`
+          : '';
       window.open(
         `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(booking.drop.address)}${waypoints}`,
         '_blank',
@@ -161,9 +154,7 @@ export function ActiveRide() {
       <div
         className={cn(
           'rounded-xl p-4 mb-4 border',
-          isTracking
-            ? 'bg-green-50 border-green-200'
-            : 'bg-neutral-50 border-neutral-200',
+          isTracking ? 'bg-green-50 border-green-200' : 'bg-neutral-50 border-neutral-200',
         )}
       >
         <div className="flex items-center gap-3">
@@ -178,9 +169,7 @@ export function ActiveRide() {
               {isTracking ? 'Location Tracking Active' : 'Tracking Inactive'}
             </p>
             {lastSent && (
-              <p className="text-xs text-neutral-400">
-                Last sent: {lastSent.toLocaleTimeString()}
-              </p>
+              <p className="text-xs text-neutral-400">Last sent: {lastSent.toLocaleTimeString()}</p>
             )}
             {error && <p className="text-xs text-red-500">{error}</p>}
           </div>
@@ -207,10 +196,12 @@ export function ActiveRide() {
             {(booking.stops || []).map((_, i) => (
               <div key={i} className="flex flex-col items-center">
                 <div className="w-0.5 h-6 bg-neutral-200 my-0.5" />
-                <div className={cn(
-                  'w-2.5 h-2.5 rounded-full',
-                  _.status === 'reached' ? 'bg-green-500' : 'bg-amber-400',
-                )} />
+                <div
+                  className={cn(
+                    'w-2.5 h-2.5 rounded-full',
+                    _.status === 'reached' ? 'bg-green-500' : 'bg-amber-400',
+                  )}
+                />
               </div>
             ))}
             <div className="w-0.5 h-6 bg-neutral-200 my-0.5" />
@@ -235,12 +226,16 @@ export function ActiveRide() {
                       const socket = getSocket();
                       if (socket) {
                         socket.emit('stop:reached', { bookingId: id, stopOrder: stop.order });
-                        setBooking((b) => b ? {
-                          ...b,
-                          stops: b.stops.map((s) =>
-                            s.order === stop.order ? { ...s, status: 'reached' } : s,
-                          ),
-                        } : b);
+                        setBooking((b) =>
+                          b
+                            ? {
+                                ...b,
+                                stops: b.stops.map((s) =>
+                                  s.order === stop.order ? { ...s, status: 'reached' } : s,
+                                ),
+                              }
+                            : b,
+                        );
                         toast.success(`Stop ${stop.order} reached`);
                       }
                     }}
@@ -283,10 +278,7 @@ export function ActiveRide() {
             Navigate
           </Button>
           {nextStatus && (
-            <Button
-              className="flex-1"
-              onClick={() => handleStatusUpdate(nextStatus.key)}
-            >
+            <Button className="flex-1" onClick={() => handleStatusUpdate(nextStatus.key)}>
               {nextStatus.key === 'completed' ? (
                 <CheckCircle className="w-4 h-4" />
               ) : (

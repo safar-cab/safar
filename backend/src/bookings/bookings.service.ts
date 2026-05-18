@@ -183,10 +183,16 @@ export class BookingsService {
     this.logger.log(`Booking ${booking.bookingId} cancelled by ${cancelledBy}`);
 
     // Notify customer + driver
-    const user = await this.userModel.findById(booking.user).select('phone').lean();
+    const user = await this.userModel
+      .findById(booking.user)
+      .select('phone')
+      .lean();
     let driverUserId: string | undefined;
     if (booking.driver) {
-      const driver = await this.driverModel.findById(booking.driver).select('userId').lean();
+      const driver = await this.driverModel
+        .findById(booking.driver)
+        .select('userId')
+        .lean();
       driverUserId = driver?.userId?.toString();
     }
     this.notificationsService.onBookingCancelled(
@@ -267,7 +273,10 @@ export class BookingsService {
     );
 
     // Notify customer + driver
-    const driver = await this.driverModel.findById(driverId).select('userId').lean();
+    const driver = await this.driverModel
+      .findById(driverId)
+      .select('userId')
+      .lean();
     const driverUser = driver
       ? await this.userModel.findById(driver.userId).select('name').lean()
       : null;
@@ -309,7 +318,10 @@ export class BookingsService {
 
     // Send notifications based on status
     const userId = booking.user.toString();
-    const user = await this.userModel.findById(booking.user).select('phone').lean();
+    const user = await this.userModel
+      .findById(booking.user)
+      .select('phone')
+      .lean();
     const phone = user?.phone;
 
     if (status === BookingStatus.DRIVER_EN_ROUTE) {
@@ -318,7 +330,10 @@ export class BookingsService {
       this.notificationsService.onDriverArrived(userId, booking.bookingId);
     } else if (status === BookingStatus.IN_PROGRESS) {
       const driver = booking.driver
-        ? await this.driverModel.findById(booking.driver).select('userId').lean()
+        ? await this.driverModel
+            .findById(booking.driver)
+            .select('userId')
+            .lean()
         : null;
       const driverUser = driver
         ? await this.userModel.findById(driver.userId).select('name').lean()
@@ -376,7 +391,10 @@ export class BookingsService {
       title: 'Stop Reached',
       body: `Driver reached stop ${stopOrder}: ${stop.address}`,
       type: 'general' as any,
-      data: { bookingId: booking._id.toString(), url: `/customer/track/${booking._id}` },
+      data: {
+        bookingId: booking._id.toString(),
+        url: `/customer/track/${booking._id.toString()}`,
+      },
     });
 
     return booking;
@@ -392,7 +410,10 @@ export class BookingsService {
       .lean();
 
     if (booking) {
-      const user = await this.userModel.findById(booking.user).select('phone').lean();
+      const user = await this.userModel
+        .findById(booking.user)
+        .select('phone')
+        .lean();
       this.notificationsService.onBookingConfirmed(
         booking.user.toString(),
         booking.bookingId,

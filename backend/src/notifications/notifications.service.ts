@@ -35,14 +35,7 @@ export class NotificationsService {
   ) {}
 
   async notify(options: NotifyOptions): Promise<NotificationDocument> {
-    const {
-      userId,
-      title,
-      body,
-      type,
-      data,
-      sendPush = true,
-    } = options;
+    const { userId, title, body, type, data, sendPush = true } = options;
 
     // Save to DB
     const notification = await this.notificationModel.create({
@@ -75,7 +68,9 @@ export class NotificationsService {
           { _id: userId },
           { $pull: { fcmTokens: { $in: invalidTokens } } },
         );
-        this.logger.log(`Removed ${invalidTokens.length} invalid FCM tokens for user ${userId}`);
+        this.logger.log(
+          `Removed ${invalidTokens.length} invalid FCM tokens for user ${userId}`,
+        );
       }
     }
 
@@ -87,7 +82,9 @@ export class NotificationsService {
     query: { page?: number; limit?: number; unreadOnly?: boolean },
   ) {
     const { page = 1, limit = 20, unreadOnly } = query;
-    const filter: Record<string, unknown> = { user: new Types.ObjectId(userId) };
+    const filter: Record<string, unknown> = {
+      user: new Types.ObjectId(userId),
+    };
     if (unreadOnly) filter.read = false;
 
     const [notifications, total, unreadCount] = await Promise.all([
@@ -146,7 +143,12 @@ export class NotificationsService {
     return user?.notificationPrefs?.smsEnabled !== false;
   }
 
-  async onBookingConfirmed(userId: string, bookingId: string, amount: number, phone?: string) {
+  async onBookingConfirmed(
+    userId: string,
+    bookingId: string,
+    amount: number,
+    phone?: string,
+  ) {
     await this.notify({
       userId,
       title: 'Booking Confirmed',
@@ -155,7 +157,11 @@ export class NotificationsService {
       data: { bookingId, url: '/customer/bookings' },
     });
     if (phone && (await this.shouldSendSms(userId))) {
-      this.smsService.sendBookingConfirmed(phone, bookingId, amount.toString());
+      void this.smsService.sendBookingConfirmed(
+        phone,
+        bookingId,
+        amount.toString(),
+      );
     }
   }
 
@@ -206,7 +212,12 @@ export class NotificationsService {
     });
   }
 
-  async onRideStarted(userId: string, bookingId: string, driverName: string, phone?: string) {
+  async onRideStarted(
+    userId: string,
+    bookingId: string,
+    driverName: string,
+    phone?: string,
+  ) {
     await this.notify({
       userId,
       title: 'Ride Started',
@@ -215,11 +226,16 @@ export class NotificationsService {
       data: { bookingId, url: `/customer/track/${bookingId}` },
     });
     if (phone && (await this.shouldSendSms(userId))) {
-      this.smsService.sendRideStarted(phone, bookingId, driverName);
+      void this.smsService.sendRideStarted(phone, bookingId, driverName);
     }
   }
 
-  async onRideCompleted(userId: string, bookingId: string, amount: number, phone?: string) {
+  async onRideCompleted(
+    userId: string,
+    bookingId: string,
+    amount: number,
+    phone?: string,
+  ) {
     await this.notify({
       userId,
       title: 'Ride Completed',
@@ -228,7 +244,11 @@ export class NotificationsService {
       data: { bookingId, url: '/customer/bookings' },
     });
     if (phone && (await this.shouldSendSms(userId))) {
-      this.smsService.sendRideCompleted(phone, bookingId, amount.toString());
+      void this.smsService.sendRideCompleted(
+        phone,
+        bookingId,
+        amount.toString(),
+      );
     }
   }
 
@@ -247,7 +267,11 @@ export class NotificationsService {
       data: { bookingId, url: '/customer/bookings' },
     });
     if (phone && (await this.shouldSendSms(userId))) {
-      this.smsService.sendBookingCancelled(phone, bookingId, refundAmount.toString());
+      void this.smsService.sendBookingCancelled(
+        phone,
+        bookingId,
+        refundAmount.toString(),
+      );
     }
     if (driverUserId) {
       await this.notify({

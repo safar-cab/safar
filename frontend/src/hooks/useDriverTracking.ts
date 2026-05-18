@@ -15,9 +15,9 @@ export function useDriverTracking(bookingId: string | null) {
     lastSent: null,
     watchId: null,
   });
+  const [lastPosition, setLastPosition] = useState<{ lat: number; lng: number } | null>(null);
   const wakeLockRef = useRef<WakeLockSentinel | null>(null);
   const intervalRef = useRef<number | null>(null);
-  const lastPositionRef = useRef<{ lat: number; lng: number } | null>(null);
 
   const startTracking = useCallback(() => {
     if (!bookingId || !navigator.geolocation) {
@@ -44,7 +44,7 @@ export function useDriverTracking(bookingId: string | null) {
     const watchId = navigator.geolocation.watchPosition(
       (position) => {
         const { latitude, longitude, speed, heading, accuracy } = position.coords;
-        lastPositionRef.current = { lat: latitude, lng: longitude };
+        setLastPosition({ lat: latitude, lng: longitude });
 
         socket.emit('location:send', {
           bookingId,
@@ -118,6 +118,6 @@ export function useDriverTracking(bookingId: string | null) {
     startTracking,
     stopTracking,
     updateStatus,
-    lastPosition: lastPositionRef.current,
+    lastPosition,
   };
 }

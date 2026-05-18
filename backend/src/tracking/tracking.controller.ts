@@ -31,10 +31,8 @@ export class TrackingController {
   @Get('admin/active')
   @ApiOperation({ summary: 'Get all active ride positions (admin)' })
   async getActiveRides() {
-    const [bookings, positions] = await Promise.all([
-      this.trackingService.getActiveBookingsForAdmin(),
-      this.trackingService.getAllLivePositions(),
-    ]);
+    const bookings = await this.trackingService.getActiveBookingsForAdmin();
+    const positions = this.trackingService.getAllLivePositions();
     return { bookings, positions };
   }
 }
