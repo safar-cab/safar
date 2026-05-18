@@ -6,6 +6,8 @@ import {
   VerificationDocumentSchema,
 } from '../schemas/document.schema';
 import { Driver, DriverSchema } from '../schemas/driver.schema';
+import { Car, CarSchema } from '../schemas/car.schema';
+import { User, UserSchema } from '../schemas/user.schema';
 import { DocumentsService } from './documents.service';
 import {
   DriverDocumentsController,
@@ -18,6 +20,8 @@ import {
     MongooseModule.forFeature([
       { name: VerificationDocument.name, schema: VerificationDocumentSchema },
       { name: Driver.name, schema: DriverSchema },
+      { name: Car.name, schema: CarSchema },
+      { name: User.name, schema: UserSchema },
     ]),
   ],
   controllers: [DriverDocumentsController, AdminDocumentsController],

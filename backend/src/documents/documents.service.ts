@@ -15,6 +15,8 @@ import {
 } from '../schemas/document.schema';
 import { NotificationsService } from '../notifications/notifications.service';
 import { Driver, DriverDocument } from '../schemas/driver.schema';
+import { Car, CarDocument } from '../schemas/car.schema';
+import { User, UserDocument } from '../schemas/user.schema';
 import { NotificationType } from '../schemas/notification.schema';
 
 @Injectable()
@@ -26,6 +28,10 @@ export class DocumentsService {
     private documentModel: Model<DocumentDocument>,
     @InjectModel(Driver.name)
     private driverModel: Model<DriverDocument>,
+    @InjectModel(Car.name)
+    private carModel: Model<CarDocument>,
+    @InjectModel(User.name)
+    private userModel: Model<UserDocument>,
     private notificationsService: NotificationsService,
   ) {}
 
@@ -163,7 +169,43 @@ export class DocumentsService {
       this.documentModel.countDocuments(filter),
     ]);
 
-    return { documents, total, page, totalPages: Math.ceil(total / limit) };
+    // Enrich with parent entity details
+    const enriched = await Promise.all(
+      documents.map(async (doc) => {
+        let entityInfo: { name: string; phone?: string; detail?: string } | null = null;
+        if (doc.entityType === DocEntityType.DRIVER) {
+          const driver = await this.driverModel
+            .findById(doc.entityId)
+            .select('userId licenseNumber')
+            .lean();
+          if (driver) {
+            const user = await this.userModel
+              .findById(driver.userId)
+              .select('name phone')
+              .lean();
+            entityInfo = {
+              name: user?.name || 'Unknown Driver',
+              phone: user?.phone,
+              detail: `License: ${driver.licenseNumber || 'N/A'}`,
+            };
+          }
+        } else if (doc.entityType === DocEntityType.CAR) {
+          const car = await this.carModel
+            .findById(doc.entityId)
+            .select('make model registrationNumber')
+            .lean();
+          if (car) {
+            entityInfo = {
+              name: `${car.make} ${car.model}`,
+              detail: car.registrationNumber || 'N/A',
+            };
+          }
+        }
+        return { ...doc, entityInfo };
+      }),
+    );
+
+    return { documents: enriched, total, page, totalPages: Math.ceil(total / limit) };
   }
 
   async getDocumentStats() {
