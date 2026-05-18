@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Calendar, Clock, Plus, X, GripVertical } from 'lucide-react';
+import { MapPin, Calendar, Clock, Plus, X, GripVertical, Navigation } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setBookingStep } from '@/store/slices/uiSlice';
@@ -165,7 +165,7 @@ export function BookingForm() {
   const selectedCar = cars.find((c) => c._id === form.selectedCarId);
 
   return (
-    <div className="pb-28">
+    <div className="pb-40">
       <PageHeader title="Book a Ride" showBack />
 
       <StepIndicator steps={STEPS} current={bookingStep} />
@@ -194,8 +194,8 @@ export function BookingForm() {
         </motion.div>
       </AnimatePresence>
 
-      {/* Sticky Bottom Actions */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-neutral-100 p-4 flex gap-3 safe-area-bottom z-30">
+      {/* Sticky Bottom Actions — above bottom nav (h-16) */}
+      <div className="fixed bottom-16 left-0 right-0 bg-white border-t border-neutral-100 p-4 flex gap-3 z-40">
         {bookingStep > 1 && (
           <Button variant="outline" size="lg" className="flex-1" onClick={handleBack}>
             Back
@@ -218,6 +218,51 @@ export function BookingForm() {
 
 /* ---------- Step Components ---------- */
 
+const MAPS_KEY = import.meta.env.VITE_GOOGLE_MAPS_KEY || '';
+
+function LocationMapPreview({ address }: { address: string }) {
+  if (!MAPS_KEY || !address || address.length < 3) {
+    return (
+      <div className="h-44 rounded-xl bg-neutral-50 border border-neutral-100 flex items-center justify-center">
+        <div className="text-center">
+          <Navigation className="w-8 h-8 text-neutral-200 mx-auto mb-1.5" />
+          <p className="text-xs text-neutral-300">Map preview appears as you type</p>
+        </div>
+      </div>
+    );
+  }
+
+  const embedUrl = `https://www.google.com/maps/embed/v1/place?key=${MAPS_KEY}&q=${encodeURIComponent(address)}&zoom=14`;
+  return (
+    <div className="h-44 rounded-xl overflow-hidden border border-neutral-100">
+      <iframe
+        src={embedUrl}
+        className="w-full h-full border-0"
+        allowFullScreen
+        loading="lazy"
+        referrerPolicy="no-referrer-when-downgrade"
+      />
+    </div>
+  );
+}
+
+function RouteMapPreview({ pickup, drop }: { pickup: string; drop: string }) {
+  if (!MAPS_KEY || !pickup || !drop || pickup.length < 3 || drop.length < 3) return null;
+
+  const embedUrl = `https://www.google.com/maps/embed/v1/directions?key=${MAPS_KEY}&origin=${encodeURIComponent(pickup)}&destination=${encodeURIComponent(drop)}&mode=driving`;
+  return (
+    <div className="h-44 rounded-xl overflow-hidden border border-neutral-100 mt-4">
+      <iframe
+        src={embedUrl}
+        className="w-full h-full border-0"
+        allowFullScreen
+        loading="lazy"
+        referrerPolicy="no-referrer-when-downgrade"
+      />
+    </div>
+  );
+}
+
 function PickupStep({
   form,
   updateField,
@@ -231,6 +276,7 @@ function PickupStep({
         <div className="w-3 h-3 rounded-full bg-success-500" />
         <h2 className="text-base font-semibold text-neutral-800">Pickup Location</h2>
       </div>
+      <LocationMapPreview address={form.pickupAddress} />
       <Input
         label="Pickup Address"
         placeholder="Enter pickup address"
@@ -261,6 +307,8 @@ function DropStep({
         <div className="w-3 h-3 rounded-full bg-error-500" />
         <h2 className="text-base font-semibold text-neutral-800">Drop Location</h2>
       </div>
+      <RouteMapPreview pickup={form.pickupAddress} drop={form.dropAddress} />
+      {!form.pickupAddress && <LocationMapPreview address={form.dropAddress} />}
       <Input
         label="Drop Address"
         placeholder="Enter drop address"
