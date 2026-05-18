@@ -108,7 +108,19 @@ export function Home() {
           <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-1 px-1">
             {routes.map((route, i) => (
               <div key={route._id} className="min-w-[220px] shrink-0">
-                <RouteCard route={route} index={i} onClick={() => navigate('/customer/book')} />
+                <RouteCard
+                  route={route}
+                  index={i}
+                  onClick={() =>
+                    navigate('/customer/book', {
+                      state: {
+                        pickupAddress: route.fromCity?.name ? `${route.fromCity.name}, ${route.fromCity.state}` : '',
+                        dropAddress: route.toCity?.name ? `${route.toCity.name}, ${route.toCity.state}` : '',
+                        estimatedDistance: route.distanceKm || 0,
+                      },
+                    })
+                  }
+                />
               </div>
             ))}
           </div>
