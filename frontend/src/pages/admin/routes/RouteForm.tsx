@@ -210,8 +210,19 @@ export function RouteForm() {
       }
     },
     [
-      form, routeName, fromCityName, toCityName, fromStateName, toStateName,
-      distanceKm, pricePerKm, baseFare, tollEstimate, isEdit, id, navigate,
+      form,
+      routeName,
+      fromCityName,
+      toCityName,
+      fromStateName,
+      toStateName,
+      distanceKm,
+      pricePerKm,
+      baseFare,
+      tollEstimate,
+      isEdit,
+      id,
+      navigate,
     ],
   );
 
