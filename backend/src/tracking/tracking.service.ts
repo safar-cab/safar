@@ -123,9 +123,10 @@ export class TrackingService {
           ],
         },
       })
-      .select('_id bookingId status pickup drop driver user')
-      .populate('driver')
+      .select('_id bookingId status pickup drop driver user car schedule distance pricing')
+      .populate({ path: 'driver', populate: { path: 'userId', select: 'name phone' } })
       .populate('user', 'name phone')
+      .populate('car', 'make model registrationNumber category')
       .lean();
   }
 }
