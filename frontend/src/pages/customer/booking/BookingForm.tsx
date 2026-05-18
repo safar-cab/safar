@@ -62,7 +62,12 @@ export function BookingForm() {
 
   const [form, setForm] = useState<FormData>(INITIAL_FORM);
   const [submitted, setSubmitted] = useState(false);
-  const [pricingConfig, setPricingConfig] = useState({ pricePerKm: 12, baseFare: 500, stopChargePerStop: 100 });
+  const [pricingConfig, setPricingConfig] = useState({
+    pricePerKm: 12,
+    baseFare: 500,
+    stopWaitingChargePerInterval: 10,
+    stopWaitingIntervalMinutes: 15,
+  });
 
   // Fetch pricing config from backend
   useEffect(() => {
@@ -190,7 +195,7 @@ export function BookingForm() {
           transition={{ duration: 0.15 }}
         >
           {bookingStep === 1 && <PickupStep form={form} updateField={updateField} />}
-          {bookingStep === 2 && <StopsStep form={form} updateField={updateField} stopCharge={pricingConfig.stopChargePerStop} />}
+          {bookingStep === 2 && <StopsStep form={form} updateField={updateField} chargePerInterval={pricingConfig.stopWaitingChargePerInterval} intervalMinutes={pricingConfig.stopWaitingIntervalMinutes} />}
           {bookingStep === 3 && <DropStep form={form} updateField={updateField} />}
           {bookingStep === 4 && <ScheduleStep form={form} updateField={updateField} />}
           {bookingStep === 5 && (
@@ -441,11 +446,13 @@ function DropStep({
 function StopsStep({
   form,
   updateField,
-  stopCharge,
+  chargePerInterval,
+  intervalMinutes,
 }: {
   form: FormData;
   updateField: <K extends keyof FormData>(key: K, val: FormData[K]) => void;
-  stopCharge: number;
+  chargePerInterval: number;
+  intervalMinutes: number;
 }) {
   const addStop = () => {
     if (form.stops.length >= 5) return;
@@ -479,7 +486,7 @@ function StopsStep({
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-base font-semibold text-neutral-800">Intermediate Stops</h2>
-          <p className="text-xs text-neutral-400">Optional — add stops along the way (₹{stopCharge}/stop)</p>
+          <p className="text-xs text-neutral-400">Optional — ₹{chargePerInterval} per {intervalMinutes} min waiting at each stop</p>
         </div>
         <button
           onClick={addStop}
@@ -536,7 +543,7 @@ function StopsStep({
 
       {form.stops.length > 0 && (
         <p className="text-xs text-neutral-400 text-right">
-          Stop charge: ₹{form.stops.filter((s) => s.address.trim()).length * stopCharge}
+          Est. waiting charge: ₹{form.stops.filter((s) => s.address.trim()).length * chargePerInterval} ({form.stops.filter((s) => s.address.trim()).length} stops × ₹{chargePerInterval})
         </p>
       )}
 
@@ -665,14 +672,14 @@ function ReviewStep({
 }: {
   form: FormData;
   selectedCar: { make: string; model: string; category: string } | null;
-  pricingConfig: { pricePerKm: number; baseFare: number; stopChargePerStop: number };
+  pricingConfig: { pricePerKm: number; baseFare: number; stopWaitingChargePerInterval: number; stopWaitingIntervalMinutes: number };
 }) {
   const validStops = form.stops.filter((s) => s.address.trim());
   const pricePerKm = pricingConfig.pricePerKm;
   const baseFare = pricingConfig.baseFare;
   const distanceCharge = form.estimatedDistance * pricePerKm;
   const tollEstimate = 150;
-  const stopCharge = validStops.length * pricingConfig.stopChargePerStop;
+  const stopCharge = validStops.length * pricingConfig.stopWaitingChargePerInterval;
   const subtotal = baseFare + distanceCharge + tollEstimate + stopCharge;
   const gstAmount = Math.round(subtotal * 0.05);
   const totalAmount = subtotal + gstAmount;
@@ -766,7 +773,7 @@ function ReviewStep({
         pricePerKm={pricePerKm}
         tollEstimate={tollEstimate}
         stopCount={validStops.length}
-        stopChargePerStop={pricingConfig.stopChargePerStop}
+        stopChargePerStop={pricingConfig.stopWaitingChargePerInterval}
         totalStopCharge={stopCharge}
         gstAmount={gstAmount}
         totalAmount={totalAmount}

@@ -15,8 +15,8 @@ interface SettingsFormData {
   phone: string;
   email: string;
   defaultPricePerKm: string;
-  defaultBaseFare: string;
-  stopChargePerStop: string;
+  stopWaitingChargePerInterval: string;
+  stopWaitingIntervalMinutes: string;
   // Payment
   razorpayKeyId: string;
   razorpayKeySecret: string;
@@ -39,8 +39,8 @@ const initialForm: SettingsFormData = {
   phone: '',
   email: '',
   defaultPricePerKm: '',
-  defaultBaseFare: '',
-  stopChargePerStop: '',
+  stopWaitingChargePerInterval: '',
+  stopWaitingIntervalMinutes: '',
   razorpayKeyId: '',
   razorpayKeySecret: '',
   webhookSecret: '',
@@ -66,8 +66,8 @@ export function Settings() {
           phone: (data.phone as string) || '',
           email: (data.email as string) || '',
           defaultPricePerKm: data.defaultPricePerKm?.toString() || '',
-          defaultBaseFare: data.defaultBaseFare?.toString() || '',
-          stopChargePerStop: data.stopChargePerStop?.toString() || '',
+          stopWaitingChargePerInterval: data.stopWaitingChargePerInterval?.toString() || '',
+          stopWaitingIntervalMinutes: data.stopWaitingIntervalMinutes?.toString() || '',
           razorpayKeyId: (data.razorpayKeyId as string) || '',
           razorpayKeySecret: (data.razorpayKeySecret as string) || '',
           webhookSecret: (data.webhookSecret as string) || '',
@@ -98,8 +98,8 @@ export function Settings() {
           phone: form.phone,
           email: form.email,
           defaultPricePerKm: Number(form.defaultPricePerKm),
-          defaultBaseFare: Number(form.defaultBaseFare),
-          stopChargePerStop: Number(form.stopChargePerStop),
+          stopWaitingChargePerInterval: Number(form.stopWaitingChargePerInterval),
+          stopWaitingIntervalMinutes: Number(form.stopWaitingIntervalMinutes),
           razorpayKeyId: form.razorpayKeyId,
           razorpayKeySecret: form.razorpayKeySecret,
           webhookSecret: form.webhookSecret,
@@ -191,22 +191,27 @@ export function Settings() {
               onChange={handleChange}
               placeholder="12"
             />
-            <Input
-              label="Default Base Fare (₹)"
-              name="defaultBaseFare"
-              type="number"
-              value={form.defaultBaseFare}
-              onChange={handleChange}
-              placeholder="500"
-            />
-            <Input
-              label="Stop Charge per Stop (₹)"
-              name="stopChargePerStop"
-              type="number"
-              value={form.stopChargePerStop}
-              onChange={handleChange}
-              placeholder="100"
-            />
+            <div className="grid grid-cols-2 gap-4">
+              <Input
+                label="Stop Waiting Charge (₹)"
+                name="stopWaitingChargePerInterval"
+                type="number"
+                value={form.stopWaitingChargePerInterval}
+                onChange={handleChange}
+                placeholder="10"
+              />
+              <Input
+                label="Waiting Interval (minutes)"
+                name="stopWaitingIntervalMinutes"
+                type="number"
+                value={form.stopWaitingIntervalMinutes}
+                onChange={handleChange}
+                placeholder="15"
+              />
+            </div>
+            <p className="text-xs text-neutral-400 -mt-2">
+              e.g. ₹{form.stopWaitingChargePerInterval || 10} per {form.stopWaitingIntervalMinutes || 15} min waiting at each stop
+            </p>
           </div>
         )}
 
