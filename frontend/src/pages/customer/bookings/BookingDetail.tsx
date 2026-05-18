@@ -118,10 +118,12 @@ export function BookingDetail() {
             {(booking.stops || []).map((_, i) => (
               <div key={i} className="flex flex-col items-center">
                 <div className="w-0.5 h-6 bg-neutral-200 my-0.5" />
-                <div className={cn(
-                  'w-2.5 h-2.5 rounded-full',
-                  _.status === 'reached' ? 'bg-success-500' : 'bg-amber-400',
-                )} />
+                <div
+                  className={cn(
+                    'w-2.5 h-2.5 rounded-full',
+                    _.status === 'reached' ? 'bg-success-500' : 'bg-amber-400',
+                  )}
+                />
               </div>
             ))}
             <div className="w-0.5 h-6 bg-neutral-200 my-0.5" />

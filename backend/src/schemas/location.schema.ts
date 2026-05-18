@@ -33,6 +33,7 @@ export class LocationHistory {
   point: { type: string; coordinates: number[] };
 }
 
-export const LocationHistorySchema = SchemaFactory.createForClass(LocationHistory);
+export const LocationHistorySchema =
+  SchemaFactory.createForClass(LocationHistory);
 LocationHistorySchema.index({ booking: 1, createdAt: -1 });
 LocationHistorySchema.index({ point: '2dsphere' });

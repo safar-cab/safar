@@ -1,4 +1,4 @@
-/* eslint-disable no-undef */
+ 
 // Firebase Messaging Service Worker
 // This runs in the background and handles push notifications when the app is not in focus
 

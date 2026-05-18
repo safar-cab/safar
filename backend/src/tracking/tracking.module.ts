@@ -1,6 +1,9 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { LocationHistory, LocationHistorySchema } from '../schemas/location.schema';
+import {
+  LocationHistory,
+  LocationHistorySchema,
+} from '../schemas/location.schema';
 import { Booking, BookingSchema } from '../schemas/booking.schema';
 import { TrackingService } from './tracking.service';
 import { TrackingGateway } from './tracking.gateway';

@@ -67,11 +67,15 @@ export class PushService implements OnModuleInit {
           ) {
             invalidTokens.push(tokens[idx]);
           }
-          this.logger.warn(`Push failed for token ${idx}: ${resp.error?.message}`);
+          this.logger.warn(
+            `Push failed for token ${idx}: ${resp.error?.message}`,
+          );
         }
       });
 
-      this.logger.log(`Push sent: ${response.successCount}/${tokens.length} succeeded`);
+      this.logger.log(
+        `Push sent: ${response.successCount}/${tokens.length} succeeded`,
+      );
     } catch (error) {
       this.logger.error('Push send failed', error);
     }

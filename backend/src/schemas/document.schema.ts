@@ -45,7 +45,12 @@ export class VerificationDocument {
   @Prop()
   fileName: string;
 
-  @Prop({ type: String, enum: DocStatus, default: DocStatus.PENDING, index: true })
+  @Prop({
+    type: String,
+    enum: DocStatus,
+    default: DocStatus.PENDING,
+    index: true,
+  })
   status: DocStatus;
 
   @Prop()
@@ -67,6 +72,7 @@ export class VerificationDocument {
   documentNumber: string;
 }
 
-export const VerificationDocumentSchema = SchemaFactory.createForClass(VerificationDocument);
+export const VerificationDocumentSchema =
+  SchemaFactory.createForClass(VerificationDocument);
 VerificationDocumentSchema.index({ entityType: 1, entityId: 1, docType: 1 });
 VerificationDocumentSchema.index({ status: 1, expiryDate: 1 });
