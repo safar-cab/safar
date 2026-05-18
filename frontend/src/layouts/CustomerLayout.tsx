@@ -24,7 +24,7 @@ export function CustomerLayout() {
         </div>
       </header>
 
-      <main className="max-w-lg mx-auto">
+      <main className="max-w-lg mx-auto px-4 pt-4">
         <Outlet />
       </main>
 
