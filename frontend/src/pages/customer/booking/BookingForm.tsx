@@ -172,9 +172,8 @@ export function BookingForm() {
           startDate: form.date,
           startTime: form.time,
         },
-        car: form.selectedCarId,
-        distance: { estimated: form.estimatedDistance },
-        category: selectedCar?.category,
+        carId: form.selectedCarId,
+        estimatedDistanceKm: form.estimatedDistance || undefined,
       }),
     );
   };
