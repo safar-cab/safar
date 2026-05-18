@@ -18,7 +18,6 @@ const STATUS_LABELS: Record<string, { label: string; color: string }> = {
   completed: { label: 'Completed', color: 'text-emerald-600' },
 };
 
-
 interface BookingInfo {
   pickup?: { address: string };
   drop?: { address: string };
@@ -54,9 +53,7 @@ export function LiveTracking() {
   const pickupAddr = booking?.pickup?.address;
   const dropAddr = booking?.drop?.address;
   const driverInfo =
-    booking?.driver && typeof booking.driver === 'object'
-      ? (booking.driver as any)?.userId
-      : null;
+    booking?.driver && typeof booking.driver === 'object' ? (booking.driver as any)?.userId : null;
 
   return (
     <div className="px-4 py-4">
@@ -84,16 +81,13 @@ export function LiveTracking() {
         <div className="h-72 sm:h-96">
           {pickupAddr && dropAddr ? (
             <DirectionsMap
+              mapKey={bookingId}
               origin={pickupAddr}
               destination={dropAddr}
               className="h-full"
               showTraffic
               showAlternatives={false}
-              driverPosition={
-                position
-                  ? { lat: position.latitude, lng: position.longitude }
-                  : null
-              }
+              driverPosition={position ? { lat: position.latitude, lng: position.longitude } : null}
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-neutral-50">
@@ -137,12 +131,8 @@ export function LiveTracking() {
               <Phone className="w-4 h-4 text-neutral-500" />
             </div>
             <div>
-              <p className="text-sm font-medium text-neutral-800">
-                {driverInfo?.name || 'Driver'}
-              </p>
-              <p className="text-xs text-neutral-400">
-                {driverInfo?.phone || 'Call for updates'}
-              </p>
+              <p className="text-sm font-medium text-neutral-800">{driverInfo?.name || 'Driver'}</p>
+              <p className="text-xs text-neutral-400">{driverInfo?.phone || 'Call for updates'}</p>
             </div>
           </div>
           {driverInfo?.phone && (
