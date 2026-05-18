@@ -232,7 +232,8 @@ export function DriverForm() {
           licenseRef.current?.uploadPending() ?? Promise.resolve(form.licensePhotos),
           aadhaarRef.current?.uploadPending() ?? Promise.resolve(form.aadhaarPhotos),
           panRef.current?.uploadPending() ?? Promise.resolve(form.panPhoto ? [form.panPhoto] : []),
-          policeRef.current?.uploadPending() ?? Promise.resolve(form.policeVerificationPhoto ? [form.policeVerificationPhoto] : []),
+          policeRef.current?.uploadPending() ??
+            Promise.resolve(form.policeVerificationPhoto ? [form.policeVerificationPhoto] : []),
         ]);
 
         const payload = {

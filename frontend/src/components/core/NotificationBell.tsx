@@ -3,11 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Bell, Check, CheckCheck } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import {
-  fetchNotifications,
-  markRead,
-  markAllRead,
-} from '@/store/slices/notificationsSlice';
+import { fetchNotifications, markRead, markAllRead } from '@/store/slices/notificationsSlice';
 import { cn } from '@/lib/cn';
 
 const TYPE_COLORS: Record<string, string> = {
@@ -111,7 +107,12 @@ export function NotificationBell() {
                     )}
                   />
                   <div className="flex-1 min-w-0">
-                    <p className={cn('text-sm', !notif.read ? 'font-semibold text-neutral-900' : 'text-neutral-700')}>
+                    <p
+                      className={cn(
+                        'text-sm',
+                        !notif.read ? 'font-semibold text-neutral-900' : 'text-neutral-700',
+                      )}
+                    >
                       {notif.title}
                     </p>
                     <p className="text-xs text-neutral-500 mt-0.5 line-clamp-2">{notif.body}</p>

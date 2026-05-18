@@ -21,7 +21,11 @@ export class SmsService {
     }
   }
 
-  async send(phone: string, templateId: string, variables: Record<string, string>): Promise<boolean> {
+  async send(
+    phone: string,
+    templateId: string,
+    variables: Record<string, string>,
+  ): Promise<boolean> {
     if (!this.enabled) {
       this.logger.log(`SMS (dry-run) to ${phone}: template=${templateId}`);
       return true;
@@ -48,36 +52,59 @@ export class SmsService {
       this.logger.log(`SMS sent to ${phone}: ${response.data?.type}`);
       return true;
     } catch (error) {
-      this.logger.error(`SMS failed to ${phone}`, error?.response?.data || error.message);
+      this.logger.error(
+        `SMS failed to ${phone}`,
+        error?.response?.data || error.message,
+      );
       return false;
     }
   }
 
   async sendBookingConfirmed(phone: string, bookingId: string, amount: string) {
-    return this.send(phone, this.configService.get('MSG91_TPL_BOOKING_CONFIRMED', ''), {
-      booking_id: bookingId,
-      amount,
-    });
+    return this.send(
+      phone,
+      this.configService.get('MSG91_TPL_BOOKING_CONFIRMED', ''),
+      {
+        booking_id: bookingId,
+        amount,
+      },
+    );
   }
 
   async sendRideStarted(phone: string, bookingId: string, driverName: string) {
-    return this.send(phone, this.configService.get('MSG91_TPL_RIDE_STARTED', ''), {
-      booking_id: bookingId,
-      driver_name: driverName,
-    });
+    return this.send(
+      phone,
+      this.configService.get('MSG91_TPL_RIDE_STARTED', ''),
+      {
+        booking_id: bookingId,
+        driver_name: driverName,
+      },
+    );
   }
 
   async sendRideCompleted(phone: string, bookingId: string, amount: string) {
-    return this.send(phone, this.configService.get('MSG91_TPL_RIDE_COMPLETED', ''), {
-      booking_id: bookingId,
-      amount,
-    });
+    return this.send(
+      phone,
+      this.configService.get('MSG91_TPL_RIDE_COMPLETED', ''),
+      {
+        booking_id: bookingId,
+        amount,
+      },
+    );
   }
 
-  async sendBookingCancelled(phone: string, bookingId: string, refundAmount: string) {
-    return this.send(phone, this.configService.get('MSG91_TPL_BOOKING_CANCELLED', ''), {
-      booking_id: bookingId,
-      refund_amount: refundAmount,
-    });
+  async sendBookingCancelled(
+    phone: string,
+    bookingId: string,
+    refundAmount: string,
+  ) {
+    return this.send(
+      phone,
+      this.configService.get('MSG91_TPL_BOOKING_CANCELLED', ''),
+      {
+        booking_id: bookingId,
+        refund_amount: refundAmount,
+      },
+    );
   }
 }

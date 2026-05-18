@@ -1,13 +1,5 @@
 import { useState, useEffect } from 'react';
-import {
-  FileText,
-  Upload,
-  CheckCircle,
-  XCircle,
-  Clock,
-  AlertTriangle,
-  Trash2,
-} from 'lucide-react';
+import { FileText, Upload, CheckCircle, XCircle, Clock, AlertTriangle, Trash2 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import toast from 'react-hot-toast';
 import api from '@/lib/api';
@@ -71,9 +63,11 @@ export function DocumentsPanel({ entityType, entityId, isAdmin, availableDocType
   const [uploadExpiry, setUploadExpiry] = useState('');
   const [uploading, setUploading] = useState(false);
 
-  const docTypes = availableDocTypes || (entityType === 'driver'
-    ? ['driving_license', 'aadhaar', 'pan', 'photo']
-    : ['car_rc', 'insurance', 'permit', 'fitness_certificate', 'pollution_certificate']);
+  const docTypes =
+    availableDocTypes ||
+    (entityType === 'driver'
+      ? ['driving_license', 'aadhaar', 'pan', 'photo']
+      : ['car_rc', 'insurance', 'permit', 'fitness_certificate', 'pollution_certificate']);
 
   const fetchDocuments = async () => {
     try {
@@ -117,9 +111,7 @@ export function DocumentsPanel({ entityType, entityId, isAdmin, availableDocType
       });
 
       // Create document record
-      const endpoint = isAdmin
-        ? `/admin/documents`
-        : `/${entityType}/documents`;
+      const endpoint = isAdmin ? `/admin/documents` : `/${entityType}/documents`;
 
       const body: Record<string, string> = {
         docType: uploadDocType,
@@ -259,7 +251,15 @@ export function DocumentsPanel({ entityType, entityId, isAdmin, availableDocType
       )}
 
       {/* Upload Modal */}
-      <Modal open={uploadModal} onClose={() => { setUploadModal(false); resetUploadForm(); }} title="Upload Document" size="sm">
+      <Modal
+        open={uploadModal}
+        onClose={() => {
+          setUploadModal(false);
+          resetUploadForm();
+        }}
+        title="Upload Document"
+        size="sm"
+      >
         <div className="space-y-4">
           <div>
             <label className="text-sm font-medium text-neutral-700 block mb-1">Document Type</label>
@@ -270,7 +270,9 @@ export function DocumentsPanel({ entityType, entityId, isAdmin, availableDocType
             >
               <option value="">Select type...</option>
               {docTypes.map((t) => (
-                <option key={t} value={t}>{DOC_TYPE_LABELS[t] || t}</option>
+                <option key={t} value={t}>
+                  {DOC_TYPE_LABELS[t] || t}
+                </option>
               ))}
             </select>
           </div>
@@ -284,7 +286,9 @@ export function DocumentsPanel({ entityType, entityId, isAdmin, availableDocType
             />
           </div>
           <div>
-            <label className="text-sm font-medium text-neutral-700 block mb-1">Document Number (optional)</label>
+            <label className="text-sm font-medium text-neutral-700 block mb-1">
+              Document Number (optional)
+            </label>
             <input
               type="text"
               value={uploadDocNumber}
@@ -294,7 +298,9 @@ export function DocumentsPanel({ entityType, entityId, isAdmin, availableDocType
             />
           </div>
           <div>
-            <label className="text-sm font-medium text-neutral-700 block mb-1">Expiry Date (optional)</label>
+            <label className="text-sm font-medium text-neutral-700 block mb-1">
+              Expiry Date (optional)
+            </label>
             <input
               type="date"
               value={uploadExpiry}
@@ -331,7 +337,11 @@ export function DocumentsPanel({ entityType, entityId, isAdmin, availableDocType
                     View PDF
                   </a>
                 ) : (
-                  <img src={selectedDoc.fileUrl} alt={selectedDoc.docType} className="w-full max-h-96 object-contain bg-neutral-50" />
+                  <img
+                    src={selectedDoc.fileUrl}
+                    alt={selectedDoc.docType}
+                    className="w-full max-h-96 object-contain bg-neutral-50"
+                  />
                 )}
               </div>
             )}
@@ -340,7 +350,9 @@ export function DocumentsPanel({ entityType, entityId, isAdmin, availableDocType
             <div className="grid grid-cols-2 gap-3 text-sm">
               <div>
                 <p className="text-neutral-400 text-xs">Status</p>
-                <Badge status={selectedDoc.status === 'verified' ? 'completed' : selectedDoc.status} />
+                <Badge
+                  status={selectedDoc.status === 'verified' ? 'completed' : selectedDoc.status}
+                />
               </div>
               {selectedDoc.documentNumber && (
                 <div>
@@ -351,7 +363,9 @@ export function DocumentsPanel({ entityType, entityId, isAdmin, availableDocType
               {selectedDoc.expiryDate && (
                 <div>
                   <p className="text-neutral-400 text-xs">Expiry</p>
-                  <p className="font-medium">{new Date(selectedDoc.expiryDate).toLocaleDateString('en-IN')}</p>
+                  <p className="font-medium">
+                    {new Date(selectedDoc.expiryDate).toLocaleDateString('en-IN')}
+                  </p>
                 </div>
               )}
               {selectedDoc.rejectionReason && (
@@ -365,11 +379,24 @@ export function DocumentsPanel({ entityType, entityId, isAdmin, availableDocType
             {/* Admin actions */}
             {isAdmin && selectedDoc.status === 'pending' && (
               <div className="flex gap-3 pt-2 border-t border-neutral-100">
-                <Button className="flex-1" onClick={() => { handleVerify(selectedDoc._id); setSelectedDoc(null); }}>
+                <Button
+                  className="flex-1"
+                  onClick={() => {
+                    handleVerify(selectedDoc._id);
+                    setSelectedDoc(null);
+                  }}
+                >
                   <CheckCircle className="w-4 h-4" />
                   Verify
                 </Button>
-                <Button variant="danger" className="flex-1" onClick={() => { setRejectModal(selectedDoc._id); setSelectedDoc(null); }}>
+                <Button
+                  variant="danger"
+                  className="flex-1"
+                  onClick={() => {
+                    setRejectModal(selectedDoc._id);
+                    setSelectedDoc(null);
+                  }}
+                >
                   <XCircle className="w-4 h-4" />
                   Reject
                 </Button>
@@ -379,7 +406,10 @@ export function DocumentsPanel({ entityType, entityId, isAdmin, availableDocType
             {/* Delete */}
             <div className="pt-2 border-t border-neutral-100">
               <button
-                onClick={() => { handleDelete(selectedDoc._id); setSelectedDoc(null); }}
+                onClick={() => {
+                  handleDelete(selectedDoc._id);
+                  setSelectedDoc(null);
+                }}
                 className="flex items-center gap-1.5 text-sm text-red-500 hover:text-red-600"
               >
                 <Trash2 className="w-3.5 h-3.5" />
@@ -391,7 +421,15 @@ export function DocumentsPanel({ entityType, entityId, isAdmin, availableDocType
       </Modal>
 
       {/* Reject Modal */}
-      <Modal open={!!rejectModal} onClose={() => { setRejectModal(null); setRejectReason(''); }} title="Reject Document" size="sm">
+      <Modal
+        open={!!rejectModal}
+        onClose={() => {
+          setRejectModal(null);
+          setRejectReason('');
+        }}
+        title="Reject Document"
+        size="sm"
+      >
         <div className="space-y-4">
           <textarea
             value={rejectReason}
@@ -401,7 +439,14 @@ export function DocumentsPanel({ entityType, entityId, isAdmin, availableDocType
             className="w-full border border-neutral-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100 resize-none"
           />
           <div className="flex gap-3">
-            <Button variant="outline" className="flex-1" onClick={() => { setRejectModal(null); setRejectReason(''); }}>
+            <Button
+              variant="outline"
+              className="flex-1"
+              onClick={() => {
+                setRejectModal(null);
+                setRejectReason('');
+              }}
+            >
               Cancel
             </Button>
             <Button variant="danger" className="flex-1" onClick={handleReject}>

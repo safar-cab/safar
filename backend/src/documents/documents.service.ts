@@ -51,7 +51,9 @@ export class DocumentsService {
       status: DocStatus.PENDING,
     });
 
-    this.logger.log(`Document created: ${data.docType} for ${data.entityType}/${data.entityId}`);
+    this.logger.log(
+      `Document created: ${data.docType} for ${data.entityType}/${data.entityId}`,
+    );
     return doc;
   }
 
@@ -88,7 +90,9 @@ export class DocumentsService {
     if (data.documentNumber) update.documentNumber = data.documentNumber;
     if (data.notes !== undefined) update.notes = data.notes;
 
-    const doc = await this.documentModel.findByIdAndUpdate(id, update, { new: true }).lean();
+    const doc = await this.documentModel
+      .findByIdAndUpdate(id, update, { new: true })
+      .lean();
     if (!doc) throw new NotFoundException('Document not found');
     return doc;
   }
@@ -140,7 +144,11 @@ export class DocumentsService {
     return doc;
   }
 
-  async getPendingDocuments(query: { page?: number; limit?: number; entityType?: string }) {
+  async getPendingDocuments(query: {
+    page?: number;
+    limit?: number;
+    entityType?: string;
+  }) {
     const { page = 1, limit = 20, entityType } = query;
     const filter: Record<string, unknown> = { status: DocStatus.PENDING };
     if (entityType) filter.entityType = entityType;
@@ -165,7 +173,13 @@ export class DocumentsService {
       this.documentModel.countDocuments({ status: DocStatus.REJECTED }),
       this.documentModel.countDocuments({ status: DocStatus.EXPIRED }),
     ]);
-    return { pending, verified, rejected, expired, total: pending + verified + rejected + expired };
+    return {
+      pending,
+      verified,
+      rejected,
+      expired,
+      total: pending + verified + rejected + expired,
+    };
   }
 
   // --- Expiry tracking ---
@@ -204,17 +218,22 @@ export class DocumentsService {
     const sevenDays = new Date();
     sevenDays.setDate(now.getDate() + 7);
 
-    const expiringSoon = await this.documentModel.find({
-      status: DocStatus.VERIFIED,
-      expiryDate: { $gte: now, $lte: sevenDays },
-      entityType: DocEntityType.DRIVER,
-    }).lean();
+    const expiringSoon = await this.documentModel
+      .find({
+        status: DocStatus.VERIFIED,
+        expiryDate: { $gte: now, $lte: sevenDays },
+        entityType: DocEntityType.DRIVER,
+      })
+      .lean();
 
     for (const doc of expiringSoon) {
-      const driver = await this.driverModel.findById(doc.entityId).select('userId').lean();
+      const driver = await this.driverModel
+        .findById(doc.entityId)
+        .select('userId')
+        .lean();
       if (driver?.userId) {
         const daysLeft = Math.ceil(
-          (doc.expiryDate!.getTime() - now.getTime()) / (1000 * 60 * 60 * 24),
+          (doc.expiryDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24),
         );
         this.notificationsService.notify({
           userId: driver.userId.toString(),
@@ -235,11 +254,15 @@ export class DocumentsService {
   ) {
     if (doc.entityType !== DocEntityType.DRIVER) return;
 
-    const driver = await this.driverModel.findById(doc.entityId).select('userId').lean();
+    const driver = await this.driverModel
+      .findById(doc.entityId)
+      .select('userId')
+      .lean();
     if (!driver?.userId) return;
 
     const docName = doc.docType.replace(/_/g, ' ');
-    const title = status === 'verified' ? 'Document Verified' : 'Document Rejected';
+    const title =
+      status === 'verified' ? 'Document Verified' : 'Document Rejected';
     const body =
       status === 'verified'
         ? `Your ${docName} has been verified`

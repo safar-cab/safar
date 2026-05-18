@@ -298,7 +298,10 @@ function StopsStep({
   };
 
   const removeStop = (id: string) => {
-    updateField('stops', form.stops.filter((s) => s.id !== id));
+    updateField(
+      'stops',
+      form.stops.filter((s) => s.id !== id),
+    );
   };
 
   const updateStop = (id: string, address: string) => {

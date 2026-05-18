@@ -38,8 +38,13 @@ export function Dashboard() {
     [],
   );
   const [bookingStats, setBookingStats] = useState<{ _id: string; count: number }[]>([]);
-  const [docStats, setDocStats] = useState<{ pending: number; expiring: number }>({ pending: 0, expiring: 0 });
-  const [expiringDocs, setExpiringDocs] = useState<{ _id: string; docType: string; entityType: string; expiryDate: string }[]>([]);
+  const [docStats, setDocStats] = useState<{ pending: number; expiring: number }>({
+    pending: 0,
+    expiring: 0,
+  });
+  const [expiringDocs, setExpiringDocs] = useState<
+    { _id: string; docType: string; entityType: string; expiryDate: string }[]
+  >([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -57,7 +62,10 @@ export function Dashboard() {
         setBookingStats(b as unknown as typeof bookingStats);
         const docStatsData = ds as any;
         const expiringData = ed as any;
-        setDocStats({ pending: docStatsData.pending || 0, expiring: Array.isArray(expiringData) ? expiringData.length : 0 });
+        setDocStats({
+          pending: docStatsData.pending || 0,
+          expiring: Array.isArray(expiringData) ? expiringData.length : 0,
+        });
         setExpiringDocs(Array.isArray(expiringData) ? expiringData.slice(0, 5) : []);
       })
       .finally(() => setLoading(false));
@@ -251,7 +259,9 @@ export function Dashboard() {
                 </div>
                 <div>
                   <h3 className="text-base font-semibold text-neutral-900">Pending Documents</h3>
-                  <p className="text-xs text-neutral-400">{docStats.pending} documents need review</p>
+                  <p className="text-xs text-neutral-400">
+                    {docStats.pending} documents need review
+                  </p>
                 </div>
               </div>
             </div>
@@ -266,13 +276,17 @@ export function Dashboard() {
                 </div>
                 <div>
                   <h3 className="text-base font-semibold text-neutral-900">Expiring Soon</h3>
-                  <p className="text-xs text-neutral-400">{docStats.expiring} documents expiring in 30 days</p>
+                  <p className="text-xs text-neutral-400">
+                    {docStats.expiring} documents expiring in 30 days
+                  </p>
                 </div>
               </div>
               <div className="space-y-2 mt-3">
                 {expiringDocs.map((doc) => (
                   <div key={doc._id} className="flex items-center justify-between text-sm">
-                    <span className="text-neutral-600 capitalize">{doc.docType.replace(/_/g, ' ')}</span>
+                    <span className="text-neutral-600 capitalize">
+                      {doc.docType.replace(/_/g, ' ')}
+                    </span>
                     <span className="text-orange-600 font-medium">
                       {new Date(doc.expiryDate).toLocaleDateString('en-IN')}
                     </span>

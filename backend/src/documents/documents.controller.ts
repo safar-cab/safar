@@ -108,7 +108,9 @@ export class AdminDocumentsController {
   @Get('expiring')
   @ApiOperation({ summary: 'Documents expiring soon' })
   getExpiring(@Query('days') days?: string) {
-    return this.documentsService.getExpiringDocuments(days ? parseInt(days) : 30);
+    return this.documentsService.getExpiringDocuments(
+      days ? parseInt(days) : 30,
+    );
   }
 
   @Get('entity/:entityType/:entityId')

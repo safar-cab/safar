@@ -76,10 +76,7 @@ export class NotificationsController {
 
   // Mark single as read
   @Patch(':id/read')
-  async markRead(
-    @CurrentUser('_id') userId: string,
-    @Param('id') id: string,
-  ) {
+  async markRead(@CurrentUser('_id') userId: string, @Param('id') id: string) {
     return this.notificationsService.markRead(userId, id);
   }
 

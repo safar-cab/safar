@@ -98,10 +98,7 @@ export class DriverBookingsController {
 
   @Put(':id/stops/:order/reached')
   @ApiOperation({ summary: 'Mark a stop as reached' })
-  markStopReached(
-    @Param('id') id: string,
-    @Param('order') order: string,
-  ) {
+  markStopReached(@Param('id') id: string, @Param('order') order: string) {
     return this.bookingsService.markStopReached(id, parseInt(order));
   }
 }

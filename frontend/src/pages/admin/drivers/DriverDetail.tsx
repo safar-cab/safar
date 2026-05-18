@@ -197,11 +197,7 @@ export function DriverDetail() {
         })()}
 
         {/* Verification Documents */}
-        <DocumentsPanel
-          entityType="driver"
-          entityId={id!}
-          isAdmin
-        />
+        <DocumentsPanel entityType="driver" entityId={id!} isAdmin />
       </div>
     </div>
   );

@@ -2,7 +2,11 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { LocationHistory, LocationDocument } from '../schemas/location.schema';
-import { Booking, BookingDocument, BookingStatus } from '../schemas/booking.schema';
+import {
+  Booking,
+  BookingDocument,
+  BookingStatus,
+} from '../schemas/booking.schema';
 
 export interface LocationUpdate {
   bookingId: string;
@@ -21,7 +25,13 @@ export class TrackingService {
   // In-memory cache of latest positions for fast reads
   private livePositions = new Map<
     string,
-    { latitude: number; longitude: number; speed: number; heading: number; updatedAt: Date }
+    {
+      latitude: number;
+      longitude: number;
+      speed: number;
+      heading: number;
+      updatedAt: Date;
+    }
   >();
 
   constructor(
