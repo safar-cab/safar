@@ -23,6 +23,26 @@ export class CreateRoutePricingDto {
   @IsObject()
   toCity?: { name: string; coordinates: number[] };
 
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  fromCityId?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  fromStateId?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  toCityId?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  toStateId?: string;
+
   @ApiProperty({ example: 195 })
   @IsNumber()
   distanceKm: number;
