@@ -94,4 +94,9 @@ export class CreateBookingDto {
   @IsOptional()
   @IsNumber()
   estimatedDistanceKm?: number;
+
+  @ApiPropertyOptional({ example: 200 })
+  @IsOptional()
+  @IsNumber()
+  tollEstimate?: number;
 }

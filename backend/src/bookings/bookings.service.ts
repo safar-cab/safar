@@ -65,7 +65,7 @@ export class BookingsService {
     const baseFare = config.baseFare;
     const distanceKm = dto.estimatedDistanceKm || 100;
     const distanceCharge = distanceKm * pricePerKm;
-    const tollEstimate = 0;
+    const tollEstimate = dto.tollEstimate || 0;
     // Stop charge: estimated 1 waiting interval per stop
     const stopChargePerStop = config.stopWaitingChargePerInterval;
     const stopCount = dto.stops?.length || 0;
