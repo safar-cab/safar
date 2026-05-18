@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { MapPin, Clock, Car, Navigation, AlertTriangle } from 'lucide-react';
+import { MapPin, Clock, Car, Navigation, AlertTriangle, Phone } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { fetchBookingDetail, cancelBooking } from '@/store/slices/bookingsSlice';
@@ -119,7 +119,7 @@ export function BookingDetail() {
                 href={`tel:${(booking.driver as any).userId.phone}`}
                 className="w-10 h-10 rounded-full bg-success-50 flex items-center justify-center"
               >
-                <Navigation className="w-4 h-4 text-success-600" />
+                <Phone className="w-5 h-5 text-success-600" />
               </a>
             )}
           </div>
