@@ -36,11 +36,32 @@ export function DirectionsMap({
   driverPosition,
   mapKey,
 }: DirectionsMapProps) {
+  const [useFallback, setUseFallback] = useState(false);
+
+  // Reset fallback when route changes
+  useEffect(() => {
+    setUseFallback(false);
+  }, [mapKey, origin, destination]);
+
   if (!MAPS_KEY) {
     return (
       <div className={cn('bg-neutral-100 flex items-center justify-center', className)}>
         <p className="text-sm text-neutral-400">Add VITE_GOOGLE_MAPS_KEY to enable maps</p>
       </div>
+    );
+  }
+
+  // Fallback: Google Maps Embed with directions (always shows route)
+  if (useFallback) {
+    const embedUrl = `https://www.google.com/maps/embed/v1/directions?key=${MAPS_KEY}&origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destination)}&mode=driving`;
+    return (
+      <iframe
+        src={embedUrl}
+        className={cn('w-full h-full border-0', className)}
+        allowFullScreen
+        loading="lazy"
+        referrerPolicy="no-referrer-when-downgrade"
+      />
     );
   }
 
@@ -63,6 +84,7 @@ export function DirectionsMap({
           showAlternatives={showAlternatives}
           onRouteSelect={onRouteSelect}
           driverPosition={driverPosition}
+          onError={() => setUseFallback(true)}
         />
       </Map>
     </APIProvider>
@@ -94,6 +116,7 @@ function DirectionsLayer({
   showAlternatives,
   onRouteSelect,
   driverPosition,
+  onError,
 }: {
   origin: string;
   destination: string;
@@ -101,6 +124,7 @@ function DirectionsLayer({
   showAlternatives?: boolean;
   onRouteSelect?: (route: RouteInfo, index: number) => void;
   driverPosition?: { lat: number; lng: number } | null;
+  onError?: () => void;
 }) {
   const map = useMap();
   const routesLib = useMapsLibrary('routes');
@@ -108,6 +132,7 @@ function DirectionsLayer({
     Array<{ summary: string; distance: string; duration: string; durationTraffic?: string }>
   >([]);
   const [selectedIdx, setSelectedIdx] = useState(0);
+  const [directionsError, setDirectionsError] = useState(false);
   const rendererRef = useRef<any>(null);
   const altRenderersRef = useRef<any[]>([]);
   const trafficRef = useRef<any>(null);
@@ -123,6 +148,7 @@ function DirectionsLayer({
     altRenderersRef.current = [];
     setSelectedIdx(0);
     setRoutesSummary([]);
+    setDirectionsError(false);
 
     const service = new routesLib.DirectionsService();
     service.route(
@@ -137,7 +163,12 @@ function DirectionsLayer({
         },
       },
       (result: any, status: any) => {
-        if (status !== 'OK' || !result) return;
+        if (status !== 'OK' || !result) {
+          console.error('[DirectionsMap] Directions failed:', status, '— origin:', origin, 'dest:', destination);
+          setDirectionsError(true);
+          onError?.();
+          return;
+        }
 
         // Main route — blue
         rendererRef.current = new routesLib.DirectionsRenderer({
