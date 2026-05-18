@@ -58,6 +58,7 @@ export function BookingForm() {
     pickupAddress?: string;
     dropAddress?: string;
     estimatedDistance?: number;
+    tollEstimate?: number;
   } | null;
 
   const { bookingStep } = useAppSelector((s) => s.ui);
@@ -73,6 +74,7 @@ export function BookingForm() {
     ...(routeState?.pickupAddress && { pickupAddress: routeState.pickupAddress }),
     ...(routeState?.dropAddress && { dropAddress: routeState.dropAddress }),
     ...(routeState?.estimatedDistance && { estimatedDistance: routeState.estimatedDistance }),
+    ...(routeState?.tollEstimate !== undefined && { tollEstimate: routeState.tollEstimate }),
   });
   const [submitted, setSubmitted] = useState(false);
 

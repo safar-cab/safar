@@ -117,6 +117,7 @@ export function Home() {
                         pickupAddress: route.fromCity?.name ? `${route.fromCity.name}, ${route.fromCity.state}` : '',
                         dropAddress: route.toCity?.name ? `${route.toCity.name}, ${route.toCity.state}` : '',
                         estimatedDistance: route.distanceKm || 0,
+                        tollEstimate: route.tollEstimate || 0,
                       },
                     })
                   }
