@@ -56,11 +56,7 @@ export function RouteForm() {
   } | null>(null);
 
   // Redux state
-  const {
-    states,
-    cities,
-    googleRouteInfo,
-  } = useAppSelector((s) => s.routes);
+  const { states, cities, googleRouteInfo } = useAppSelector((s) => s.routes);
 
   const fromCities = cities[form.fromStateId] || [];
   const toCities = cities[form.toStateId] || [];
@@ -136,16 +132,30 @@ export function RouteForm() {
     }
   }, [dispatch, originAddress, destAddress]);
 
-  // Auto-fill distance and toll from Google
+  // Auto-fill toll from Google Routes API (only when empty)
   useEffect(() => {
     if (!googleRouteInfo) return;
-    if (!form.distanceKm && googleRouteInfo.distanceKm) {
-      setForm((prev) => ({ ...prev, distanceKm: String(googleRouteInfo.distanceKm) }));
-    }
     if (!form.tollEstimate && googleRouteInfo.tollEstimateINR) {
       setForm((prev) => ({ ...prev, tollEstimate: String(googleRouteInfo.tollEstimateINR) }));
     }
   }, [googleRouteInfo]);
+
+  // When map route is selected (including alternatives), update distance
+  const handleMapRouteSelect = useCallback(
+    (route: { distance: string; distanceValue: number; duration: string; summary: string }) => {
+      setMapRouteInfo({
+        distance: route.distance,
+        duration: route.duration,
+        summary: route.summary,
+      });
+      // Update distance input from map selection (meters → km)
+      const km = Math.round(route.distanceValue / 1000);
+      if (km > 0) {
+        setForm((prev) => ({ ...prev, distanceKm: String(km) }));
+      }
+    },
+    [],
+  );
 
   // Auto-calculated values
   const distanceKm = useMemo(() => Number(form.distanceKm) || 0, [form.distanceKm]);
@@ -205,8 +215,19 @@ export function RouteForm() {
       }
     },
     [
-      form, routeName, fromCityName, toCityName, fromStateName, toStateName,
-      distanceKm, pricePerKm, baseFare, tollEstimate, isEdit, id, navigate,
+      form,
+      routeName,
+      fromCityName,
+      toCityName,
+      fromStateName,
+      toStateName,
+      distanceKm,
+      pricePerKm,
+      baseFare,
+      tollEstimate,
+      isEdit,
+      id,
+      navigate,
     ],
   );
 
@@ -296,136 +317,136 @@ export function RouteForm() {
             </div>
 
             {/* Pricing */}
-          <div>
-            <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-3">
-              Pricing
-            </p>
-            <div className="grid grid-cols-2 gap-4">
-              <Input
-                label="Distance (km) *"
-                name="distanceKm"
-                type="number"
-                value={form.distanceKm}
-                onChange={handleChange}
-                placeholder="195"
-              />
-              <Input
-                label="Price per km (Rs) *"
-                name="pricePerKm"
-                type="number"
-                value={form.pricePerKm}
-                onChange={handleChange}
-                placeholder="12"
-              />
-              <Input
-                label="Base Fare (Rs)"
-                name="baseFare"
-                type="number"
-                value={form.baseFare}
-                onChange={handleChange}
-                placeholder="500"
-              />
-              <Input
-                label="Toll Estimate (Rs)"
-                name="tollEstimate"
-                type="number"
-                value={form.tollEstimate}
-                onChange={handleChange}
-                placeholder="200"
-              />
-            </div>
-          </div>
-
-          {/* Auto-Calculated */}
-          {showCalc && (
             <div>
               <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-3">
-                Auto-Calculated
+                Pricing
               </p>
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-neutral-700 mb-1.5">
-                    Distance Charge
-                  </label>
-                  <div className="h-12 px-4 bg-neutral-100 border border-neutral-200 rounded-lg flex items-center text-neutral-700 font-medium">
-                    {formatCurrency(distanceCharge)}
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-neutral-700 mb-1.5">
-                    Taxable Amount
-                  </label>
-                  <div className="h-12 px-4 bg-neutral-100 border border-neutral-200 rounded-lg flex items-center text-neutral-700 font-medium">
-                    {formatCurrency(taxableAmount)}
-                  </div>
-                </div>
+                <Input
+                  label="Distance (km) *"
+                  name="distanceKm"
+                  type="number"
+                  value={form.distanceKm}
+                  onChange={handleChange}
+                  placeholder="195"
+                />
+                <Input
+                  label="Price per km (Rs) *"
+                  name="pricePerKm"
+                  type="number"
+                  value={form.pricePerKm}
+                  onChange={handleChange}
+                  placeholder="12"
+                />
+                <Input
+                  label="Base Fare (Rs)"
+                  name="baseFare"
+                  type="number"
+                  value={form.baseFare}
+                  onChange={handleChange}
+                  placeholder="500"
+                />
+                <Input
+                  label="Toll Estimate (Rs)"
+                  name="tollEstimate"
+                  type="number"
+                  value={form.tollEstimate}
+                  onChange={handleChange}
+                  placeholder="200"
+                />
               </div>
+            </div>
 
-              <div className="grid grid-cols-3 gap-4 mt-4">
-                {isInterState ? (
-                  <div className="col-span-3">
+            {/* Auto-Calculated */}
+            {showCalc && (
+              <div>
+                <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-3">
+                  Auto-Calculated
+                </p>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
                     <label className="block text-sm font-medium text-neutral-700 mb-1.5">
-                      IGST (5%)
+                      Distance Charge
                     </label>
                     <div className="h-12 px-4 bg-neutral-100 border border-neutral-200 rounded-lg flex items-center text-neutral-700 font-medium">
-                      {formatCurrency(gstTotal)}
+                      {formatCurrency(distanceCharge)}
                     </div>
                   </div>
-                ) : (
-                  <>
-                    <div>
-                      <label className="block text-sm font-medium text-neutral-700 mb-1.5">
-                        CGST 2.5%
-                      </label>
-                      <div className="h-12 px-4 bg-neutral-100 border border-neutral-200 rounded-lg flex items-center text-neutral-700 font-medium">
-                        {formatCurrency(cgst)}
-                      </div>
+                  <div>
+                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                      Taxable Amount
+                    </label>
+                    <div className="h-12 px-4 bg-neutral-100 border border-neutral-200 rounded-lg flex items-center text-neutral-700 font-medium">
+                      {formatCurrency(taxableAmount)}
                     </div>
-                    <div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-4 mt-4">
+                  {isInterState ? (
+                    <div className="col-span-3">
                       <label className="block text-sm font-medium text-neutral-700 mb-1.5">
-                        SGST 2.5%
-                      </label>
-                      <div className="h-12 px-4 bg-neutral-100 border border-neutral-200 rounded-lg flex items-center text-neutral-700 font-medium">
-                        {formatCurrency(sgst)}
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-neutral-700 mb-1.5">
-                        Total GST
+                        IGST (5%)
                       </label>
                       <div className="h-12 px-4 bg-neutral-100 border border-neutral-200 rounded-lg flex items-center text-neutral-700 font-medium">
                         {formatCurrency(gstTotal)}
                       </div>
                     </div>
-                  </>
-                )}
-              </div>
-
-              <div className="mt-4">
-                <label className="block text-sm font-semibold text-neutral-800 mb-1.5">
-                  Grand Total
-                </label>
-                <div className="h-14 px-4 bg-primary-50 border border-primary-200 rounded-lg flex items-center text-primary-700 font-bold text-lg">
-                  {formatCurrency(grandTotal)}
+                  ) : (
+                    <>
+                      <div>
+                        <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                          CGST 2.5%
+                        </label>
+                        <div className="h-12 px-4 bg-neutral-100 border border-neutral-200 rounded-lg flex items-center text-neutral-700 font-medium">
+                          {formatCurrency(cgst)}
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                          SGST 2.5%
+                        </label>
+                        <div className="h-12 px-4 bg-neutral-100 border border-neutral-200 rounded-lg flex items-center text-neutral-700 font-medium">
+                          {formatCurrency(sgst)}
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                          Total GST
+                        </label>
+                        <div className="h-12 px-4 bg-neutral-100 border border-neutral-200 rounded-lg flex items-center text-neutral-700 font-medium">
+                          {formatCurrency(gstTotal)}
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
-                <p className="text-xs text-neutral-400 mt-1">
-                  {isInterState ? 'IGST' : 'CGST+SGST'} on {formatCurrency(taxableAmount)} | Tolls{' '}
-                  {formatCurrency(tollEstimate)} (exempt) | SAC: 996601
-                </p>
-              </div>
-            </div>
-          )}
-        </div>
 
-        <div className="flex justify-end gap-3 mt-6 pt-6 border-t border-neutral-100">
-          <Button variant="outline" type="button" onClick={() => navigate('/admin/routes')}>
-            Cancel
-          </Button>
-          <Button type="submit" loading={loading}>
-            <Save className="w-4 h-4" />
-            {isEdit ? 'Update Route' : 'Create Route'}
-          </Button>
-        </div>
+                <div className="mt-4">
+                  <label className="block text-sm font-semibold text-neutral-800 mb-1.5">
+                    Grand Total
+                  </label>
+                  <div className="h-14 px-4 bg-primary-50 border border-primary-200 rounded-lg flex items-center text-primary-700 font-bold text-lg">
+                    {formatCurrency(grandTotal)}
+                  </div>
+                  <p className="text-xs text-neutral-400 mt-1">
+                    {isInterState ? 'IGST' : 'CGST+SGST'} on {formatCurrency(taxableAmount)} | Tolls{' '}
+                    {formatCurrency(tollEstimate)} (exempt) | SAC: 996601
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="flex justify-end gap-3 mt-6 pt-6 border-t border-neutral-100">
+            <Button variant="outline" type="button" onClick={() => navigate('/admin/routes')}>
+              Cancel
+            </Button>
+            <Button type="submit" loading={loading}>
+              <Save className="w-4 h-4" />
+              {isEdit ? 'Update Route' : 'Create Route'}
+            </Button>
+          </div>
         </form>
 
         {/* Right — Map Panel (sticky) */}
@@ -440,13 +461,7 @@ export function RouteForm() {
                   className="h-full"
                   showTraffic
                   showAlternatives
-                  onRouteSelect={(route) =>
-                    setMapRouteInfo({
-                      distance: route.distance,
-                      duration: route.duration,
-                      summary: route.summary,
-                    })
-                  }
+                  onRouteSelect={handleMapRouteSelect}
                 />
               ) : (
                 <div className="w-full h-full bg-neutral-50 flex items-center justify-center">
@@ -469,15 +484,21 @@ export function RouteForm() {
                     <>
                       <div>
                         <p className="text-[10px] text-neutral-400 uppercase">Distance</p>
-                        <p className="text-sm font-bold text-neutral-900">{mapRouteInfo.distance}</p>
+                        <p className="text-sm font-bold text-neutral-900">
+                          {mapRouteInfo.distance}
+                        </p>
                       </div>
                       <div>
                         <p className="text-[10px] text-neutral-400 uppercase">Duration</p>
-                        <p className="text-sm font-bold text-neutral-900">{mapRouteInfo.duration}</p>
+                        <p className="text-sm font-bold text-neutral-900">
+                          {mapRouteInfo.duration}
+                        </p>
                       </div>
                       <div>
                         <p className="text-[10px] text-neutral-400 uppercase">Via</p>
-                        <p className="text-sm font-bold text-neutral-900">{mapRouteInfo.summary || '-'}</p>
+                        <p className="text-sm font-bold text-neutral-900">
+                          {mapRouteInfo.summary || '-'}
+                        </p>
                       </div>
                     </>
                   )}
