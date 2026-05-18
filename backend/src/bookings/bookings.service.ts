@@ -238,7 +238,7 @@ export class BookingsService {
       this.bookingModel
         .find(filter)
         .populate('car')
-        .populate('driver')
+        .populate({ path: 'driver', populate: { path: 'userId', select: 'name phone email' } })
         .sort({ createdAt: -1 })
         .skip((page - 1) * limit)
         .limit(limit)
@@ -253,7 +253,7 @@ export class BookingsService {
     const booking = await this.bookingModel
       .findById(id)
       .populate('car')
-      .populate('driver')
+      .populate({ path: 'driver', populate: { path: 'userId', select: 'name phone email' } })
       .populate('user', 'name phone email')
       .lean();
     if (!booking) throw new NotFoundException('Booking not found');
@@ -264,7 +264,7 @@ export class BookingsService {
     const booking = await this.bookingModel
       .findOne({ bookingId })
       .populate('car')
-      .populate('driver')
+      .populate({ path: 'driver', populate: { path: 'userId', select: 'name phone email' } })
       .populate('user', 'name phone email')
       .lean();
     if (!booking) throw new NotFoundException('Booking not found');
@@ -361,7 +361,7 @@ export class BookingsService {
       this.bookingModel
         .find(filter)
         .populate('car')
-        .populate('driver')
+        .populate({ path: 'driver', populate: { path: 'userId', select: 'name phone email' } })
         .populate('user', 'name phone email')
         .sort(sort)
         .skip((page - 1) * limit)
@@ -381,7 +381,7 @@ export class BookingsService {
         { new: true },
       )
       .populate('car')
-      .populate('driver')
+      .populate({ path: 'driver', populate: { path: 'userId', select: 'name phone email' } })
       .lean();
     if (!booking) throw new NotFoundException('Booking not found');
     this.logger.log(
