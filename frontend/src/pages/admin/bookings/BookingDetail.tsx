@@ -361,37 +361,37 @@ export function BookingDetail() {
               <div className="flex justify-between text-sm">
                 <span className="text-neutral-500">Base Fare</span>
                 <span className="text-neutral-900">
-                  {formatCurrency(booking.pricing?.baseFare || 0, true)}
+                  {formatCurrency(booking.pricing?.baseFare || 0)}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-neutral-500">Price/km</span>
                 <span className="text-neutral-900">
-                  {formatCurrency(booking.pricing?.pricePerKm || 0, true)}
+                  {formatCurrency(booking.pricing?.pricePerKm || 0)}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-neutral-500">Distance Charge</span>
                 <span className="text-neutral-900">
-                  {formatCurrency(booking.pricing?.distanceCharge || 0, true)}
+                  {formatCurrency(booking.pricing?.distanceCharge || 0)}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-neutral-500">Toll Estimate</span>
                 <span className="text-neutral-900">
-                  {formatCurrency(booking.pricing?.tollEstimate || 0, true)}
+                  {formatCurrency(booking.pricing?.tollEstimate || 0)}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-neutral-500">GST</span>
                 <span className="text-neutral-900">
-                  {formatCurrency(booking.pricing?.gstAmount || 0, true)}
+                  {formatCurrency(booking.pricing?.gstAmount || 0)}
                 </span>
               </div>
               <div className="flex justify-between text-sm font-semibold pt-2 border-t border-neutral-100">
                 <span className="text-neutral-900">Total</span>
                 <span className="text-primary-600">
-                  {formatCurrency(booking.pricing?.totalAmount || 0, true)}
+                  {formatCurrency(booking.pricing?.totalAmount || 0)}
                 </span>
               </div>
             </div>

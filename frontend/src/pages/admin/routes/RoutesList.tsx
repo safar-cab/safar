@@ -145,13 +145,13 @@ export function RoutesList() {
                     <td className="px-4 py-3 text-sm font-medium text-neutral-900">{route.name}</td>
                     <td className="px-4 py-3 text-sm text-neutral-700">{route.distanceKm}</td>
                     <td className="px-4 py-3 text-sm text-neutral-700">
-                      {formatCurrency(route.pricePerKm, true)}
+                      {formatCurrency(route.pricePerKm)}
                     </td>
                     <td className="px-4 py-3 text-sm text-neutral-700">
-                      {formatCurrency(route.baseFare, true)}
+                      {formatCurrency(route.baseFare)}
                     </td>
                     <td className="px-4 py-3 text-sm text-neutral-700">
-                      {formatCurrency(route.tollEstimate, true)}
+                      {formatCurrency(route.tollEstimate)}
                     </td>
                     <td className="px-4 py-3">
                       <Badge status={route.isActive ? 'confirmed' : 'cancelled'} />

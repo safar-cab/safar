@@ -218,7 +218,7 @@ export function BookingsList() {
                       <Badge status={booking.status} />
                     </td>
                     <td className="px-4 py-3 text-sm font-medium text-neutral-900">
-                      {formatCurrency(booking.pricing?.totalAmount || 0, true)}
+                      {formatCurrency(booking.pricing?.totalAmount || 0)}
                     </td>
                     <td className="px-4 py-3">
                       <Tooltip content="View booking">
