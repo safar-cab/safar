@@ -81,9 +81,7 @@ export class LocationsService {
         { state: new Types.ObjectId(id) },
         { isActive: false },
       );
-      this.logger.log(
-        `State ${state.name} disabled — all its cities disabled`,
-      );
+      this.logger.log(`State ${state.name} disabled — all its cities disabled`);
     }
 
     return state;
@@ -209,7 +207,7 @@ export class LocationsService {
             BookingStatus.IN_PROGRESS,
           ],
         },
-      } as any);
+      });
       if (activeBookings > 0) {
         throw new BadRequestException(
           `Cannot disable route — ${activeBookings} active booking(s) exist. Wait until they complete.`,
@@ -223,9 +221,7 @@ export class LocationsService {
       { new: true },
     );
     if (!route) throw new NotFoundException('Route not found');
-    this.logger.log(
-      `Route ${route.name} ${isActive ? 'enabled' : 'disabled'}`,
-    );
+    this.logger.log(`Route ${route.name} ${isActive ? 'enabled' : 'disabled'}`);
     return route;
   }
 

@@ -1,6 +1,11 @@
 import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiTags, ApiBearerAuth, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { TrackingService } from './tracking.service';
 import { RoutesApiService } from './routes-api.service';
 import { Roles } from '../common/decorators/roles.decorator';
@@ -41,7 +46,9 @@ export class TrackingController {
   }
 
   @Get('route-info')
-  @ApiOperation({ summary: 'Get route info with toll estimates from Google Routes API' })
+  @ApiOperation({
+    summary: 'Get route info with toll estimates from Google Routes API',
+  })
   @ApiQuery({ name: 'origin', required: true, example: 'Indore, MP' })
   @ApiQuery({ name: 'destination', required: true, example: 'Bhopal, MP' })
   async getRouteInfo(

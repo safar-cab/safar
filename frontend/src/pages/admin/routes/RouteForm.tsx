@@ -113,8 +113,6 @@ export function RouteForm() {
         .get(`/admin/routes/${id}`)
         .then((res: unknown) => {
           const data = res as Record<string, unknown>;
-          const from = data.fromCity as Record<string, string> | undefined;
-          const to = data.toCity as Record<string, string> | undefined;
           setForm({
             fromCityId: (data.fromCityId as string) || '',
             fromStateId: (data.fromStateId as string) || '',
