@@ -29,12 +29,13 @@ export class CompanySettings {
   defaultPricePerKm: number;
 
   @ApiProperty()
-  @Prop({ default: 100 })
-  stopChargePerStop: number;
+  @Prop({ default: 10 })
+  stopWaitingChargePerInterval: number;
 
   @ApiProperty()
-  @Prop({ default: 500 })
-  defaultBaseFare: number;
+  @Prop({ default: 15 })
+  stopWaitingIntervalMinutes: number;
+
 
   @Prop({ type: Object })
   defaultRefundPolicy: Record<string, unknown>;

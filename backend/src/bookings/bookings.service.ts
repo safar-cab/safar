@@ -37,8 +37,9 @@ export class BookingsService {
     const settings = await this.settingsModel.findOne().lean();
     return {
       pricePerKm: settings?.defaultPricePerKm || 12,
-      baseFare: settings?.defaultBaseFare || 500,
-      stopChargePerStop: settings?.stopChargePerStop || 100,
+      baseFare: 500,
+      stopWaitingChargePerInterval: settings?.stopWaitingChargePerInterval || 10,
+      stopWaitingIntervalMinutes: settings?.stopWaitingIntervalMinutes || 15,
     };
   }
 
@@ -65,7 +66,8 @@ export class BookingsService {
     const distanceKm = dto.estimatedDistanceKm || 100;
     const distanceCharge = distanceKm * pricePerKm;
     const tollEstimate = 0;
-    const stopChargePerStop = config.stopChargePerStop;
+    // Stop charge: estimated 1 waiting interval per stop
+    const stopChargePerStop = config.stopWaitingChargePerInterval;
     const stopCount = dto.stops?.length || 0;
     const totalStopCharge = stopCount * stopChargePerStop;
     const taxableAmount = baseFare + distanceCharge + totalStopCharge; // Tolls exempt from GST
