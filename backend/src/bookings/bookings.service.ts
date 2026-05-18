@@ -138,7 +138,9 @@ export class BookingsService {
   ) {
     const { page = 1, limit = 10, status } = query;
     const filter: any = { user: userId };
-    if (status) filter.status = status;
+    if (status) {
+      filter.status = status.includes(',') ? { $in: status.split(',') } : status;
+    }
 
     const [bookings, total] = await Promise.all([
       this.bookingModel
