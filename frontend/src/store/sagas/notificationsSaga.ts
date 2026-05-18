@@ -17,7 +17,7 @@ function* handleFetchNotifications(action: ReturnType<typeof fetchNotifications>
   try {
     yield put(setLoading());
     const { page = 1 } = action.payload;
-    const { data } = yield call(api.get, `/api/notifications?page=${page}&limit=20`);
+    const { data } = yield call(api.get, `/notifications?page=${page}&limit=20`);
     yield put(fetchNotificationsSuccess(data));
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : 'Failed to load notifications';
@@ -27,7 +27,7 @@ function* handleFetchNotifications(action: ReturnType<typeof fetchNotifications>
 
 function* handleFetchUnreadCount() {
   try {
-    const { data } = yield call(api.get, '/api/notifications/unread-count');
+    const { data } = yield call(api.get, '/notifications/unread-count');
     yield put(setUnreadCount(data.count));
   } catch {
     // silent fail for count
@@ -36,7 +36,7 @@ function* handleFetchUnreadCount() {
 
 function* handleMarkRead(action: ReturnType<typeof markRead>) {
   try {
-    yield call(api.patch, `/api/notifications/${action.payload}/read`);
+    yield call(api.patch, `/notifications/${action.payload}/read`);
     yield put(markReadSuccess(action.payload));
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : 'Failed to mark as read';
@@ -46,7 +46,7 @@ function* handleMarkRead(action: ReturnType<typeof markRead>) {
 
 function* handleMarkAllRead() {
   try {
-    yield call(api.post, '/api/notifications/mark-all-read');
+    yield call(api.post, '/notifications/mark-all-read');
     yield put(markAllReadSuccess());
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : 'Failed to mark all as read';
