@@ -136,6 +136,7 @@ function DirectionsLayer({
   const altRenderersRef = useRef<any[]>([]);
   const trafficRef = useRef<any>(null);
   const markerRef = useRef<any>(null);
+  const directionsResultRef = useRef<any>(null);
 
   // Compute directions
   useEffect(() => {
@@ -170,6 +171,9 @@ function DirectionsLayer({
           onError?.();
           return;
         }
+
+        // Store result for route switching
+        directionsResultRef.current = result;
 
         // Main route — blue
         rendererRef.current = new routesLib.DirectionsRenderer({
@@ -322,67 +326,107 @@ function DirectionsLayer({
     };
   }, [map, driverPosition]);
 
-  // Route selection
+  // Route selection — also notify parent
   const selectRoute = useCallback(
     (idx: number) => {
       if (!rendererRef.current || idx >= routesSummary.length) return;
       setSelectedIdx(idx);
       rendererRef.current.setRouteIndex(idx);
+
+      // Notify parent with selected route info
+      if (onRouteSelect && directionsResultRef.current) {
+        const route = directionsResultRef.current.routes[idx];
+        const leg = route?.legs?.[0];
+        if (leg) {
+          onRouteSelect(
+            {
+              distance: leg.distance?.text || '',
+              distanceValue: leg.distance?.value || 0,
+              duration: leg.duration?.text || '',
+              durationValue: leg.duration?.value || 0,
+              startAddress: leg.start_address || '',
+              endAddress: leg.end_address || '',
+              summary: route.summary || '',
+            },
+            idx,
+          );
+        }
+      }
     },
-    [routesSummary],
+    [routesSummary, onRouteSelect],
   );
+
+  const [routePanelOpen, setRoutePanelOpen] = useState(false);
 
   if (routesSummary.length <= 1) return null;
 
   return (
-    <div className="absolute bottom-3 left-3 right-3 z-10">
-      <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-neutral-200/50 p-2.5 space-y-1 max-h-44 overflow-y-auto">
-        <p className="text-[10px] uppercase tracking-wider text-neutral-400 font-semibold px-2">
-          {routesSummary.length} Routes Available
-        </p>
-        {routesSummary.map((route, i) => (
-          <button
-            key={i}
-            onClick={() => selectRoute(i)}
-            className={cn(
-              'w-full text-left px-3 py-2 rounded-lg text-sm flex items-center justify-between transition-all',
-              i === selectedIdx
-                ? 'bg-primary-50 border border-primary-200 shadow-sm'
-                : 'hover:bg-neutral-50 border border-transparent',
-            )}
-          >
-            <div className="flex items-center gap-2">
-              <div
-                className={cn(
-                  'w-3 h-1 rounded-full',
-                  i === selectedIdx ? 'bg-primary-500' : 'bg-neutral-300',
-                )}
-              />
-              <div>
-                <p
+    <div className="absolute top-3 right-3 z-10">
+      {/* Toggle button */}
+      <button
+        onClick={() => setRoutePanelOpen(!routePanelOpen)}
+        className="bg-white/95 backdrop-blur-sm shadow-lg border border-neutral-200/50 rounded-lg px-3 py-2 text-xs font-medium text-neutral-700 hover:bg-white transition-all flex items-center gap-1.5"
+      >
+        <div className="w-2 h-2 rounded-full bg-primary-500" />
+        {routesSummary.length} Routes
+        <svg
+          className={cn('w-3 h-3 transition-transform', routePanelOpen && 'rotate-180')}
+          viewBox="0 0 12 12"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <path d="M3 5l3 3 3-3" />
+        </svg>
+      </button>
+
+      {/* Route list */}
+      {routePanelOpen && (
+        <div className="mt-1.5 bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-neutral-200/50 p-2 space-y-1 max-h-52 overflow-y-auto w-64">
+          {routesSummary.map((route, i) => (
+            <button
+              key={i}
+              onClick={() => selectRoute(i)}
+              className={cn(
+                'w-full text-left px-2.5 py-1.5 rounded-lg text-xs flex items-center justify-between transition-all',
+                i === selectedIdx
+                  ? 'bg-primary-50 border border-primary-200'
+                  : 'hover:bg-neutral-50 border border-transparent',
+              )}
+            >
+              <div className="flex items-center gap-2">
+                <div
                   className={cn(
-                    'font-medium text-xs',
-                    i === selectedIdx ? 'text-primary-700' : 'text-neutral-700',
+                    'w-2.5 h-0.5 rounded-full',
+                    i === selectedIdx ? 'bg-primary-500' : 'bg-neutral-300',
                   )}
-                >
-                  {route.summary || `Route ${i + 1}`}
-                </p>
-                <p className="text-[11px] text-neutral-400">
-                  {route.distance} · {route.duration}
-                  {route.durationTraffic && route.durationTraffic !== route.duration && (
-                    <span className="text-amber-600"> ({route.durationTraffic} in traffic)</span>
-                  )}
-                </p>
+                />
+                <div>
+                  <p
+                    className={cn(
+                      'font-medium',
+                      i === selectedIdx ? 'text-primary-700' : 'text-neutral-700',
+                    )}
+                  >
+                    {route.summary || `Route ${i + 1}`}
+                  </p>
+                  <p className="text-[10px] text-neutral-400">
+                    {route.distance} · {route.duration}
+                    {route.durationTraffic && route.durationTraffic !== route.duration && (
+                      <span className="text-amber-600"> ({route.durationTraffic})</span>
+                    )}
+                  </p>
+                </div>
               </div>
-            </div>
-            {i === selectedIdx && (
-              <span className="text-[9px] bg-primary-500 text-white px-1.5 py-0.5 rounded-full font-medium">
-                ✓
-              </span>
-            )}
-          </button>
-        ))}
-      </div>
+              {i === selectedIdx && (
+                <span className="text-[8px] bg-primary-500 text-white px-1.5 py-0.5 rounded-full font-medium">
+                  ✓
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
